@@ -1,0 +1,38 @@
+\documentclass[a4paper]{scrreprt}
+
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}     % deutsche Silbentrennung
+\usepackage[utf8x]{inputenc}    % wegen deutschen Umlauten & UTF-8
+\usepackage{lmodern}		% Schönere Schriftart
+\usepackage{graphicx}           % Grafikpaket laden
+\usepackage{amsmath,amssymb}    % Mathe
+\usepackage{tikz}               % Zeichungen
+\usepackage{hyperref}		% Links
+\hypersetup{			% Link-Formatierung entfernen & pdf-Inforamtionen setzten
+	pdfauthor={Maximilian Awiszus, Holger Ebhart, Lidia Grigoriev, Paul Jungeblut, Philipp Kern  und Matthias Schimek},
+	pdftitle={Visualizing Trends - Was verrät uns Twitter?},
+	colorlinks,
+	citecolor=black,
+	filecolor=black,
+	linkcolor=black,
+	urlcolor=black
+}
+\usepackage{microtype}		% font expansion
+
+\title{Visualizing Trends\\Was verrät uns Twitter?}
+\author{Maximilian Awiszus\and Holger Ebhart\and Lidia Grigoriev\and Paul Jungeblut\and Philipp Kern\and Matthias Schimek}
+
+\begin{document}
+	\maketitle
+	\tableofcontents
+	\chapter{Lastenheft}
+		\input{include/lastenheft.tex}
+	\chapter{Pflichtenheft}
+		\input{include/pflichtenheft.tex}
+	\chapter{Entwurf}
+		\input{include/entwurf.tex}
+	\chapter{Softwarearchitektur}
+		\input{include/architektur.tex}
+	\chapter{Software}
+		\input{include/software.tex}
+\end{document}
