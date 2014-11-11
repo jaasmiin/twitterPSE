@@ -25,7 +25,7 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
  */
 public class MapTest extends PApplet {
 
-    private static String path = "I:\\Studium\\PSE";
+    private static String path = "../../libs";
     private static final long serialVersionUID = 1L;
     UnfoldingMap map;
     HashMap<String, DataEntry> dataEntriesMap;
@@ -42,11 +42,11 @@ public class MapTest extends PApplet {
         List<Feature> countries = GeoJSONReader
                 .loadData(
                         this,
-                        path + "\\unfolding_app_template_with_examples_0.9.6\\data\\data\\countries.geo.json");
+                        path + "/unfolding_app_template_with_examples_0.9.6/data/data/countries.geo.json");
         countryMarkers = MapUtils.createSimpleMarkers(countries);
         map.addMarkers(countryMarkers);
         // Load population data
-        dataEntriesMap = loadPopulationDensityFromCSV(path  + "\\unfolding_app_template_with_examples_0.9.6\\data\\data\\countries-population-density.csv");
+        dataEntriesMap = loadPopulationDensityFromCSV(path  + "/unfolding_app_template_with_examples_0.9.6/data/data/countries-population-density.csv");
         // Country markers are shaded according to its population density (only
         // once)
         shadeCountries();
