@@ -1,0 +1,3 @@
+geonames: alle jar's einbinden
+twitter4j: alle jar's im Ordner lib einbinden
+unfolding: alle jar's aus dem Ordner lib einbinden
