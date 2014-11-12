@@ -18,7 +18,8 @@ PSE Projekt B im WS14/15
 
 ### Literatur
 - [ ] Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
-- [ ] Mining the Social Web: [data mining Facebook, Twitter, LinkedIn, Google+, GitHub, and more] / Matthew A. Russell
+- [ ] Mining the Social Web  / Matthew A. Russell
+
 ## Anforderungen
 ### Analyse
 - [ ] Crawler für verifizierte Accounts
