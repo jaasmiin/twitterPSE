@@ -25,8 +25,9 @@ public class TestClass implements Runnable {
     private Twitter twitter;
     private HashSet<String> accounts;
     private int num;
-    private boolean onlyLocation = false;
-    private boolean onlyVerified = true;
+    private boolean onlyLocation = true;
+    private boolean onlyVerified = false;
+    private boolean onlyRetweets = false;
 
     public TestClass(int num) {
         accounts = new HashSet<String>();
@@ -39,6 +40,7 @@ public class TestClass implements Runnable {
         // creating object to work with
         twitter = TwitterFactory.getSingleton();
 
+        // tried to get verified accounts by trends but run into rate limit
         try {
             switch (num) {
             case 1:
@@ -49,7 +51,7 @@ public class TestClass implements Runnable {
 
                 String track[] = {"a", "b", "c", "d", "e", "f", "g", "h", "i",
                         "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
-                        "u", "v", "w", "x", "y", "z" };
+                        "u", "v", "w", "x", "y", "z", "#" };
                 // String track[] = {"news" };
                 getStream(track);
                 break;
@@ -165,10 +167,15 @@ public class TestClass implements Runnable {
                 return;
             }
         }
+        if (onlyRetweets) {
+            if (!status.isRetweet()) {
+                return;
+            }
+        }
 
-        System.out.println("Location of the user: "
-                + status.getUser().getLocation());
         if (!onlyLocation) {
+            System.out.println("Location of the user: "
+                    + status.getUser().getLocation());
             System.out.println("User-name: " + status.getUser().getName());
             System.out.println("User display name: "
                     + status.getUser().getScreenName()
@@ -178,17 +185,26 @@ public class TestClass implements Runnable {
             System.out.println("Tweet: " + status.getText());
             System.out.println("Geolocation of the tweet: "
                     + status.getGeoLocation());
+            if (status.isRetweet()) {
+                System.out.println("RETWEET");
+            }
             System.out.println("Language: " + status.getLang());
         }
-        try {
-            String c = getCountry(status);
-            if (c != null) {
-                System.out.println("Calculated user country: " + c);
+        String loc = status.getUser().getLocation();
+        if (loc != null && loc.length() > 0) {
+            System.out.println("Location of the user: " + loc);
+            try {
+                // Thread t = new Thread(new
+                // TestGeoNames(status.getUser().getLocation()));
+                String c = getCountry(status);
+                if (c != null) {
+                    System.out.println("Calculated user country: " + c);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("--------------------------------------------");
         }
-        System.out.println("--------------------------------------------");
     }
 
     private void collectVerifiedAccounts(Status status) {
