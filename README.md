@@ -17,7 +17,8 @@ PSE Projekt B im WS14/15
 * [GeoNames](http://www.geonames.org/)
 
 ### Literatur
-
+- [ ] Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
+- [ ] Mining the Social Web: [data mining Facebook, Twitter, LinkedIn, Google+, GitHub, and more] / Matthew A. Russell
 ## Anforderungen
 ### Analyse
 - [ ] Crawler für verifizierte Accounts
@@ -51,6 +52,6 @@ Phase | Verantwortliche(r)
 ------------ | -------------
 Pflichtenheft | Lidia
 Entwurf | Holger
-Implementierung | Paul
+Implementierung | Paul, Matthias
 Qualitätssicherung | Philipp
 Abschlussoräsentation | Maximilian
