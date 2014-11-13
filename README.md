@@ -18,6 +18,8 @@ PSE Projekt B im WS14/15
 * [twitter4j](http://twitter4j.org/en/index.html)
 
 ### Literatur
+- [ ] Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
+- [ ] Mining the Social Web  / Matthew A. Russell
 
 ## Anforderungen
 ### Analyse
@@ -52,6 +54,6 @@ Phase | Verantwortliche(r)
 ------------ | -------------
 Pflichtenheft | Lidia
 Entwurf | Holger
-Implementierung | Paul + Matthias
+Implementierung | Paul, Matthias
 Qualitätssicherung | Philipp
 Abschlussoräsentation | Maximilian
