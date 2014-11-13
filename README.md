@@ -20,27 +20,17 @@ Thema | Name
 ----------- | ---------
 Einleitung | Paul
 Zielbestimmung | Paul
-Produkteinsatz |
+Produkteinsatz | Maximilian
 Produktumgebung |
 Produktfunktionen | Matthias
 Produktdaten | Matthias
 Systemmodell | Paul
 Produktleistungen |
 Bedienoberfläche | Treffen Montag
-Qualitätszielbestimmungen |
+Qualitätszielbestimmungen | Maximilian
 Testfälle und Testszenarien |
 Entwicklungsumgebung |
 Glossar |
-
-### Verwendete Software, Bibliotheken und Datenbanken
-* [GeoNames](http://www.geonames.org/)
-* [twitter4j](http://twitter4j.org/en/index.html)
-* [unfolding](http://unfoldingmaps.org)
-* [JavaFX Scene Builder](http://www.oracle.com/technetwork/java/javase/downloads/javafxscenebuilder-info-2157684.html)
-
-### Literatur
-* Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
-* Mining the Social Web  / Matthew A. Russell
 
 ### Besprechung: 13.11.14
 * Bestehenden Lokalisierungs Service benutzen
@@ -53,4 +43,12 @@ Glossar |
 * Nicht zuordnebaren Accounts mitloggen
 * Mehrere Twitter Accounts <-> Rate Limit
 
+### Verwendete Software, Bibliotheken und Datenbanken
+* [GeoNames](http://www.geonames.org/)
+* [twitter4j](http://twitter4j.org/en/index.html)
+* [unfolding](http://unfoldingmaps.org)
+* [JavaFX Scene Builder](http://www.oracle.com/technetwork/java/javase/downloads/javafxscenebuilder-info-2157684.html)
 
+### Literatur
+* Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
+* Mining the Social Web  / Matthew A. Russell
