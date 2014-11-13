@@ -1,0 +1,23 @@
+## Anforderungen
+### Analyse
+- [ ] Crawler für verifizierte Accounts
+- [ ] Crawler für Tweets und Retweets
+- [ ] Tweets Land / Region / Gelocation zuordnen
+- [ ] Verfizierte Accounts kategorisieren (automatisch und manuell)
+- [ ] Effizienz / Performanz
+- [ ] Kategorie / Account und Land (Retweets) zusammenführen
+- [ ] *Ausgewählten Accounts analysieren*
+- [ ] *Ausbreitung von Hashtags*
+
+### GUI
+- [ ] Benutzerfreundlich
+- [ ] Auswahl von Kombinationen von Usern, Ländern und Kategorien
+- [ ] Weltkarte mit eingefärbten Ländern (entsprechend Auswahl)
+- [ ] *Visualisierung der zeitlichen Entwicklung (Zeit-Slider)*
+- [ ] *Regionen anstatt Länder*
+
+### Sonstiges
+- [ ] *Sprachfilter*
+- [ ] *Accounts sortieren* bzw. *Accounts Ranking*
+- [ ] *Dynamische Suche von fehlenden Daten (z.B. in Wikipedia)*
+- [ ] *Tweets tracken*
