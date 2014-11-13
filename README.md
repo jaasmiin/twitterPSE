@@ -2,24 +2,34 @@
 PSE Projekt B im WS14/15
 
 ### Todos
-- [ ] Visualisierung in Java? (z.B. unfolding)
-- [ ] Datenbank Layout
+- [ ] Twitter kontaktieren wegen Limit
+- [ ] Pflichtenheft
+- [ ] Ideen für GUI
+- [ ] Mehrere Twitter Accounts <-> Rate Limit
+- [x] Link zu GitHub per Mail schicken
+- [x] Datenbank Layout
 
 ### Fragen
-- [ ] Server 24/7, da eingeschränkt wegen Twitter API Limits
-- [ ] Retweets von verifizierten Accounts?
-- [ ] HP statt Java für Darstellung?
-- [ ] Retweets pro Account oder pro Tweet? 
-- [ ] Twitter kontaktieren wegen Limit - Erfahrung
-- [ ] dmoz DB
 
-### Verwendete Bibliotheken bzw. Datenbanken
+### Verwendete Software, Bibliotheken und Datenbanken
 * [GeoNames](http://www.geonames.org/)
 * [twitter4j](http://twitter4j.org/en/index.html)
+* [unfolding](http://unfoldingmaps.org)
+* [JavaFX Scene Builder](http://www.oracle.com/technetwork/java/javase/downloads/javafxscenebuilder-info-2157684.html)
 
 ### Literatur
-- [ ] Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
-- [ ] Mining the Social Web  / Matthew A. Russell
+* Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
+* Mining the Social Web  / Matthew A. Russell
+
+## Besprechung: 13.11.14
+* Bestehenden Lokalisierungs Service benutzen
+* USA - Europa (Unterschiedliche Zeitzonen)
+* Differenz der Retweet Zahl zwischen einzelnen Tagen darstellen
+* Stream Reader und Search Reader benutzen
+* Retweets pro Account
+* Tweets pro Tag einer Person speichern
+* Retweets von verifizierten Accounts
+* Nicht zuordnebaren Accounts mitloggen
 
 ## Anforderungen
 ### Analyse
@@ -41,7 +51,7 @@ PSE Projekt B im WS14/15
 
 ### Sonstiges
 - [ ] *Sprachfilter*
-- [ ] *Accounts sortieren*
+- [ ] *Accounts sortieren* bzw. *Accounts Ranking*
 - [ ] *Dynamische Suche von fehlenden Daten (z.B. in Wikipedia)*
 - [ ] *Tweets tracken*
 
