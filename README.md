@@ -2,6 +2,10 @@
 PSE Projekt B im WS14/15
 
 ### Offene Fragen
+
+## ToDo
+* twitter zwecks höheren Ratelimits anschreiben
+
 ## Organisation
 Treffen: Mo., 15:45 Uhr
 
