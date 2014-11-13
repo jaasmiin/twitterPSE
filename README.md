@@ -1,4 +1,4 @@
-#Visualizing Trends – Was verrät uns Twitter?
+﻿#Visualizing Trends – Was verrät uns Twitter?
 PSE Projekt B im WS14/15
 
 ### Todos
@@ -11,10 +11,11 @@ PSE Projekt B im WS14/15
 - [ ] HP statt Java für Darstellung?
 - [ ] Retweets pro Account oder pro Tweet? 
 - [ ] Twitter kontaktieren wegen Limit - Erfahrung
-- [ ] DMOS DB
+- [ ] dmoz DB
 
 ### Verwendete Bibliotheken bzw. Datenbanken
 * [GeoNames](http://www.geonames.org/)
+* [twitter4j](http://twitter4j.org/en/index.html)
 
 ### Literatur
 - [ ] Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
