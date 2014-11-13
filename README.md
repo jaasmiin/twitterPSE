@@ -20,14 +20,14 @@ Thema | Name
 ----------- | ---------
 Einleitung | Paul
 Zielbestimmung | Paul
-Produkteinsatz | Holger
+Produkteinsatz | Maximilian
 Produktumgebung | Holger
 Produktfunktionen | Matthias
 Produktdaten | Matthias
 Systemmodell | Paul
-Produktleistungen |
+Produktleistungen | Holger
 Bedienoberfläche | Treffen Montag
-Qualitätszielbestimmungen |
+Qualitätszielbestimmungen | Maximilian
 Testfälle und Testszenarien |
 Entwicklungsumgebung |
 Glossar |
