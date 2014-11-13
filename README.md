@@ -73,15 +73,15 @@ Abschlussoräsentation | Maximilian
 ### Pflichtenheft
 Thema | Name
 ----------- | ---------
-Einleitung |
-Zielbestimmung |
+Einleitung | Paul
+Zielbestimmung | Paul
 Produkteinsatz |
 Produktumgebung |
 Produktfunktionen | Matthias
 Produktdaten | Matthias
-Systemmodell | 
+Systemmodell | Paul
 Produktleistungen |
-Bedienoberfläche |
+Bedienoberfläche | Treffen Montag
 Qualitätszielbestimmungen |
 Testfälle und Testszenarien |
 Entwicklungsumgebung |
