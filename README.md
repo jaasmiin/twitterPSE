@@ -58,8 +58,9 @@ Implementierung | Paul, Matthias
 Qualitätssicherung | Philipp
 Abschlussoräsentation | Maximilian
 
-###Pflichtenheft
+##Phasen des Projekts
 
+### Pflichtenheft
 Thema | Name
 ----------- | ---------
 Einleitung |
