@@ -56,3 +56,21 @@ Entwurf | Holger
 Implementierung | Paul, Matthias
 Qualitätssicherung | Philipp
 Abschlussoräsentation | Maximilian
+
+###Pflichtenheft
+
+Thema | Name
+----------- | ---------
+Einleitung |
+Zielbestimmung |
+Produkteinsatz |
+Produktumgebung |
+Produktfunktionen | Matthias
+Produktdaten | Matthias
+Systemmodell | 
+Produktleistungen |
+Bedienoberfläche |
+Qualitätszielbestimmungen |
+Testfälle und Testszenarien |
+Entwicklungsumgebung |
+Glossar |
