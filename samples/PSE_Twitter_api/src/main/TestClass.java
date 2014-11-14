@@ -25,34 +25,41 @@ public class TestClass implements Runnable {
     private Twitter twitter;
     private HashSet<String> accounts;
     private int num;
-    private boolean onlyLocation = true;
-    private boolean onlyVerified = false;
-    private boolean onlyRetweets = false;
+    private static boolean onlyLocation = false;
+    private static boolean onlyVerified = false;
+    private static boolean onlyRetweets = false;
+    private static boolean calcLocation = false;
+    private int count = 0;
 
+    /**
+     * initialize testclass to try the twitter api
+     * 
+     * @param num
+     *            - 1 for the serch api - 2 for the streaming api
+     */
     public TestClass(int num) {
         accounts = new HashSet<String>();
+        // connecting to twitter
+        // creating object to work with
+        twitter = TwitterFactory.getSingleton();
         this.num = num;
+        count = 0;
     }
 
     public void run() {
 
-        // connecting to twitter
-        // creating object to work with
-        twitter = TwitterFactory.getSingleton();
-
-        // tried to get verified accounts by trends but run into rate limit
         try {
             switch (num) {
             case 1:
 
+               
                 getVerifiedAccounts();
                 break;
             case 2:
 
                 String track[] = {"a", "b", "c", "d", "e", "f", "g", "h", "i",
                         "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t",
-                        "u", "v", "w", "x", "y", "z", "#" };
-                // String track[] = {"news" };
+                        "u", "v", "w", "x", "y", "z", "#", "@" };
                 getStream(track);
                 break;
             default:
@@ -64,6 +71,7 @@ public class TestClass implements Runnable {
 
     }
 
+    @SuppressWarnings("unused")
     private void getTimelines() throws TwitterException {
         // getting own timeline
         List<Status> statuses = twitter.getHomeTimeline();
@@ -83,6 +91,7 @@ public class TestClass implements Runnable {
         }
     }
 
+    @SuppressWarnings("unused")
     private void getTweetsByHashtag(String hashtag) throws TwitterException {
         // getting 100 tweets with hashtag
         // and the geo position
@@ -122,19 +131,20 @@ public class TestClass implements Runnable {
     }
 
     private void getStream(String[] track) throws IllegalStateException,
-            TwitterException {
+
+    TwitterException {
         StatusListener listener = new StatusListener() {
             public void onStatus(Status status) {
                 // collectVerifiedAccounts(status);
-                printStatus(status);
-
-            }
-
-            public void onDeletionNotice(
-                    StatusDeletionNotice statusDeletionNotice) {
-            }
-
-            public void onTrackLimitationNotice(int numberOfLimitedStatuses) {
+                try {
+                    printStatus(status);
+                } catch (TwitterException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                if (status.isRetweeted()) {
+                    printRetweets(status.getContributors());
+                }
             }
 
             public void onException(Exception ex) {
@@ -152,30 +162,44 @@ public class TestClass implements Runnable {
                 // TODO Auto-generated method stub
 
             }
+
+            @Override
+            public void onDeletionNotice(StatusDeletionNotice arg0) {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void onTrackLimitationNotice(int arg0) {
+                System.out.println("ERROR: Tracking limit reached!!!");
+
+            }
         };
         TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
         twitterStream.addListener(listener);
+        if (onlyRetweets) {
+            twitterStream.retweet();
+        }
         FilterQuery filter = new FilterQuery();
         filter.track(track);
         twitterStream.filter(filter);
     }
 
-    private void printStatus(Status status) {
+    private void printStatus(Status status) throws TwitterException {
 
         if (onlyVerified) {
             if (!status.getUser().isVerified()) {
                 return;
             }
         }
-        if (onlyRetweets) {
-            if (!status.isRetweet()) {
-                return;
-            }
-        }
 
         if (!onlyLocation) {
+            if (status.isRetweet()) {
+                System.out.println("RETWEET");
+            }
             System.out.println("Location of the user: "
                     + status.getUser().getLocation());
+            System.out.println("User-ID: " + status.getUser().getId());
             System.out.println("User-name: " + status.getUser().getName());
             System.out.println("User display name: "
                     + status.getUser().getScreenName()
@@ -185,37 +209,65 @@ public class TestClass implements Runnable {
             System.out.println("Tweet: " + status.getText());
             System.out.println("Geolocation of the tweet: "
                     + status.getGeoLocation());
-            if (status.isRetweet()) {
-                System.out.println("RETWEET");
-            }
             System.out.println("Language: " + status.getLang());
         }
-        String loc = status.getUser().getLocation();
-        if (loc != null && loc.length() > 0) {
-            System.out.println("Location of the user: " + loc);
-            try {
-                // Thread t = new Thread(new
-                // TestGeoNames(status.getUser().getLocation()));
-                String c = getCountry(status);
-                if (c != null) {
-                    System.out.println("Calculated user country: " + c);
+
+        if (calcLocation || onlyLocation) {
+            String loc = status.getUser().getLocation();
+            if (loc != null && loc.length() > 0) {
+                System.out.println("Location of the user: " + loc);
+                try {
+                    String c = getCountry(status);
+                    if (c != null) {
+                        System.out.println("Calculated user country: " + c);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+                System.out
+                        .println("--------------------------------------------");
+            } else if (calcLocation) {
+                System.out
+                        .println("--------------------------------------------");
             }
+        } else {
             System.out.println("--------------------------------------------");
         }
+        
+        // posibility to get retweets over the twitter search api
+        // if (!status.isRetweet()) {
+        // printRetweets(status.getId());
+        // }
+    }
+
+    private void printRetweets(long[] ids) {
+        System.out.println("ID's of retweeters:");
+        for (int i = 0; i < ids.length; i++) {
+            System.out.println(ids[i]);
+        }
+        System.out.println("--------------------------------------------");
     }
 
     private void collectVerifiedAccounts(Status status) {
         if (status.getUser().isVerified()) {
             String user = status.getUser().getScreenName();
-            synchronized (accounts) {
-                if (!accounts.contains(user)) {
-                    accounts.add(user);
-                    System.out.println(user);
-                }
-            }
+            accounts.add(user);
+            System.out.println(user);
+        }
+    }
+
+    /**
+     * prints the retweets of a tweet
+     * 
+     * @param statusId
+     *            - the id of the tweet status
+     * @throws TwitterException
+     */
+    private void printRetweets(long statusId) throws TwitterException {
+        List<Status> list = twitter.getRetweets(statusId);
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("##### This retweet was found over the twitter search api! #####");
+            printStatus(list.get(i));
         }
     }
 

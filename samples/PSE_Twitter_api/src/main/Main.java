@@ -5,20 +5,22 @@ import java.io.IOException;
 import processing.core.PApplet;
 import twitter4j.TwitterException;
 
+@SuppressWarnings("unused")
 public class Main {
 
     public static void main(String[] args) throws TwitterException,
             IOException, InterruptedException {
 
-        // Thread thread1 = new Thread(new TestClass(1));
-        Thread thread2 = new Thread(new TestClass(2));
-        // thread1.start();
-        thread2.start();
+        TestClass test = new TestClass(2);
+        test.run();
 
-        PApplet.main(new String[] {MapTest.class.getName() });
+        // start stream
+        // Thread thread = new Thread(new TestClass(2));
+        // thread.start();
 
-        // thread1.join();
-        thread2.join();
+        // PApplet.main(new String[] {MapTest.class.getName() });
+
+        // thread.join();
 
     }
 }
