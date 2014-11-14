@@ -32,9 +32,9 @@ Systemmodell | Paul
 Produktleistungen | Holger
 Bedienoberfläche | Treffen Montag
 Qualitätszielbestimmungen | Maximilian
-Testfälle und Testszenarien |
-Entwicklungsumgebung |
-Glossar |
+Testfälle und Testszenarien | Lidia
+Entwicklungsumgebung | Lidia
+Glossar | Lidia
 
 ### Verwendete Software, Bibliotheken und Datenbanken
 * [GeoNames](http://www.geonames.org/)
