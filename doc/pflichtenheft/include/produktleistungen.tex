@@ -1,6 +1,6 @@
 % Wenn vorhanden, Anforderungen an Laufzeitverhalten oder Speicherplatz.
 \section{Speicher}
-Durch das Sammeln von Daten mit Crawlern fallen in den ersten 4 Wochen circa 10 GB Daten am Server an. Danach erhöht sich die Datenmenge schätzungsweise um circa 1 GB pro Woche.
-Am Client benötigt man nicht nennenswert viel Speicher.
+Durch das Sammeln von Daten mit Crawlern fallen in den ersten 4 Wochen circa 10 GB an Daten an. Danach erhöht sich die Datenmenge schätzungsweise um circa 500 MB pro Woche. Das heißt bei einer anvisierten Laufzeit der Crawler von 4 Monaten (Anfang Dezember 2014 bis Anfang April 2015) ergibt sich eine Datenmenge von ungefähr 16 GB.
+Zur Laufzeit der Crawler und der Benutzerschnittstelle verbraucht das Programm in etwa 200 MB an Hauptspeicher.
 \section{Laufzeit}
-Da es sich um ein Echtzeitsystem handelt, muss es auf Benutzereingaben sofort reagieren. Es ergeben sich Beschränkungen aufgrund der Anfrage der Daten von Webdiensten. Diese sollen so gering wie möglich gehalten werden. Deshalb soll ein Server 24 Stunden 7 Tage die Woche laufen um möglichst viele Daten zu sammeln. Dadurch soll sich eine durchschnittliche Anfragezeit von kleiner 1 Sekunde ergeben, falls die Daten schon bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
+Da es sich um ein Echtzeitsystem handelt, muss es auf Benutzereingaben sofort reagieren. Es ergeben sich Beschränkungen aufgrund der eventuellen Anfrage der Daten von Webdiensten. Diese sollen so gering wie möglich gehalten werden. Deshalb wird eine durchschnittliche Anfragezeit von kleiner 1 Sekunde angestrebt, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
