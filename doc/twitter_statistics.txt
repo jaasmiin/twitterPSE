@@ -1,1 +1,3 @@
 circa 9 Retweets pro Sekunde auf Tweets von verifizierten Accounts
+circa 440 Retwees pro Minute auf Tweets von verifizierten Accounts
+circa 40 Accounts pro Minute per streaming api zu bekommen
