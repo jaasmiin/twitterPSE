@@ -2,3 +2,27 @@
 % o Musskriterien: Mindestanforderungen, gehen aus Aufgabenstellung hervor. 
 % o Wunschkriterien: Von den Gruppen selbst definierte, zusätzliche Funktionalität. 
 % o Abgrenzungskriterien: Was gehört nicht zum Funktionsumfang? (vgl. auch Produkteinsatz) 
+
+\section{Musskriterien}
+\begin{itemize}
+	\item Es soll ein Programm geschrieben werden, dass Twitterdaten (Streaming- und Search-API) nach verifizierten Nutzern durchsucht.
+	\item Zu Tweets von verifizierten Accounts sollen Retweets geografisch gruppiert und gezählt werden.
+	\item Dazu soll einzelnen Accounts eine Position und eine Kategorie zugeordnet werden.
+	\item Es sollen interaktiv und in Echtzeit Anfragen an das System gestellt werden können. Anfragen bestehen zum Beispiel aus einer Kategorie und einem Ort. Damit soll die weltweite geografische Ausbreitung von Tweets mit diesen Eigenschaften grafisch dargestellt werden.
+	\item Die Interaktion mit dem System soll über eine intuitive grafische Benutzeroberfläche geschehen. Diese soll neben den Auswahlhilfen eine Weltkarte sowie weitere Statistiken zeigen.
+	\item Auch über die GUI sollen Accounts kategorisiert bzw. lokalisiert werden können.
+\end{itemize}
+
+\section{Wunschkriterien}
+\begin{itemize}
+	\item Es soll auch möglich sein, nicht verifizierte Benutzer einzugeben, sodass die Ausbreitung ihrer Tweets analysiert werden kann.
+	\item Eine hierachische Einteilung der Regionen in Ergänzung zur Analyse pro Land. So könnte zum Beispiel pro Kontinent bzw. pro Bundesland visualisiert werden.
+	\item Eine Visualisierung der Analyseergebnisse mit Schwerpunkt auf der zeitlichen Entwicklung sowie weiterer Statistiken wie der Häufigkeit bestimmter Kategorien in verschiedenen Ländern.
+\end{itemize}
+
+\section{Abgrenzungskriterien}
+\begin{itemize}
+	\item Es werden Retweets pro Account, nicht pro Tweet analysiert. Von daher wird es nicht möglich sein, einzelne Tweets zu analysieren.
+	\item Es handelt sich um ein Analyseprogramm, nicht um ein Lokalisierungsprogramm. Zur Lokalisierung soll ein existierender Webservice genutzt werden.
+	\item Die Analyse beruht nicht auf dem Inhalt der Tweets (Hashtags, etc.) sondern ausschließlich auf der dem Account zugeordneten Kategorie.
+\end{itemize}
