@@ -1,6 +1,11 @@
-% Wenn vorhanden, Anforderungen an Laufzeitverhalten oder Speicherplatz.
+﻿% Wenn vorhanden, Anforderungen an Laufzeitverhalten oder Speicherplatz.
 \section{Speicher}
 Durch das Sammeln von Daten mit Crawlern fallen in den ersten 4 Wochen circa 10 GB an Daten an. Danach erhöht sich die Datenmenge schätzungsweise um circa 500 MB pro Woche. Das heißt bei einer anvisierten Laufzeit der Crawler von 4 Monaten (Anfang Dezember 2014 bis Anfang April 2015) ergibt sich eine Datenmenge von ungefähr 16 GB.
-Zur Laufzeit der Crawler und der Benutzerschnittstelle verbraucht das Programm in etwa 200 MB an Hauptspeicher.
+Zur Laufzeit der Crawler verbraucht das Programm in etwa 60 MB Hauptspeicher pro laufendem Crawler, was bei bis zu 10 laufenden Crawlern ungefähr 600 MB an Speicherplatz kostet.
+Die Benutzerschnittstelle benötigt für die Darstellung des Kartenmaterials mindestens 700 MB Hauptspeicher, hinzu kommt der Speicherplatz für die Analyse der Daten, welcher geschätzt circa 200 MB groß sein sollte.
+Insgesamt sollte dass gesamte Programm nicht mehr als 1500 MB Hauptspeicher benötigen, allerdings lassen sich kurzzeitige Peeks in denen mehr Speicherplatz benötigt wird nicht vermeiden (z.B. bei hoher Anzahl an Tweets von verifizierten Accounts).
 \section{Laufzeit}
-Da es sich um ein Echtzeitsystem handelt, muss es auf Benutzereingaben sofort reagieren. Es ergeben sich Beschränkungen aufgrund der eventuellen Anfrage der Daten von Webdiensten. Diese sollen so gering wie möglich gehalten werden. Deshalb wird eine durchschnittliche Anfragezeit von kleiner 1 Sekunde angestrebt, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
+Da es sich um ein Echtzeitsystem handelt, muss es auf Benutzereingaben sofort reagieren und in Echtzeit Daten von Twitter sammeln. Es ergeben sich Beschränkungen aufgrund der eventuellen Anfrage der Daten von Webdiensten. Diese sollen so gering wie möglich gehalten werden. Deshalb wird eine durchschnittliche Anfragezeit von kleiner 1 Sekunde angestrebt, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
+Aufgrund der Visualisierung der Datenströme über eine Karte streben wir eine Ladezeit des Programms von kleiner 7 Sekunden an.
+\\
+Alle Daten beziehen sich auf die empfohlene Hardware (siehe \ref{empfohleneHardware}).
