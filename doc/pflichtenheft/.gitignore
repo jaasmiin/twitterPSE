@@ -1,4 +1,4 @@
-*.pdf
+pflichtenheft.pdf
 *.dvi
 *.log
 *.aux
@@ -6,3 +6,4 @@
 *.lof
 *.out
 *~
+*.gz
