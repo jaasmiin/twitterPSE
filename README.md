@@ -2,9 +2,10 @@
 PSE Projekt B im WS14/15
 
 ### Offene Fragen
-
-## ToDo
-* twitter zwecks höheren Ratelimits anschreiben
+* Betriebsbedingungen (=nichtfunktionalen Anforderungen?)
+* Berechtigungen: Wer darf neue Accounts zur DB hinzufügen
+* Pro Account mehrere unabhängige Kategorien
+* bei optionalen Punkten: mehr oder weniger besser?
 
 ## Organisation
 Treffen: Mo., 15:45 Uhr
@@ -27,7 +28,7 @@ Zielbestimmung | Paul
 Produkteinsatz | Maximilian
 Produktumgebung | Holger
 Produktfunktionen | Matthias
-Produktdaten | Matthias
+Produktdaten | Philipp
 Systemmodell | Paul
 Produktleistungen | Holger
 Bedienoberfläche | Treffen Montag
@@ -45,6 +46,7 @@ Glossar | Lidia
 ### Literatur
 * Twitter Data Analytics / by Shamanth Kumar, Fred Morstatter, Huan Liu
 * Mining the Social Web  / Matthew A. Russell
+* [LaTeX](http://liinwww.ira.uka.de/~thw/vl-latex-co/)
 
 ### Besprechung: 13.11.14
 * Bestehenden Lokalisierungs Service benutzen
