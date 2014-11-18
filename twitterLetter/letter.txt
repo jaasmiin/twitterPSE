@@ -1,0 +1,17 @@
+Dear Sir or Madam
+
+We are a group of six computer science students from Karlsruhe Institue of Technology (KIT), Germany. For a software project we would like to analyze the geographic spreading of information. We want to look at different accounts to see where on the world their tweets get retweeted.
+
+Having run several small tests on your API we faced very small query limits, barely allowing us to collect enough data to get statistically significant results. We would like to ask you, whether it is possible to get higher query limits so that we would be able to collect some data about retweets and their geographic location.
+
+@HOLGER: Füge hier doch mal bitte gleich die Account-Daten ein, ich denke das erhöht die Chancen ein wenig.
+
+We are looking forward to hearing from you.
+Sincerely yours,
+
+Maximilian Awiszus
+Holger Ebhart
+Lidia Grigoriev
+Paul Jungeblut
+Philipp Kern
+Matthias Schimek
