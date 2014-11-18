@@ -1,0 +1,5 @@
+* GUI enthält Search API
+* Anwendung besteht aus:
+	- Client (GUI)
+	- Server (Crawler & DB)
+* Daten zu nicht zertifizierte Accounts, die vom Benutzer hinzugefügt wurden, werden nur lokal und nicht in der DB des Servers gespeichert.
