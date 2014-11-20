@@ -12,5 +12,5 @@ Außerdem sollten 20 MB freier Festplattenspeicher verfügbar sein, so dass loka
 Da es sich um ein Echtzeitsystem handelt, müssen in Echtzeit Daten von Twitter gesammelt werden. Es ergeben sich Beschränkungen aufgrund der rate limits und connecting limits von twitter's Webdiensten. Das Erreichen dieser limits soll so gut wie möglich verhindert werden, allerdings können sich Verzögerungen ergeben. Es kann auch passieren, dass es dem Crawler für eine bestimmte Zeit nicht mehr möglich ist, sich mit twitter zu verbinden. Um dennoch möglichst viele Daten ab zu schöpfen, sollte der Crawler 24 Stunden, 7 Tage die Woche laufen.
 \subsection{Client}
 Bei der Anfrage von Daten können sich Beschränkungen von Webdiensten ergeben. Diese sollen so gering wie möglich gehalten werden, weshalb eine durchschnittliche Anfragezeit von kleiner 1 Sekunde angestrebt wird, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
-Aufgrund der Visualisierung der Datenströme über eine Karte streben wir eine Ladezeit des Programms von kleiner 8 Sekunden an.
+Aufgrund der Visualisierung der Datenströme über eine Karte streben wir eine Ladezeit des Programms von kleiner 8 Sekunden an.\\\\
 Alle Daten beziehen sich auf die empfohlene Hardware (siehe \ref{sec:empfohleneHardware}).
