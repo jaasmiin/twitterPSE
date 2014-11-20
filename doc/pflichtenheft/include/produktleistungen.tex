@@ -1,15 +1,14 @@
 % Wenn vorhanden, Anforderungen an Laufzeitverhalten oder Speicherplatz.
 \section{Speicher}
 \subsection{Server}
-Durch das Sammeln von Daten mit Crawlern fallen in den ersten 4 Wochen circa 10 GB an Daten an. Danach erhöht sich die Datenmenge schätzungsweise um circa 500 MB pro Woche. Das heißt bei einer anvisierten Laufzeit der Crawler von 4 Monaten (Anfang Dezember 2014 bis Anfang April 2015) ergibt sich eine Datenmenge von ungefähr 16 GB.
-Zur Laufzeit der Crawler verbraucht das Programm in etwa 60 MB Hauptspeicher pro laufendem Crawler, was bei bis zu 10 laufenden Crawlern ungefähr 600 MB an Speicherplatz kostet.
-Insgesamt sollte dass gesamte Programm auf dem Server nicht mehr als 1100 MB Hauptspeicher benötigen, allerdings lassen sich kurzzeitige Peeks in denen mehr Speicherplatz benötigt wird nicht vermeiden (z.B. bei hoher Anzahl an Tweets von verifizierten Accounts). Steht mehr Speicherplatz zur Verfügung so wird dieser - so weit möglich - auch genutzt.
+Durch das Sammeln von Daten mit Crawlern fällt in den ersten Wochen eine beträchtliche Menge an Daten an. Mit der Zeit, wenn ein Großteil der verifizierten Accounts gelistet ist steigt das Volumen der Datenbank nicht mehr so stark an. Es ist dann von einer linearen Steigerung des Datenbankvolumens auszugehen. 
+Dadurch, dass der Twitterstream in Realzeit mitgelesen wird kann es zu  kurzzeitigen Peeks kommen, in denen der benötigte Hauptspeicherplatz steigt (z.B. bei hoher Anzahl an Tweets von verifizierten Accounts). Im Normalbetrieb kann allerdings von einer stets gleich hohen Auslastung des Hauptspeichers ausgegangen werden.
 \subsection{Client}
-Die Benutzerschnittstelle benötigt für die Darstellung des Kartenmaterials mindestens 600 MB Hauptspeicher, hinzu kommt der Speicherplatz für die Analyse der Daten, welcher geschätzt maximal circa 100 MB groß sein sollte.
-Außerdem sollten 20 MB freier Festplattenspeicher verfügbar sein, so dass lokal Informationen gespeichert werden können.
+Für die Benutzerschnittstelle (GUI) wird kaum Festplattenspeicher benötigt, da nur Einstellungen und benutzerdefinierte Daten lokal gespeichert werden. Die restlichen Daten werden in einer zentralen Datenbank bereitgehalten.
+Um eine flüssige Kartendarstellung zu gewährleisten wird genügend Hauptspeicherplatz benötigt (siehe \ref{subsec:speicherClient}).
 \section{Laufzeit}
 \subsection{Server}
-Da es sich um ein Echtzeitsystem handelt, müssen in Echtzeit Daten von Twitter gesammelt werden. Es ergeben sich Beschränkungen aufgrund der rate limits und connecting limits von twitter's Webdiensten. Das Erreichen dieser limits soll so gut wie möglich verhindert werden, allerdings können sich Verzögerungen ergeben. Es kann auch passieren, dass es dem Crawler für eine bestimmte Zeit nicht mehr möglich ist, sich mit twitter zu verbinden. Um dennoch möglichst viele Daten ab zu schöpfen, sollte der Crawler 24 Stunden, 7 Tage die Woche laufen.
+Da durch den Crawler Daten von Twitter in Realzeit gesammelt werden, können sich Beschränkungen aufgrund von Rate- und Connecting-Limits der Twitter Schnittstellen ergeben. Das Erreichen dieser Limits soll so gut wie möglich verhindert werden, allerdings können sich Verzögerungen ergeben. Es kann auch vorkommen, dass es dem Crawler für eine bestimmte Zeit nicht mehr möglich ist, sich mit twitter zu verbinden. Um dennoch möglichst viele Daten ab zu schöpfen, sollte der Crawler 24 Stunden, 7 Tage die Woche laufen.
 \subsection{Client}
 Bei der Anfrage von Daten können sich Beschränkungen von Webdiensten ergeben. Diese sollen so gering wie möglich gehalten werden, weshalb eine durchschnittliche Anfragezeit von kleiner 1 Sekunde angestrebt wird, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
 Aufgrund der Visualisierung der Datenströme über eine Karte streben wir eine Ladezeit des Programms von kleiner 8 Sekunden an.\\\\
