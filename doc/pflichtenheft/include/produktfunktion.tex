@@ -1,5 +1,85 @@
 % Detailliertere  Beschreibung  der  Funktionalität,  wiederum  gegliedert  in Grundfunktionen und optionale Funktionen. 
-\begin{enumerate}[\textbackslash F10]%for capital roman numbers.
-	\item TestItem
-	\item TestItem2
+
+Die Beschreibung der Funktionalität gliedert sich in Grundfunktionen und optionale Funktionen.
+
+\section{Grundfunktionen}
+
+Die Funktionen der Anwendung gliedern sich in verschiedene Bereiche.
+
+\subsection{Allgemeine Funktionalität}
+\begin{enumerate}[align=left, label={\textbf{\textbackslash F00\arabic*0\textbackslash}} ]
+	\item Start des Programms \\
+	Bei Start des Programms wird das Hauptmenü angezeigt, hier kann unter folgenden Punkten gewählt werden.
+	\begin{itemize}
+		\item Hier könnte auch Ihre Werbung stehen ...
+	\end{itemize}
+	\item Suchfunktion \label{:PF_Suchfunktion} \\
+	Es kann nach Kategorien, Orten und Benutzern gesucht werden. 
+
+\end{enumerate}
+\subsection{Auswahl der zu visualisierden Daten}
+\begin{enumerate}[ align=left, label={\textbf{\textbackslash F10\arabic*0\textbackslash}} ]
+	\item Auswahl der Kategorien \label{:PF_KategorienAuswahl}\\ 
+	Die verschiedenen Kategorien, welche zur Auswahl stehen, werden angezeigt. Man kann durch die Auswahl navigieren und eine oder mehrere Kategorien auswählen. Hierfür kann eine Suchfunktion genutzt werden ($\rightarrow$ \ref{:PF_Suchfunktion}).  Nach Bestätigung der Auswahl öffnet sich das nächste Fenster ($\rightarrow$ \ref{:PF_OrtAuswahl}).
+	\item Auswahl der Ortbeschränkung \label{:PF_OrtAuswahl} \\
+	Aus einer Liste kann die Herkunkft der abzufragenden Accounts auf einen oder mehrere Herkunftsorte eingeschränkt werden. Nach Bestätigung der Auswahl öffnet sich das nächste Fenster ($\rightarrow$ \ref{:PF_AccountHinzufügen}).
+	\item Optionales Hinzufügen weitere Accounts \label{:PF_AccountHinzufügen} \\
+	Nun können mittels der Suchfunktion ($\rightarrow$ \ref{:PF_Suchfunktion}) weitere Accounts einzeln zur Auswahl hinzugefügt werden, sofern diese in der Datenbank hinterlegt sind. Damit ist die Auswahlrunde beendet. Die Anfrage kann nun entweder abgeschickt werden oder eine neue Auswahlrunde begonnen werden ($\rightarrow$ \ref{:PF_KategorienAuwahl}) um weitere Accounts zur Gesamtauswahl hinzuzufügen.
+\end{enumerate}	
+\subsection{Anzeige der Daten}	
+Falls eine Anfrage an die Datenbank gesendet wurde, werden diese Daten aufbereitet dargestellt. Hierbei können verschiedene Funktionen genutzt werden.
+\begin{enumerate}[ align=left, label={\textbf{\textbackslash F20\arabic*0\textbackslash}} ]	
+	\item Anzeige der graphisch aufbereiteten Daten \\
+	Die Daten der aktuellen Anfrage werden grapisch aufbereitet in der Karte dargestellt.
+	Hierbei bestehen folgende Optionen:
+	\begin{itemize}
+		\item Einfärben der Karte ($\rightarrow$ \ref{:PF_EinfärbenKarte}).
+		\item Detaillierte Informationen bezüglich einzelner Orte ($\rightarrow$ \ref{:PF_DetailsKarte}).
+		\item Wahl des Beobachtungszeitraums ($\rightarrow$ \ref{:PF_WahlZeitraum}).
+		\item Anzeige von Veränderungen des Tweet-Retweet-Verhaltens über Zeitraum ($\rightarrow$ \ref{:PF_Diff})
+	\end{itemize}
+	
+	\item Einfärben der Karte \label{:PF_EinfärbenKarte} \\
+	Dies ist die Standardanzeige. Die Länder/Regionen werden auf der Karte bezüglich der Tweet-Retweet-Intensität unterschiedlich eingefärbt.
+	\item Detaillierte Informationen bezüglich einzelner Orte \label{:PF_DetailsKarte} \\
+	Beim Bewegen des Mauszeigers über ein Land/Region werden detaillierte Informationen wie Anzahl der Retweets über die Tweet-Retweet-Beziehung der aktuellen Anfrage an diesem Ort angezeigt. Diese Option kann deaktiviert werden.
+	\item Wahl des Beobachtungszeitraums \label{:PF_WahlZeitraum} \\
+	Der Zeitraum, für welchen die Tweet-Retweet-Beziehung dargestellt werden soll, kann innerhalb gewisser Grenzen und mit diskreten Zeitpunkten ausgewählt werden.
+	
+	\item Anzeige mittels Datenblatt \label{:PF_AnzeigeDatenblatt} \\
+	Die relevanten Daten der Anzeige werden in Tabellenform dargestellt.
+	
+	\item Anzeige von Veränderungen des Tweet-Retweet-Verhaltens über Zeitraum \label{:PF_Diff} \\
+	Die Unterschiede im Tweet-Retweet verhalten können über einen wählbaren Zeitraum graphisch dargestellt werden.
+\end{enumerate}
+
+\subsection{Navigation auf der Weltkarte}
+\begin{enumerate}[ align=left, label={\textbf{\textbackslash F30\arabic*0\textbackslash}} ]
+	\item Navigation auf der Karte \label{:PF_Navigation} \\
+	Es ist möglich die Karte zu verschieben.
+	\item Zoomen \label{:PF_Zoomen} \\
+	Die Ansicht auf die Karte kann, innherhalb gewisser Grenzen, vergrößert und verkleinert werden.
+\end{enumerate}	
+\subsection{Manuelle Bearbeitung der Datenbank}
+Durch den Benutzer können einige Änderungen, bzw. Erweiterungen der in der Datenbank automatisch erzeugten Daten vorgenommen werden. Diese Funktionen müssen bei ggf. eingeschränkt werden, sollte die Anwendung öffentlich verwendet werden.
+\begin{enumerate}[ align=left, label={\textbf{\textbackslash F40\arabic*0\textbackslash}}]
+	\item Umbenennen Kategorie \label{:PF_KategorieUm} \\
+	Der Name einer bestehenden Kategorie kann geändert werden.
+	\item Einfügen einer Kategorie in die Liste der Kategorien  \label{:PF_KategorieHinzu} \\
+	Es kann eine weitere Kategorie in der Hierarchie der Kategorien eingefügt werden.
+	\item Account hinzufügen \label{:PF_AccountHinzu} \\
+	Es kann ein Twitter-Account, sofern dieser existiert, zu der Liste der mitgelesenen Twitter-Accounts hinzugefügt werden, auch wenn dieser nicht zertifiziert ist.
+	\item Account in Datenbank bearbeiten \label{:PF_AccountBearbeiten} \\
+	Die in der Datenbank vorhandenen Daten eines in der DB gespeicherten Acounts können geändert werden. Folgende Operationen sind möglich:
+	\begin{itemize}
+		\item Kategorie ändern/löschen ($\rightarrow$ \ref{:PF_KategorieAendern}).
+		\item Kategorie hinzufügen ($\rightarrow$ \ref{:PF_KategorieHinzu}).
+		\item Ort ändern ($\rightarrow$ \ref{:PF_OrtAendern}).
+	\end{itemize}
+	\item Kategorie ändern \label{:PF_KategorieAendern} \\
+	Die Kategorie eines validen Accounts kann geändert werden. Dies schließt das löschen einer seiner Kategorien ein. Der Account besitzt immer implizit die Basiskategorie, diese kann nicht gelöscht werden.
+	\item Kategorie hinzufügen \label{:PF_KategorieHinzu} \\
+	Die Kategorieliste eines validen Accounts kann um eine beschränkte Anzahl von Kategorien erweitert werden. 
+	\item Ort ändern \label{:PF_OrtAendern} \\
+	Der Ort eines validen Accounts kann durch einen anderen gültigen Ort ersetzt werden.
 \end{enumerate}
