@@ -1,0 +1,4 @@
+Doppelklicken auf items in den Bäumen fügt diese den ausgewählt-Listen hinzu.
+Doppelklicken auf items in den listen entfernt diese wieder daraus.
+Das drücken des Start-Buttons füllt die Tabelle rechts mit zeug.
+Ein Menu-Eintrag zum beobachten eines Neuen Accounts findet sich in Edit.

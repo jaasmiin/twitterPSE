@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <top>
+      <VBox>
+         <children>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Edit">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem fx:id="menuItemAddAccount" mnemonicParsing="false" text="Add Account" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <HBox>
+               <children>
+                  <AnchorPane minWidth="100.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="buttonStart" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" text="Start" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                     </children>
+                  </AnchorPane>
+                  <VBox>
+                     <children>
+                        <HBox>
+                           <children>
+                              <Label minWidth="110.0" text="Selected Countries" />
+                              <ListView fx:id="listViewCountry" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0" prefWidth="1200.0" />
+                           </children>
+                        </HBox>
+                        <HBox>
+                           <children>
+                              <Label minWidth="110.0" text="Selected Categories" />
+                              <ListView fx:id="listViewCategory" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0" prefWidth="1200.0" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
+   <left>
+      <VBox>
+         <children>
+            <TreeView fx:id="treeViewCategory" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER" />
+            <TreeView fx:id="treeViewCountry" prefHeight="200.0" prefWidth="100.0" />
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <WebView fx:id="webView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <right>
+      <TableView fx:id="tableViewData" prefHeight="315.0" prefWidth="151.0" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="tableColumnAspect" prefWidth="75.0" text="Aspect" />
+          <TableColumn fx:id="tableColumnValue" prefWidth="75.0" text="Absolute" />
+        </columns>
+      </TableView>
+   </right>
+</BorderPane>
