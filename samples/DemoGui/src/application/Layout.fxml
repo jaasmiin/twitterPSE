@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <top>
+      <VBox>
+         <children>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="Datei">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Hinzufügen">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem fx:id="menuItemAddAccount" mnemonicParsing="false" text="Benutzer" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Einstellungen">
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                  </Menu>
+                <Menu mnemonicParsing="false" text="Hilfe">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </children>
+      </VBox>
+   </top>
+   <left>
+      <VBox maxWidth="149.0" prefHeight="285.0" prefWidth="150.0">
+         <children>
+            <Accordion maxWidth="149.0" VBox.vgrow="ALWAYS">
+              <panes>
+                <TitledPane animated="false" maxHeight="1200.0" maxWidth="149.0" prefHeight="1200.0" text="Land">
+                  <content>
+                    <AnchorPane maxWidth="149.0" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TreeView fx:id="treeViewCountry" maxHeight="1200.0" prefHeight="1200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" maxHeight="1200.0" maxWidth="149.0" prefHeight="1200.0" text="Kategorie">
+                  <content>
+                    <AnchorPane maxWidth="149.0" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <TreeView fx:id="treeViewCategory" maxHeight="1200.0" prefHeight="1200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </TitledPane>
+                <TitledPane animated="false" maxHeight="1200.0" maxWidth="149.0" prefHeight="1200.0" text="Account">
+                  <content>
+                    <AnchorPane maxWidth="149.0" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                  </content>
+                </TitledPane>
+              </panes>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Accordion>
+            <TextField maxWidth="149.0" promptText="Suche">
+               <VBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </VBox.margin>
+            </TextField>
+         </children>
+      </VBox>
+   </left>
+   <center>
+      <TabPane>
+         <tabs>
+            <Tab text="Karte">
+               <content>
+                  <WebView fx:id="webView" prefHeight="256.0" prefWidth="453.0" BorderPane.alignment="CENTER" />
+               </content>
+            </Tab>
+            <Tab text="Tabelle">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="tableViewData" layoutX="8.0" layoutY="76.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columns>
+                            <TableColumn fx:id="tableColumnAspect" prefWidth="75.0" text="Account" />
+                            <TableColumn fx:id="tableColumnValue" prefWidth="110.0" text="Anzahl Retweets" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </center>
+   <bottom>
+      <HBox BorderPane.alignment="CENTER">
+         <children>
+            <VBox>
+               <children>
+                  <HBox>
+                     <children>
+                        <Label minWidth="147.0" text="Ausgewählte Länder">
+                           <HBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ListView fx:id="listViewCountry" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0" prefWidth="1200.0" />
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label minWidth="147.0" text="Ausgewählte Kategorien">
+                           <HBox.margin>
+                              <Insets left="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ListView fx:id="listViewCategory" maxWidth="1.7976931348623157E308" minHeight="30.0" prefHeight="30.0" prefWidth="1200.0" />
+                     </children>
+                  </HBox>
+                  <HBox>
+                     <children>
+                        <Label minWidth="147.0" text="Ausgewählte Accounts">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <ListView minHeight="30.0" prefHeight="30.0" prefWidth="1200.0" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </bottom>
+</BorderPane>
