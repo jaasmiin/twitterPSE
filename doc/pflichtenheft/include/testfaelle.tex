@@ -1,24 +1,53 @@
 % Testfälle  für  die  einzelnen  Produktfunktionen,  die  alle  abgedeckt  sein müssen. Testszenarien für typische Anwendungsszenarien.
 
+\section{Testfälle}
+
+Die Testfälle gliedern sich in allgemeine Testfälle für die GUI und Testfälle für die Datenbank.
+
+	\subsection{GUI Tests}
+	\begin{enumerate}[align=left, label={\textbf{\textbackslash T10\arabic*0\textbackslash}} ]
+	\item Start des Programms
+	\item Kategorie auswählen
+	\item Ort auswählen
+	\item Nach Kategorie suchen
+	\item Nach Ort suchen
+	\item Nach Benutzer suchen
+	\item Hinzufügen eines neuen Accounts
+	\item Beobachtungszeitraum wählen
+	\item Weltkarte anzeigen lassen
+	\item Daten in Tabelle anzeigen lassen
+	\item Beobachtungszeitraum bearbeiten
+	\item Auf Karte zoomen
+	\end{enumerate}
+	
+	\subsection{Datenbank}
+	\begin{enumerate}[align=left, label={\textbf{\textbackslash T20\arabic*0\textbackslash}} ]
+		\item Kategorie umbenennen
+		\item Neue Kategorie erstellen und hinzufügen
+		\item Neuen Account hinzufügen
+		\item Kategorie eines Accounts ändern/löschen/hinzufügen
+		\item Ort eines Accounts ändern
+	\end{enumerate}
+
 \section{Testszenarien}
 \begin{itemize}
 	\item \textbf{„Programm starten und Twitterdatenströme anzeigen lassen“}\\
-Programm starten $\rightarrow$ Häkchen im Kategorienbaum setzen $\rightarrow$ Land auswählen $\rightarrow$ Start-Knopf drücken $\rightarrow$ Weltkarte anzeigen lassen.
+Programm starten $\rightarrow$ Kategorie auswählen $\rightarrow$ Ort auswählen $\rightarrow$ Weltkarte anzeigen lassen.
 
 	\item \textbf{„Bestimmten verifizierten User finden “}\\
-Programm starten $\rightarrow$ In Suchfeld Accountnamen einfügen $\rightarrow$ Auf „Suchen“ klicken $\rightarrow$ Falls Account noch nicht vorhanden ist hinzufügen $\rightarrow$ Ansonsten auf „OK“ drücken $\rightarrow$ Weltkarte anzeigen lassen.
+Programm starten $\rightarrow$ In Suchfeld Accountnamen einfügen $\rightarrow$ Nach gewünschtem Benutzer suchen $\rightarrow$ Falls Account noch nicht vorhanden ist, neuen Benutzer hinzufügen $\rightarrow$ Ansonsten Benutzer auswählen $\rightarrow$ Weltkarte anzeigen lassen.
 
 	\item \textbf{„Bei bestehendem Account Kategorien bearbeiten“}\\
-In Suchleiste Accountnamen eintippen $\rightarrow$ Sobald Account gefunden wurde auf „Bearbeiten“ drücken $\rightarrow$ Kategorien und/oder Ortsangaben ändern $\rightarrow$ Auf „Speichern“ klicken.
+Programm starten $\rightarrow$ Nach Benutzer suchen $\rightarrow$ Sobald Account gefunden wurde auf „Bearbeiten“ drücken $\rightarrow$ Kategorien und/oder Ortsangaben ändern $\rightarrow$ Auf „Speichern“ klicken.
 
 	\item \textbf{„Neuen Account zum crawlen hinzufügen“}\\
-Auf „Account hinzufügen“ klicken $\rightarrow$ Accountnamen und ggf. andere Informationen zum Account eingeben $\rightarrow$ Auf „Speichern“ klicken.
+Programm starten $\rightarrow$ Auf „Hinzufügen“ klicken $\rightarrow$ Auf „Benutzer“ klicken $\rightarrow$ Accountnamen und ggf. andere Informationen zum Account eingeben $\rightarrow$ Auf „Speichern“ klicken.
 
 	\item \textbf{„Kategorie umbenennen“}\\
 Programm starten $\rightarrow$ Gewünschte Kategorie suchen $\rightarrow$ Auf „Bearbeiten“  klicken $\rightarrow$ Kategorienamen umbenennen $\rightarrow$ Auf „Speichern“ klicken.
 
 	\item \textbf{„Differenz zwischen zwei Zeiträumen anzeigen lassen“}\\
-Programm starten $\rightarrow$ Zeitdifferenzfunktion aufrufen $\rightarrow$ Startdatum angeben $\rightarrow$ Enddatum angeben $\rightarrow$ “Speichern“ anklicken $\rightarrow$ Zeitliche Differenz auf Weltkarte anzeigen lassen.
+Programm starten $\rightarrow$ Beobachtungszeitraum bearbeiten $\rightarrow$ Startdatum angeben $\rightarrow$ Enddatum angeben $\rightarrow$ “Speichern“ anklicken $\rightarrow$ Zeitliche Differenz auf Weltkarte anzeigen lassen.
 
 
 \end{itemize}
