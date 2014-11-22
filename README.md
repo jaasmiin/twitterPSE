@@ -2,11 +2,6 @@
 PSE Projekt B im WS14/15
 
 ### Offene Fragen
-* Betriebsbedingungen (=nichtfunktionalen Anforderungen?)
-* Berechtigungen: Wer darf neue Accounts zur DB hinzufügen
-* Pro Account mehrere unabhängige Kategorien
-* bei optionalen Punkten: mehr oder weniger besser?
-* Termin: Abgabe Pflichtenheft & Präsentation
 
 ## Organisation
 Treffen: Mo., 15:45 Uhr

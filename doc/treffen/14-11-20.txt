@@ -1,0 +1,36 @@
+# 20.11.14
+
+* GUI
+	* + Daten größer darstellen
+	* + Suche in Kategorien
+	* + Bei Auswahl in echtzeit auf Karte darstellen
+* Betriebssystem-Unabhängigkeit überprüfen
+* Pflichtenheft
+	* Schnittstelle
+		* Auch z.B. Twitter-API
+	* Funktionen
+		* an neue GUI anpassen
+	* Produktdaten (GUI)
+		* Konfiguration (u.U. diesen Punkt auch beim Crawler)
+	* Interaktion / Abhängigkeiten unterschiedlicher Komponenten beschreiben
+	* Angaben Speicher entfernen
+	* Laufzeit
+		* kein Echtzeitsystem
+	* Qualität
+		* User Input
+		* Tweet Inhalt
+		* u.U. auch für Crawler
+	* Wunschkriterien priorisieren
+* Präsentation
+	* Zusammenfassung des geplanten Projekts und Pflichtenheft
+	* Zeitrahmen: 15min
+* Pflichtenheft Abgabe: Mi, 26.11.
+* Berechtigungen für GUI: nicht relevant
+* Pro Account mehrere unabhängige Kategorien
+
+
+
+
+
+* Allgemein
+	* Formatierung (Begriffe fett formatieren)
