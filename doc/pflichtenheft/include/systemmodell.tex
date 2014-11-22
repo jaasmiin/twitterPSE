@@ -11,8 +11,8 @@ Das Projekt soll aus drei separaten Programmen bestehen. Es soll dabei keine Kom
 
 \begin{description}
 	\item[Crawler] Aufgabe des Crawlers ist es Mithilfer der Twitter-Stream- und Search-API die Twitterdaten zu sammeln. Es sollen verifizierte Benutzer und Retweets von Tweets dieser Nutzer gefunden werden. Diese Daten sollen noch im Crawler lokalisiert werden, bevor sie in der Datenbank abgespeichert werden.
-	\item[Kategorisierer] Der Kategorisierer sucht in der Datenbank nach Accounts, denen noch keine Kategorie zugeordnet wurde. Anhand der Daten aus der DMOZ-Datenbank sollen diese Accounts dann hierachisch kategorisiert werden.
-	\item[GUI] Die GUI greift lesend auf die Datenbank zu und visualisiert die Daten anhand vom nutzer gegebener Eingaben. Gleichzeitig ist es möglich über die GUI weitere Twitteraccounts (auch nicht verifizierte) in die Datenbank aufzunehmen, so dass auch diese analysiert werden können.
+	\item[Kategorisierer] Um den Crawler so leichtgewichtig wie möglich zu halten, werden die gefunden Accounts von einer weiteren Anwendung, dem Kategorisierer kategorisiert. Unabhängig vom Crawler sucht er in der Datenbank nach Accounts, denen noch keine Kategorie zugeordnet wurde. Anhand der Daten aus der DMOZ-Datenbank sollen diese Accounts dann hierachisch kategorisiert werden. Dabei können einem Nutzer mehrere kategorien zugeordnet werden. Der Kategorisierer arbeitet also auf den vom Crawler gefunden Daten und vervollständigt diese.
+	\item[GUI] Die GUI greift lesend auf die Datenbank zu und visualisiert die Daten anhand vom nutzer gegebener Eingaben. Sie baut somit auf Crawler und Kategorisierer auf, welche jedoch unabhängig von der GUI sind. Es ist möglich über die GUI weitere Twitteraccounts (auch nicht verifizierte) in die Datenbank aufzunehmen. Dies ist die einzige Art der Kommunikation von der GUI zur Datenbank und darüber auch zum Crawler und Kategorisierer.
 \end{description}
 
 
