@@ -1,15 +1,15 @@
 % Wenn vorhanden, Anforderungen an Laufzeitverhalten oder Speicherplatz.
 \section{Speicher}
 \subsection{Server}
-Durch das Sammeln von Daten mit Crawlern fällt in den ersten Wochen eine beträchtliche Menge an Daten an. Mit der Zeit, wenn ein Großteil der verifizierten Accounts gelistet ist steigt das Volumen der Datenbank nicht mehr so stark an. Es ist dann von einer linearen Steigerung des Datenbankvolumens auszugehen. 
-Dadurch, dass der Twitterstream in Realzeit mitgelesen wird kann es zu  kurzzeitigen Peeks kommen, in denen der benötigte Hauptspeicherplatz steigt (z.B. bei hoher Anzahl an Tweets von verifizierten Accounts). Im Normalbetrieb kann allerdings von einer stets gleich hohen Auslastung des Hauptspeichers ausgegangen werden.
+Durch das Sammeln von Daten mit Crawlern fällt in den ersten Wochen eine beträchtliche Menge an Daten an. Mit der Zeit, wenn ein Großteil der verifizierten Accounts gelistet ist steigt das Volumen der Datenbank nicht mehr so stark an. Es ist dann von einer \textbf{linearen Steigerung} des Datenbankvolumens auszugehen. 
+Dadurch, dass der Twitterstream in Realzeit mitgelesen wird kann es zu  kurzzeitigen Peeks kommen, in denen der benötigte Hauptspeicherplatz steigt (z.B. bei hoher Anzahl an Tweets von verifizierten Accounts). Im Normalbetrieb kann allerdings von einer \textbf{stets gleich hohen Auslastung} des Hauptspeichers ausgegangen werden.
 \subsection{Client}
-Für die Benutzerschnittstelle (GUI) wird kaum Festplattenspeicher benötigt, da nur Einstellungen und benutzerdefinierte Daten lokal gespeichert werden. Die restlichen Daten werden in einer zentralen Datenbank bereitgehalten.
+Für die Benutzerschnittstelle (GUI) wird \textbf{kaum Festplattenspeicher} benötigt, da nur Einstellungen und benutzerdefinierte Daten lokal gespeichert werden. Die restlichen Daten werden in einer zentralen Datenbank bereitgehalten.
 Um eine flüssige Kartendarstellung zu gewährleisten wird genügend Hauptspeicherplatz benötigt (siehe \ref{subsec:speicherClient}).
 \section{Laufzeit}
 \subsection{Server}
 Da durch den Crawler Daten von Twitter in Realzeit gesammelt werden, können sich Beschränkungen aufgrund von Rate- und Connecting-Limits der Twitter Schnittstellen ergeben. Das Erreichen dieser Limits soll so gut wie möglich verhindert werden, allerdings können sich Verzögerungen ergeben. Es kann auch vorkommen, dass es dem Crawler für eine bestimmte Zeit nicht mehr möglich ist, sich mit twitter zu verbinden. Um dennoch möglichst viele Daten ab zu schöpfen, sollte der Crawler 24 Stunden, 7 Tage die Woche laufen.
 \subsection{Client}
-Bei der Anfrage von Daten können sich Beschränkungen von Webdiensten ergeben. Diese sollen so gering wie möglich gehalten werden, weshalb eine durchschnittliche Anfragezeit von kleiner 1 Sekunde angestrebt wird, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
-Aufgrund der Visualisierung der Datenströme über eine Karte streben wir eine Ladezeit des Programms von kleiner 8 Sekunden an.\\\\
+Bei der Anfrage von Daten können sich Beschränkungen von Webdiensten ergeben. Diese sollen so gering wie möglich gehalten werden, weshalb eine durchschnittliche \textbf{Anfragezeit von kleiner 1 Sekunde} angestrebt wird, falls die Daten schon in der eigenen Datenbank bereitliegen und von kleiner 3 Sekunden falls die Daten erst von einem Webdienst abgeholt werden müssen.
+Aufgrund der Visualisierung der Datenströme über eine Karte streben wir eine \textbf{Ladezeit} des Programms von \textbf{kleiner 8 Sekunden} an.\\\\
 Alle Daten beziehen sich auf die empfohlene Hardware (siehe \ref{sec:empfohleneHardware}).
