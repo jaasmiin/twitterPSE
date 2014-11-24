@@ -16,43 +16,42 @@ Die Funktionen der Anwendung gliedern sich in verschiedene Bereiche.
 
 
 %\end{enumerate}
-\subsection{Auswahl der gewünschten Daten}
+\subsection{Auswahl der gewünschten Daten} \label{sec:Produktfunktionen}
 \begin{enumerate}[ align=left, label={\textbf{\textbackslash F10\arabic*0\textbackslash}} ]
-	\item Auswahl der Kategorien \label{PF:KategorienAuswahl}\\ 
-	Die verschiedenen Kategorien, welche zur Auswahl stehen, werden angezeigt. Man kann durch die Auswahl navigieren und eine oder mehrere Kategorien auswählen. Hierfür kann eine Suchfunktion genutzt werden ($\rightarrow$ \ref{PF:Suchfunktion}). 
-	\item Auswahl der Ortsbeschränkung \label{PF:OrtAuswahl} \\
-	Aus einer Liste kann die Herkunkft der abzufragenden Accounts auf einen oder mehrere Herkunftsorte eingeschränkt werden. 
-	\item Optionales Hinzufügen weitere Accounts \label{PF:AccountHinzufügen} \\
+	\item \textbf{Auswahl der Kategorien} \label{PF:KategorienAuswahl}\\ 
+	Die verschiedenen Kategorien werden angezeigt. Man kann durch die Auswahl navigieren und eine oder mehrere Kategorien auswählen. Hierfür kann eine Suchfunktion genutzt werden ($\rightarrow$ \ref{PF:Suchfunktion}). 
+	\item \textbf{Auswahl der Ortsbeschränkung} \label{PF:OrtAuswahl} \\
+	Aus einer Liste kann die Herkunft der abzufragenden Accounts auf einen oder mehrere Herkunftsorte eingeschränkt werden. 
+	\item \textbf{Manuelles Hinzufügen weiterer Accounts} \label{PF:AccountHinzufügen} \\
 	Nun können mittels der Suchfunktion ($\rightarrow$ \ref{PF:Suchfunktion}) weitere Accounts einzeln zur Auswahl hinzugefügt werden, sofern diese in der Datenbank hinterlegt sind.
-	\item Suchfunktion innerhalb des Auswahlprozesses \label{PF:Suchfunktion} \\
-	Es kann nach Kategorien, Orten und Benutzern gesucht werden. Die Funktionalität unterscheidet sich je nach der Art des gesuchten Objekts. In allen Fällen wird eine Liste mit Vorschlägen abhängig vom gerade eingegebenen Suchbegriff angezeigt. 
-	\item Abschicken der Anzeigeanfrage \label{PF:Absenden}
-	Die Anfrage kann jederzeit abgeschickt werden. Die aufbereiteten Daten stehen nach einer gewissen Latenzzeit zur Verfügung.
+	\item \textbf{Suchfunktion innerhalb des Auswahlprozesses} \label{PF:Suchfunktion} \\
+	Es kann nach Kategorien, Orten und Benutzern gesucht werden, die bereits in der Datenbank vorhanden sind. Die Funktionalität unterscheidet sich je nach der Art des gesuchten Objekts. In allen Fällen wird eine Liste mit Vorschlägen abhängig vom gerade eingegebenen Suchbegriff angezeigt. 
+	\item \textbf{Abschicken der Anzeigeanfrage} \label{PF:Absenden} \\
+	Bei Änderung der Anfrageparameter werden die Daten automatisch ausgewertet und nach einer gewissen Latenzzeit angezeigt.
 \end{enumerate}	
-\subsection{Anzeige der Daten}	
-Falls eine Anfrage an die Datenbank gesendet wurde, werden diese Daten aufbereitet dargestellt. Hierbei können verschiedene Funktionen genutzt werden.
+\subsection{Visualisierung der Daten}	
+Für die Visualisierung der Daten bestehen folgende Funktionen.
 \begin{enumerate}[ align=left, label={\textbf{\textbackslash F20\arabic*0\textbackslash}} ]	
 	\item Anzeige der graphisch aufbereiteten Daten \\
-	Die Daten der aktuellen Anfrage werden graphisch aufbereitet in der Karte dargestellt.
-	Hierbei bestehen folgende Optionen:
+	Die Daten der aktuellen Anfrage werden grafisch aufbereitet in der Karte dargestellt.
 	\begin{itemize}
 		\item Einfärben der Karte ($\rightarrow$ \ref{PF:EinfärbenKarte}).
 		\item Detaillierte Informationen bezüglich einzelner Orte ($\rightarrow$ \ref{PF:DetailsKarte}).
-		\item Wahl des Beobachtungszeitraums ($\rightarrow$ \ref{PF:WahlZeitraum}).
-		\item Anzeige von Veränderungen des Tweet-Retweet-Verhaltens über einen Zeitraum ($\rightarrow$ \ref{PF:Diff})
+	%	\item Wahl des Beobachtungszeitraums ($\rightarrow$ \ref{PF:WahlZeitraum}).
+	%	\item Anzeige von Veränderungen des Tweet-Retweet-Verhaltens über einen Zeitraum ($\rightarrow$ \ref{PF:Diff})
 	\end{itemize}
 	
 	\item Einfärben der Karte \label{PF:EinfärbenKarte} \\
-	Dies ist die Standardanzeige. Die Länder/Regionen werden auf der Karte bezüglich der Tweet-Retweet-Intensität unterschiedlich eingefärbt.
+	Die Länder/Regionen werden auf der Karte bezüglich der Tweet-Retweet-Intensität unterschiedlich eingefärbt. Hierbei handelt es sich um relative Daten, um Bevölkerungsunterschiede auszugleichen.
 	\item Detaillierte Informationen bezüglich einzelner Orte \label{PF:DetailsKarte} \\
 	Beim Bewegen des Mauszeigers über ein Land/Region werden detaillierte Informationen wie Anzahl der Retweets über die Tweet-Retweet-Beziehung der aktuellen Anfrage an diesem Ort angezeigt. Diese Option kann deaktiviert werden.
-	\item Wahl des Beobachtungszeitraums \label{PF:WahlZeitraum} \\
+	\item OWahl des Beobachtungszeitraums \label{PF:WahlZeitraum} \\
 	Der Zeitraum, für welchen die Tweet-Retweet-Beziehung dargestellt werden soll, kann innerhalb gewisser Grenzen und mit diskreten Zeitpunkten ausgewählt werden.
 	
 	\item Anzeige mittels Datenblatt \label{PF:AnzeigeDatenblatt} \\
-	Die relevanten Daten der Anzeige werden in Tabellenform dargestellt. Anfragen, die  mehrere Kategorien und Orte umfassen, werden aufgeschlüsselt nach diesen dargestellt.
+	Die relevanten Daten der Anzeige werden in Tabellenform dargestellt. Zu einem Ort-Kategorie-Paar können die zugehörigen Accounts aufgelistet werden.
 	
-	\item Anzeige von Veränderungen des Tweet-Retweet-Verhaltens über Zeitraum \label{PF:Diff} \\
+	\item OAnzeige von Veränderungen des Tweet-Retweet-Verhaltens über Zeitraum \label{PF:Diff} \\
 	Die Unterschiede im Tweet-Retweet verhalten können über einen wählbaren Zeitraum graphisch dargestellt werden.
 \end{enumerate}
 
@@ -66,36 +65,29 @@ Falls eine Anfrage an die Datenbank gesendet wurde, werden diese Daten aufbereit
 \subsection{Manuelle Bearbeitung der Datenbank}
 Durch den Benutzer können einige Änderungen, bzw. Ergänzungen der in der Datenbank automatisch erzeugten Daten vorgenommen werden. Diese Funktionen müssen gegebenenfalls eingeschränkt werden, sollte die Anwendung öffentlich verwendet werden.
 \begin{enumerate}[ align=left, label={\textbf{\textbackslash F40\arabic*0\textbackslash}}]
-	\item Umbenennen von Kategorien \label{PF:KategorieUm} \\
-	Der Name einer bestehenden Kategorie kann geändert werden.
+	\item Kategorie eines Accounts ändern   \label{PF:KategorieAendern} \\
+	Der Kategorie eines gespeicherten Accounts kann in eine schon vorhandene Kategorie geändert werden.
+	\item Ort eines Accounts ändern \\
+	Der Ort eines Account kann in einen schon in der Datenbank vorhandenen Ort geändert werden.
 	\item Account hinzufügen \label{PF:AccountHinzu} \\
-	Es kann ein Twitter-Account, sofern dieser existiert, zu der Liste der mitgelesenen Twitter-Accounts hinzugefügt werden, auch wenn dieser nicht zertifiziert ist.
-	\textbf{SICHER DASS DIESER ACCOUNT DANN IN DER DB GESPEICHERT WIRD ??? siehe Produktdaten (Inkonsistenz) -- JA ;)}
+	Es kann ein Twitter-Account, sofern dieser existiert, zu der Liste der mitgelesenen Twitter-Accounts hinzugefügt werden, auch wenn dieser nicht verifiziert ist.
 \end{enumerate}
 \subsection{Sicherung der Daten}
 \begin{enumerate}[ align=left, label={\textbf{\textbackslash F50\arabic*0\textbackslash}}]
-	\item Sicherung von Ergebnissen \label{PF:Sicherung}
+	\item O Sicherung von Ergebnissen \label{PF:Sicherung} \\
 	Die zu einer Anfrage erstellten Datenblätter und Kartenanzeigen können in geeigneten Dateiformate exportiert und somit dauerhaft gespeichert werden.
-	\item Drucken von Ergebnissen \label{PF:Drucken} \\
-	Die zu einer Anfrage erstellten Datenblätter und Kartenanzeigen können ausgedruckt werden. 
+	
 \end{enumerate}
-\subsection{Optionale Funktionalität}
+\section{Optionale Funktionalität}
 
 \begin{enumerate}[ align=left, label={\textbf{\textbackslash F50\arabic*0\textbackslash}}]
 	\item Allgemeine Suchfunktion \label{PF:AllgSuche} \\
-	Es wird eine allgemeine Suchfunktion angeboten. Hier kann nach beliebigen Begriffen gesucht werden. Die passendsten Daten, welche zu dem jeweiligen Begriff in der Datenbank verfügbar sind, werden angezeigt.
+	Es wird eine allgemeine Suchfunktion angeboten. Hier kann nach beliebigen Begriffen gesucht werden. Die  Daten, welche zum jeweiligen Begriff in der Datenbank verfügbar sind, werden angezeigt.
 	\item Verknüpfung mit Twitteraccount \label{PF:Verknuepfung} \\
-	Ein Account in der Datenbank wird mit seinem Twitterprofil verknüpft. Wird der Account beispielsweise über die allgemein Suchfunktioon ($\rightarrow$ \ref{PF:AllgSuche}) gesucht und aufgerufen, werden Informationen aus der Timeline des Accounts eingebettet angezeigt. 
+	Ein Account in der Datenbank wird mit seinem Twitterprofil verknüpft. Wird der Account beispielsweise über die allgemein Suchfunktion ($\rightarrow$ \ref{PF:AllgSuche}) gesucht und aufgerufen, werden Informationen aus der Timeline des Accounts eingebettet angezeigt. 
 	\item Weitere Informationen zu Kategorie und Ort \label{PF:WeiterInfos} \\
 	Wird ein Ort oder eine Kategorie über die Suchfunktion ($\rightarrow$ \ref{PF:AllgSuche}) gesucht und können zusätzlich Informationen, die beispielsweise von wikipedia.org geladen werden, angezeigt.
-	\item Kategorie ändern \label{PF:KategorieAendern} \\
-	Die Kategorie eines validen Accounts kann geändert werden. Dies schließt das Löschen einer seiner Kategorien mit ein. Der Account besitzt immer implizit die Basiskategorie, diese kann nicht gelöscht werden.
-	\item Kategorie hinzufügen \label{PF:KategorieHinzu} \\
-	Die Kategorieliste eines validen Accounts kann um eine beschränkte Anzahl von Kategorien erweitert werden. 
-	\item Ort ändern \label{PF:OrtAendern} \\
-	Der Ort eines validen Accounts kann durch einen anderen gültigen Ort ersetzt werden.
-	\item Einfügen einer Kategorie in die Liste der Kategorien  \label{PF:KategorieHinzu} \\
-	Es kann eine weitere Kategorie in der Hierarchie der Kategorien eingefügt werden.
+	\item Ort-Kategorie blabla
 	\item Weitere Statistiken \label{PF:Statistiken} \\
 	Es werden noch weitere Statistikfunktionen und Anzeigeoptionen angeboten.
 \end{enumerate}

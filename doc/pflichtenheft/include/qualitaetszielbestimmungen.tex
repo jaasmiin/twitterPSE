@@ -1,5 +1,5 @@
 % Anforderungen  an  Stabilität,  Robustheit,  Leistungsfähigkeit  etc.  des Systems.  Dies  beinhaltet  auch  den  Umgang  mit  fehlerhaften  Eingabedaten  oder  fehlerhaften Konfigurationen.
-Auch hier wird zwischen Client und Server unterschieden:
+
 \section{Client}
 \begin{itemize}
 	\item Die Software soll stabil laufen und bei Fehlern nicht ohne Ausgabe einer \textbf{Fehlermeldung} geschlossen werden.
@@ -7,10 +7,11 @@ Auch hier wird zwischen Client und Server unterschieden:
 	\item Bei \textbf{Verlust der Internetverbindung} bleiben Eingaben des Benutzers erhalten und es wird versucht dessen Anfragen erneut zu senden.
 	\item \textbf{Fehlerhafte Eingaben} des Benutzers in Textfeldern führen zu keinem Absturz der Software.
 \end{itemize}
-\section{Server bzw. Crawler}
+\section{Server}
 \begin{itemize}
 	\item Mit der in Abschnitt \ref{subsec:hardwareServer} genannter Hard- und Software soll ausgekommen werden.
-	\item Bei Verlust der Internetverbindung oder einem anderen \textbf{Abbruch des Twitter Streams} wird versucht eine neue Verbindung aufzubauen.
+	\item Bei Verlust der Internetverbindung oder einem anderen \textbf{Abbruch des Twitter-Streams} wird versucht eine neue Verbindung aufzubauen.
+	\item Crawler soll möglichst viele Daten aus dem Twitter-Stream mitlesen.
 	\item \textbf{Nicht lokalisierbare Twitter Nachrichten} sollen das Analyseergebnis nicht verfälschen bzw. es muss nachvollziehbar sein wie viele Retweets nicht lokalisierbar waren.
 	\item Kein \textbf{Inhalt einer Twitter Nachricht} (z.B. Autor oder Ort) darf zum Absturz des Crawlers führen.
 \end{itemize}
