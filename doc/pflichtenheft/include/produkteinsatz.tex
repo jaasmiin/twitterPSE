@@ -1,25 +1,26 @@
 % Beschreibt  Einsatzgebiete,  Zielgruppe  und  Betriebsbedingungen  sowie  notwendige Hard‐ und Software.
 \section{Einsatzgebiet}
-Die Software wird dazu verwendet die Anzahl der Retweets einer Kategorie von Tweets in einem Land in anderen Ländern zu analysieren. Einsatzgebiete sind somit u.a.:
+Die Software wird dazu verwendet, die Tweet-Retweet-Beziehung geografisch darzustellen. Einsatzgebiete sind somit u.a.:
 \begin{itemize}
-	\item Statistik
+	\item Medienanalyse
 	\item Marktforschung
-	\item Privat
+	\item persönliches Interesse
 \end{itemize}
 \section{Zielgruppe}
 Entsprechend oben genannter Einsatzgebiete richtet sich die Anwendung an folgende Zielgruppen:
 \begin{itemize}
 	\item Meinungsforscher
 	\item Journalisten
+	\item Marketingabteilungen
 	\item Privatpersonen
 \end{itemize}
 \section{Betriebsbedingungen}
-Da die Anwendung aus Server und Client besteht muss für die Betriebsbedingungen unterschieden werden:
-\subsection*{Client}
-\begin{itemize}
-	\item Bei der aus \cref{sec:empfohleneHardware} gegebenen Hardware ist die Anzahl parallel laufender GUIs beschränkt.
-\end{itemize}
-\subsection*{Server}
-\begin{itemize}
-	\item Der Crawler sollte 24 Studen und sieben Tage die Woche den Twitter Stream mitlesen (\textbf{24/7}).
-\end{itemize}
+\subsection{Client}
+Der Client wird auf dem Rechner des Anwenders ausgeführt und greift auf Daten eines zentralen Servers zu. Die Aufgabe des Clients beschränkt sich auf die Visualisierung der Daten nicht auf deren Erhebung, sodass kein dauerhafter Betrieb notwendig ist.
+	 
+\subsection{Server}
+
+Auf dem Server werden Crawler, Kategorisierer und Datenbank betrieben. Crawler und Datenbank laufen dauerhaft, der Kategorisierer wird periodisch aufgerufen.
+Sollte eine der Komponenten unerwartet beendet werden, so wird diese vom Betriebssystem erneut gestartet. 
+
+Die Anzahl der gleichzeitig auf den Server zugreifenden Clients ist durch die Systemressourcen begrenzt.	 
