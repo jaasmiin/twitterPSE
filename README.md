@@ -1,7 +1,15 @@
 ﻿#Visualizing Trends – Was verrät uns Twitter?
 PSE Projekt B im WS14/15
 
-### Offene Fragen
+- [ ] Pflichtenheft abgeschickt
+
+### Pflichtenheft i.O.?
+- [ ] Lidia
+- [ ] Maximilian
+- [ ] Matthias
+- [ ] Paul
+- [ ] Philipp
+- [ ] Holger
 
 ## Organisation
 Treffen: Mo., 15:45 Uhr
