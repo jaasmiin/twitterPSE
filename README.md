@@ -1,11 +1,11 @@
 ﻿#Visualizing Trends – Was verrät uns Twitter?
 PSE Projekt B im WS14/15
 
-- [ ] Pflichtenheft abgeschickt
+- [x] Pflichtenheft abgeschickt
 
 ### Pflichtenheft i.O.?
 - [x] Lidia
-- [ ] Maximilian
+- [x] Maximilian
 - [x] Matthias
 - [x] Paul
 - [x] Philipp
