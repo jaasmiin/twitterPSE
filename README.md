@@ -6,7 +6,7 @@ PSE Projekt B im WS14/15
 ### Pflichtenheft i.O.?
 - [x] Lidia
 - [ ] Maximilian
-- [ ] Matthias
+- [x] Matthias
 - [ ] Paul
 - [x] Philipp
 - [ ] Holger
