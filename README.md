@@ -9,7 +9,7 @@ PSE Projekt B im WS14/15
 - [x] Matthias
 - [ ] Paul
 - [x] Philipp
-- [ ] Holger
+- [x] Holger
 
 ## Organisation
 Treffen: Mo., 15:45 Uhr
