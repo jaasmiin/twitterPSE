@@ -4,7 +4,7 @@ PSE Projekt B im WS14/15
 - [ ] Pflichtenheft abgeschickt
 
 ### Pflichtenheft i.O.?
-- [ ] Lidia
+- [x] Lidia
 - [ ] Maximilian
 - [ ] Matthias
 - [ ] Paul
