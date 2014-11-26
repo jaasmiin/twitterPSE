@@ -8,7 +8,7 @@ PSE Projekt B im WS14/15
 - [ ] Maximilian
 - [ ] Matthias
 - [ ] Paul
-- [ ] Philipp
+- [x] Philipp
 - [ ] Holger
 
 ## Organisation
