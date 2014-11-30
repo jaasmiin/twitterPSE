@@ -1,0 +1,9 @@
+entwurf.pdf
+*.dvi
+*.log
+*.aux
+*.toc
+*.lof
+*.out
+*~
+*.gz

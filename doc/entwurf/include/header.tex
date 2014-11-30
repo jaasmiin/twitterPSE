@@ -1,16 +1,17 @@
 \documentclass[a4paper]{scrreprt}
-
+	
 \usepackage[T1]{fontenc}
 \usepackage[ngerman]{babel}     % deutsche Silbentrennung
 \usepackage[utf8x]{inputenc}    % wegen deutschen Umlauten & UTF-8
 \usepackage{lmodern}		% Schönere Schriftart
+%\usepackage[left=1cm,right=1cm,top=1cm,bottom=1cm,includeheadfoot]{geometry}
 \usepackage{graphicx}           % Grafikpaket laden
 \usepackage{amsmath,amssymb}    % Mathe
 \usepackage{tikz}               % Zeichungen
 \usepackage{hyperref}		% Links
 \hypersetup{			% Link-Formatierung entfernen & pdf-Inforamtionen setzten
 	pdfauthor={Maximilian Awiszus, Holger Ebhart, Lidia Grigoriev, Paul Jungeblut, Philipp Kern  und Matthias Schimek},
-	pdftitle={Visualizing Trends - Was verrät uns Twitter?},
+	pdftitle={Visualizing Trends. Was verrät uns Twitter?},
 	colorlinks,
 	citecolor=black,
 	filecolor=black,
@@ -18,21 +19,11 @@
 	urlcolor=black
 }
 \usepackage{microtype}		% font expansion
-
-\title{Visualizing Trends\\Was verrät uns Twitter?}
+\usepackage{enumerate}
+\usepackage{enumitem}    % Layout der Aufzählungs-Items manipulieren
+\setlist{nosep}
+\usepackage[ngerman]{cleveref}
+\title{Praxis der Softwareentwicklung:\\Visualizing Trends. Was verrät uns Twitter?}
+\subtitle{Entwurf}
 \author{Maximilian Awiszus\and Holger Ebhart\and Lidia Grigoriev\and Paul Jungeblut\and Philipp Kern\and Matthias Schimek}
-
-\begin{document}
-	\maketitle
-	\tableofcontents
-	\chapter{Lastenheft}
-		\input{include/lastenheft.tex}
-	\chapter{Pflichtenheft}
-		\input{include/pflichtenheft.tex}
-	\chapter{Entwurf}
-		\input{include/entwurf.tex}
-	\chapter{Softwarearchitektur}
-		\input{include/architektur.tex}
-	\chapter{Software}
-		\input{include/software.tex}
-\end{document}
+\date{\includegraphics[width=.3\textwidth]{img/logo.pdf}\\\vspace{3mm}WS 2014/15}
