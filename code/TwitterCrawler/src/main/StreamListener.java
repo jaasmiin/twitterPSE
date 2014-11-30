@@ -1,8 +1,10 @@
 package main;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.logging.Logger;
 
 import twitter4j.FilterQuery;
+import twitter4j.RateLimitStatusListener;
 import twitter4j.Status;
 import twitter4j.StatusListener;
 import twitter4j.TwitterException;
@@ -20,7 +22,9 @@ import twitter4j.TwitterStreamFactory;
 public class StreamListener implements Runnable {
 
     private ConcurrentLinkedQueue<Status> queue;
-    protected boolean stop = false;
+    private Logger logger;
+    private TwitterStream twitterStream;
+    private boolean onlyRetweets;
 
     /**
      * 
@@ -29,9 +33,16 @@ public class StreamListener implements Runnable {
      * @param queue
      *            the queue for communication between producer thread and
      *            consumer thread
+     * @param logger
+     *            a global logger for the whole program as Logger
+     * @param onlyRetweets
+     *            true if only retweets should be tracked, else false
      */
-    public StreamListener(ConcurrentLinkedQueue<Status> queue) {
+    public StreamListener(ConcurrentLinkedQueue<Status> queue, Logger logger,
+            boolean onlyRetweets) {
         this.queue = queue;
+        this.logger = logger;
+        this.onlyRetweets = onlyRetweets;
     }
 
     /**
@@ -47,6 +58,8 @@ public class StreamListener implements Runnable {
             getStream(tracker);
 
         } catch (TwitterException e) {
+            logger.warning("ErrorCode: " + e.getExceptionCode() + "\nMessage: "
+                    + e.getErrorMessage() + "\n");
             e.printStackTrace();
         }
 
@@ -65,10 +78,10 @@ public class StreamListener implements Runnable {
 
     TwitterException {
 
-        TwitterStream twitterStream = new TwitterStreamFactory().getInstance();
+        twitterStream = new TwitterStreamFactory().getInstance();
 
         // get status objects
-        StatusListener listener = new MyStatusListener(twitterStream, queue);
+        StatusListener listener = new MyStatusListener(queue, logger);
 
         // filter twitter stream
         FilterQuery filter = new FilterQuery();
@@ -77,16 +90,27 @@ public class StreamListener implements Runnable {
         filter.track(track);
 
         // watch rate limits
-        // RateLimitStatusListener rateLimitListener = new
-        // MyRateLimitStatusListener();
+        RateLimitStatusListener rateLimitListener = new MyRateLimitStatusListener(
+                logger);
+
         // ConnectionLifeCycleListener??
 
         // set streaming details
+        twitterStream.addRateLimitStatusListener(rateLimitListener);
         twitterStream.addListener(listener);
         twitterStream.filter(filter);
-        // twitterStream.addRateLimitStatusListener(rateLimitListener);
-        if (stop) {
-            twitterStream.shutdown();
+
+        // listening to all retweets
+        if (onlyRetweets) {
+            twitterStream.retweet();
         }
+
+    }
+
+    /**
+     * shuts the twitter stream down
+     */
+    public void exit() {
+        twitterStream.shutdown();
     }
 }

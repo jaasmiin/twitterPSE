@@ -2,7 +2,10 @@ package mysql;
 
 import java.sql.Connection;
 import java.util.Date;
+import java.util.Stack;
+import java.util.logging.Logger;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
@@ -17,44 +20,31 @@ import java.text.SimpleDateFormat;
  */
 public class DBConnection {
 
-    private final String hostname;
-    private final String port;
-    private final String db;
-    private final String user;
-    private final String pw;
+    private final AccessData accessData;
     private Connection c;
     private DateFormat dateFormat;
+    private Logger logger;
 
     /**
      * configurate the connection to the database
      * 
-     * @param hostName
-     *            the haostname of the mysql database as String
-     * @param port
-     *            the port of the mysql database as String
-     * @param dbName
-     *            the database-name as String
-     * @param userName
-     *            the user name for the mysql database as String
-     * @param password
-     *            the password for the mysql database as String
+     * @param accessData
+     *            the access data to the specified mysql-database as AccessData
+     * @param logger
+     *            a global logger for the whole program as Logger
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws ClassNotFoundException
      */
-    public DBConnection(String hostName, String port, String dbName,
-            String userName, String password) throws InstantiationException,
-            IllegalAccessException, ClassNotFoundException {
+    public DBConnection(AccessData accessData, Logger logger)
+            throws InstantiationException, IllegalAccessException,
+            ClassNotFoundException {
 
         // load drivers
         Class.forName("org.gjt.mm.mysql.Driver").newInstance();
 
-        // set acces-data
-        this.hostname = hostName;
-        this.port = port;
-        this.db = dbName;
-        this.user = userName;
-        this.pw = password;
+        this.accessData = accessData;
+        this.logger = logger;
 
         // create date format for the database
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -68,8 +58,12 @@ public class DBConnection {
      */
     public void connect() throws SQLException {
         // connect to database
-        String url = "jdbc:mysql://" + hostname + ":" + port + "/" + db;
-        c = DriverManager.getConnection(url, user, pw);
+        String url = "jdbc:mysql://" + accessData.getHostname() + ":"
+                + accessData.getPort() + "/" + accessData.getName();
+        c = DriverManager.getConnection(url, accessData.getUser(),
+                accessData.getPassword());
+        logger.info("Connected to database " + accessData.getName()
+                + " with user " + accessData.getUser());
     }
 
     /**
@@ -78,15 +72,48 @@ public class DBConnection {
     public void disconnect() {
         try {
             c.close();
+            logger.info("Disonnected from database " + accessData.getName()
+                    + " with user " + accessData.getUser());
         } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+                    + e.getMessage() + "\n");
             e.printStackTrace();
             // TODO
         }
     }
 
+    /**
+     * insert an account into the database
+     * 
+     * @param name
+     *            the name of the account as String
+     * @param id
+     *            the official twitter id of the account as long
+     * @param isVer
+     *            true if the account is verified, else false
+     * @param follower
+     *            the number of followers as int
+     * @param location
+     *            the location of the account as String
+     * @param category
+     * @param date
+     *            the date of the tweet as Date
+     * @param tweet
+     *            true if a tweet status object has been read, false if a
+     *            retweets status object has been read
+     * @return integer-array with two results of the database requests. First is
+     *         result for adding the account, second is for adding the tweet.
+     *         Database-request result is 0 if request was successfully, 'other'
+     *         if line 'other' has been modified (no success)
+     */
     private int[] addAccount(String name, long id, boolean isVer, int follower,
-            String location, String category, Date date) throws SQLException {
+            String location, String locationParent, String category, Date date,
+            boolean tweet) {
 
+        // insert location
+        // writeLocation(location, locationParent);
+
+        // insert account
         String sqlCommand = "INSERT INTO Accounts (AccountId,AccountName,Verified,Follower,Location,Category,UnlocalizedRetweets) VALUES ("
                 + id
                 + ",\""
@@ -94,25 +121,54 @@ public class DBConnection {
                 + "\","
                 + (isVer == true ? "1" : "0")
                 + ","
-                + follower + ","
+                + follower
+                + ","
                 // + location
-                + 1 + ", NULL"
-                // + category
-                + "," + 0 + ") ON DUPLICATE KEY UPDATE Id = Id;";
+                // + "(SELECT Id FROM Location WHERE Name = \"" + location +
+                // "\" LIMIT 1)"
+                + 1
+                // + category is NULL
+                + ", NULL"
+                + ","
+                + 0
+                + ") ON DUPLICATE KEY UPDATE Follower = "
+                + follower + ";";
 
         // System.out.println(sqlCommand);
-        Statement s = c.createStatement();
-        int result1 = s.executeUpdate(sqlCommand);
+        Statement s;
+        int result1 = -1;
+        try {
+            s = c.createStatement();
+            result1 = s.executeUpdate(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+                    + e.getMessage() + "\n");
+            result1 = -1;
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         // set Tweet count
         sqlCommand = "INSERT INTO Tweets (Account,Counter,Day) VALUES ((SELECT Id FROM Accounts WHERE AccountId = "
                 + id
                 + "),"
-                + 1
+                + (tweet ? "1" : "0")
                 + ", (SELECT Id FROM Day WHERE Day = \""
                 + dateFormat.format(date)
-                + "\" )) ON DUPLICATE KEY UPDATE Counter = Counter + 1;";
-        int result2 = s.executeUpdate(sqlCommand);
+                + "\" )) ON DUPLICATE KEY UPDATE Counter = Counter + "
+                + (tweet ? "1" : "0") + ";";
+
+        int result2 = -1;
+        try {
+            s = c.createStatement();
+            result2 = s.executeUpdate(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+                    + e.getMessage() + "\n");
+            result2 = -1;
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         return new int[] {result1, result2 };
     }
@@ -132,16 +188,20 @@ public class DBConnection {
      *            the location of the account as String
      * @param date
      *            the date of the tweet as Date
+     * @param tweet
+     *            true if a tweet status object has been read, false if a
+     *            retweets status object has been read
      * @return integer-array with two results of the database requests. First is
      *         result for adding the account, second is for adding the tweet.
      *         Database-request result is 0 if request was successfully, 'other'
      *         if line 'other' has been modified (no success)
-     * @throws SQLException
      */
     public int[] writeAccount(String name, long id, boolean isVer,
-            int follower, String location, Date date) throws SQLException {
+            int follower, String location, String locationParent, Date date,
+            boolean tweet) {
 
-        return addAccount(name, id, isVer, follower, location, "", date);
+        return addAccount(name, id, isVer, follower, location, locationParent,
+                "category", date, tweet);
     }
 
     /**
@@ -162,7 +222,8 @@ public class DBConnection {
             throws SQLException {
         int count = 0; // getting day counter
 
-        // TODO add Day
+        // TODO How to add Day
+
         String sqlCommand = "INSERT INTO Retweets (Account,Location, Counter, Day) VALUES ("
                 + "(SELECT Id FROM Accounts WHERE AccountId = "
                 + id
@@ -171,12 +232,14 @@ public class DBConnection {
                 + ","
                 + count
                 + ","
-                + 1
+                + "(SELECT Id FROM Day WHERE Day = \""
+                + dateFormat.format(date)
+                + "\")"
                 + ") ON DUPLICATE KEY UPDATE Counter = Counter + 1";
-        // System.out.println(sqlCommand);
+
         Statement s = c.createStatement();
-        int result = s.executeUpdate(sqlCommand);
-        return result;
+
+        return s.executeUpdate(sqlCommand);
 
     }
 
@@ -184,40 +247,88 @@ public class DBConnection {
      * inserts a new location into the database
      * 
      * @param name
-     *            TO COMPLETE
+     *            the name of the location as String
      * @param parent
-     *            TO COMPLETE
+     *            the parent location of the current location as String
      * @return database-request result as Integer (0 if request successfully,
      *         'other' if line 'other' has been modified (no success))
-     * @throws SQLException
      */
-    public int writeLocation(String name, String parent) throws SQLException {
+    public int writeLocation(String name, String parent) {
+
+        // TODO what if parent location isn't in database
 
         String sqlCommand = "INSERT INTO Location (Name, Parent) VALUES (\""
                 + name + "\", (SELECT Id FROM Location WHERE Name = \""
-                + parent + "\" LIMIT 1))";
+                + parent + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Parent = \""
+                + parent + "\";";
 
-        Statement s = c.createStatement();
+        Statement s;
+        int ret = -1;
+        try {
+            s = c.createStatement();
+            ret = s.executeUpdate(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+                    + e.getMessage() + "\n");
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
-        return s.executeUpdate(sqlCommand);
+        return ret;
 
     }
 
     /**
-     * write a new date into the database
+     * inserts a new date into the database
      * 
      * @param date
      *            the date to write into the database as Date
      * @return database-request result as Integer (0 if request successfully,
      *         'other' if line 'other' has been modified (no success))
-     * @throws SQLException
      */
-    public int writeDay(Date date) throws SQLException {
+    public int writeDay(Date date) {
 
         String sqlCommand = "INSERT INTO Day (Day) VALUES (\""
-                + dateFormat.format(date) + "\")";
+                + dateFormat.format(date)
+                + "\") ON DUPLICATE KEY UPDATE Day = Day";
+        Statement s;
+        int ret = -1;
+        try {
+            s = c.createStatement();
+            ret = s.executeUpdate(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+                    + e.getMessage() + "\n");
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    /**
+     * returns all AccountId's that aren't verified
+     * 
+     * @return all AccountId's from the database that aren't verified as
+     *         Integer-Array
+     * @throws SQLException
+     */
+    public long[] getNonVerified() throws SQLException {
+        String sqlCommand = "SELECT AccountId FROM Accounts WHERE Verified = 0";
         Statement s = c.createStatement();
-        return s.executeUpdate(sqlCommand);
+        ResultSet res = s.executeQuery(sqlCommand);
+
+        // TODO check if it works right
+
+        Stack<Integer> st = new Stack<Integer>();
+        while (res.first()) {
+            st.push(res.getRow());
+            res.deleteRow();
+        }
+        long[] ret = new long[st.size()];
+        for (int i = 0; i < st.size(); i++) {
+            ret[i] = (long) st.pop();
+        }
+        return ret;
     }
 
 }
