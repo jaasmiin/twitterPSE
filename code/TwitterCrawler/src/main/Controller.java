@@ -16,13 +16,15 @@ import twitter4j.Status;
 public class Controller implements Runnable {
 
     // timeout for connection to twitter
-    private static int TIMEOUT = 3600; // 10minutes
+    // private static int TIMEOUT = 3600; // 10minutes
 
     private StreamListener listener;
     private ConcurrentLinkedQueue<Status> queue;
-    //private Thread crawler;
+    // private Thread crawler;
+    private int timeout;
     private Logger logger;
     private StatusProcessor[] worker;
+    private Thread[] workerThreads;
 
     /**
      * initialize a controller instance that coordinates the crawler-thread with
@@ -40,21 +42,25 @@ public class Controller implements Runnable {
      *            for the worker threads as ConcurrentLinkedQueue<Status>
      * @param logger
      *            a global logger for the whole program as Logger
+     * @param timeout
+     *            the timeout in seconds as Integer
      */
     public Controller(Thread crawler, StatusProcessor[] worker,
-            StreamListener listener, ConcurrentLinkedQueue<Status> queue,
-            Logger logger) {
+            Thread[] workerThreads, StreamListener listener,
+            ConcurrentLinkedQueue<Status> queue, Logger logger, int timeout) {
         this.listener = listener;
         this.queue = queue;
-        //this.crawler = crawler;
+        this.workerThreads = workerThreads;
+        // this.crawler = crawler;
         this.logger = logger;
         this.worker = worker;
+        this.timeout = timeout;
     }
 
     @Override
     public void run() {
         int c = 0;
-        while (c < TIMEOUT) {
+        while (c < timeout) {
 
             // if (!crawler.isAlive()) {
             // // restart crawler
@@ -94,16 +100,17 @@ public class Controller implements Runnable {
         System.out.println(queue.size());
 
         // wait till all workers ended
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            logger.warning(e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        for (int i = 0; i < workerThreads.length; i++) {
+            try {
+                workerThreads[i].join();
+            } catch (InterruptedException e) {
+                logger.warning(e.getMessage());
+                // TODO
+                e.printStackTrace();
+            }
         }
 
         logger.info("Program terminated");
         System.exit(0);
     }
-
 }

@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import mysql.AccessData;
-import mysql.DBConnection;
+import mysql.DBWrite;
 import twitter4j.FilterQuery;
 import twitter4j.RateLimitStatusListener;
 import twitter4j.Status;
@@ -52,7 +52,7 @@ public class AccountListener implements Runnable {
 
         try {
 
-            DBConnection db = new DBConnection(new AccessData("localhost",
+            DBWrite db = new DBWrite(new AccessData("localhost",
                     "3306", "twitter", "root", PW), logger);
             db.connect();
             long[] accounts = db.getNonVerified();

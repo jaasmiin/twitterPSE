@@ -27,17 +27,32 @@ public class CrawlerMain {
      * starts a crawler, that collects data from twitter
      * 
      * @param args
-     *            no arguments required
+     *            1. Argument: The run-time in seconds that the crawler should
+     *            run; 2. Argument: The password for the root user of the
+     *            database twitter; no more arguments are required
      */
     public static void main(String[] args) {
-        coordinator();
+
+        // only numbers from 0-9
+        if (args.length > 1 && args[0].matches("[0-9]*")
+                && args[1].length() > 0) {
+            coordinator(Integer.parseInt(args[0]), args[1]);
+        } else {
+            System.out.println("Error: Wrong argument!");
+        }
 
     }
 
     /**
      * starts required threads to collect data
+     * 
+     * @param time
+     *            the run-time in seconds that the crawler should run as Integer
+     * @param pw
+     *            the password for the root user of the database twitter as
+     *            String
      */
-    private static void coordinator() {
+    private static void coordinator(int time, String pw) {
         ConcurrentLinkedQueue<Status> statusQueue = new ConcurrentLinkedQueue<Status>();
 
         Logger log = null;
@@ -63,7 +78,7 @@ public class CrawlerMain {
         Thread worker[] = new Thread[THREADNUM];
         StatusProcessor[] workerObject = new StatusProcessor[THREADNUM];
         for (int i = 0; i < THREADNUM; i++) {
-            workerObject[i] = new StatusProcessor(statusQueue, log);
+            workerObject[i] = new StatusProcessor(statusQueue, log, pw);
             Thread thread = new Thread(workerObject[i]);
             worker[i] = thread;
             worker[i].start();
@@ -71,8 +86,8 @@ public class CrawlerMain {
         log.info("StatusProcessors started");
 
         // controller to stop other threads after a specified time
-        Thread c = new Thread(new Controller(crawler, workerObject, sl,
-                statusQueue, log));
+        Thread c = new Thread(new Controller(crawler, workerObject, worker, sl,
+                statusQueue, log, time));
         c.start();
         log.info("Controller started");
 
@@ -81,6 +96,7 @@ public class CrawlerMain {
         try {
             crawler.join();
         } catch (InterruptedException e) {
+            log.warning(e.getMessage());
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
@@ -88,6 +104,7 @@ public class CrawlerMain {
             try {
                 worker[i].join();
             } catch (InterruptedException e) {
+                log.warning(e.getMessage());
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
@@ -96,6 +113,7 @@ public class CrawlerMain {
         try {
             c.join();
         } catch (InterruptedException e) {
+            log.warning(e.getMessage());
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
