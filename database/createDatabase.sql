@@ -4,7 +4,6 @@ Man muss mit einem entsprechend maechtigen benutzer bei MySQL angemeldet sein. (
 */
 
 /* anlegen einer Datenbank Twitter */
-
 CREATE DATABASE IF NOT EXISTS Twitter;
 USE Twitter;
 
@@ -47,6 +46,7 @@ CREATE TABLE IF NOT EXISTS Retweets (
 	Day INT UNSIGNED NOT NULL
 );
 
+
 /* Category-Account-Tabelle */
 CREATE TABLE IF NOT EXISTS CategoryAccount (
 	Id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
@@ -88,3 +88,7 @@ ALTER TABLE Retweets ADD CONSTRAINT uc_retweet UNIQUE (Account, Day, Location);
 ALTER TABLE Tweets ADD CONSTRAINT uc_tweet UNIQUE (Account, Day);
 ALTER TABLE Day ADD CONSTRAINT uc_day UNIQUE (Day);
 ALTER TABLE Location ADD CONSTRAINT uc_location UNIQUE (Name);
+ALTER TABLE Account ADD UNIQUE (AccountId);
+ALTER TABLE Retweets ADD CONSTRAINT uc_retweet UNIQUE (Account, Day, Location);
+ALTER TABLE Tweets ADD CONSTRAINT uc_tweet UNIQUE (Account, Day);
+ALTER TABLE Day ADD CONSTRAINT uc_day UNIQUE (Day);
