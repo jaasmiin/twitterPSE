@@ -1,0 +1,10 @@
+Treffen: 2.12.
+==============
+
+Kategorisierer: Paul
+Client
+	* Anzeige Modi, Karten: Matthias
+	* Unfolding: Lidia
+	* Anfragen (C), Daten bearbeiten (C), ER-Modell: Maximilian
+	* GUI: Philipp
+Crawler + DB Anfragen: Holger
