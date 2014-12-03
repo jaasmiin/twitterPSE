@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import mysql.AccessData;
-import mysql.DBConnection;
+import mysql.DBWrite;
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -21,8 +21,7 @@ import twitter4j.User;
 public class StatusProcessor implements Runnable {
 
     protected boolean run = true;
-    private static String PW = "";
-    private DBConnection t;
+    private DBWrite t;
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
 
@@ -34,13 +33,17 @@ public class StatusProcessor implements Runnable {
      *            consumer thread
      * @param logger
      *            a global logger for the whole program as Logger
+     * @param pw
+     *            the password for the root user of the database twitter as
+     *            String
      */
-    public StatusProcessor(ConcurrentLinkedQueue<Status> queue, Logger logger) {
+    public StatusProcessor(ConcurrentLinkedQueue<Status> queue, Logger logger,
+            String pw) {
         this.queue = queue;
         this.logger = logger;
         try {
-            t = new DBConnection(new AccessData("localhost", "3306", "twitter",
-                    "root", PW), logger);
+            t = new DBWrite(new AccessData("localhost", "3306", "twitter",
+                    "root", pw), logger);
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             logger.warning(e.getMessage() + "\n");
@@ -105,10 +108,31 @@ public class StatusProcessor implements Runnable {
         if (status != null) {
             User user = status.getUser();
 
+            // // NEW
+            // if (status.isRetweet()) {
+            //
+            // while (status.isRetweet()) {
+            // if (status.getUser().isVerified()) {
+            // // addAccount
+            // accountToMySQL(status.getUser(), status.getCreatedAt(),
+            // false);
+            // }
+            // status = status.getRetweetedStatus();
+            // }
+            //
+            // // addRetweet
+            // retweetToMySQL(status.getRetweetedStatus().getUser().getId(),
+            // status.getGeoLocation() + " - " + user.getLocation(),
+            // status.getCreatedAt());
+            //
+            // } else if (user.isVerified()) {
+            // accountToMySQL(user, status.getCreatedAt(), true);
+            // }
+
+            // OLD
             if (user.isVerified()) {
                 accountToMySQL(user, status.getCreatedAt(), !status.isRetweet());
             }
-
             if (status.isRetweet()
                     && status.getRetweetedStatus().getUser().isVerified()) {
                 accountToMySQL(status.getRetweetedStatus().getUser(), status
@@ -135,7 +159,7 @@ public class StatusProcessor implements Runnable {
      */
     private void accountToMySQL(User user, Date tweetDate, boolean tweet) {
         // !!! parent location !!!
-        t.writeAccount(user.getName(), user.getId(), user.isVerified(),
+        t.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), user.getLocation(), "parentLocation",
                 tweetDate, tweet);
     }
@@ -144,7 +168,7 @@ public class StatusProcessor implements Runnable {
      * insert a retweet into the database
      * 
      * @param id
-     *            the id of the account where the retweets was from
+     *            the id of the account where the tweet was from
      * @param location
      *            the location of the account,wherefrom the retweet was
      * @param date

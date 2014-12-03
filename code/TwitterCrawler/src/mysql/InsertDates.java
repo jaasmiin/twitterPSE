@@ -12,7 +12,7 @@ public class InsertDates {
 
     public static void main(String[] args) throws ParseException {
         try {
-            DBConnection t = new DBConnection(new AccessData("localhost",
+            DBWrite t = new DBWrite(new AccessData("localhost",
                     "3306", "twitter", "root", ""), Logger.getLogger("logger"));
             t.connect();
             Date d = new Date();

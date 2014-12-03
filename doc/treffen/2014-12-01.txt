@@ -1,0 +1,24 @@
+Treffen am 1.12.14
+==================
+
+* MVC
+* SQL einarbeiten
+* Branch zusammenführen
+* Stream schön beenden bei "Stop"
+	* Kommandozeilen Argumente
+* Ratelimit Listener, u.U. bei Problemen mit anderem Account starten
+* Speichernutzung: Plugin in Eclipse
+* Retweets retweeten
+* @Paul: Kuchen backen
+
+Entwurf
+=======
+* DB als einzelnes Paket mit Verebung
+* GUI:
+	* Pakete?
+	* Plugin Architektur
+
+
+Fragen
+======
+* MVC bei eingebundenen libs
