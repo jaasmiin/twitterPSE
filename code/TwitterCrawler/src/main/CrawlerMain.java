@@ -1,6 +1,9 @@
 package main;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -91,6 +94,8 @@ public class CrawlerMain {
         c.start();
         log.info("Controller started");
 
+        manuelExit(sl, log, worker, workerObject, statusQueue, crawler);
+
         // join threads
 
         try {
@@ -117,6 +122,70 @@ public class CrawlerMain {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    /**
+     * user can exit program via console
+     * 
+     * @param sl
+     * @param logger
+     * @param workerThreads
+     * @param worker
+     */
+    private static void manuelExit(StreamListener sl, Logger logger,
+            Thread[] workerThreads, StatusProcessor[] worker,
+            Queue<Status> queue, Thread stream) {
+
+        boolean run = true;
+        while (run) {
+            System.out
+                    .println("Enter 'exit' to exit or 'status' to view the current status: ");
+            String in = "";
+            try {
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(System.in));
+                in = reader.readLine();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            if (in.equals("exit")) {
+                run = false;
+
+            } else if (in.equals("status")) {
+                // print status
+                System.out.println("Current state of the crawler: ");
+                System.out.println("Number of status-objects in queue: "
+                        + queue.size());
+                System.out
+                        .println(stream.isAlive() ? "Streamlistener receives data from twitter"
+                                : "Streamlistener has crashed");
+                System.out.println("More Informations");
+            }
+        }
+
+        sl.exit();
+
+        // worker stop if queue is empty
+        for (int i = 0; i < worker.length; i++) {
+            worker[i].run = false;
+        }
+
+        // wait till all workers ended
+        for (int i = 0; i < workerThreads.length; i++) {
+            try {
+                workerThreads[i].join();
+            } catch (InterruptedException e) {
+                logger.warning(e.getMessage());
+                // TODO
+                e.printStackTrace();
+            }
+        }
+
+        System.out.println("Crawler terminated");
+        logger.info("Program terminated by user");
+        System.exit(0);
+
     }
 
     private static Logger getLogger() throws SecurityException, IOException {

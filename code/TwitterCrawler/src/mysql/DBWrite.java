@@ -64,7 +64,7 @@ public class DBWrite extends DBConnection {
         // writeLocation(location, locationParent);
 
         // insert account
-        String sqlCommand = "INSERT INTO Accounts (AccountId,AccountName,Verified,Follower,Location,UnlocalizedRetweets) VALUES ("
+        String sqlCommand = "INSERT INTO accounts (AccountId,AccountName,Verified,Follower,Location,UnlocalizedRetweets) VALUES ("
                 + id
                 + ",\""
                 + name
@@ -97,11 +97,11 @@ public class DBWrite extends DBConnection {
         }
 
         // set Tweet count
-        sqlCommand = "INSERT INTO Tweets (Account,Counter,Day) VALUES ((SELECT Id FROM Accounts WHERE AccountId = "
+        sqlCommand = "INSERT INTO tweets (Account,Counter,Day) VALUES ((SELECT Id FROM accounts WHERE AccountId = "
                 + id
                 + "),"
                 + (tweet ? "1" : "0")
-                + ", (SELECT Id FROM Day WHERE Day = \""
+                + ", (SELECT Id FROM day WHERE Day = \""
                 + dateFormat.format(date)
                 + "\" )) ON DUPLICATE KEY UPDATE Counter = Counter + "
                 + (tweet ? "1" : "0") + ";";
@@ -141,15 +141,15 @@ public class DBWrite extends DBConnection {
 
         // TODO How to add Day
 
-        String sqlCommand = "INSERT INTO Retweets (Account,Location, Counter, Day) VALUES ("
-                + "(SELECT Id FROM Accounts WHERE AccountId = "
+        String sqlCommand = "INSERT INTO retweets (Account,Location, Counter, Day) VALUES ("
+                + "(SELECT Id FROM accounts WHERE AccountId = "
                 + id
                 + "),"
                 + 1
                 + ","
                 + count
                 + ","
-                + "(SELECT Id FROM Day WHERE Day = \""
+                + "(SELECT Id FROM day WHERE Day = \""
                 + dateFormat.format(date)
                 + "\")"
                 + ") ON DUPLICATE KEY UPDATE Counter = Counter + 1";
@@ -174,8 +174,8 @@ public class DBWrite extends DBConnection {
 
         // TODO what if parent location isn't in database
 
-        String sqlCommand = "INSERT INTO Location (Name, Parent) VALUES (\""
-                + name + "\", (SELECT Id FROM Location WHERE Name = \""
+        String sqlCommand = "INSERT INTO location (Name, Parent) VALUES (\""
+                + name + "\", (SELECT Id FROM location WHERE Name = \""
                 + parent + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Parent = \""
                 + parent + "\";";
 
@@ -205,7 +205,7 @@ public class DBWrite extends DBConnection {
      */
     public int writeDay(Date date) {
 
-        String sqlCommand = "INSERT INTO Day (Day) VALUES (\""
+        String sqlCommand = "INSERT INTO day (Day) VALUES (\""
                 + dateFormat.format(date)
                 + "\") ON DUPLICATE KEY UPDATE Day = Day";
         Statement s;
@@ -230,7 +230,7 @@ public class DBWrite extends DBConnection {
      * @throws SQLException
      */
     public long[] getNonVerified() throws SQLException {
-        String sqlCommand = "SELECT AccountId FROM Accounts WHERE Verified = 0";
+        String sqlCommand = "SELECT AccountId FROM accounts WHERE Verified = 0";
         Statement s = c.createStatement();
         ResultSet res = s.executeQuery(sqlCommand);
 

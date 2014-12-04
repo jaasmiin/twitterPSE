@@ -19,7 +19,7 @@ public class Controller implements Runnable {
     // private static int TIMEOUT = 3600; // 10minutes
 
     private StreamListener listener;
-    private ConcurrentLinkedQueue<Status> queue;
+    //private ConcurrentLinkedQueue<Status> queue;
     // private Thread crawler;
     private int timeout;
     private Logger logger;
@@ -49,7 +49,7 @@ public class Controller implements Runnable {
             Thread[] workerThreads, StreamListener listener,
             ConcurrentLinkedQueue<Status> queue, Logger logger, int timeout) {
         this.listener = listener;
-        this.queue = queue;
+        //this.queue = queue;
         this.workerThreads = workerThreads;
         // this.crawler = crawler;
         this.logger = logger;
@@ -88,16 +88,15 @@ public class Controller implements Runnable {
             worker[i].run = false;
         }
 
-        while (!queue.isEmpty()) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                logger.warning(e.getMessage() + "\n");
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-        System.out.println(queue.size());
+        // while (!queue.isEmpty()) {
+        // try {
+        // Thread.sleep(50);
+        // } catch (InterruptedException e) {
+        // logger.warning(e.getMessage() + "\n");
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+        // }
 
         // wait till all workers ended
         for (int i = 0; i < workerThreads.length; i++) {

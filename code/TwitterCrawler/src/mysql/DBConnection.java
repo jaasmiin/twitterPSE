@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
  */
 public class DBConnection {
 
-    protected final AccessData accessData;
+    private final AccessData accessData;
     protected Connection c;
     protected DateFormat dateFormat;
     protected Logger logger;

@@ -86,3 +86,153 @@ Dez 02, 2014 9:01:20 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
 Dez 02, 2014 9:01:20 PM main.Controller run
 Information: Program terminated
+Dez 03, 2014 8:02:24 AM main.CrawlerMain coordinator
+Information: Crawler started
+Dez 03, 2014 8:02:24 AM main.CrawlerMain coordinator
+Information: StatusProcessors started
+Dez 03, 2014 8:02:24 AM main.CrawlerMain coordinator
+Information: Controller started
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:25 AM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 8:02:28 AM main.CrawlerMain manuelExit
+Information: Crawler terminated by the Controller
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:28 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:29 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:29 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:29 AM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 8:02:29 AM main.CrawlerMain manuelExit
+Information: Program terminated by user
+Dez 03, 2014 9:31:13 PM main.CrawlerMain coordinator
+Information: Crawler started
+Dez 03, 2014 9:31:14 PM main.CrawlerMain coordinator
+Information: StatusProcessors started
+Dez 03, 2014 9:31:14 PM main.CrawlerMain coordinator
+Information: Controller started
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:14 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:31:29 PM main.CrawlerMain manuelExit
+Information: Crawler terminated by the Controller
+Dez 03, 2014 9:32:02 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:03 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:03 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:03 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:04 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:04 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:05 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:05 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:05 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:05 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:32:05 PM main.CrawlerMain manuelExit
+Information: Program terminated by user
+Dez 03, 2014 9:32:35 PM main.CrawlerMain coordinator
+Information: Crawler started
+Dez 03, 2014 9:32:35 PM main.CrawlerMain coordinator
+Information: StatusProcessors started
+Dez 03, 2014 9:32:35 PM main.CrawlerMain coordinator
+Information: Controller started
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:36 PM mysql.DBConnection connect
+Information: Connected to database twitter with user root
+Dez 03, 2014 9:32:45 PM main.CrawlerMain manuelExit
+Information: Crawler terminated by the Controller
+Dez 03, 2014 9:33:09 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:09 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:11 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:11 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:11 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:12 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:12 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:12 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:12 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:12 PM mysql.DBConnection disconnect
+Information: Disonnected from database twitter with user root
+Dez 03, 2014 9:33:12 PM main.CrawlerMain manuelExit
+Information: Program terminated by user
