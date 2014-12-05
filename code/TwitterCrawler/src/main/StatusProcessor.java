@@ -76,17 +76,19 @@ public class StatusProcessor implements Runnable {
 
             while (!queue.isEmpty()) {
                 status = null;
-                synchronized (queue) {
-                    if (!queue.isEmpty()) {
-                        status = queue.remove();
-                    }
+                try {
+                    status = queue.remove();
+                } catch (Exception e) {
+                    status = null;
                 }
 
-                statusToDB(status);
+                if (status != null) {
+                    statusToDB(status);
+                }
 
             }
             try {
-                Thread.sleep(5);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 logger.warning(e.getMessage() + "\n");
                 // TODO Auto-generated catch block
@@ -106,43 +108,53 @@ public class StatusProcessor implements Runnable {
      */
     private void statusToDB(Status status) {
         if (status != null) {
-            User user = status.getUser();
 
-            // // NEW
-            // if (status.isRetweet()) {
-            //
-            // while (status.isRetweet()) {
-            // if (status.getUser().isVerified()) {
-            // // addAccount
-            // accountToMySQL(status.getUser(), status.getCreatedAt(),
-            // false);
+            if (status.getUser().isVerified()) {
+                accountToMySQL(status.getUser(), status.getCreatedAt(), true);
+            }
+
+            if (status.isRetweet()) {
+
+                Status retweet = status;
+                Status tweet = status.getRetweetedStatus();
+
+                while (tweet.isRetweet()) {
+                    if (tweet.getUser().isVerified()) {
+                        // addAccount
+                        accountToMySQL(tweet.getUser(), tweet.getCreatedAt(),
+                                false);
+                    }
+                    retweet = tweet;
+                    tweet = tweet.getRetweetedStatus();
+                }
+
+                if (tweet.getUser().isVerified()) {
+                    // add Account
+                    accountToMySQL(tweet.getUser(), tweet.getCreatedAt(), false);
+
+                    // addRetweet
+                    retweetToMySQL(tweet.getUser().getId(),
+                            retweet.getGeoLocation() + " - "
+                                    + retweet.getUser().getLocation(),
+                            retweet.getCreatedAt());
+                }
+
+            }
+
+            // OLD
+            // if (user.isVerified()) {
+            // accountToMySQL(user, status.getCreatedAt(), !status.isRetweet());
             // }
-            // status = status.getRetweetedStatus();
-            // }
+            // if (status.isRetweet()
+            // && status.getRetweetedStatus().getUser().isVerified()) {
+            // accountToMySQL(status.getRetweetedStatus().getUser(), status
+            // .getRetweetedStatus().getCreatedAt(), false);
             //
-            // // addRetweet
             // retweetToMySQL(status.getRetweetedStatus().getUser().getId(),
             // status.getGeoLocation() + " - " + user.getLocation(),
             // status.getCreatedAt());
             //
-            // } else if (user.isVerified()) {
-            // accountToMySQL(user, status.getCreatedAt(), true);
             // }
-
-            // OLD
-            if (user.isVerified()) {
-                accountToMySQL(user, status.getCreatedAt(), !status.isRetweet());
-            }
-            if (status.isRetweet()
-                    && status.getRetweetedStatus().getUser().isVerified()) {
-                accountToMySQL(status.getRetweetedStatus().getUser(), status
-                        .getRetweetedStatus().getCreatedAt(), false);
-
-                retweetToMySQL(status.getRetweetedStatus().getUser().getId(),
-                        status.getGeoLocation() + " - " + user.getLocation(),
-                        status.getCreatedAt());
-
-            }
         }
     }
 
@@ -161,7 +173,7 @@ public class StatusProcessor implements Runnable {
         // !!! parent location !!!
         t.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), user.getLocation(), "parentLocation",
-                tweetDate, tweet);
+                user.getURL(), tweetDate, tweet);
     }
 
     /**

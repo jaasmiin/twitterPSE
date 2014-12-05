@@ -24,20 +24,20 @@ public class CrawlerMain {
     /**
      * number of worker-threads
      */
-    private static int THREADNUM = 10;
+    private static int THREADNUM = 15;
 
     /**
      * starts a crawler, that collects data from twitter
      * 
      * @param args
      *            1. Argument: The run-time in seconds that the crawler should
-     *            run; 2. Argument: The password for the root user of the
-     *            database twitter; no more arguments are required
+     *            run (0 for infinity); 2. Argument: The password for the root
+     *            user of the database twitter; no more arguments are required
      */
     public static void main(String[] args) {
 
         // only numbers from 0-9
-        if (args.length > 1 && args[0].matches("[0-9]*")
+        if (args.length > 1 && args[0].matches("[0-9]+")
                 && args[1].length() > 0) {
             coordinator(Integer.parseInt(args[0]), args[1]);
         } else {
@@ -50,7 +50,8 @@ public class CrawlerMain {
      * starts required threads to collect data
      * 
      * @param time
-     *            the run-time in seconds that the crawler should run as Integer
+     *            the run-time in seconds that the crawler should run (0 for
+     *            infinity) as Integer
      * @param pw
      *            the password for the root user of the database twitter as
      *            String
@@ -94,7 +95,7 @@ public class CrawlerMain {
         c.start();
         log.info("Controller started");
 
-        manuelExit(sl, log, worker, workerObject, statusQueue, crawler);
+        manuelExit(sl, log, worker, workerObject, statusQueue);
 
         // join threads
 
@@ -134,7 +135,7 @@ public class CrawlerMain {
      */
     private static void manuelExit(StreamListener sl, Logger logger,
             Thread[] workerThreads, StatusProcessor[] worker,
-            Queue<Status> queue, Thread stream) {
+            Queue<Status> queue) {
 
         boolean run = true;
         while (run) {
@@ -154,15 +155,22 @@ public class CrawlerMain {
 
             } else if (in.equals("status")) {
                 // print status
-                System.out.println("Current state of the crawler: ");
+                System.out.println("STATE OF THE CRAWLER: ");
                 System.out.println("Number of status-objects in queue: "
                         + queue.size());
-                System.out
-                        .println(stream.isAlive() ? "Streamlistener receives data from twitter"
-                                : "Streamlistener has crashed");
-                System.out.println("More Informations");
+                // System.out.println("Status of the Streamlistener: ");
+                int c = 0;
+                for (int i = 0; i < workerThreads.length; i++) {
+                    if (workerThreads[i].isAlive()) {
+                        c++;
+                    }
+                }
+                System.out.println("Number of running workers: " + c + "/"
+                        + THREADNUM);
             }
         }
+
+        System.out.println("Terminating crawler ...");
 
         sl.exit();
 

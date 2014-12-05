@@ -82,7 +82,7 @@ public class StreamListener implements Runnable {
 
         // get status objects
         StatusListener listener = new MyStatusListener(queue, logger);
-
+        
         // filter twitter stream
         FilterQuery filter = new FilterQuery();
         // go immediately to the live stream
