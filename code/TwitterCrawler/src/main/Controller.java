@@ -19,7 +19,7 @@ public class Controller implements Runnable {
     // private static int TIMEOUT = 3600; // 10minutes
 
     private StreamListener listener;
-    //private ConcurrentLinkedQueue<Status> queue;
+    // private ConcurrentLinkedQueue<Status> queue;
     // private Thread crawler;
     private int timeout;
     private Logger logger;
@@ -43,13 +43,13 @@ public class Controller implements Runnable {
      * @param logger
      *            a global logger for the whole program as Logger
      * @param timeout
-     *            the timeout in seconds as Integer
+     *            the timeout in seconds (0 for infinity) as Integer
      */
     public Controller(Thread crawler, StatusProcessor[] worker,
             Thread[] workerThreads, StreamListener listener,
             ConcurrentLinkedQueue<Status> queue, Logger logger, int timeout) {
         this.listener = listener;
-        //this.queue = queue;
+        // this.queue = queue;
         this.workerThreads = workerThreads;
         // this.crawler = crawler;
         this.logger = logger;
@@ -59,7 +59,12 @@ public class Controller implements Runnable {
 
     @Override
     public void run() {
+       
         int c = 0;
+        if (timeout == 0){
+            c = -1;
+        }
+
         while (c < timeout) {
 
             // if (!crawler.isAlive()) {
@@ -77,7 +82,10 @@ public class Controller implements Runnable {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            c += 1;
+            
+            if (timeout != 0) {
+                c += 1;
+            }
         }
 
         listener.exit();
