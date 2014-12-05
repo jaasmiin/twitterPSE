@@ -4,7 +4,7 @@ Man muss mit einem entsprechend maechtigen benutzer bei MySQL angemeldet sein. (
 */
 
 /* anlegen einer Datenbank Twitter */
-CREATE DATABASE IF NOT EXISTS Twitter;
+CREATE DATABASE IF NOT EXISTS twitter;
 USE Twitter;
 
 
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS day (
 
 
 /* Fremdschluessel */
-ALTER TABLE accounts ADD CONSTRAINT FOREIGN KEY (Location) REFERENCES Llocation (Id);
+ALTER TABLE accounts ADD CONSTRAINT FOREIGN KEY (Location) REFERENCES location (Id);
 ALTER TABLE location ADD CONSTRAINT FOREIGN KEY (Parent) REFERENCES location (Id);
 ALTER TABLE category ADD CONSTRAINT FOREIGN KEY (Parent) REFERENCES category (Id);
 ALTER TABLE retweets ADD CONSTRAINT FOREIGN KEY (Account) REFERENCES accounts (Id);
@@ -86,6 +86,3 @@ ALTER TABLE retweets ADD CONSTRAINT uc_retweet UNIQUE (Account, Day, Location);
 ALTER TABLE tweets ADD CONSTRAINT uc_tweet UNIQUE (Account, Day);
 ALTER TABLE day ADD CONSTRAINT uc_day UNIQUE (Day);
 ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Name);
-ALTER TABLE retweets ADD CONSTRAINT uc_retweet UNIQUE (Account, Day, Location);
-ALTER TABLE tweets ADD CONSTRAINT uc_tweet UNIQUE (Account, Day);
-ALTER TABLE day ADD CONSTRAINT uc_day UNIQUE (Day);
