@@ -5,7 +5,7 @@ Man muss mit einem entsprechend maechtigen benutzer bei MySQL angemeldet sein. (
 
 /* anlegen einer Datenbank Twitter */
 CREATE DATABASE IF NOT EXISTS twitter;
-USE Twitter;
+USE twitter;
 
 
 /* Accounts-Tabelle */
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS retweets (
 	Account INT UNSIGNED NOT NULL,
 	Location INT UNSIGNED NOT NULL,
 	Counter INT UNSIGNED NOT NULL,
-	CounterNonLocalized INT UNSIGNED NOT NULL;
+	CounterNonLocalized INT UNSIGNED NOT NULL,
 	Day INT UNSIGNED NOT NULL
 );
 
