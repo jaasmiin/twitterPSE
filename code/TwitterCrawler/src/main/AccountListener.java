@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import mysql.AccessData;
-import mysql.DBWrite;
+import mysql.DBRead;
 import twitter4j.FilterQuery;
 import twitter4j.RateLimitStatusListener;
 import twitter4j.Status;
@@ -20,11 +20,12 @@ import twitter4j.TwitterStreamFactory;
  * 
  * @author Holger Ebhart
  * @version 1.0
- * 
+ * @deprecated even implemented in StatusProcessor and ...
  */
-public class AccountListener implements Runnable {
+@Deprecated
+public class AccountListener implements RunnableListener {
 
-    private static String PW = "";
+    private AccessData accessData;
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     private TwitterStream twitterStream;
@@ -35,15 +36,16 @@ public class AccountListener implements Runnable {
      * 
      * @param logger
      *            a global logger for the whole program as Logger
+     * @param accessData
+     *            the accessData to the mysql-database as AccessData
      */
-    public AccountListener(Logger logger) {
+    public AccountListener(Logger logger, AccessData accessData) {
         this.logger = logger;
+        this.accessData = accessData;
         queue = new ConcurrentLinkedQueue<Status>();
     }
 
-    /**
-     * start collecting data from the twitter stream api
-     */
+    @Override
     public void run() {
 
         // TODO starting refresh routine for new Accounts
@@ -52,10 +54,9 @@ public class AccountListener implements Runnable {
 
         try {
 
-            DBWrite db = new DBWrite(new AccessData("localhost",
-                    "3306", "twitter", "root", PW), logger);
+            DBRead db = new DBRead(accessData, logger);
             db.connect();
-            long[] accounts = db.getNonVerified();
+            long[] accounts = db.getNonVerifiedAccounts();
             db.disconnect();
             getStream(accounts);
 
@@ -118,9 +119,7 @@ public class AccountListener implements Runnable {
 
     }
 
-    /**
-     * shuts the twitter stream down
-     */
+    @Override
     public void exit() {
         twitterStream.shutdown();
     }

@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
@@ -59,7 +60,9 @@ public class Controller extends Thread {
         // create threads that extract informations of status and store them in
         // the db
         for (int i = 0; i < THREADNUM; ++i) {
-            statusProcessor[i] = new StatusProcessor(statusQueue, log,
+            // TODO fill HashTable and update it
+            ConcurrentHashMap<Long,Object> hashSet = new ConcurrentHashMap<Long,Object>();
+            statusProcessor[i] = new StatusProcessor(statusQueue,hashSet, log,
                     sqlPassword);
             thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
             thrdStatusProcessor[i].start();

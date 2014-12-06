@@ -2,6 +2,7 @@ package main;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
@@ -24,6 +25,8 @@ public class StatusProcessor implements Runnable {
     private DBWrite t;
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
+    // use ConcurrentHashMap<Long,Object> as HashSet<Long>
+    private ConcurrentHashMap<Long, Object> accounts;
 
     /**
      * initialize class to handle status object from the twitter stream api
@@ -31,16 +34,22 @@ public class StatusProcessor implements Runnable {
      * @param queue
      *            the queue for communication between producer thread and
      *            consumer thread
+     * @param accountsToTrack
+     *            the twitter-account-id's of the non verified accounts that
+     *            should be tracked as ConcurrentMap<Long, Object> (Object =
+     *            null)
      * @param logger
      *            a global logger for the whole program as Logger
      * @param pw
      *            the password for the root user of the database twitter as
      *            String
      */
-    public StatusProcessor(ConcurrentLinkedQueue<Status> queue, Logger logger,
+    public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
+            ConcurrentHashMap<Long, Object> accountsToTrack, Logger logger,
             String pw) {
         this.queue = queue;
         this.logger = logger;
+        this.accounts = accountsToTrack;
         try {
             t = new DBWrite(new AccessData("localhost", "3306", "twitter",
                     "root", pw), logger);
@@ -107,9 +116,10 @@ public class StatusProcessor implements Runnable {
      *            the status-object with the twitter data as twitter4j.Status
      */
     private void statusToDB(Status status) {
+
         if (status != null) {
 
-            if (status.getUser().isVerified()) {
+            if (checkUser(status.getUser())) {
                 accountToMySQL(status.getUser(), status.getCreatedAt(), true);
             }
 
@@ -119,7 +129,7 @@ public class StatusProcessor implements Runnable {
                 Status tweet = status.getRetweetedStatus();
 
                 while (tweet.isRetweet()) {
-                    if (tweet.getUser().isVerified()) {
+                    if (checkUser(tweet.getUser())) {
                         // addAccount
                         accountToMySQL(tweet.getUser(), tweet.getCreatedAt(),
                                 false);
@@ -128,7 +138,7 @@ public class StatusProcessor implements Runnable {
                     tweet = tweet.getRetweetedStatus();
                 }
 
-                if (tweet.getUser().isVerified()) {
+                if (checkUser(tweet.getUser())) {
                     // add Account
                     accountToMySQL(tweet.getUser(), tweet.getCreatedAt(), false);
 
@@ -140,22 +150,23 @@ public class StatusProcessor implements Runnable {
                 }
 
             }
-
-            // OLD
-            // if (user.isVerified()) {
-            // accountToMySQL(user, status.getCreatedAt(), !status.isRetweet());
-            // }
-            // if (status.isRetweet()
-            // && status.getRetweetedStatus().getUser().isVerified()) {
-            // accountToMySQL(status.getRetweetedStatus().getUser(), status
-            // .getRetweetedStatus().getCreatedAt(), false);
-            //
-            // retweetToMySQL(status.getRetweetedStatus().getUser().getId(),
-            // status.getGeoLocation() + " - " + user.getLocation(),
-            // status.getCreatedAt());
-            //
-            // }
         }
+    }
+
+    /**
+     * checks weather the user is verified or in the accounts HashSet
+     * 
+     * @param user
+     *            the user to check as twitter4j.User
+     * @return true if the user should be added to the database, else false
+     */
+    private boolean checkUser(User user) {
+        if (user.isVerified()) {
+            return true;
+        } else if (accounts.containsKey(user.getId())) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -190,10 +201,8 @@ public class StatusProcessor implements Runnable {
         try {
             t.writeRetweet(id, 1, date);
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warning("Error by adding a retweet.\nSQL-Status: "
+                    + e.getSQLState() + "\nMessage: " + e.getMessage() + "\n");
         }
 
     }

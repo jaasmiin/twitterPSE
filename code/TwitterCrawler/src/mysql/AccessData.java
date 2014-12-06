@@ -4,7 +4,7 @@ package mysql;
  * class to save access data for a mysql database
  * 
  * @author Holger Ebhart
- * @version1.0
+ * @version 1.0
  */
 public class AccessData {
     private final String hostname;

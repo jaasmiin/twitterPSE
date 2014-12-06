@@ -11,9 +11,33 @@ import java.util.logging.Logger;
 public class InsertDates {
 
     public static void main(String[] args) throws ParseException {
+
+        // try {
+        // DBRead t = new DBRead(new AccessData("localhost", "3306",
+        // "twitter", "root", "root"), Logger.getLogger("logger"));
+        // t.connect();
+        // long[] a = t.getNonVerifiedAccounts();
+        // for (int i = 0; i < a.length; i++) {
+        // System.out.println(a[i]);
+        // }
+        //
+        // } catch (InstantiationException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // } catch (IllegalAccessException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // } catch (ClassNotFoundException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // } catch (SQLException e) {
+        // // TODO Auto-generated catch block
+        // e.printStackTrace();
+        // }
+
         try {
-            DBWrite t = new DBWrite(new AccessData("localhost",
-                    "3306", "twitter", "root", ""), Logger.getLogger("logger"));
+            DBWrite t = new DBWrite(new AccessData("localhost", "3306",
+                    "twitter", "root", ""), Logger.getLogger("logger"));
             t.connect();
             Date d = new Date();
             d = (new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"))

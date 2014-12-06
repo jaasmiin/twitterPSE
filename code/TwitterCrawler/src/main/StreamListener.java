@@ -19,7 +19,7 @@ import twitter4j.TwitterStreamFactory;
  * @version 1.0
  * 
  */
-public class StreamListener implements Runnable {
+public class StreamListener implements RunnableListener {
 
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
@@ -45,9 +45,7 @@ public class StreamListener implements Runnable {
         this.onlyRetweets = onlyRetweets;
     }
 
-    /**
-     * start collecting data from the twitter stream api
-     */
+    @Override
     public void run() {
 
         try {
@@ -82,7 +80,7 @@ public class StreamListener implements Runnable {
 
         // get status objects
         StatusListener listener = new MyStatusListener(queue, logger);
-        
+
         // filter twitter stream
         FilterQuery filter = new FilterQuery();
         // go immediately to the live stream
@@ -107,9 +105,7 @@ public class StreamListener implements Runnable {
 
     }
 
-    /**
-     * shuts the twitter stream down
-     */
+    @Override
     public void exit() {
         twitterStream.shutdown();
     }
