@@ -14,19 +14,20 @@ import java.io.InputStreamReader;
  */
 public class CrawlerMain {
 	private static Controller cntrl;
+	
 //    /**
 //     * number of worker-threads
 //     */
 //    private static int THREADNUM = 15;
 //
-//    /**
-//     * starts a crawler, that collects data from twitter
-//     * 
-//     * @param args
-//     *            1. Argument: The run-time in seconds that the crawler should
-//     *            run (0 for infinity); 2. Argument: The password for the root
-//     *            user of the database twitter; no more arguments are required
-//     */
+    /**
+     * starts a crawler, that collects data from twitter
+     * 
+     * @param args
+     *            1. Argument: The run-time in seconds that the crawler should
+     *            run (0 for infinity); 2. Argument: The password for the root
+     *            user of the database twitter; no more arguments are required
+     */
     public static void main(String[] args) {
 
         // only numbers from 0-9
