@@ -1,0 +1,54 @@
+Treffen am 8.12
+===============
+
+Fragen an Betreuer:
+-------------------
+- UML Diagramm komplett, aber ziemlich klein?
+- DOMZ Problem: Gleiche Kategorie in unterschiedlichen Ländern sind andere Kategorien
+- Optionale Punkte auch im Entwurf berücksichtigen?
+
+Allgemein:
+----------
+- Java Datentypen in extra Package aufführen
+- DMOZ DB anschauen
+- Kurze Einführung
+- Jeder ein Sequenzdiagramm entwerfen
+- In Facebook anmelden
+
+Holger:
+-------
+- AccessData: Connection String
+- DBConnection: abstrakt
+- DBConnection <-> nicht in Berechtigungen (Modify, Read, Write) sondern in Aufgaben (GUI, Crawler,...)
+- DBConnection: als Fabrik ohne
+- Sequenzdiagramm für:
+	- Start des Controllers
+	- StatusUpdate von Twitter
+
+Philipp:
+--------
+- Table / WorldMap Paket
+- Model direkt mit WorldMap verbunden
+- DatabaseConnector an Holgers DBConnector anpassen
+
+Matthias:
+---------
+- Anpassen an ObservableList
+- In Pakete WorldMap und Table unterteilen
+
+Maximilian:
+-----------
+- Array als Parameter
+- Drei Klassen zusammenlegen
+- bei set Category (int, int, boolean active) + ValidBit
+- Klassen von Rückgabetypen (von Holger) verwenden
+
+Paul:
+-----
+- DB parsen -> schnellere Abfragen
+- UML-Diagramm: Kategorisierer
+
+Lidia:
+------
+- Flussdiagramm: "Weg der Daten"
+- In Echtzeit Datenänderungen anzeigen (draw())
