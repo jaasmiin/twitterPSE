@@ -36,23 +36,20 @@ public class StatusProcessor implements Runnable {
      *            consumer thread
      * @param accountsToTrack
      *            the twitter-account-id's of the non verified accounts that
-     *            should be tracked as ConcurrentMap<Long, Object> (Object =
-     *            null)
+     *            should be tracked as ConcurrentMap<Long, Object>
      * @param logger
      *            a global logger for the whole program as Logger
-     * @param pw
-     *            the password for the root user of the database twitter as
-     *            String
+     * @param accessData
+     *            the access data for the root user of the database as String
      */
     public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
             ConcurrentHashMap<Long, Object> accountsToTrack, Logger logger,
-            String pw) {
+            AccessData accessData) {
         this.queue = queue;
         this.logger = logger;
         this.accounts = accountsToTrack;
         try {
-            t = new DBWrite(new AccessData("localhost", "3306", "twitter",
-                    "root", pw), logger);
+            t = new DBWrite(accessData, logger);
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             logger.warning(e.getMessage() + "\n");

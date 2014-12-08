@@ -15,11 +15,6 @@ import java.io.InputStreamReader;
 public class CrawlerMain {
 	private static Controller cntrl;
 	
-//    /**
-//     * number of worker-threads
-//     */
-//    private static int THREADNUM = 15;
-//
     /**
      * starts a crawler, that collects data from twitter
      * 
@@ -30,6 +25,8 @@ public class CrawlerMain {
      */
     public static void main(String[] args) {
 
+        // TODO getting all data for dbconnection
+        
         // only numbers from 0-9
         if (args.length > 1 && args[0].matches("[0-9]+")
                 && args[1].length() > 0) {

@@ -7,6 +7,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import mysql.AccessData;
 import twitter4j.Status;
 
 /**
@@ -27,6 +28,8 @@ public class Controller extends Thread {
     private StreamListener streamListener;
     private Thread thrdStreamListener;
     private Thread[] thrdStatusProcessor = new Thread[THREADNUM];
+    private AccountUpdate accountUpdate;
+    private Thread thrdAccountUpdate;
     private StatusProcessor[] statusProcessor = new StatusProcessor[THREADNUM];
 
     /**
@@ -57,13 +60,19 @@ public class Controller extends Thread {
         thrdStreamListener.start();
         log.info("Crawler started");
 
+        AccessData accessData = new AccessData("localhost", "3306", "twitter",
+                "root", sqlPassword);
+
+        ConcurrentHashMap<Long, Object> hashSet = new ConcurrentHashMap<Long, Object>();
+        accountUpdate = new AccountUpdate(log, hashSet, accessData);
+        thrdAccountUpdate = new Thread(accountUpdate);
+        thrdAccountUpdate.start();
+
         // create threads that extract informations of status and store them in
         // the db
         for (int i = 0; i < THREADNUM; ++i) {
-            // TODO fill HashTable and update it
-            ConcurrentHashMap<Long,Object> hashSet = new ConcurrentHashMap<Long,Object>();
-            statusProcessor[i] = new StatusProcessor(statusQueue,hashSet, log,
-                    sqlPassword);
+            statusProcessor[i] = new StatusProcessor(statusQueue, hashSet, log,
+                    accessData);
             thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
             thrdStatusProcessor[i].start();
         }
@@ -86,8 +95,16 @@ public class Controller extends Thread {
      */
     public void shutdown() {
         boolean success = true;
-        System.out.print("\n Terminating crawler..");
+
+        // send stop message
         streamListener.exit();
+        accountUpdate.exit();
+        for (int i = 0; i < THREADNUM; i++) {
+            statusProcessor[i].run = false;
+        }
+
+        // join crawler
+        System.out.print("\n Terminating crawler..");
         try {
             thrdStreamListener.join();
         } catch (InterruptedException e) {
@@ -99,6 +116,21 @@ public class Controller extends Thread {
             System.out.println(". done.");
         }
 
+        // join accountupdater
+        success = true;
+        System.out.print(" Terminating accountupdater..");
+        try {
+            thrdAccountUpdate.join();
+        } catch (InterruptedException e) {
+            System.out.print(". Error (" + e.getMessage() + ").");
+            log.warning(e.getMessage());
+            success = false;
+        }
+        if (success) {
+            System.out.println(". done.");
+        }
+
+        // waiting for empty queue
         success = true;
         System.out.print(" Terminating status processors..");
         while (getQueueSize() > 0) {
@@ -115,10 +147,7 @@ public class Controller extends Thread {
             }
         }
 
-        for (int i = 0; i < THREADNUM; i++) {
-            statusProcessor[i].run = false;
-        }
-
+        // join status processors
         if (success) {
             for (int i = 0; i < THREADNUM; ++i) {
                 try {
@@ -164,6 +193,8 @@ public class Controller extends Thread {
         return " STATE OF THE CRAWLER: " + "\n"
                 + " Number of status-objects in queue: " + getQueueSize()
                 + "\n" + " Status of the Streamlistener: " + "\n"
+                + " Status of the Accountupdater: "
+                + (thrdAccountUpdate.isAlive() ? "running" : "crashed") + "\n"
                 + " Number of running workers: " + threadsAlive + "/"
                 + THREADNUM;
     }
