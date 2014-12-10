@@ -7,7 +7,7 @@ package mysql;
  * @version 1.0
  * 
  */
-public interface Modify {
+public interface DBIGUI {
     
     
 

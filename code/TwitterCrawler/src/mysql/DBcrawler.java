@@ -1,8 +1,10 @@
 package mysql;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 /**
@@ -13,7 +15,7 @@ import java.util.logging.Logger;
  * @version 1.0
  * 
  */
-public class DBWrite extends DBConnection implements Write {
+public class DBcrawler extends DBConnection implements DBICrawler {
 
     /**
      * configurate the connection to the database
@@ -26,7 +28,7 @@ public class DBWrite extends DBConnection implements Write {
      * @throws IllegalAccessException
      * @throws ClassNotFoundException
      */
-    public DBWrite(AccessData accessData, Logger logger)
+    public DBcrawler(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         super(accessData, logger);
@@ -34,8 +36,7 @@ public class DBWrite extends DBConnection implements Write {
 
     @Override
     public int[] addAccount(String name, long id, boolean isVer, int follower,
-            String location, String locationParent, String url, Date date,
-            boolean tweet) {
+            String location, String url, Date date, boolean tweet) {
 
         // TODO avoid sql injection
 
@@ -184,6 +185,37 @@ public class DBWrite extends DBConnection implements Write {
                     + e.getMessage() + "\n");
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+        return ret;
+    }
+
+    @Override
+    public long[] getNonVerifiedAccounts() {
+        String sqlCommand = "SELECT AccountId FROM accounts WHERE Verified = 0";
+
+        ResultSet res = null;
+        try {
+            Statement s = c.createStatement();
+            res = s.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+
+        Stack<Integer> st = new Stack<Integer>();
+        try {
+            while (res.next()) {
+                st.push(res.getInt("AccountId"));
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+        long[] ret = new long[st.size()];
+        for (int i = 0; i < st.size(); i++) {
+            ret[i] = (long) st.pop();
         }
         return ret;
     }

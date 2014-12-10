@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import mysql.AccessData;
-import mysql.DBRead;
+import mysql.DBcrawler;
 
 /**
  * class to get the non verified accounts that should be tracked
@@ -20,7 +20,7 @@ public class AccountUpdate implements RunnableListener {
     private ConcurrentHashMap<Long, Object> accounts;
     private HashSet<Long> myAccounts;
     private Logger logger;
-    private DBRead reader;
+    private DBcrawler reader;
 
     /**
      * initializing accountupdate with right database and Hashtable
@@ -39,7 +39,7 @@ public class AccountUpdate implements RunnableListener {
         this.logger = logger;
         myAccounts = new HashSet<Long>();
         try {
-            reader = new DBRead(accessData, logger);
+            reader = new DBcrawler(accessData, logger);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             this.logger.warning(e.getMessage() + "\n");

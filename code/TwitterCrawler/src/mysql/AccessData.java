@@ -9,7 +9,7 @@ package mysql;
 public class AccessData {
     private final String hostname;
     private final String port;
-    private final String db;
+    private final String name;
     private final String user;
     private final String pw;
 
@@ -32,37 +32,46 @@ public class AccessData {
         // set acces-data
         this.hostname = hostName;
         this.port = port;
-        this.db = dbName;
+        this.name = dbName;
         this.user = userName;
         this.pw = password;
     }
 
     /**
-     * return the hostname for the database
+     * returns the String needed to address a mysql database
      * 
-     * @return the hostname for the database as String
+     * @return the String needed to address a mysql database as String
      */
-    public String getHostname() {
-        return hostname;
+    public String getConnectionString() {
+        return "jdbc:mysql://" + hostname + ":" + port + "/" + name;
     }
 
-    /**
-     * return the port for the database
-     * 
-     * @return the port for the database as String
-     */
-    public String getPort() {
-        return port;
-    }
-
-    /**
+    // /**
+    // * return the hostname for the database
+    // *
+    // * @return the hostname for the database as String
+    // */
+    // public String getHostname() {
+    // return hostname;
+    // }
+    //
+    // /**
+    // * return the port for the database
+    // *
+    // * @return the port for the database as String
+    // */
+    // public String getPort() {
+    // return port;
+    // }
+    
+     /**
      * return the name for the database
-     * 
+     *
      * @return the name for the database as String
      */
-    public String getName() {
-        return db;
-    }
+     public String getName() {
+     return name;
+     }
 
     /**
      * return the user for the database

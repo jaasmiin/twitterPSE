@@ -9,7 +9,7 @@ import java.util.logging.Logger;
  * @version 1.0
  * 
  */
-public class DBModify extends DBConnection implements Modify{
+public class DBgui extends DBConnection implements DBIGUI{
 
     /**
      * configurate the connection to the database
@@ -22,7 +22,7 @@ public class DBModify extends DBConnection implements Modify{
      * @throws IllegalAccessException
      * @throws ClassNotFoundException
      */
-    public DBModify(AccessData accessData, Logger logger)
+    public DBgui(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         super(accessData, logger);

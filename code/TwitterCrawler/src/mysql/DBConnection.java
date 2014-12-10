@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
  * @version 1.0
  * 
  */
-public class DBConnection {
+public abstract class DBConnection {
 
     private final AccessData accessData;
     protected Connection c;
@@ -54,9 +54,7 @@ public class DBConnection {
      */
     public void connect() throws SQLException {
         // connect to database
-        String url = "jdbc:mysql://" + accessData.getHostname() + ":"
-                + accessData.getPort() + "/" + accessData.getName();
-        c = DriverManager.getConnection(url, accessData.getUser(),
+        c = DriverManager.getConnection(accessData.getConnectionString(), accessData.getUser(),
                 accessData.getPassword());
         logger.info("Connected to database " + accessData.getName()
                 + " with user " + accessData.getUser());

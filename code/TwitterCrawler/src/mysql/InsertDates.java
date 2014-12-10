@@ -36,7 +36,7 @@ public class InsertDates {
         // }
 
         try {
-            DBWrite t = new DBWrite(new AccessData("localhost", "3306",
+            DBcrawler t = new DBcrawler(new AccessData("localhost", "3306",
                     "twitter", "root", ""), Logger.getLogger("logger"));
             t.connect();
             Date d = new Date();

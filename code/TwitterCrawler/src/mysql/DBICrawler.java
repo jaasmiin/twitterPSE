@@ -9,7 +9,7 @@ import java.util.Date;
  * @author Holger Ebhart
  * @version 1.0
  */
-public interface Write {
+public interface DBICrawler {
 
     /**
      * insert an account into the database
@@ -37,7 +37,7 @@ public interface Write {
      *         if line 'other' has been modified (no success)
      */
     public int[] addAccount(String name, long id, boolean isVer, int follower,
-            String location, String locationParent, String url, Date date,
+            String location, String url, Date date,
             boolean tweet);
 
     /**
@@ -78,5 +78,13 @@ public interface Write {
      *         'other' if line 'other' has been modified (no success))
      */
     public int writeDay(Date date);
+    
+    /**
+     * returns all AccountId's that aren't verified
+     * 
+     * @return all AccountId's from the database that aren't verified as
+     *         Integer-Array, null if an error occured
+     */
+    public long[] getNonVerifiedAccounts();
 
 }

@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import mysql.AccessData;
-import mysql.DBWrite;
+import mysql.DBcrawler;
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -22,7 +22,7 @@ import twitter4j.User;
 public class StatusProcessor implements Runnable {
 
     protected boolean run = true;
-    private DBWrite t;
+    private DBcrawler t;
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     // use ConcurrentHashMap<Long,Object> as HashSet<Long>
@@ -49,7 +49,7 @@ public class StatusProcessor implements Runnable {
         this.logger = logger;
         this.accounts = accountsToTrack;
         try {
-            t = new DBWrite(accessData, logger);
+            t = new DBcrawler(accessData, logger);
         } catch (InstantiationException e) {
             // TODO Auto-generated catch block
             logger.warning(e.getMessage() + "\n");
@@ -180,8 +180,8 @@ public class StatusProcessor implements Runnable {
     private void accountToMySQL(User user, Date tweetDate, boolean tweet) {
         // !!! parent location !!!
         t.addAccount(user.getName(), user.getId(), user.isVerified(),
-                user.getFollowersCount(), user.getLocation(), "parentLocation",
-                user.getURL(), tweetDate, tweet);
+                user.getFollowersCount(), user.getLocation(), user.getURL(),
+                tweetDate, tweet);
     }
 
     /**
