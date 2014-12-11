@@ -1,6 +1,6 @@
 package mysql;
 
-import result.ResultAccount;
+import mysql.result.ResultAccount;
 
 /**
  * interface to read data from a database

@@ -2,6 +2,10 @@ package mysql;
 
 import java.util.logging.Logger;
 
+import mysql.result.ResultAccount;
+import mysql.result.ResultCategory;
+import mysql.result.ResultLocation;
+
 /**
  * class to modify the database restricted
  * 
@@ -26,6 +30,72 @@ public class DBgui extends DBConnection implements DBIGUI{
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         super(accessData, logger);
+    }
+
+    @Override
+    public ResultCategory[] getCategories() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResultCategory[] getCategories(String search) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResultLocation[] getLocations() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResultLocation[] getLocations(String search) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getAccountId(String accountName) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public ResultAccount[] getData(int[] categoryIds, int countryIds) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResultAccount[] getAccounts() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public ResultAccount[] getAccounts(String search) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int addAccount() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int setCategory(int accountId, int categoryId) {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int setLocation(int accountId, int locationId) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

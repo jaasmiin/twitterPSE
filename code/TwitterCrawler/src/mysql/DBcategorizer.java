@@ -2,7 +2,7 @@ package mysql;
 
 import java.util.logging.Logger;
 
-import result.ResultAccount;
+import mysql.result.ResultAccount;
 
 /**
  * class to address a database with read-only Access
