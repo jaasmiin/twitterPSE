@@ -13,10 +13,10 @@ import mysql.result.ResultLocation;
  * @version 1.0
  * 
  */
-public class DBgui extends DBConnection implements DBIGUI{
+public class DBgui extends DBConnection implements DBIGUI {
 
     /**
-     * configurate the connection to the database
+     * configure the connection to the database
      * 
      * @param accessData
      *            the access data to the specified mysql-database as AccessData
@@ -81,21 +81,21 @@ public class DBgui extends DBConnection implements DBIGUI{
     }
 
     @Override
-    public int addAccount() {
+    public boolean addAccount() {
         // TODO Auto-generated method stub
-        return 0;
+        return false;
     }
 
     @Override
-    public int setCategory(int accountId, int categoryId) {
+    public boolean setCategory(int accountId, int categoryId) {
         // TODO Auto-generated method stub
-        return 0;
+        return false;
     }
 
     @Override
-    public int setLocation(int accountId, int locationId) {
+    public boolean setLocation(int accountId, int locationId) {
         // TODO Auto-generated method stub
-        return 0;
+        return false;
     }
 
 }

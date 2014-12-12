@@ -5,7 +5,7 @@ import java.util.logging.Logger;
 import mysql.result.ResultAccount;
 
 /**
- * class to address a database with read-only Access
+ * class to address a database with the categorizer
  * 
  * @author Holger Ebhart
  * @version 1.0
@@ -29,8 +29,6 @@ public class DBcategorizer extends DBConnection implements DBICategorizer {
             ClassNotFoundException {
         super(accessData, logger);
     }
-
-
 
     @Override
     public ResultAccount[] getNonCategorized() {

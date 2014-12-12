@@ -1,6 +1,7 @@
 package main;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.FileHandler;
@@ -20,10 +21,12 @@ import twitter4j.Status;
  */
 public class Controller extends Thread {
     private final static int THREADNUM = 15;
+    private final static int MAX_SIZE = 50000;
 
     private ConcurrentLinkedQueue<Status> statusQueue;
+    private boolean run = true;
     private Logger log;
-    private String sqlPassword;
+    private AccessData accessData;
     private int runtime;
     private StreamListener streamListener;
     private Thread thrdStreamListener;
@@ -36,17 +39,15 @@ public class Controller extends Thread {
      * 
      * @param timeout
      *            the timeout in seconds (0 for infinity) as Integer
-     * @param pwd
-     *            the password for the root user of the database twitter as
-     *            String
-     * @throws SecurityException
+     * @param accessData
+     *            the access data to the database as AccessData
      * @throws IOException
+     *             if an error with the LogFile.log has occurred
      */
-    public Controller(int timeout, String pwd) throws SecurityException,
-            IOException {
+    public Controller(int timeout, AccessData accessData) throws IOException {
         log = getLogger();
         log.info("Controller started");
-        sqlPassword = pwd;
+        this.accessData = accessData;
         runtime = timeout;
 
         statusQueue = new ConcurrentLinkedQueue<Status>();
@@ -60,11 +61,13 @@ public class Controller extends Thread {
         thrdStreamListener.start();
         log.info("Crawler started");
 
-        AccessData accessData = new AccessData("localhost", "3306", "twitter",
-                "root", sqlPassword);
-
         ConcurrentHashMap<Long, Object> hashSet = new ConcurrentHashMap<Long, Object>();
-        accountUpdate = new AccountUpdate(log, hashSet, accessData);
+        try {
+            accountUpdate = new AccountUpdate(log, hashSet, accessData);
+        } catch (SQLException e) {
+            log.severe("AccountUpdate not started - running without AccountUpdate:\n"
+                    + e.getMessage());
+        }
         thrdAccountUpdate = new Thread(accountUpdate);
         thrdAccountUpdate.start();
 
@@ -88,6 +91,9 @@ public class Controller extends Thread {
                 }
             }, runtime * 1000);
         }
+
+        limitQueue();
+
     }
 
     /**
@@ -97,11 +103,15 @@ public class Controller extends Thread {
         boolean success = true;
 
         // send stop message
+        run = false;
         streamListener.exit();
         accountUpdate.exit();
         for (int i = 0; i < THREADNUM; i++) {
             statusProcessor[i].run = false;
         }
+
+        // join Controller
+        // TODO
 
         // join crawler
         System.out.print("\n Terminating crawler..");
@@ -197,5 +207,25 @@ public class Controller extends Thread {
                 + (thrdAccountUpdate.isAlive() ? "running" : "crashed") + "\n"
                 + " Number of running workers: " + threadsAlive + "/"
                 + THREADNUM;
+    }
+
+    private void limitQueue() {
+        while (run) {
+            if (statusQueue.size() > MAX_SIZE) {
+
+                log.info("StatusQueue has been cleared at "
+                        + statusQueue.size() + " Elements");
+
+                for (int i = 0; i < MAX_SIZE / 2; i++) {
+                    statusQueue.poll();
+                }
+
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                log.info("Controller has been interrupted\n" + e.getMessage());
+            }
+        }
     }
 }

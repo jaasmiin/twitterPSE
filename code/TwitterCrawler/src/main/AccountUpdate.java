@@ -32,9 +32,12 @@ public class AccountUpdate implements RunnableListener {
      *            ConcurrentHashMap<Long, Object>
      * @param accessData
      *            the access data for the root user of the database as String
+     * @throws SQLException
+     *             thrown if a connection to the database isn't possible
      */
     public AccountUpdate(Logger logger,
-            ConcurrentHashMap<Long, Object> accounts, AccessData accessData) {
+            ConcurrentHashMap<Long, Object> accounts, AccessData accessData)
+            throws SQLException {
         this.accounts = accounts;
         this.logger = logger;
         myAccounts = new HashSet<Long>();
@@ -43,8 +46,7 @@ public class AccountUpdate implements RunnableListener {
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             this.logger.warning(e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new SQLException("Could not connect to database.");
         }
     }
 
@@ -53,14 +55,14 @@ public class AccountUpdate implements RunnableListener {
 
         try {
             reader.connect();
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (SQLException e) {
+            logger.severe("Could not connect to database.\n" + e.getMessage());
+            return;
         }
 
         while (run) {
-            // refresh hashtable
 
+            // refresh hashtable
             long[] list = reader.getNonVerifiedAccounts();
             if (list != null) {
                 for (int i = 0; i < list.length; i++) {
@@ -72,10 +74,10 @@ public class AccountUpdate implements RunnableListener {
             }
 
             try {
-                Thread.sleep(1000); // sleep 1s
+                Thread.sleep(10000); // sleep 10s
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                // e.printStackTrace();
+                logger.info("AccountUpdate has been interrupted\n"
+                        + e.getMessage());
             }
         }
         reader.disconnect();

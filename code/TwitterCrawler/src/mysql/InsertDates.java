@@ -21,16 +21,8 @@ public class InsertDates {
         // System.out.println(a[i]);
         // }
         //
-        // } catch (InstantiationException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (IllegalAccessException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (ClassNotFoundException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // } catch (SQLException e) {
+        // } catch (InstantiationException | IllegalAccessException
+        // | ClassNotFoundException | SQLException e) {
         // // TODO Auto-generated catch block
         // e.printStackTrace();
         // }
@@ -50,18 +42,10 @@ public class InsertDates {
                 cal.add(Calendar.DATE, 1);
                 d = cal.getTime();
             } while (d.compareTo((new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"))
-                    .parse("12.12.2017 00:00:00")) <= 0);
+                    .parse("12.12.2018 00:00:00")) <= 0);
             t.disconnect();
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (SQLException e) {
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException | SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }

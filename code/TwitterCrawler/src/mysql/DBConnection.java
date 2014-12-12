@@ -22,15 +22,18 @@ public abstract class DBConnection {
     protected Logger logger;
 
     /**
-     * configurate the connection to the database
+     * configure the connection to the database
      * 
      * @param accessData
      *            the access data to the specified mysql-database as AccessData
      * @param logger
      *            a global logger for the whole program as Logger
      * @throws InstantiationException
+     *             thrown if the mysql-driver hasn't been found
      * @throws IllegalAccessException
+     *             thrown if the mysql-driver hasn't been found
      * @throws ClassNotFoundException
+     *             thrown if the mysql-driver hasn't been found
      */
     public DBConnection(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,
@@ -54,8 +57,8 @@ public abstract class DBConnection {
      */
     public void connect() throws SQLException {
         // connect to database
-        c = DriverManager.getConnection(accessData.getConnectionString(), accessData.getUser(),
-                accessData.getPassword());
+        c = DriverManager.getConnection(accessData.getConnectionString(),
+                accessData.getUser(), accessData.getPassword());
         logger.info("Connected to database " + accessData.getName()
                 + " with user " + accessData.getUser());
     }
@@ -71,8 +74,6 @@ public abstract class DBConnection {
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
-            e.printStackTrace();
-            // TODO
         }
     }
 }

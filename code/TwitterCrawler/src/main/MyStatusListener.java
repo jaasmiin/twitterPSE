@@ -38,8 +38,6 @@ public class MyStatusListener implements StatusListener {
     @Override
     public void onException(Exception arg0) {
         logger.warning(arg0.getMessage() + "\n");
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -56,21 +54,18 @@ public class MyStatusListener implements StatusListener {
 
     @Override
     public void onStallWarning(StallWarning arg0) {
-        // TODO
         logger.warning(arg0.getCode() + "\n" + arg0.getMessage() + "\n");
     }
 
     @Override
     public void onStatus(Status status) {
         queue.add(status);
-        // notifyAll();
     }
 
     @Override
     public void onTrackLimitationNotice(int arg0) {
         //logger.info("Track limitation notice: " + arg0);
         // TODO sends number of transmitted statusobjects
-
     }
 
 }

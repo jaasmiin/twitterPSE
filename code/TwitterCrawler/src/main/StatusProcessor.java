@@ -50,18 +50,10 @@ public class StatusProcessor implements Runnable {
         this.accounts = accountsToTrack;
         try {
             t = new DBcrawler(accessData, logger);
-        } catch (InstantiationException e) {
-            // TODO Auto-generated catch block
-            logger.warning(e.getMessage() + "\n");
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            logger.warning(e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            logger.warning(e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException e) {
+            t = null;
+            logger.severe(e.getMessage() + "\n");
         }
     }
 
@@ -70,11 +62,16 @@ public class StatusProcessor implements Runnable {
      */
     public void run() {
 
+        if (t == null) {
+            logger.severe("A StatusProcessor couldn't been started: No database connection!");
+            return;
+        }
+
         try {
             t.connect();
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        } catch (SQLException e) {
+            logger.severe(e.getMessage() + "\n");
+            return;
         }
 
         Status status;
@@ -96,9 +93,7 @@ public class StatusProcessor implements Runnable {
             try {
                 Thread.sleep(10);
             } catch (InterruptedException e) {
-                logger.warning(e.getMessage() + "\n");
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.info("StatusProcessor interrupted\n" + e.getMessage());
             }
         }
 

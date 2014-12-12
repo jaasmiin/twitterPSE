@@ -3,14 +3,12 @@ package mysql;
 import mysql.result.ResultAccount;
 
 /**
- * interface to read data from a database
+ * interface to the database for the categorizer
  * 
  * @author Holger Ebhart
  * @version 1.0
  */
 public interface DBICategorizer {
-
-
 
     /**
      * returns the non categorized accounts from the database (max. 100)

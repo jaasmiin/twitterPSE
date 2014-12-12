@@ -7,7 +7,6 @@ import twitter4j.FilterQuery;
 import twitter4j.RateLimitStatusListener;
 import twitter4j.Status;
 import twitter4j.StatusListener;
-import twitter4j.TwitterException;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
@@ -48,18 +47,18 @@ public class StreamListener implements RunnableListener {
     @Override
     public void run() {
 
-        try {
+        // try {
 
-            String tracker[] = {"a", "b", "c", "d", "e", "f", "g", "h", "i",
-                    "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u",
-                    "v", "w", "x", "y", "z", "#", "@" };
-            getStream(tracker);
+        String tracker[] = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
+                "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
+                "w", "x", "y", "z", "#", "@" };
+        getStream(tracker);
 
-        } catch (TwitterException e) {
-            logger.warning("ErrorCode: " + e.getExceptionCode() + "\nMessage: "
-                    + e.getErrorMessage() + "\n");
-            e.printStackTrace();
-        }
+        // } catch (TwitterException e) {
+        // logger.warning("ErrorCode: " + e.getExceptionCode() + "\nMessage: "
+        // + e.getErrorMessage() + "\n");
+        // e.printStackTrace();
+        // }
 
     }
 
@@ -69,12 +68,10 @@ public class StreamListener implements RunnableListener {
      * 
      * @param track
      *            keywords to track
-     * @throws IllegalStateException
-     * @throws TwitterException
      */
-    private void getStream(String[] track) throws IllegalStateException,
-
-    TwitterException {
+    private void getStream(String[] track) // throws IllegalStateException,
+                                           // TwitterException
+    {
 
         twitterStream = new TwitterStreamFactory().getInstance();
 

@@ -1,6 +1,7 @@
 package main;
 
 /**
+ * interface for listener that run in Threads
  * 
  * @author Holger Ebhart
  * @version 1.0

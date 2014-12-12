@@ -30,7 +30,7 @@ public class MyRateLimitStatusListener implements RateLimitStatusListener {
 
     @Override
     public void onRateLimitStatus(RateLimitStatusEvent arg0) {
-        // TODO Auto-generated method stub
+        // TODO add info to logger
 
     }
 

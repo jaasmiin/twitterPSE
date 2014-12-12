@@ -1,546 +1,146 @@
-Dez 07, 2014 3:28:54 PM main.Controller <init>
+Dez 12, 2014 2:33:14 PM main.Controller <init>
 Information: Controller started
-Dez 07, 2014 3:28:54 PM main.Controller run
+Dez 12, 2014 2:33:14 PM main.Controller run
 Information: Crawler started
-Dez 07, 2014 3:28:54 PM main.Controller run
+Dez 12, 2014 2:33:17 PM main.Controller run
 Information: StatusProcessors started
-Dez 07, 2014 3:29:26 PM main.Controller <init>
-Information: Controller started
-Dez 07, 2014 3:29:26 PM main.Controller run
-Information: Crawler started
-Dez 07, 2014 3:29:26 PM main.Controller run
-Information: StatusProcessors started
-Dez 07, 2014 3:29:39 PM main.Controller <init>
-Information: Controller started
-Dez 07, 2014 3:29:40 PM main.Controller run
-Information: Crawler started
-Dez 07, 2014 3:29:40 PM main.Controller run
-Information: StatusProcessors started
-Dez 07, 2014 3:29:40 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:40 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:41 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:42 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:42 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:42 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:29:43 PM mysql.DBConnection connect
+Dez 12, 2014 2:33:17 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:27 PM main.Controller <init>
-Information: Controller started
-Dez 07, 2014 3:32:27 PM main.Controller run
-Information: Crawler started
-Dez 07, 2014 3:32:27 PM main.Controller run
-Information: StatusProcessors started
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:28 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:02:06 PM main.Controller limitQueue
+Information: StatusQueue has been cleared at 50069 Elements
+Dez 12, 2014 3:05:59 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:29 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:29 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:30 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:30 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:31 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:31 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:32 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:32 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:34 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:35 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:37 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:41 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:42 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:43 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:44 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:44 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:45 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:46 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:45 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:47 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:47 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:45 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:48 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:45 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:49 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:52 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:45 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:53 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:54 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:45 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:55 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:56 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:11:45 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:32:57 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:32:59 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:01 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:04 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:05 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:06 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:08 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:09 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:12 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:13 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:16 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:17 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:18 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:19 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:20 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:22 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:23 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:24 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:25 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:27 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:28 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:30 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:31 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:33 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:34 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:34 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 3:33:35 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 3:33:35 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:52:47 PM main.Controller <init>
-Information: Controller started
-Dez 07, 2014 6:52:47 PM main.Controller run
-Information: Crawler started
-Dez 07, 2014 6:52:47 PM main.Controller run
-Information: StatusProcessors started
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:52:48 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:31 PM main.Controller <init>
-Information: Controller started
-Dez 07, 2014 6:54:32 PM main.Controller run
-Information: Crawler started
-Dez 07, 2014 6:54:32 PM main.Controller run
-Information: StatusProcessors started
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:33 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 6:54:52 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:08 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:08 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:08 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:08 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:08 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:09 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:09 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:09 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:09 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:55:10 PM main.Controller shutdown
+Dez 12, 2014 3:11:45 PM main.Controller shutdown
 Information: Program terminated by user
-Dez 07, 2014 6:59:06 PM main.Controller <init>
+Dez 12, 2014 3:33:29 PM main.Controller <init>
 Information: Controller started
-Dez 07, 2014 6:59:06 PM main.Controller run
+Dez 12, 2014 3:33:29 PM main.Controller run
 Information: Crawler started
-Dez 07, 2014 6:59:06 PM main.Controller run
+Dez 12, 2014 3:33:29 PM main.Controller run
 Information: StatusProcessors started
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:06 PM mysql.DBConnection connect
+Dez 12, 2014 3:33:30 PM mysql.DBConnection connect
 Information: Connected to database twitter with user root
-Dez 07, 2014 6:59:22 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:41 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:42 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:42 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:42 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:42 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:42 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:43 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:43 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:35 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:43 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:43 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:43 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:43 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM mysql.DBConnection disconnect
+Dez 12, 2014 3:33:44 PM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
-Dez 07, 2014 6:59:36 PM main.Controller shutdown
-Information: Program terminated by user
-Dez 07, 2014 7:00:06 PM main.Controller <init>
-Information: Controller started
-Dez 07, 2014 7:00:06 PM main.Controller run
-Information: Crawler started
-Dez 07, 2014 7:00:06 PM main.Controller run
-Information: StatusProcessors started
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:07 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 07, 2014 7:00:25 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:36 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:36 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:36 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:36 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:37 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:38 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:38 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 07, 2014 7:00:38 PM main.Controller shutdown
-Information: Program terminated by user
-Dez 09, 2014 8:48:39 PM main.Controller <init>
-Information: Controller started
-Dez 09, 2014 8:48:39 PM main.Controller run
-Information: Crawler started
-Dez 09, 2014 8:48:40 PM main.Controller run
-Information: StatusProcessors started
-Dez 09, 2014 8:49:09 PM main.Controller <init>
-Information: Controller started
-Dez 09, 2014 8:49:09 PM main.Controller run
-Information: Crawler started
-Dez 09, 2014 8:49:13 PM main.Controller run
-Information: StatusProcessors started
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:19 PM mysql.DBConnection connect
-Information: Connected to database twitter with user root
-Dez 09, 2014 8:49:29 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:31 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:32 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:33 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:33 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:33 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:33 PM mysql.DBConnection disconnect
-Information: Disonnected from database twitter with user root
-Dez 09, 2014 8:49:33 PM main.Controller shutdown
+Dez 12, 2014 3:33:44 PM main.Controller shutdown
 Information: Program terminated by user

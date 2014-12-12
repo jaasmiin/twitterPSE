@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 public class DBcrawler extends DBConnection implements DBICrawler {
 
     /**
-     * configurate the connection to the database
+     * configure the connection to the database
      * 
      * @param accessData
      *            the access data to the specified mysql-database as AccessData
@@ -35,10 +35,8 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     }
 
     @Override
-    public int[] addAccount(String name, long id, boolean isVer, int follower,
-            String location, String url, Date date, boolean tweet) {
-
-        // TODO avoid sql injection
+    public boolean[] addAccount(String name, long id, boolean isVer,
+            int follower, String location, String url, Date date, boolean tweet) {
 
         // insert location
         // writeLocation(location, locationParent);
@@ -54,8 +52,13 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             }
         }
 
+        // prevent sql injection
+        // if (){
+        // return new boolean[] {false, false};
+        // }
+
         // insert account
-        String sqlCommand = "INSERT INTO accounts (AccountId,AccountName,Verified,Follower,Location,URL) VALUES ("
+        String sqlCommand = "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL) VALUES ("
                 + id
                 + ",\""
                 + name
@@ -74,20 +77,17 @@ public class DBcrawler extends DBConnection implements DBICrawler {
 
         // System.out.println(sqlCommand);
         Statement s;
-        int result1 = -1;
+        boolean result1 = false;
         try {
             s = c.createStatement();
-            result1 = s.executeUpdate(sqlCommand);
+            result1 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
-            result1 = -1;
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
 
         // set Tweet count
-        sqlCommand = "INSERT INTO tweets (Account,Counter,Day) VALUES ((SELECT Id FROM accounts WHERE AccountId = "
+        sqlCommand = "INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = "
                 + id
                 + "),"
                 + (tweet ? "1" : "0")
@@ -96,29 +96,28 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + "\" )) ON DUPLICATE KEY UPDATE Counter = Counter + "
                 + (tweet ? "1" : "0") + ";";
 
-        int result2 = -1;
+        boolean result2 = false;
         try {
             s = c.createStatement();
-            result2 = s.executeUpdate(sqlCommand);
+            result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
-            result2 = -1;
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
 
-        return new int[] {result1, result2 };
+        return new boolean[] {result1, result2 };
     }
 
     @Override
-    public int writeRetweet(long id, int location, Date date)
+    public boolean writeRetweet(long id, int location, Date date)
             throws SQLException {
 
         // TODO How to add Day
 
-        String sqlCommand = "INSERT INTO retweets (Account,Location, Counter,CounterNonLocalized, Day) VALUES ("
-                + "(SELECT Id FROM accounts WHERE AccountId = "
+        // TODO prevent sql injection
+
+        String sqlCommand = "INSERT INTO retweets (AccountId, LocationId, Counter, CounterNonLocalized, DayId) VALUES ("
+                + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
                 + id
                 + "),"
                 + 1
@@ -137,32 +136,30 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         // System.out.println(sqlCommand);
         Statement s = c.createStatement();
 
-        return s.executeUpdate(sqlCommand);
+        return s.executeUpdate(sqlCommand) == 0 ? true : false;
 
     }
 
     @Override
-    public int writeLocation(String name, String parent) {
+    public boolean writeLocation(String name, int parent) {
 
-        // TODO avoid sql injection
+        // TODO prevent sql injection
 
         // TODO what if parent location isn't in database
 
-        String sqlCommand = "INSERT INTO location (Name, Parent) VALUES (\""
+        String sqlCommand = "INSERT INTO location (Name, ParentId) VALUES (\""
                 + name + "\", (SELECT Id FROM location WHERE Name = \""
-                + parent + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Parent = \""
+                + parent + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE ParentId = \""
                 + parent + "\";";
 
         Statement s;
-        int ret = -1;
+        boolean ret = false;
         try {
             s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand);
+            ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
 
         return ret;
@@ -170,47 +167,43 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     }
 
     @Override
-    public int writeDay(Date date) {
+    public boolean writeDay(Date date) {
 
         String sqlCommand = "INSERT INTO day (Day) VALUES (\""
                 + dateFormat.format(date)
                 + "\") ON DUPLICATE KEY UPDATE Day = Day";
         Statement s;
-        int ret = -1;
+        boolean ret = false;
         try {
             s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand);
+            ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
         return ret;
     }
 
     @Override
     public long[] getNonVerifiedAccounts() {
-        String sqlCommand = "SELECT AccountId FROM accounts WHERE Verified = 0";
+        String sqlCommand = "SELECT TwitterAccountId FROM accounts WHERE Verified = 0";
 
         ResultSet res = null;
         try {
             Statement s = c.createStatement();
             res = s.executeQuery(sqlCommand);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warning("Couldn't execute sql query\n" + e.getMessage());
             return null;
         }
 
         Stack<Integer> st = new Stack<Integer>();
         try {
             while (res.next()) {
-                st.push(res.getInt("AccountId"));
+                st.push(res.getInt("TwitterAccountId"));
             }
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warning("Couldn't execute sql query\n" + e.getMessage());
             return null;
         }
         long[] ret = new long[st.size()];

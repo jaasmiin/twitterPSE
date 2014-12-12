@@ -9,6 +9,7 @@ package mysql.result;
 public class ResultLocation extends Result {
 
     private String name;
+    private String locCode;
     private ResultLocation parent;
 
     /**
@@ -18,17 +19,21 @@ public class ResultLocation extends Result {
      *            the id of the location in the database as int
      * @param name
      *            the name of the location as String
+     * @param locCode
+     *            the code (3 characters) of the location (eg. GER) as String
      * @param parent
      *            the parent location of this location as ResultLocation
      */
-    public ResultLocation(int id, String name, ResultLocation parent) {
+    public ResultLocation(int id, String name, String locCode,
+            ResultLocation parent) {
         super(id);
         this.name = name;
+        this.locCode = locCode;
         this.parent = parent;
     }
 
     /**
-     * rerurns the name of the category
+     * returns the name of the category
      * 
      * @return the name of the category as String
      */
@@ -43,6 +48,15 @@ public class ResultLocation extends Result {
      */
     public ResultLocation getParent() {
         return parent;
+    }
+
+    /**
+     * returns the location code of the location (3 characters)
+     * 
+     * @return the location code of the location (3 characters) as String
+     */
+    public String getLocCode() {
+        return locCode;
     }
 
 }

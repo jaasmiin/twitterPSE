@@ -29,10 +29,10 @@ public interface DBIGUI {
 
     public ResultAccount[] getAccounts(String search);
 
-    public int addAccount();
+    public boolean addAccount();
 
-    public int setCategory(int accountId, int categoryId);
+    public boolean setCategory(int accountId, int categoryId);
 
-    public int setLocation(int accountId, int locationId);
+    public boolean setLocation(int accountId, int locationId);
 
 }

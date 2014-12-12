@@ -31,14 +31,12 @@ public interface DBICrawler {
      * @param tweet
      *            true if a tweet status object has been read, false if a
      *            retweets status object has been read
-     * @return integer-array with two results of the database requests. First is
+     * @return boolean-array with two results of the database requests. First is
      *         result for adding the account, second is for adding the tweet.
-     *         Database-request result is 0 if request was successfully, 'other'
-     *         if line 'other' has been modified (no success)
+     * 
      */
-    public int[] addAccount(String name, long id, boolean isVer, int follower,
-            String location, String url, Date date,
-            boolean tweet);
+    public boolean[] addAccount(String name, long id, boolean isVer,
+            int follower, String location, String url, Date date, boolean tweet);
 
     /**
      * inserts a retweet into the database, if it's still in the database the
@@ -50,11 +48,10 @@ public interface DBICrawler {
      *            TO COMPLETE 0 if non localizable
      * @param date
      *            the day when the retweet has been written as Date
-     * @return database-request result as Integer (0 if request successfully,
-     *         'other' if line 'other' has been modified (no success))
+     * @return database-request result as Boolean
      * @throws SQLException
      */
-    public int writeRetweet(long id, int location, Date date)
+    public boolean writeRetweet(long id, int location, Date date)
             throws SQLException;
 
     /**
@@ -63,22 +60,20 @@ public interface DBICrawler {
      * @param name
      *            the name of the location as String
      * @param parent
-     *            the parent location of the current location as String
-     * @return database-request result as Integer (0 if request successfully,
-     *         'other' if line 'other' has been modified (no success))
+     *            the parent location of the current location as int
+     * @return database-request result as Boolean
      */
-    public int writeLocation(String name, String parent);
+    public boolean writeLocation(String name, int parent);
 
     /**
      * inserts a new date into the database
      * 
      * @param date
      *            the date to write into the database as Date
-     * @return database-request result as Integer (0 if request successfully,
-     *         'other' if line 'other' has been modified (no success))
+     * @return database-request result as Boolean
      */
-    public int writeDay(Date date);
-    
+    public boolean writeDay(Date date);
+
     /**
      * returns all AccountId's that aren't verified
      * 
