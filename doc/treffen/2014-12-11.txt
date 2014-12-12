@@ -1,0 +1,11 @@
+Treffen mit Betreuern am 11.12.2014
+===============
+
+Besprochenes:
+-------------------
+- Queue-limit im Crawler (->Holger)
+- noch keine Neuigkeiten bezüglich des Lokalisierungswebdienstes, aber bis Mittwoch soll uns ein Service zur Verfügung stehen (->Matthias)
+- Querverbindungen in der DMOZ-Datenbank unter verschiedenen Kategorien sollen von vorneherein schon aufgelöst werden (->Paul)
+- In Entwurf: Wo werden die Daten für die GUI vorverarbeitet? (-> Matthias? / Maxi? / Phillip?)
+- Am 18.12.2014 erstes Entwurfsdokument präsentieren
+- Treffen am 09.01.2015 um 17:00 oder evtl. früher
