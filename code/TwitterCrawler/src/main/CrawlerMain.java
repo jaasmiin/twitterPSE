@@ -18,7 +18,7 @@ public class CrawlerMain {
     private static Controller cntrl;
     private final static String ERROR = "ERROR: A big error has occuered!"
             + "The program will be shut down. Please check your input:"
-            + "'<timeout> <database-name> <database-password>'.";
+            + "'[timeout] [hostname] [port] [database-name] [database-user] [database-password]'.";
 
     /**
      * starts a crawler, that collects data from twitter
@@ -51,7 +51,7 @@ public class CrawlerMain {
             userInput();
         } else {
             System.out
-                    .println(" Error. Wrong argument. Using: crawler [runtime] [databaseName] [password]");
+                    .println(" Error. Wrong argument. Using: crawler [runtime] [hostname] [port] [databaseName] [userName] [password]");
             System.out
                     .println("  runtime:\t The run-time in seconds that the crawler should run.");
             System.out

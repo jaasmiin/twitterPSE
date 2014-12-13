@@ -6,16 +6,16 @@ package mysql.result;
  * @author Holger Ebhart
  * @version 1.0
  */
-public class ResultAccount extends Result {
+public class Account extends Result {
 
     private String name;
     private String url;
     private long twitterId;
     private int follower;
     private String location;
-    private ResultCategory[] categorys;
-    private ResultTweet[] tweets;
-    private ResultRetweet[] retweets;
+    private Category[] categorys;
+    private Tweet[] tweets;
+    private Retweet[] retweets;
 
     /**
      * create a new object to store a account-data
@@ -39,9 +39,9 @@ public class ResultAccount extends Result {
      * @param retweets
      *            the retweets of the account as ResultRetweet[]
      */
-    public ResultAccount(int id, long twitterId, String name, String url,
-            int follower, String location, ResultCategory[] categorys,
-            ResultTweet[] tweets, ResultRetweet[] retweets) {
+    public Account(int id, long twitterId, String name, String url,
+            int follower, String location, Category[] categorys,
+            Tweet[] tweets, Retweet[] retweets) {
         super(id);
         this.twitterId = twitterId;
         this.name = name;
@@ -71,10 +71,10 @@ public class ResultAccount extends Result {
      * @param categorys
      *            the categories of the account as ResultCategory[]
      */
-    public ResultAccount(int id, long twitterId, String name, String url,
-            int follower, String location, ResultCategory[] categorys) {
+    public Account(int id, long twitterId, String name, String url,
+            int follower, String location, Category[] categorys) {
         this(id, twitterId, name, url, follower, location, categorys,
-                new ResultTweet[0], new ResultRetweet[0]);
+                new Tweet[0], new Retweet[0]);
     }
 
     /**
@@ -93,10 +93,22 @@ public class ResultAccount extends Result {
      * @param location
      *            the location of the account as String
      */
-    public ResultAccount(int id, long twitterId, String name, String url,
+    public Account(int id, long twitterId, String name, String url,
             int follower, String location) {
         this(id, twitterId, name, url, follower, location,
-                new ResultCategory[0], new ResultTweet[0], new ResultRetweet[0]);
+                new Category[0], new Tweet[0], new Retweet[0]);
+    }
+
+    /**
+     * create a new object to store a account-data
+     * 
+     * @param id
+     *            the id of the account in the database as int
+     * @param url
+     *            the official url of the account as String
+     */
+    public Account(int id, String url) {
+        this(id, 0, null, url, 0, null);
     }
 
     /**
@@ -149,7 +161,7 @@ public class ResultAccount extends Result {
      * 
      * @return the categories of the account as ResultCategory[]
      */
-    public ResultCategory[] getCategorys() {
+    public Category[] getCategorys() {
         return categorys;
     }
 
@@ -158,7 +170,7 @@ public class ResultAccount extends Result {
      * 
      * @return the tweets of the account as ResultTweet[]
      */
-    public ResultTweet[] getTweets() {
+    public Tweet[] getTweets() {
         return tweets;
     }
 
@@ -167,7 +179,7 @@ public class ResultAccount extends Result {
      * 
      * @return the retweets of the account as ResultRetweet[]
      */
-    public ResultRetweet[] getRetweets() {
+    public Retweet[] getRetweets() {
         return retweets;
     }
 

@@ -7,9 +7,9 @@ package mysql.result;
  * @version 1.0
  * 
  */
-public class ResultCategory extends Result {
+public class Category extends Result {
 
-    private ResultCategory parent;
+    private Category parent;
     private String category;
 
     /**
@@ -23,7 +23,7 @@ public class ResultCategory extends Result {
      * @param id
      *            the id of the category as int
      */
-    public ResultCategory(ResultCategory parent, String name, int id) {
+    public Category(Category parent, String name, int id) {
         super(id);
         this.parent = parent;
         this.category = name;
@@ -34,7 +34,7 @@ public class ResultCategory extends Result {
      * 
      * @return the parent-category as ResultCategory
      */
-    public ResultCategory getParent() {
+    public Category getParent() {
         return parent;
     }
 
