@@ -58,7 +58,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         // }
 
         // insert account
-        String sqlCommand = "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL) VALUES ("
+        String sqlCommand = "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ("
                 + id
                 + ",\""
                 + name
@@ -73,7 +73,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + 1
                 + ","
                 + (url == null ? "NULL" : "\"" + url + "\"")
-                + ") ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
+                + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
 
         // System.out.println(sqlCommand);
         Statement s;
@@ -89,11 +89,11 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         // set Tweet count
         sqlCommand = "INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = "
                 + id
-                + "),"
+                + " LIMIT 1),"
                 + (tweet ? "1" : "0")
                 + ", (SELECT Id FROM day WHERE Day = \""
                 + dateFormat.format(date)
-                + "\" )) ON DUPLICATE KEY UPDATE Counter = Counter + "
+                + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
                 + (tweet ? "1" : "0") + ";";
 
         boolean result2 = false;
@@ -203,7 +203,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 st.push(res.getInt("TwitterAccountId"));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't execute sql query\n" + e.getMessage());
+            logger.warning("Couldn't read sql result\n" + e.getMessage());
             return null;
         }
         long[] ret = new long[st.size()];

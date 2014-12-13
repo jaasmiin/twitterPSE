@@ -1,6 +1,9 @@
 package mysql;
 
-import mysql.result.ResultAccount;
+import java.util.List;
+
+import mysql.result.Account;
+import mysql.result.Category;
 
 /**
  * interface to the database for the categorizer
@@ -12,9 +15,20 @@ public interface DBICategorizer {
 
     /**
      * returns the non categorized accounts from the database (max. 100)
+     * IMPORTANT only id and url are set
      * 
-     * @return the non categorized accounts from the database as Result
+     * @return the non categorized accounts from the database as List of Account
      */
-    public ResultAccount[] getNonCategorized();
+    public List<Account> getNonCategorized();
+
+    /**
+     * inserts first the category in the database and then an entry to connect
+     * the account with the category
+     * 
+     * @param accountId
+     * @param category
+     * @return the result of the sql-query as boolean
+     */
+    public boolean addCategoryToAccount(int accountId, Category category);
 
 }

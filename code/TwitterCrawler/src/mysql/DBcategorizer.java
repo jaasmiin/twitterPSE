@@ -1,8 +1,14 @@
 package mysql;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
-import mysql.result.ResultAccount;
+import mysql.result.Account;
+import mysql.result.Category;
 
 /**
  * class to address a database with the categorizer
@@ -14,7 +20,7 @@ import mysql.result.ResultAccount;
 public class DBcategorizer extends DBConnection implements DBICategorizer {
 
     /**
-     * configurate the connection to the database
+     * configure the connection to the database
      * 
      * @param accessData
      *            the access data to the specified mysql-database as AccessData
@@ -31,9 +37,42 @@ public class DBcategorizer extends DBConnection implements DBICategorizer {
     }
 
     @Override
-    public ResultAccount[] getNonCategorized() {
+    public List<Account> getNonCategorized() {
+
+        String sqlCommand = "SELECT (Id,URL) FROM accounts WHERE Categorized = 0 LIMIT 100;";
+
+        ResultSet result = null;
+        try {
+            Statement s = c.createStatement();
+            result = s.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("Couldn't execute sql query\n" + e.getMessage());
+            return null;
+        }
+
+        List<Account> ret = new ArrayList<Account>();
+        try {
+            while (result.next()) {
+                ret.add(new Account(result.getInt("Id"), result
+                        .getString("URL")));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result\n" + e.getMessage());
+            ret.remove(ret.size() - 1);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public boolean addCategoryToAccount(int accountId, Category category) {
         // TODO Auto-generated method stub
-        return null;
+
+        // add category to account
+
+        // set categorized = true
+
+        return false;
     }
 
 }

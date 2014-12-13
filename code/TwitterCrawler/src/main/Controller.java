@@ -128,7 +128,7 @@ public class Controller extends Thread {
 
         // join accountupdater
         success = true;
-        System.out.print(" Terminating accountupdater..");
+        System.out.print(" Terminating accountUpdater..");
         try {
             thrdAccountUpdate.join();
         } catch (InterruptedException e) {

@@ -2,9 +2,9 @@ package mysql;
 
 import java.util.logging.Logger;
 
-import mysql.result.ResultAccount;
-import mysql.result.ResultCategory;
-import mysql.result.ResultLocation;
+import mysql.result.Account;
+import mysql.result.Category;
+import mysql.result.Location;
 
 /**
  * class to modify the database restricted
@@ -33,25 +33,25 @@ public class DBgui extends DBConnection implements DBIGUI {
     }
 
     @Override
-    public ResultCategory[] getCategories() {
+    public Category[] getCategories() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ResultCategory[] getCategories(String search) {
+    public Category[] getCategories(String search) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ResultLocation[] getLocations() {
+    public Location[] getLocations() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ResultLocation[] getLocations(String search) {
+    public Location[] getLocations(String search) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -63,19 +63,19 @@ public class DBgui extends DBConnection implements DBIGUI {
     }
 
     @Override
-    public ResultAccount[] getData(int[] categoryIds, int countryIds) {
+    public Account[] getData(int[] categoryIds, int countryIds) {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ResultAccount[] getAccounts() {
+    public Account[] getAccounts() {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    public ResultAccount[] getAccounts(String search) {
+    public Account[] getAccounts(String search) {
         // TODO Auto-generated method stub
         return null;
     }
