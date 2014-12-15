@@ -1,0 +1,13 @@
+Treffen 15.12.14
+================
+
+
+* Datenfluss Diagramm optimieren (Lidia)
+* Anderungen an TwitterGIO_Erweiterung2
+	* MVC nicht Model, View, Controller nennen
+	* GUI Elemente als Package in Aus- und Eingabeelemente aufteilen, Package enthält jeweils View & Calculator
+		(Matthias und Philipp)
+* getData mehrere Funktionen AccountID und DatumRange in DBIGUI hinzufügen Rückgabe Result[] (Maximilian)
+* ER-Modell aktualisieren (Maximilian)
+* Sequenzdiagramm zu Beobachter: GUI <-> Elemente (Maximilian)
+* Sequenzdiagramm: GUI läd Daten bei Start von DB (Philipp)
