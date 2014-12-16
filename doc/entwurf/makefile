@@ -2,7 +2,7 @@ PDF=pdflatex
 NAME=entwurf.tex
 
 pdf:
-	dia -e include/er.pdf include/er.dia
+	cd dia && dia -t pdf *.dia && cd ..
 	$(PDF) $(NAME)
 	$(PDF) $(NAME)
 	make clean

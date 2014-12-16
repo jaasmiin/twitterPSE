@@ -6,11 +6,11 @@ package mysql.result;
  * @author Holger Ebhart
  * @version 1.0
  */
-public class ResultLocation extends Result {
+public class Location extends Result {
 
     private String name;
     private String locCode;
-    private ResultLocation parent;
+    private Location parent;
 
     /**
      * store a location from the database
@@ -24,8 +24,8 @@ public class ResultLocation extends Result {
      * @param parent
      *            the parent location of this location as ResultLocation
      */
-    public ResultLocation(int id, String name, String locCode,
-            ResultLocation parent) {
+    public Location(int id, String name, String locCode,
+            Location parent) {
         super(id);
         this.name = name;
         this.locCode = locCode;
@@ -46,7 +46,7 @@ public class ResultLocation extends Result {
      * 
      * @return the parent location of this location as ResultLocation
      */
-    public ResultLocation getParent() {
+    public Location getParent() {
         return parent;
     }
 

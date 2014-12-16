@@ -9,7 +9,7 @@ import java.util.Date;
  * @version 1.0
  * 
  */
-public class ResultTweet {
+public class Tweet {
 
     private Date date;
     private int counter;
@@ -22,7 +22,7 @@ public class ResultTweet {
      * @param counter
      *            the number of localized tweets as int
      */
-    public ResultTweet(Date date, int counter) {
+    public Tweet(Date date, int counter) {
         this.date = date;
         this.counter = counter;
     }
