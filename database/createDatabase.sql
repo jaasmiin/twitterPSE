@@ -90,8 +90,7 @@ ALTER TABLE day ADD CONSTRAINT uc_day UNIQUE (Day);
 ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Name);
 
 /* add required entrys for testing */
-/*
 INSERT INTO location (Name, ParentId) VALUES ("TestLand", NULL);
 INSERT INTO category (Name, ParentId) VALUES ("TestCategory", NULL);
-*/
+
 
