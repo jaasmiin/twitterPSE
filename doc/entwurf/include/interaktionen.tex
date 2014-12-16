@@ -21,5 +21,16 @@ Um zu verdeutlichen wie die Daten von Twitter innerhalb des Crawlers verarbeitet
 
 \section{Kategorisierer}
 
+\subsection{Start des Kategorisierers}
+Der Kategorisierer soll in regelmäßigen Abständen vom Betriebssystem gestartet werden und daraufhin die neu gefundenen Accounts kategorisieren.
+
+Der Ablauf des Kategorsierers ist im Sequenzdiagramm \ref{fig:categorizerSeq} zu sehen.
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{dia/categorizerSequence}
+	\caption{Sequenzdiagramm für einen Durchlauf des Kategorisierers. Dabei sind exemplarisch nur jeweils der erste unkategorisierte Account und die erste gefundene Kategorie aufgeführt.}
+	\label{fig:categorizerSeq}
+\end{figure}
+
+Im ersten Schritt wird also eine Liste von unkategorisierten Accounts ausgelesen. Für jeden dieser Acounts wird eine Liste passender Kategorien ermittelt, die dann nach und nach in die Datenbank geschrieben werden.
 
 \section{GUI}
