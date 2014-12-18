@@ -8,4 +8,4 @@ pdf:
 	make clean
 
 clean:
-	rm -f *.log *.aux *.toc *.lof *.out *~
+	rm -f *.log *.aux *.toc *.lof *.out *~ dia/*.pdf
