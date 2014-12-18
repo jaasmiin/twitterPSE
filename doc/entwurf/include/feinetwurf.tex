@@ -3,14 +3,13 @@
 \section{Datenbankzugriff}\label{sec:datenbankzugriff}
 Die zentrale Komponente unseres Systems ist die Datenbank. In sie fügt der Crawler neue Datensätze ein und aktualisiert vorhandene. Der Kategorisierer ist dafür zuständig, dass die gefundenen Accounts nach der DMOZ.org Datenbank in Kategorien unterteilt werden. Die GUI wiederum ist die Komponente die die Daten aus der Datenbank ausliest und visualisiert. Gegebenenfalls kann sie auch Einträge verändern beziehungsweise vervollständigen.
 \\Da alle unsere drei Systemkomponenten lesend, sowie schreibend auf die Datenbank zugreifen, haben wir uns entschlossen ein Paket für den Datenbankzugriff für alle Komponenten zur Verfügung stellen. Dieses sogenannte mysql-Package ist dann für den Auf- und Abbau der Verbindung zur Datenbank zuständig, sowie für das Schreiben und Lesen in beziehungsweise aus der Datenbank. Es stellt für jede der drei Komponenten ein eigenes Interface zur Verfügung, sodass jede Komponente nur die für sie erlaubten Änderungen an der Datenbank vornehmen kann.
-In \cref{fig:mysql-package} ist der Aufbau des mysql-Packages zu sehen. Das darin eingeschlossene result-Package stellt Objekt und Methoden zu Verfügung um die Ergebnisse aus der Datenbank zu handeln.\\
-
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{dia/uml_mysql-package}
-\caption{UML-Klassendiagramm des mysql-Packages}
-\label{fig:mysql-package}
+In \cref{fig:mysql-package} ist der Aufbau des mysql-Packages zu sehen. Das darin eingeschlossene result-Package stellt Objekt und Methoden zu Verfügung um die Ergebnisse aus der Datenbank zu handeln.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight, keepaspectratio=true]{dia/uml_mysql-package}
+	\caption{UML-Klassendiagramm des mysql-Packages}
+	\label{fig:mysql-package}
 \end{figure}
-
 
 \begin{description}
 \item[AccessData] Klasse zur Verwaltung der Zugriffsdaten für die Datenbank.
@@ -30,11 +29,11 @@ In \cref{fig:mysql-package} ist der Aufbau des mysql-Packages zu sehen. Das dari
 \section{Crawler}
 Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die Twitter-API Daten sammelt. Dazu ist es nötig diese Daten zu empfangen, dann zu puffern und schlussendlich in die Datenbank zu Schreiben. Allerdings müssen die Daten noch gefiltert werden, da wir nur Daten von verifizierten Twitter-Accounts (und manuell hinzugefügten) speichern. Sind die Daten gefiltert, werden sie vom Crawler noch lokalisiert. Das heißt, dass jedem Account beziehungsweise jedem Retweet eine Geoposition/Land zugeordnet wird. Ist dies erfolgt so werden die Daten in die Datenbank geschrieben.
 \\ In \cref{fig:uml_crawler} ist der Aufbau des Crawlers anhand eines UML-Klassendiagramms spezifiziert.
-
-\begin{figure}[h]
-\includegraphics[width=\textwidth]{dia/uml_crawler}
-\caption{UML-Klassendiagramm des Crawlers}
-\label{fig:uml_crawler}
+	\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/uml_crawler}
+	\caption{UML-Klassendiagramm des Crawlers}
+	\label{fig:uml_crawler}
 \end{figure}
 
 \begin{description}
@@ -54,12 +53,12 @@ Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die
 Der Kategorisierer wird in regelmäßigen Abständen vom Betriebssystem gestartet und verbindet sich mit der Datenbank. Über die Datenbankschnittstelle ließt er die bislang unkategorisierten Twitteraccounts aus Accountstabelle aus und sucht in der DMOZ-Datenbank nach passenden Kategorien. Diese werden dann in die Kreuztabelle AccountCategory eingetragen.
 
 Im Diagramm \ref{fig:categorizer} ist der grundlegende Aufbau des Kategorisierers dargestellt:
-\begin{figure}[h]
-	\includegraphics[width=\textwidth]{dia/categorizer}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight, keepaspectratio=true]{dia/categorizer}
 	\caption{Klassendiagramm des Kategorisierers}
 	\label{fig:categorizer}
 \end{figure}
-
 \begin{description}
 	\item[Account] siehe \cref{sec:datenbankzugriff}
 	\item[Category] siehe \cref{sec:datenbankzugriff}
@@ -69,10 +68,9 @@ Im Diagramm \ref{fig:categorizer} ist der grundlegende Aufbau des Kategorisierer
 
 \section{GUI}
 Die GUI ermöglicht die Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar. 
-
-
-\begin{figure}[h]
-	\includegraphics[width=\textwidth]{dia/TwitterGUI_Erweiterung.png}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/TwitterGUI_Erweiterung}
 	\caption{Klassendiagramm der GUI}
 	\label{fig:GUI}
 \end{figure}
