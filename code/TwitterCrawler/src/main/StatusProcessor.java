@@ -6,8 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
+import locate.Locator;
 import mysql.AccessData;
 import mysql.DBcrawler;
+import twitter4j.GeoLocation;
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -22,11 +24,12 @@ import twitter4j.User;
 public class StatusProcessor implements Runnable {
 
     protected boolean run = true;
-    private DBcrawler t;
+    private DBcrawler dbc;
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     // use ConcurrentHashMap<Long,Object> as HashSet<Long>
     private ConcurrentHashMap<Long, Object> accounts;
+    private Locator locate;
 
     /**
      * initialize class to handle status object from the twitter stream api
@@ -48,11 +51,12 @@ public class StatusProcessor implements Runnable {
         this.queue = queue;
         this.logger = logger;
         this.accounts = accountsToTrack;
+        locate = new Locator();
         try {
-            t = new DBcrawler(accessData, logger);
+            dbc = new DBcrawler(accessData, logger);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
-            t = null;
+            dbc = null;
             logger.severe(e.getMessage() + "\n");
         }
     }
@@ -62,13 +66,13 @@ public class StatusProcessor implements Runnable {
      */
     public void run() {
 
-        if (t == null) {
+        if (dbc == null) {
             logger.severe("A StatusProcessor couldn't been started: No database connection!");
             return;
         }
 
         try {
-            t.connect();
+            dbc.connect();
         } catch (SQLException e) {
             logger.severe(e.getMessage() + "\n");
             return;
@@ -97,7 +101,7 @@ public class StatusProcessor implements Runnable {
             }
         }
 
-        t.disconnect();
+        dbc.disconnect();
 
     }
 
@@ -112,7 +116,7 @@ public class StatusProcessor implements Runnable {
         if (status != null) {
 
             if (checkUser(status.getUser())) {
-                accountToMySQL(status.getUser(), status.getCreatedAt(), true);
+                accountToDB(status.getUser(), status.getCreatedAt(), true);
             }
 
             if (status.isRetweet()) {
@@ -123,7 +127,7 @@ public class StatusProcessor implements Runnable {
                 while (tweet.isRetweet()) {
                     if (checkUser(tweet.getUser())) {
                         // addAccount
-                        accountToMySQL(tweet.getUser(), tweet.getCreatedAt(),
+                        accountToDB(tweet.getUser(), tweet.getCreatedAt(),
                                 false);
                     }
                     retweet = tweet;
@@ -132,13 +136,12 @@ public class StatusProcessor implements Runnable {
 
                 if (checkUser(tweet.getUser())) {
                     // add Account
-                    accountToMySQL(tweet.getUser(), tweet.getCreatedAt(), false);
+                    accountToDB(tweet.getUser(), tweet.getCreatedAt(), false);
 
                     // addRetweet
-                    retweetToMySQL(tweet.getUser().getId(),
-                            retweet.getGeoLocation() + " - "
-                                    + retweet.getUser().getLocation(),
-                            retweet.getCreatedAt());
+                    retweetToDB(tweet.getUser().getId(),
+                            retweet.getGeoLocation(), retweet.getUser()
+                                    .getLocation(), retweet.getCreatedAt());
                 }
 
             }
@@ -172,11 +175,11 @@ public class StatusProcessor implements Runnable {
      *            true if a tweet status object has been read, false if a
      *            retweets status object has been read
      */
-    private void accountToMySQL(User user, Date tweetDate, boolean tweet) {
+    private void accountToDB(User user, Date tweetDate, boolean tweet) {
         // !!! parent location !!!
-        t.addAccount(user.getName(), user.getId(), user.isVerified(),
-                user.getFollowersCount(), user.getLocation(), user.getURL(),
-                tweetDate, tweet);
+        String loc = locate.getLocation(user.getLocation());
+        dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
+                user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
     }
 
     /**
@@ -185,16 +188,28 @@ public class StatusProcessor implements Runnable {
      * @param id
      *            the id of the account where the tweet was from
      * @param location
-     *            the location of the account,wherefrom the retweet was
+     *            the location of the account,wherefrom the retweet was as
+     *            String
      * @param date
      *            the date of the retweet as Date
      */
-    private void retweetToMySQL(long id, String location, Date date) {
+    private void retweetToDB(long id, GeoLocation geotag, String location,
+            Date date) {
+
+        String loc = null;
+        if (geotag != null) {
+            loc = locate.getLocation(geotag);
+        }
+        if (loc == null && location != null) {
+            loc = locate.getLocation(location);
+        }
+
         try {
-            t.writeRetweet(id, 1, date);
+            dbc.addRetweet(id, loc, date);
         } catch (SQLException e) {
             logger.warning("Error by adding a retweet.\nSQL-Status: "
-                    + e.getSQLState() + "\nMessage: " + e.getMessage() + "\n");
+                    + e.getSQLState() + "\nMessage: " + e.getMessage()
+                    + "\nDatum: " + date.toString() + "\n");
         }
 
     }

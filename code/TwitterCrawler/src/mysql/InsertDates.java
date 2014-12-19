@@ -38,7 +38,7 @@ public class InsertDates {
             cal.setTime(d);
             System.out.println(d.toString());
             do {
-                t.writeDay(d);
+                t.addDay(d);
                 cal.add(Calendar.DATE, 1);
                 d = cal.getTime();
             } while (d.compareTo((new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"))

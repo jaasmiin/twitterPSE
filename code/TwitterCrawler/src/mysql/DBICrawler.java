@@ -45,13 +45,14 @@ public interface DBICrawler {
      * @param id
      *            the id of the account who's tweet was retweeted as long
      * @param location
-     *            TO COMPLETE 0 if non localizable
+     *            the location of the retweet as String (null if could not been
+     *            localized)
      * @param date
      *            the day when the retweet has been written as Date
      * @return database-request result as Boolean
      * @throws SQLException
      */
-    public boolean writeRetweet(long id, int location, Date date)
+    public boolean addRetweet(long id, String location, Date date)
             throws SQLException;
 
     /**
@@ -60,10 +61,11 @@ public interface DBICrawler {
      * @param name
      *            the name of the location as String
      * @param parent
-     *            the parent location of the current location as int
+     *            the parent location of the current location as int (-1 for
+     *            null)
      * @return database-request result as Boolean
      */
-    public boolean writeLocation(String name, int parent);
+    public boolean addLocation(String name, int parent);
 
     /**
      * inserts a new date into the database
@@ -72,7 +74,7 @@ public interface DBICrawler {
      *            the date to write into the database as Date
      * @return database-request result as Boolean
      */
-    public boolean writeDay(Date date);
+    public boolean addDay(Date date);
 
     /**
      * returns all AccountId's that aren't verified

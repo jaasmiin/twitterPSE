@@ -92,6 +92,5 @@ ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Name);
 
 /* add required entrys for testing */
 INSERT INTO location (Name, ParentId) VALUES ("TestLand", NULL);
+INSERT INTO location (Name, ParentId) VALUES ("null", NULL);
 INSERT INTO category (Name, ParentId) VALUES ("TestCategory", NULL);
-
-

@@ -14,8 +14,8 @@ public class Account extends Result {
     private int follower;
     private String location;
     private Category[] categorys;
-    private Tweet[] tweets;
-    private Retweet[] retweets;
+    private Tweets[] tweets;
+    private Retweets[] retweets;
 
     /**
      * create a new object to store a account-data
@@ -41,7 +41,7 @@ public class Account extends Result {
      */
     public Account(int id, long twitterId, String name, String url,
             int follower, String location, Category[] categorys,
-            Tweet[] tweets, Retweet[] retweets) {
+            Tweets[] tweets, Retweets[] retweets) {
         super(id);
         this.twitterId = twitterId;
         this.name = name;
@@ -74,7 +74,7 @@ public class Account extends Result {
     public Account(int id, long twitterId, String name, String url,
             int follower, String location, Category[] categorys) {
         this(id, twitterId, name, url, follower, location, categorys,
-                new Tweet[0], new Retweet[0]);
+                new Tweets[0], new Retweets[0]);
     }
 
     /**
@@ -96,7 +96,7 @@ public class Account extends Result {
     public Account(int id, long twitterId, String name, String url,
             int follower, String location) {
         this(id, twitterId, name, url, follower, location,
-                new Category[0], new Tweet[0], new Retweet[0]);
+                new Category[0], new Tweets[0], new Retweets[0]);
     }
 
     /**
@@ -170,7 +170,7 @@ public class Account extends Result {
      * 
      * @return the tweets of the account as ResultTweet[]
      */
-    public Tweet[] getTweets() {
+    public Tweets[] getTweets() {
         return tweets;
     }
 
@@ -179,7 +179,7 @@ public class Account extends Result {
      * 
      * @return the retweets of the account as ResultRetweet[]
      */
-    public Retweet[] getRetweets() {
+    public Retweets[] getRetweets() {
         return retweets;
     }
 

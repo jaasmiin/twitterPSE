@@ -39,7 +39,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             int follower, String location, String url, Date date, boolean tweet) {
 
         // insert location
-        // writeLocation(location, locationParent);
+        addLocation(location, -1);
 
         if (url != null) {
             if (url.startsWith("http://www.")) {
@@ -67,10 +67,11 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + ","
                 + follower
                 + ","
-                // + location
-                // + "(SELECT Id FROM Location WHERE Name = \"" + location +
-                // "\" LIMIT 1)"
-                + 1
+                + location
+                + "(SELECT Id FROM Location WHERE Name = \""
+                + location
+                + "\" LIMIT 1)"
+                // + 1
                 + ","
                 + (url == null ? "NULL" : "\"" + url + "\"")
                 + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
@@ -102,19 +103,21 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\n");
+                    + e.getMessage() + "\nDatum: " + dateFormat.format(date)
+                    + "\n");
         }
 
         return new boolean[] {result1, result2 };
     }
 
     @Override
-    public boolean writeRetweet(long id, int location, Date date)
+    public boolean addRetweet(long id, String location, Date date)
             throws SQLException {
 
         // TODO How to add Day
 
         // TODO prevent sql injection
+        addLocation(location, -1);
 
         String sqlCommand = "INSERT INTO retweets (AccountId, LocationId, Counter, CounterNonLocalized, DayId) VALUES ("
                 + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
@@ -122,17 +125,17 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + "),"
                 + 1
                 + ","
-                + (location == 0 ? 0 : 1)
+                + (location == null ? 0 : 1)
                 + ","
-                + (location == 0 ? 1 : 0)
+                + (location == null ? 1 : 0)
                 + ","
                 + "(SELECT Id FROM day WHERE Day = \""
                 + dateFormat.format(date)
                 + "\")"
                 + ") ON DUPLICATE KEY UPDATE Counter = Counter + "
-                + (location == 0 ? 0 : 1)
+                + (location == null ? 0 : 1)
                 + ", CounterNonLocalized = CounterNonLocalized + "
-                + (location == 0 ? 1 : 0);
+                + (location == null ? 1 : 0);
         // System.out.println(sqlCommand);
         Statement s = c.createStatement();
 
@@ -141,16 +144,23 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     }
 
     @Override
-    public boolean writeLocation(String name, int parent) {
+    public boolean addLocation(String name, int parent) {
+
+        if (name == null) {
+            return true;
+        }
 
         // TODO prevent sql injection
 
         // TODO what if parent location isn't in database
 
         String sqlCommand = "INSERT INTO location (Name, ParentId) VALUES (\""
-                + name + "\", (SELECT Id FROM location WHERE Name = \""
-                + parent + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE ParentId = \""
-                + parent + "\";";
+                + name
+                + "\", "
+                + (parent >= 0 ? "(SELECT Id FROM location WHERE Name = \""
+                        + parent + "\" LIMIT 1)" : "NULL")
+                + ") ON DUPLICATE KEY UPDATE ParentId = \""
+                + (parent >= 0 ? parent : "NULL") + "\";";
 
         Statement s;
         boolean ret = false;
@@ -167,7 +177,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     }
 
     @Override
-    public boolean writeDay(Date date) {
+    public boolean addDay(Date date) {
 
         String sqlCommand = "INSERT INTO day (Day) VALUES (\""
                 + dateFormat.format(date)

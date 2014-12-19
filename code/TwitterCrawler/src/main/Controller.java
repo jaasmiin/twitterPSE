@@ -211,6 +211,9 @@ public class Controller extends Thread {
 
     private void limitQueue() {
         while (run) {
+            
+            // TODO one reconnect to twitter per day
+            
             if (statusQueue.size() > MAX_SIZE) {
 
                 log.info("StatusQueue has been cleared at "

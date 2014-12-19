@@ -55,6 +55,10 @@ public class MyStatusListener implements StatusListener {
     @Override
     public void onStallWarning(StallWarning arg0) {
         logger.warning(arg0.getCode() + "\n" + arg0.getMessage() + "\n");
+
+        if (arg0.getPercentFull() >= 50) {
+            // TODO reconnect
+        }
     }
 
     @Override
