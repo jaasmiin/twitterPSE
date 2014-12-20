@@ -102,6 +102,15 @@ public class StreamListener implements RunnableListener {
 
     }
 
+    /**
+     * refresh connection by disconnecting from the twitterstream and then
+     * reconnecting to the twitterstream
+     */
+    public void refresh() {
+        exit();
+        run();
+    }
+
     @Override
     public void exit() {
         twitterStream.shutdown();

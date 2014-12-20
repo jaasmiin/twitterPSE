@@ -1,7 +1,6 @@
 package main;
 
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -96,7 +95,7 @@ public class StatusProcessor implements Runnable {
 
             }
             try {
-                Thread.sleep(10);
+                Thread.sleep(50); // sleep for 0.05s
             } catch (InterruptedException e) {
                 logger.info("StatusProcessor interrupted\n" + e.getMessage());
             }
@@ -178,7 +177,7 @@ public class StatusProcessor implements Runnable {
      */
     private void accountToDB(User user, Date tweetDate, boolean tweet) {
         // !!! parent location !!!
-        String loc = locate.getLocation(user.getLocation());
+        String loc = locate.getLocation(user.getLocation(), tweetDate);
         dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
     }
