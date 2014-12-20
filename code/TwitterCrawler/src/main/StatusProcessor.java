@@ -1,6 +1,7 @@
 package main;
 
 import java.sql.SQLException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -198,10 +199,10 @@ public class StatusProcessor implements Runnable {
 
         String loc = null;
         if (geotag != null) {
-            loc = locate.getLocation(geotag);
+            loc = locate.getLocation(geotag, date);
         }
         if (loc == null && location != null) {
-            loc = locate.getLocation(location);
+            loc = locate.getLocation(location, date);
         }
 
         try {

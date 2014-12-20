@@ -1,5 +1,7 @@
 package locate;
 
+import java.util.Date;
+
 import twitter4j.GeoLocation;
 
 /**
@@ -15,6 +17,13 @@ public class Locator {
 
     }
 
+    //
+    //
+    // ich liefer dir mal die Dates noch mit, falls du sie brauchst gut,
+    // ansonsten werf sie raus
+    //
+    //
+
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -23,7 +32,7 @@ public class Locator {
      * @return the code/name of the country/location on success and null else as
      *         String
      */
-    public String getLocation(GeoLocation geotag) {
+    public String getLocation(GeoLocation geotag, Date date) {
         // Bitte entscheide ob der Ländername oder der Ländercode
         // zurückgeliefert wird
 
@@ -42,9 +51,10 @@ public class Locator {
      * @return the code/name of the country/location on success and null else as
      *         String
      */
-    public String getLocation(String location) {
+    public String getLocation(String location, Date date) {
         // Bitte entscheide ob der Ländername oder der Ländercode
         // zurückgeliefert wird
+
         return location == "" ? null : location;
     }
 
