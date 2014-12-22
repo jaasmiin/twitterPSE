@@ -65,7 +65,7 @@ public class Locator {
      *         String
      */
     public String getLocation(String location, String timezone) {
-        
+        // the placeholder "nope" is just for debugging and can be replaced by null
         // look for matches in HashMap to avoid calling WebService
         if(location != null && map.containsKey(location.toLowerCase())) {
             return map.get(location.toLowerCase())+ " no WEBSERVICE";
@@ -101,7 +101,9 @@ public class Locator {
         // position of the country code
         result = result.substring(75,78);
     }
-    
+    if (result.equals("nope")) {
+        return null;
+    }
     return result.trim();
 }
 
