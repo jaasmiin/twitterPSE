@@ -22,6 +22,7 @@ import twitter4j.Status;
 public class Controller extends Thread {
     private final static int THREADNUM = 15;
     private final static int MAX_SIZE = 50000;
+    private final static int INTERVAL = 10; // interval to wait in seconds
 
     private ConcurrentLinkedQueue<Status> statusQueue;
     private boolean run = true;
@@ -105,7 +106,9 @@ public class Controller extends Thread {
         // send stop message
         run = false;
         streamListener.exit();
+        // exit and interrupt AccountUpdate
         accountUpdate.exit();
+        thrdAccountUpdate.interrupt();
         for (int i = 0; i < THREADNUM; i++) {
             statusProcessor[i].run = false;
         }
@@ -210,10 +213,15 @@ public class Controller extends Thread {
     }
 
     private void limitQueue() {
+        int count = 0;
         while (run) {
-            
-            // TODO one reconnect to twitter per day
-            
+
+            // one reconnect to twitter per day
+            if (count >= 86400) {// one day = 86400 seconds
+                count = 0;
+                streamListener.refresh();
+            }
+
             if (statusQueue.size() > MAX_SIZE) {
 
                 log.info("StatusQueue has been cleared at "
@@ -224,11 +232,13 @@ public class Controller extends Thread {
                 }
 
             }
+
             try {
-                Thread.sleep(1000);
+                Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
             } catch (InterruptedException e) {
                 log.info("Controller has been interrupted\n" + e.getMessage());
             }
+            count += INTERVAL;
         }
     }
 }

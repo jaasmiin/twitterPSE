@@ -23,7 +23,7 @@ public class AccountUpdate implements RunnableListener {
     private DBcrawler reader;
 
     /**
-     * initializing accountupdate with right database and Hashtable
+     * initializing accountUpdate with right database and Hashtable
      * 
      * @param logger
      *            a global logger for the whole program as Logger
@@ -53,14 +53,17 @@ public class AccountUpdate implements RunnableListener {
     @Override
     public void run() {
 
-        try {
-            reader.connect();
-        } catch (SQLException e) {
-            logger.severe("Could not connect to database.\n" + e.getMessage());
-            return;
-        }
-
+        // refresh hashset every hour
         while (run) {
+
+            // connect to database
+            try {
+                reader.connect();
+            } catch (SQLException e) {
+                logger.severe("Could not connect to database.\n"
+                        + e.getMessage());
+                return;
+            }
 
             // refresh hashtable
             long[] list = reader.getNonVerifiedAccounts();
@@ -73,14 +76,16 @@ public class AccountUpdate implements RunnableListener {
                 }
             }
 
+            // disconnect from database
+            reader.disconnect();
+
             try {
-                Thread.sleep(10000); // sleep 10s
+                Thread.sleep(3600000); // sleep for 1 hour
             } catch (InterruptedException e) {
                 logger.info("AccountUpdate has been interrupted\n"
                         + e.getMessage());
             }
         }
-        reader.disconnect();
     }
 
     @Override
