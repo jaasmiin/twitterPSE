@@ -65,6 +65,8 @@ public class Locator {
      *         String
      */
     public String getLocation(String location, String timezone) {
+        
+        // look for matches in HashMap to avoid calling WebService
         if(location != null && map.containsKey(location.toLowerCase())) {
             return map.get(location.toLowerCase())+ " no WEBSERVICE";
         }
@@ -81,7 +83,7 @@ public class Locator {
             timezone = timezone.replace(' ', '+');
         }
         
-    
+        //connection to Webservice
     try {
         URL u = new URL(webServiceURL + "userlocation=" + location + "&timezone=" + timezone);
         InputStream stream = u.openStream();
@@ -96,6 +98,7 @@ public class Locator {
         //return null;
     }
     if (!result.equals("nope")) {
+        // position of the country code
         result = result.substring(75,78);
     }
     
