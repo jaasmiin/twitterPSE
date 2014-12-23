@@ -16,7 +16,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
+import org.geonames.GeoNamesException;
+import org.geonames.WebService;
 import twitter4j.GeoLocation;
 
 /**
@@ -29,7 +30,7 @@ import twitter4j.GeoLocation;
  */
 public class Locator {
     String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
-
+   
     HashMap<String,String> map;
     Logger log;
     
@@ -48,22 +49,28 @@ public class Locator {
     /**
      * determine the country/location of given geo-coordinates
      * 
-     * @param timeZone
-     *            timezone delivered by twitter (use the name you get from
-     *            twitter status object)
      * @param geotag
      *            the geo-coordinates as GeoLocation
-     * @return the code/name of the country/location on success and null else as
+     * @return the code/name of the country/location on success and "0" otherwise as
      *         String
+     * @throws GeoNamesException 
+     * @throws IOException 
      */
-    public String getLocation(GeoLocation geotag, String timeZone) {
-        // Bitte entscheide ob der Ländername oder der Ländercode
-        // zurückgeliefert wir
-
-        //
-        // geotag.getLatitude()
-        // geotag.getLongitude()
-        return geotag.toString();
+    public String getLocation(GeoLocation geotag) throws IOException, GeoNamesException {
+        String res = "0";
+        WebService.setGeoNamesServerFailover(null);
+        WebService.setUserName("KIT_PSE");
+        WebService.setConnectTimeOut(1000);
+        try {
+            res = WebService.countryCode(geotag.getLatitude(),geotag.getLongitude());
+        } catch (GeoNamesException e) {
+            log.info("Geotag localiser: Geonames Excep: " + e.getMessage());
+            return "0";
+        } catch (IOException e) {
+            log.info("Geotag localiser: IO exeption: "+ e.getMessage());
+            return "0";
+        }
+        return res;
     }
 
     /**
@@ -71,12 +78,12 @@ public class Locator {
      * 
      * @param location
      *            the input name or word to determine the country/location as
-     *            Sring
+     *            String
      * 
      * @param timeZone
      *            timezone delivered by twitter (use the name you get from
      *            twitter status object)
-     * @return the code of the country/location on success and null else as
+     * @return the code of the country/location on success and "0" otherwise as
      *         String
      */
     public String getLocation(String location, String timezone) {
@@ -88,11 +95,11 @@ public class Locator {
             return map.get(location.toLowerCase())+ " no WEBSERVICE";
         }*/
         
-        String result = null;
+        String result = "0";
 
         String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
         if (location == null && timezone == null) {
-            return null;
+            return "0";
         }
         if (location != null) {
             location = location.replace(' ', '+');
@@ -112,11 +119,11 @@ public class Locator {
         scanner.close();
     } catch (MalformedURLException e) {
         log.info("URL nicht korrekt: "+ e.getMessage());
-        return null;
+        return "0";
     } catch (IOException e)
     {
         log.info("Webservice meldet Fehler: "+ e.getMessage());
-        return null;
+        return "0";
     }
     // parsing received String to XML-Doc and get content from created XML-Doc
     try {
@@ -129,21 +136,21 @@ public class Locator {
         }
         catch (ParserConfigurationException e) {
             //System.out.println("Error 1!");
-            return null;
+            return "0";
         }
         catch (SAXException e) {
             //System.out.println("Error 2!");
             log.info("Fehlerhafter EingabeString"+ e.getMessage());
-            return null;
+            return "0";
         }
         catch (IOException e) {
             //System.out.println("Error 3!");
-            return null;
+            return "0";
         }
     // string formatting (deleting '"' etc)
     result = result.substring(1,result.length()-1);
     if (result.equals("0")) {
-        return null;
+        return "0";
     }
     return result.trim();
 }
