@@ -2,13 +2,16 @@
 PSE Projekt B im WS14/15
 
 ### Verantwortlichkeiten
-- [Crawler] Holger
-- [Kategorisierer] Paul
-- [GUI] Maximilian, Philipp, Matthias, Lidia?
-- [eigene Datenbank] Holger
-- [DMOZ] Paul
-- [unfoldingMaps] Lidia
-- [LokalisierungsWebdienst] Matthias
+
+Bereich | Verantworliche/r
+------------ | -------------
+Crawler | Holger
+Kategorisierer | Paul
+GUI | Maximilian, Philipp, Matthias, Lidia?
+eigene Datenbank | Holger, Paul
+DMOZ | Paul
+unfoldingMaps | Lidia
+LokalisierungsWebdienst | Matthias
 
 ## Organisation
 Treffen: Mo., 15:45 Uhr

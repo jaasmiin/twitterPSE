@@ -10,6 +10,7 @@ import locate.Locator;
 import mysql.AccessData;
 import mysql.DBcrawler;
 import twitter4j.GeoLocation;
+import twitter4j.Place;
 import twitter4j.Status;
 import twitter4j.User;
 
@@ -141,7 +142,9 @@ public class StatusProcessor implements Runnable {
                     // addRetweet
                     retweetToDB(tweet.getUser().getId(),
                             retweet.getGeoLocation(), retweet.getUser()
-                                    .getLocation(), retweet.getCreatedAt());
+                                    .getLocation(), retweet.getPlace(),
+                            retweet.getCreatedAt(), retweet.getUser()
+                                    .getTimeZone());
                 }
 
             }
@@ -168,16 +171,18 @@ public class StatusProcessor implements Runnable {
      * insert an account into the database
      * 
      * @param user
-     *            the user to write into the database
+     *            the user to write into the database as User
      * @param tweetDate
      *            the date when the tweet has been created as Date
      * @param tweet
      *            true if a tweet status object has been read, false if a
-     *            retweets status object has been read
+     *            retweet status object has been read
      */
     private void accountToDB(User user, Date tweetDate, boolean tweet) {
-        // !!! parent location !!!
-        String loc = locate.getLocation(user.getLocation(), tweetDate);
+
+        // locate account
+        String loc = locate.getLocation(user.getLocation(), user.getTimeZone());
+
         dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
     }
@@ -187,30 +192,42 @@ public class StatusProcessor implements Runnable {
      * 
      * @param id
      *            the id of the account where the tweet was from
+     * @param geotag
+     *            the Geolocation of the retweet as GeoLocation (null if not
+     *            available)
      * @param location
      *            the location of the account,wherefrom the retweet was as
      *            String
+     * @param place
+     *            if available the place where the retweet has been created as
+     *            Place (else null)
      * @param date
      *            the date of the retweet as Date
+     * @param timeZone
+     *            the timeZone of the user who created the retweet as String
      */
     private void retweetToDB(long id, GeoLocation geotag, String location,
-            Date date) {
+            Place place, Date date, String timeZone) {
 
         String loc = null;
-        if (geotag != null) {
-            loc = locate.getLocation(geotag, date);
-        }
-        if (loc == null && location != null) {
-            loc = locate.getLocation(location, date);
+        if (place != null) {
+            loc = place.getCountryCode();
+        } else {
+            if (geotag != null) {
+                loc = locate.getLocation(geotag, timeZone);
+            }
+            if (loc == null && location != null) {
+                loc = locate.getLocation(location, timeZone);
+            }
         }
 
-        try {
-            dbc.addRetweet(id, loc, date);
-        } catch (SQLException e) {
-            logger.warning("Error by adding a retweet.\nSQL-Status: "
-                    + e.getSQLState() + "\nMessage: " + e.getMessage()
-                    + "\nDatum: " + date.toString() + "\n");
-        }
+        // try {
+        dbc.addRetweet(id, loc, date);
+        // } catch (SQLException e) {
+        // logger.warning("Error by adding a retweet.\nSQL-Status: "
+        // + e.getSQLState() + "\nMessage: " + e.getMessage()
+        // + "\nDatum: " + date.toString() + "\n");
+        // }
 
     }
 }

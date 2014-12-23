@@ -108,6 +108,8 @@ public class StreamListener implements RunnableListener {
      */
     public void refresh() {
         exit();
+        twitterStream.cleanUp();
+        twitterStream.clearListeners();
         run();
     }
 

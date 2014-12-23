@@ -17,6 +17,8 @@ import java.util.logging.Logger;
  */
 public class DBcrawler extends DBConnection implements DBICrawler {
 
+    private static final String DEFAULT_LOCATION = "0";
+
     /**
      * configure the connection to the database
      * 
@@ -34,12 +36,27 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         super(accessData, logger);
     }
 
+    // SQL PREVENTION
+    //
+    // PreparedStatement stmt =
+    // connection.prepareStatement("SELECT * FROM users WHERE userid=? AND password=?");
+    // stmt.setString(1, userid);
+    // stmt.setString(2, password);
+    // ResultSet rs = stmt.executeQuery();
+
     @Override
     public boolean[] addAccount(String name, long id, boolean isVer,
             int follower, String location, String url, Date date, boolean tweet) {
 
+        location = checkString(location, 3);
+        name = checkString(name, 30);
+
         // insert location
-        addLocation(location, -1);
+        boolean result1 = true;
+        if (!addLocation(location, null)) {
+            location = DEFAULT_LOCATION;
+            result1 = false;
+        }
 
         if (url != null) {
             if (url.startsWith("http://www.")) {
@@ -47,15 +64,10 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             } else if (url.startsWith("http://")) {
                 url = url.substring(7, url.length());
             }
-            if (url.length() > 100) {
-                url = url.substring(0, 99);
-            }
+            url = checkString(url, 100);
         }
 
-        // prevent sql injection
-        // if (){
-        // return new boolean[] {false, false};
-        // }
+        // TODO prevent sql injection
 
         // insert account
         String sqlCommand = "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ("
@@ -67,24 +79,21 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + ","
                 + follower
                 + ","
-                + location
-                + "(SELECT Id FROM Location WHERE Name = \""
+                + "(SELECT Id FROM location WHERE Code = \""
                 + location
                 + "\" LIMIT 1)"
-                // + 1
                 + ","
                 + (url == null ? "NULL" : "\"" + url + "\"")
                 + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
 
-        // System.out.println(sqlCommand);
         Statement s;
-        boolean result1 = false;
+        boolean result2 = false;
         try {
             s = c.createStatement();
-            result1 = s.executeUpdate(sqlCommand) == 0 ? true : false;
+            result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
 
         // set Tweet count
@@ -97,70 +106,89 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
                 + (tweet ? "1" : "0") + ";";
 
+        boolean result3 = false;
+        try {
+            s = c.createStatement();
+            result3 = s.executeUpdate(sqlCommand) == 0 ? true : false;
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+                    + e.getMessage() + "\nDatum: " + dateFormat.format(date)
+                    + "\n SQL-Query: " + sqlCommand + "\n");
+        }
+
+        return new boolean[] {result1, result2, result3 };
+    }
+
+    @Override
+    public boolean[] addRetweet(long id, String location, Date date) {
+
+        // TODO prevent sql injection
+
+        location = checkString(location, 3);
+        boolean result1 = true;
+        if (!addLocation(location, null)) {
+            location = DEFAULT_LOCATION;
+            result1 = false;
+        }
+
+        String sqlCommand = "INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES ("
+                + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
+                + id
+                + "),"
+                + "(SELECT Id FROM location WHERE Code = \""
+                + (location == null ? DEFAULT_LOCATION : location)
+                + "\" LIMIT 1)"
+                + ","
+                + 1
+                + ","
+                + "(SELECT Id FROM day WHERE Day = \""
+                + dateFormat.format(date)
+                + "\")"
+                + ") ON DUPLICATE KEY UPDATE Counter = Counter + 1;";
+
+        Statement s;
         boolean result2 = false;
         try {
             s = c.createStatement();
             result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\nDatum: " + dateFormat.format(date)
-                    + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
-
         return new boolean[] {result1, result2 };
-    }
-
-    @Override
-    public boolean addRetweet(long id, String location, Date date)
-            throws SQLException {
-
-        // TODO How to add Day
-
-        // TODO prevent sql injection
-        addLocation(location, -1);
-
-        String sqlCommand = "INSERT INTO retweets (AccountId, LocationId, Counter, CounterNonLocalized, DayId) VALUES ("
-                + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
-                + id
-                + "),"
-                + 1
-                + ","
-                + (location == null ? 0 : 1)
-                + ","
-                + (location == null ? 1 : 0)
-                + ","
-                + "(SELECT Id FROM day WHERE Day = \""
-                + dateFormat.format(date)
-                + "\")"
-                + ") ON DUPLICATE KEY UPDATE Counter = Counter + "
-                + (location == null ? 0 : 1)
-                + ", CounterNonLocalized = CounterNonLocalized + "
-                + (location == null ? 1 : 0);
-        // System.out.println(sqlCommand);
-        Statement s = c.createStatement();
-
-        return s.executeUpdate(sqlCommand) == 0 ? true : false;
 
     }
 
     @Override
-    public boolean addLocation(String name, int parent) {
+    public boolean addLocation(String code, String parent) {
 
-        if (name == null) {
+        code = checkString(code, 3);
+        if (code == null) {
             return true;
         }
 
+        if (parent != null) {
+            parent = parent.replace("\\", "/");
+            if (parent.length() > 3 || parent.contains("\"")) {
+                parent = null;
+            }
+        }
+
         // TODO prevent sql injection
 
-        // TODO what if parent location isn't in database
+        // add parent to database
+        if (parent != null) {
+            addLocation(parent, null);
+        }
 
-        String sqlCommand = "INSERT INTO location (Name, ParentId) VALUES (\""
-                + name
+        String parentId = parent != null ? ("(SELECT Id FROM location WHERE Code = \""
+                + parent + "\" LIMIT 1)")
+                : "NULL";
+        String sqlCommand = "INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", \""
+                + code
                 + "\", "
-                + (parent >= 0 ? "(SELECT Id FROM location WHERE Name = \""
-                        + parent + "\" LIMIT 1)" : "NULL")
-                + ") ON DUPLICATE KEY UPDATE ParentId = \""
-                + (parent >= 0 ? parent : "NULL") + "\";";
+                + parentId
+                + ") ON DUPLICATE KEY UPDATE ParentId = " + parentId + ";";
 
         Statement s;
         boolean ret = false;
@@ -169,7 +197,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
 
         return ret;
@@ -221,6 +249,21 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             ret[i] = (long) st.pop();
         }
         return ret;
+    }
+
+    private String checkString(String word, int maxLength) {
+        if (word == null || word.contains("\"")) {
+            return null;
+
+        } else {
+            String ret = word.replace("\\", "/");
+            // TODO
+            ret = ret.replace("\"", "\"\"");
+            if (ret.length() > maxLength) {
+                ret = ret.substring(0, maxLength - 1);
+            }
+            return ret;
+        }
     }
 
 }
