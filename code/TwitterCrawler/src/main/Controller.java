@@ -20,7 +20,7 @@ import twitter4j.Status;
  * 
  */
 public class Controller extends Thread {
-    private final static int THREADNUM = 15;
+    private final static int THREADNUM = 20;
     private final static int MAX_SIZE = 50000;
     private final static int INTERVAL = 10; // interval to wait in seconds
 
@@ -187,7 +187,7 @@ public class Controller extends Thread {
         l.addHandler(fh);
         // true: print output on console and into file
         // false: only store output in logFile
-        l.setUseParentHandlers(true);
+        l.setUseParentHandlers(false);
         return l;
     }
 
