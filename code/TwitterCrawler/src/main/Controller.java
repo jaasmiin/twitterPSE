@@ -20,8 +20,8 @@ import twitter4j.Status;
  * 
  */
 public class Controller extends Thread {
-    private final static int THREADNUM = 20;
-    private final static int MAX_SIZE = 50000;
+    private final static int THREADNUM = 100;
+    private final static int MAX_SIZE = 100000;
     private final static int INTERVAL = 10; // interval to wait in seconds
 
     private ConcurrentLinkedQueue<Status> statusQueue;

@@ -222,8 +222,6 @@ public class StatusProcessor implements Runnable {
                     loc = locate.getLocation(geotag);
                 } catch (IOException | GeoNamesException e) {
                     loc = "0";
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
                 }
             }
             if (loc == "0" && location != null) {

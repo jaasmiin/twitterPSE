@@ -67,10 +67,6 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             result1 = false;
         }
 
-        // if (location != "0") {
-        // System.out.println("###" + location);
-        // }
-
         // TODO prevent sql injection
         // insert account
         boolean result2 = insertAccount(id, name, isVer, follower, location,
@@ -84,6 +80,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
 
     private boolean insertAccount(long id, String name, boolean isVer,
             int follower, String location, String url) {
+
         String sqlCommand = "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ("
                 + id
                 + ",\""
@@ -92,18 +89,17 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 + (isVer == true ? "1" : "0")
                 + ","
                 + follower
-                + ","
+                + ", "
                 + "(SELECT Id FROM location WHERE Code = \""
                 + location
-                + "\" LIMIT 1)"
-                + ","
+                + "\" LIMIT 1) , "
                 + (url == null ? "NULL" : "\"" + url + "\"")
                 + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
 
         boolean ret = false;
         try {
             Statement s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
+            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
@@ -124,7 +120,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         boolean ret = false;
         try {
             Statement s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
+            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
@@ -139,10 +135,6 @@ public class DBcrawler extends DBConnection implements DBICrawler {
 
         location = checkString(location, 3, DEFAULT_LOCATION);
 
-        // if (location != "0") {
-        // System.out.println("###" + location);
-        // }
-
         boolean result1 = true;
         if (!addLocation(location, null)) {
             location = DEFAULT_LOCATION;
@@ -152,10 +144,9 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         String sqlCommand = "INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES ("
                 + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
                 + id
-                + "),"
-                + "(SELECT Id FROM location WHERE Code = \""
-                + (location == null ? DEFAULT_LOCATION : location)
-                + "\" LIMIT 1), 1, (SELECT Id FROM day WHERE Day = \""
+                + "), (SELECT Id FROM location WHERE Code = \""
+                + location
+                + "\" LIMIT 1) , 1, (SELECT Id FROM day WHERE Day = \""
                 + dateFormat.format(date)
                 + "\")) ON DUPLICATE KEY UPDATE Counter = Counter + 1;";
 
@@ -163,7 +154,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         boolean result2 = false;
         try {
             s = c.createStatement();
-            result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
+            result2 = s.executeUpdate(sqlCommand) != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
@@ -181,7 +172,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         // TODO prevent sql injection
 
         // add parent to database
-        if (parent != null) {
+        if (parent != null && parent != DEFAULT_LOCATION) {
             addLocation(parent, null);
         }
 
@@ -198,7 +189,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         boolean ret = false;
         try {
             s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
+            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
@@ -218,7 +209,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         boolean ret = false;
         try {
             s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
+            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
@@ -255,19 +246,18 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         return ret;
     }
 
-    private String checkString(String word, int maxLength, String onDefault) {
-        // if (word == null) {// || word.contains("\"")) {
-        // return onDefault;
-        //
-        // } else {
-        // String ret = word.replace("\\", "/");
-        // // ret = ret.replace("\"", "\"\"");
-        // // if (ret.length() > maxLength) {
-        // // ret = ret.substring(0, maxLength - 1);
-        // // }
-        // return ret;
-        // }
-        return word;
+    private String checkString(String word, int maxLength, String byDefault) {
+        if (word == null) {
+            return byDefault;
+
+        } else {
+            String ret = word.replace("\\", "/");
+            ret = ret.replace("\"", "\"\"");
+            if (ret.length() > maxLength) {
+                ret = ret.substring(0, maxLength - 1);
+            }
+            return ret;
+        }
     }
 
 }

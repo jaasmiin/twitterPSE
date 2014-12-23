@@ -49,9 +49,6 @@ public class Locator {
     /**
      * determine the country/location of given geo-coordinates
      * 
-     * @param timeZone
-     *            timezone delivered by twitter (use the name you get from
-     *            twitter status object)
      * @param geotag
      *            the geo-coordinates as GeoLocation
      * @return the code/name of the country/location on success and "0"
@@ -85,7 +82,7 @@ public class Locator {
      *            the input name or word to determine the country/location as
      *            String
      * 
-     * @param timeZone
+     * @param timezone
      *            timezone delivered by twitter (use the name you get from
      *            twitter status object)
      * @return the code of the country/location on success and "0" otherwise as
