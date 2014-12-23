@@ -2,11 +2,21 @@ package locate;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.logging.Logger;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import twitter4j.GeoLocation;
 
@@ -22,15 +32,17 @@ import twitter4j.GeoLocation;
 public class Locator {
     String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
     HashMap<String,String> map;
+    Logger log;
     
-    
-    public Locator() {
+    public Locator(Logger log) {
+        log = this.log;
         map = new HashMap<String,String>();
         map.put("tokyo", "JP");
         map.put("baghdad", "IQ");
         map.put("irkutsk", "RU");
         map.put("seoul", "KR");
         map.put("budapest", "HU");
+        
     }
 
 
@@ -67,11 +79,11 @@ public class Locator {
     public String getLocation(String location, String timezone) {
         // the placeholder "nope" is just for debugging and can be replaced by null
         // look for matches in HashMap to avoid calling WebService
-        if(location != null && map.containsKey(location.toLowerCase())) {
+       /* if(location != null && map.containsKey(location.toLowerCase())) {
             return map.get(location.toLowerCase())+ " no WEBSERVICE";
-        }
+        }*/
         
-        String result = "nope";
+        String result = null;
         String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
         if (location == null && timezone == null) {
             return null;
@@ -92,16 +104,38 @@ public class Locator {
         stream.close();
         scanner.close();
     } catch (MalformedURLException e) {
-        //return null;
+        log.info("URL nicht korrekt: "+ e.getMessage());
+        return null;
     } catch (IOException e)
     {
-        //return null;
+        log.info("Webservice meldet Fehler: "+ e.getMessage());
+        return null;
     }
-    if (!result.equals("nope")) {
-        // position of the country code
-        result = result.substring(75,78);
-    }
-    if (result.equals("nope")) {
+    // parsing received String to XML-Doc and get content from created XML-Doc
+    try {
+        DocumentBuilderFactory fctr = DocumentBuilderFactory.newInstance();
+        DocumentBuilder bldr = fctr.newDocumentBuilder();
+        InputSource insrc = new InputSource(new StringReader(result));
+       
+        Document doc = bldr.parse(insrc);
+        result = doc.getFirstChild().getTextContent();
+        }
+        catch (ParserConfigurationException e) {
+            //System.out.println("Error 1!");
+            return null;
+        }
+        catch (SAXException e) {
+            //System.out.println("Error 2!");
+            log.info("Fehlerhafter EingabeString"+ e.getMessage());
+            return null;
+        }
+        catch (IOException e) {
+            //System.out.println("Error 3!");
+            return null;
+        }
+    // string formatting (deleting '"' etc)
+    result = result.substring(1,result.length()-1);
+    if (result.equals("0")) {
         return null;
     }
     return result.trim();
