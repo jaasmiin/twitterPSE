@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Logger;
@@ -20,23 +19,24 @@ import org.xml.sax.SAXException;
 
 import twitter4j.GeoLocation;
 
-
-
 /**
- * class to locate words with a webservice
- * !!! HashMap is just an idea and shoul be discussed !!!
+ * class to locate words with a webservice !!! HashMap is just an idea and shoul
+ * be discussed !!!
+ * 
  * @author Matthias Schimek
  * @version 1.0
  * 
  */
 public class Locator {
     String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+
     HashMap<String,String> map;
     Logger log;
     
     public Locator(Logger log) {
         log = this.log;
         map = new HashMap<String,String>();
+
         map.put("tokyo", "JP");
         map.put("baghdad", "IQ");
         map.put("irkutsk", "RU");
@@ -45,11 +45,12 @@ public class Locator {
         
     }
 
-
-
     /**
      * determine the country/location of given geo-coordinates
-     * @param timeZone timezone delivered by twitter (use the name you get from twitter status object)
+     * 
+     * @param timeZone
+     *            timezone delivered by twitter (use the name you get from
+     *            twitter status object)
      * @param geotag
      *            the geo-coordinates as GeoLocation
      * @return the code/name of the country/location on success and null else as
@@ -71,19 +72,24 @@ public class Locator {
      * @param location
      *            the input name or word to determine the country/location as
      *            Sring
-     *            
-     * @param timeZone timezone delivered by twitter (use the name you get from twitter status object)
+     * 
+     * @param timeZone
+     *            timezone delivered by twitter (use the name you get from
+     *            twitter status object)
      * @return the code of the country/location on success and null else as
      *         String
      */
     public String getLocation(String location, String timezone) {
-        // the placeholder "nope" is just for debugging and can be replaced by null
+        // the placeholder "nope" is just for debugging and can be replaced by
+        // null
         // look for matches in HashMap to avoid calling WebService
+
        /* if(location != null && map.containsKey(location.toLowerCase())) {
             return map.get(location.toLowerCase())+ " no WEBSERVICE";
         }*/
         
         String result = null;
+
         String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
         if (location == null && timezone == null) {
             return null;
@@ -94,6 +100,7 @@ public class Locator {
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
         }
+
         
         //connection to Webservice
     try {
@@ -140,6 +147,5 @@ public class Locator {
     }
     return result.trim();
 }
-
-
 }
+

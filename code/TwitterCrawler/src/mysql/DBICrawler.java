@@ -31,8 +31,9 @@ public interface DBICrawler {
      * @param tweet
      *            true if a tweet status object has been read, false if a
      *            retweets status object has been read
-     * @return boolean-array with two results of the database requests. First is
-     *         result for adding the account, second is for adding the tweet.
+     * @return boolean-array with three results of the database requests. First
+     *         is the result of adding the location, second is result for adding
+     *         the account and third is for adding the tweet.
      * 
      */
     public boolean[] addAccount(String name, long id, boolean isVer,
@@ -49,23 +50,23 @@ public interface DBICrawler {
      *            localized)
      * @param date
      *            the day when the retweet has been written as Date
-     * @return database-request result as Boolean
+     * @return database-request result as Boolean[]
      * @throws SQLException
      */
-    public boolean addRetweet(long id, String location, Date date)
+    public boolean[] addRetweet(long id, String location, Date date)
             throws SQLException;
 
     /**
      * inserts a new location into the database
      * 
-     * @param name
-     *            the name of the location as String
+     * @param code
+     *            the country-code of the location as String (max. 3 characters)
      * @param parent
-     *            the parent location of the current location as int (-1 for
-     *            null)
+     *            the parent location-code of the current location as String
+     *            (could be null, but max. 3 characters)
      * @return database-request result as Boolean
      */
-    public boolean addLocation(String name, int parent);
+    public boolean addLocation(String code, String parent);
 
     /**
      * inserts a new date into the database

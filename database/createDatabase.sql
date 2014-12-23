@@ -44,7 +44,6 @@ CREATE TABLE IF NOT EXISTS retweets (
 	AccountId INT UNSIGNED NOT NULL,
 	LocationId INT UNSIGNED NOT NULL,
 	Counter INT UNSIGNED NOT NULL,
-	CounterNonLocalized INT UNSIGNED NOT NULL,
 	DayId INT UNSIGNED NOT NULL
 );
 
@@ -88,9 +87,8 @@ ALTER TABLE accounts ADD CONSTRAINT uc_twitteraccountid UNIQUE (TwitterAccountId
 ALTER TABLE retweets ADD CONSTRAINT uc_retweet UNIQUE (AccountId, DayId, LocationId);
 ALTER TABLE tweets ADD CONSTRAINT uc_tweet UNIQUE (AccountId, DayId);
 ALTER TABLE day ADD CONSTRAINT uc_day UNIQUE (Day);
-ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Name);
+ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Code);
 
 /* add required entrys for testing */
-INSERT INTO location (Name, ParentId) VALUES ("TestLand", NULL);
-INSERT INTO location (Name, ParentId) VALUES ("null", NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("defaultLocation","0",NULL);
 INSERT INTO category (Name, ParentId) VALUES ("TestCategory", NULL);

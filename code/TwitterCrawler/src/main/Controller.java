@@ -220,6 +220,7 @@ public class Controller extends Thread {
             if (count >= 86400) {// one day = 86400 seconds
                 count = 0;
                 streamListener.refresh();
+                // TODO add a new day in the database
             }
 
             if (statusQueue.size() > MAX_SIZE) {
