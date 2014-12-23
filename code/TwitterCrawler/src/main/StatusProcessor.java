@@ -52,7 +52,7 @@ public class StatusProcessor implements Runnable {
         this.queue = queue;
         this.logger = logger;
         this.accounts = accountsToTrack;
-        locate = new Locator();
+        locate = new Locator(logger);
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (InstantiationException | IllegalAccessException
@@ -179,9 +179,10 @@ public class StatusProcessor implements Runnable {
      *            retweet status object has been read
      */
     private void accountToDB(User user, Date tweetDate, boolean tweet) {
-
+        
         // locate account
         String loc = locate.getLocation(user.getLocation(), user.getTimeZone());
+        assert(loc != null);
 
         dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
@@ -209,25 +210,20 @@ public class StatusProcessor implements Runnable {
     private void retweetToDB(long id, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
-        String loc = null;
+        String loc = "0";
         if (place != null) {
             loc = place.getCountryCode();
         } else {
             if (geotag != null) {
                 loc = locate.getLocation(geotag, timeZone);
             }
-            if (loc == null && location != null) {
+            if (loc == "0" && location != null) {
                 loc = locate.getLocation(location, timeZone);
             }
         }
-
-        // try {
+        assert(loc != null);
+        
         dbc.addRetweet(id, loc, date);
-        // } catch (SQLException e) {
-        // logger.warning("Error by adding a retweet.\nSQL-Status: "
-        // + e.getSQLState() + "\nMessage: " + e.getMessage()
-        // + "\nDatum: " + date.toString() + "\n");
-        // }
 
     }
 }

@@ -92,7 +92,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             s = c.createStatement();
             result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
 
@@ -111,9 +111,8 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             s = c.createStatement();
             result3 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\nDatum: " + dateFormat.format(date)
-                    + "\n SQL-Query: " + sqlCommand + "\n");
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
 
         return new boolean[] {result1, result2, result3 };
@@ -152,7 +151,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             s = c.createStatement();
             result2 = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
         return new boolean[] {result1, result2 };
@@ -196,7 +195,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             s = c.createStatement();
             ret = s.executeUpdate(sqlCommand) == 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         }
 
@@ -231,7 +230,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             Statement s = c.createStatement();
             res = s.executeQuery(sqlCommand);
         } catch (SQLException e) {
-            logger.warning("Couldn't execute sql query\n" + e.getMessage());
+            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
             return null;
         }
 
@@ -241,7 +240,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 st.push(res.getInt("TwitterAccountId"));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't read sql result\n" + e.getMessage());
+            logger.warning("Couldn't read sql result: \n" + e.getMessage());
             return null;
         }
         long[] ret = new long[st.size()];

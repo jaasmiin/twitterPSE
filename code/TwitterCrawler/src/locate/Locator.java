@@ -28,10 +28,10 @@ import twitter4j.GeoLocation;
  * 
  */
 public class Locator {
-    String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+    private String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
 
-    HashMap<String,String> map;
-    Logger log;
+    private HashMap<String,String> map;
+    private Logger log;
     
     public Locator(Logger log) {
         log = this.log;
@@ -90,7 +90,7 @@ public class Locator {
         
         String result = null;
 
-        String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+        //String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
         if (location == null && timezone == null) {
             return null;
         }

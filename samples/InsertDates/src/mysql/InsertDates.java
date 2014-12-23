@@ -38,11 +38,11 @@ public class InsertDates {
         // }
         if (args.length > 4 && args[1].matches("[0-9]+")
                 && args[0].length() > 0 && args[2].length() > 0
-                && args[3].length() > 0 && args[4].length() > 0) {
+                && args[3].length() > 0) {
 
             try {
-                DBcrawler t = new DBcrawler(new AccessData(args[1], args[2],
-                        args[3], args[4], args[5]), Logger.getLogger("logger"));
+                DBcrawler t = new DBcrawler(new AccessData(args[0], args[1],
+                        args[2], args[3], args[4]), Logger.getLogger("logger"));
                 t.connect();
                 Date d = new Date();
                 d = (new SimpleDateFormat("dd.MM.yyyy HH:mm:ss"))

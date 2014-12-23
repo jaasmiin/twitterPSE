@@ -866,3 +866,57 @@ Dez 23, 2014 9:49:01 AM mysql.DBConnection disconnect
 Information: Disonnected from database twitter with user root
 Dez 23, 2014 9:49:01 AM main.Controller shutdown
 Information: Program terminated by user
+Dez 23, 2014 2:47:06 PM main.Controller <init>
+Information: Controller started
+Dez 23, 2014 2:47:06 PM main.Controller run
+Information: Crawler started
+Dez 23, 2014 2:47:06 PM main.Controller run
+Information: StatusProcessors started
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.AccountUpdate run
+Schwerwiegend: Could not connect to database.
+Access denied for user 'root'@'localhost' (using password: YES)
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+
+Dez 23, 2014 2:47:07 PM main.StatusProcessor run
+Schwerwiegend: Access denied for user 'root'@'localhost' (using password: YES)
+

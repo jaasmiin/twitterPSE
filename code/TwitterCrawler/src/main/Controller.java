@@ -187,7 +187,7 @@ public class Controller extends Thread {
         l.addHandler(fh);
         // true: print output on console and into file
         // false: only store output in logFile
-        l.setUseParentHandlers(false);
+        l.setUseParentHandlers(true);
         return l;
     }
 
