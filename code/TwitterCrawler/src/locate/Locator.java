@@ -29,7 +29,7 @@ import twitter4j.GeoLocation;
  * 
  */
 public class Locator {
-    String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+    final String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
    
     HashMap<String,String> map;
     Logger log;
@@ -86,28 +86,27 @@ public class Locator {
      * @return the code of the country/location on success and "0" otherwise as
      *         String
      */
-    public String getLocation(String location, String timezone) {
-        // the placeholder "nope" is just for debugging and can be replaced by
-        // null
-        // look for matches in HashMap to avoid calling WebService
-
-       /* if(location != null && map.containsKey(location.toLowerCase())) {
-            return map.get(location.toLowerCase())+ " no WEBSERVICE";
-        }*/
-        
+    public String getLocation(String location, String timezone) {    
         String result = "0";
-
-        String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+        
+        // format given parameter
         if (location == null && timezone == null) {
             return "0";
         }
         if (location != null) {
             location = location.replace(' ', '+');
+            location = location.replaceAll("#","");
+            
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
+            timezone = location.replaceAll("#", "");
         }
-
+        
+        // lookup in Hashtable to avoid calling the webservice
+        if(location != null && map.containsKey(location.toLowerCase())) {
+            return map.get(location.toLowerCase())+ "  from hashtable";
+        }
         
         //connection to Webservice
     try {
@@ -152,7 +151,11 @@ public class Locator {
     if (result.equals("0")) {
         return "0";
     }
-    return result.trim();
+    result = result.trim();
+    
+    // add positive result to Hashtable
+    map.put(location, result);
+    return result;
 }
 }
 
