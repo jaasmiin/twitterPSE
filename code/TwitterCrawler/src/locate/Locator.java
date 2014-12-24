@@ -21,8 +21,8 @@ import org.geonames.WebService;
 import twitter4j.GeoLocation;
 
 /**
- * class to locate words with a webservice !!! HashMap is just an idea and shoul
- * be discussed !!!
+ * class to locate words with a webservice !!! HashMap is just an idea and
+ * should be discussed !!!
  * 
  * @author Matthias Schimek
  * @version 1.0
@@ -34,7 +34,6 @@ public class Locator {
 
     private HashMap<String, String> map;
     private Logger logger;
-
 
     public Locator(Logger log) {
         this.logger = log;
@@ -91,29 +90,28 @@ public class Locator {
      *         String
      */
 
-    public String getLocation(String location, String timezone) {    
+    public String getLocation(String location, String timezone) {
         String result = "0";
-        
+
         // format given parameter
 
-        if (location == null && timezone == null) {
+        if (location == null || timezone == null) {
             return "0";
         }
         if (location != null) {
             location = location.replace(' ', '+');
-            location = location.replaceAll("#","");
-            
+            location = location.replaceAll("#", "");
+
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
             timezone = location.replaceAll("#", "");
         }
-        
-        // lookup in Hashtable to avoid calling the webservice
-        if(location != null && map.containsKey(location.toLowerCase())) {
-            return map.get(location.toLowerCase())+ "  from hashtable";
-        }
 
+        // lookup in Hashtable to avoid calling the webservice
+        if (location != null && map.containsKey(location.toLowerCase())) {
+            return map.get(location.toLowerCase()) + "  from hashtable";
+        }
 
         // connection to Webservice
         try {
@@ -148,19 +146,18 @@ public class Locator {
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
             return "0";
         }
-        
+
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
         if (result.equals("0")) {
             return "0";
         }
-        return result.trim();
+
+        result = result.trim();
+
+        // add positive result to Hashtable
+        map.put(location, result);
+        return result;
+
     }
-
-    result = result.trim();
-    
-    // add positive result to Hashtable
-    map.put(location, result);
-    return result;
-
 }
