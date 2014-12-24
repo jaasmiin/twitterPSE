@@ -78,7 +78,7 @@ public class Locator {
     }
 
     /**
-     * try's to determine the country/location of a given name or word
+     * tries to determine the country/location of a given name or word
      * 
      * @param location
      *            the input name or word to determine the country/location as
