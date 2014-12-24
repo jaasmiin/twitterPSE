@@ -1,10 +1,13 @@
 package main;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
+
+import org.geonames.GeoNamesException;
 
 import locate.Locator;
 import mysql.AccessData;
@@ -52,7 +55,7 @@ public class StatusProcessor implements Runnable {
         this.queue = queue;
         this.logger = logger;
         this.accounts = accountsToTrack;
-        locate = new Locator();
+        locate = new Locator(this.logger);
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (InstantiationException | IllegalAccessException
@@ -182,6 +185,7 @@ public class StatusProcessor implements Runnable {
 
         // locate account
         String loc = locate.getLocation(user.getLocation(), user.getTimeZone());
+        assert (loc != null);
 
         dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
@@ -209,25 +213,24 @@ public class StatusProcessor implements Runnable {
     private void retweetToDB(long id, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
-        String loc = null;
+        String loc = "0";
         if (place != null) {
             loc = place.getCountryCode();
-        } else {
+        }else {
             if (geotag != null) {
-                loc = locate.getLocation(geotag, timeZone);
+                try {
+                    loc = locate.getLocation(geotag);
+                } catch (IOException | GeoNamesException e) {
+                    loc = "0";
+                }
             }
-            if (loc == null && location != null) {
+            if (loc == "0" && location != null) {
                 loc = locate.getLocation(location, timeZone);
             }
         }
+        assert (loc != null);
 
-        // try {
         dbc.addRetweet(id, loc, date);
-        // } catch (SQLException e) {
-        // logger.warning("Error by adding a retweet.\nSQL-Status: "
-        // + e.getSQLState() + "\nMessage: " + e.getMessage()
-        // + "\nDatum: " + date.toString() + "\n");
-        // }
 
     }
 }
