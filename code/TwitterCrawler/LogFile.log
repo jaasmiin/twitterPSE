@@ -1,109 +1,54 @@
-Dez 24, 2014 6:11:52 PM main.Controller <init>
+Dez 25, 2014 11:35:43 AM main.Controller <init>
 Information: Controller started
-Dez 24, 2014 6:11:52 PM main.Controller run
+Dez 25, 2014 11:35:43 AM main.Controller run
 Information: Crawler started
-Dez 24, 2014 6:11:55 PM main.Controller run
-Schwerwiegend: AccountUpdate not started - running without AccountUpdate:
-Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-Dez 24, 2014 6:11:57 PM main.StatusProcessor <init>
-Schwerwiegend: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.
-
-Dez 24, 2014 6:11:57 PM main.Controller run
-Warnung: Couldn't start a statusProcessor: Not able to instantiate Databaseconnection.
-Dez 24, 2014 6:12:02 PM main.Controller run
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM locate.Locator readFromFile
+Warnung: Cannot read from file to HashMap HashNeu (Das System kann die angegebene Datei nicht finden)
+Dez 25, 2014 11:35:44 AM main.Controller run
 Information: StatusProcessors started
-Dez 24, 2014 6:14:13 PM main.Controller <init>
-Information: Controller started
-Dez 24, 2014 6:14:13 PM main.Controller run
-Information: Crawler started
-Dez 24, 2014 6:14:14 PM main.Controller run
-Information: StatusProcessors started
-Dez 24, 2014 6:15:40 PM main.Controller <init>
-Information: Controller started
-Dez 24, 2014 6:15:40 PM main.Controller run
-Information: Crawler started
-Dez 24, 2014 6:15:41 PM main.Controller run
-Information: StatusProcessors started
-Dez 24, 2014 6:15:50 PM main.AccountUpdate run
-Information: AccountUpdate has been interrupted
+Dez 25, 2014 11:35:49 AM main.AccountUpdate run
+Information: AccountUpdate has been interrupted: 
 sleep interrupted
-Dez 24, 2014 6:15:50 PM main.Controller shutdown
-Information: Program terminated by user
-Dez 25, 2014 11:04:47 AM main.Controller <init>
-Information: Controller started
-Dez 25, 2014 11:04:47 AM main.Controller run
-Information: Crawler started
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM mysql.DBcrawler getAccounts
-Warnung: Couldn't read sql result: 
-'2.152685876E9' in column '1' is outside valid range for the datatype INTEGER.
-Dez 25, 2014 11:04:48 AM main.Controller run
-Information: StatusProcessors started
-Dez 25, 2014 11:05:07 AM main.AccountUpdate run
-Information: AccountUpdate has been interrupted
+Dez 25, 2014 11:35:49 AM main.Controller limitQueue
+Information: Controller has been interrupted
 sleep interrupted
-Dez 25, 2014 11:10:25 AM main.Controller shutdown
+Dez 25, 2014 11:37:27 AM main.Controller shutdown
 Information: Program terminated by user

@@ -82,7 +82,7 @@ public class AccountUpdate implements RunnableListener {
             try {
                 Thread.sleep(3600000); // sleep for 1 hour
             } catch (InterruptedException e) {
-                logger.info("AccountUpdate has been interrupted\n"
+                logger.info("AccountUpdate has been interrupted: \n"
                         + e.getMessage());
             }
         }

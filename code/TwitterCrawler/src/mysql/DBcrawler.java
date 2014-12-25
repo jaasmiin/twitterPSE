@@ -120,31 +120,6 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
 
-        // url = (url == null ? "NULL" : url);
-        // String sqlCommand =
-        // "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ("
-        // + id
-        // + ",\""
-        // + name
-        // + "\","
-        // + (isVer == true ? "1" : "0")
-        // + ","
-        // + follower
-        // + ", "
-        // + "(SELECT Id FROM location WHERE Code = \""
-        // + location
-        // + "\" LIMIT 1) , "
-        // + url
-        // + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
-        //
-        // boolean ret = false;
-        // try {
-        // Statement s = c.createStatement();
-        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
-        // } catch (SQLException e) {
-        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
-        // }
         return ret;
     }
 
@@ -184,24 +159,6 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
 
-        // String sqlCommand =
-        // "INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = "
-        // + id
-        // + " LIMIT 1),"
-        // + (tweet ? "1" : "0")
-        // + ", (SELECT Id FROM day WHERE Day = \""
-        // + dateFormat.format(date)
-        // + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
-        // + (tweet ? "1" : "0") + ";";
-        //
-        // boolean ret = false;
-        // try {
-        // Statement s = c.createStatement();
-        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
-        // } catch (SQLException e) {
-        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
-        // }
         return ret;
     }
 
@@ -231,27 +188,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
 
-        // String sqlCommand =
-        // "INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES ("
-        // + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
-        // + id
-        // + "), (SELECT Id FROM location WHERE Code = \""
-        // + location
-        // + "\" LIMIT 1) , 1, (SELECT Id FROM day WHERE Day = \""
-        // + dateFormat.format(date)
-        // + "\")) ON DUPLICATE KEY UPDATE Counter = Counter + 1;";
-        //
-        // Statement s;
-        // boolean result2 = false;
-        // try {
-        // s = c.createStatement();
-        // result2 = s.executeUpdate(sqlCommand) != 0 ? true : false;
-        // } catch (SQLException e) {
-        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
-        // }
         return new boolean[] {result1, result2 };
-
     }
 
     @Override
@@ -294,29 +231,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
 
-        // String parentId = parent != null ?
-        // ("(SELECT Id FROM location WHERE Code = \""
-        // + parent + "\" LIMIT 1)")
-        // : "NULL";
-        // String sqlCommand =
-        // "INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", \""
-        // + code
-        // + "\", "
-        // + parentId
-        // + ") ON DUPLICATE KEY UPDATE ParentId = " + parentId + ";";
-        //
-        // Statement s;
-        // boolean ret = false;
-        // try {
-        // s = c.createStatement();
-        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
-        // } catch (SQLException e) {
-        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
-        // }
-
         return ret;
-
     }
 
     @Override
@@ -334,18 +249,6 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
 
-        // String sqlCommand = "INSERT INTO day (Day) VALUES (\""
-        // + dateFormat.format(date)
-        // + "\") ON DUPLICATE KEY UPDATE Day = Day";
-        // Statement s;
-        // boolean ret = false;
-        // try {
-        // s = c.createStatement();
-        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
-        // } catch (SQLException e) {
-        // logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-        // + e.getMessage() + "\n");
-        // }
         return ret;
     }
 
@@ -363,11 +266,10 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             return null;
         }
 
-        Stack<Integer> st = new Stack<Integer>();
+        Stack<Long> st = new Stack<Long>();
         try {
             while (res.next()) {
-                // TODO get long not int
-                st.push(res.getInt("TwitterAccountId"));
+                st.push(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
@@ -438,11 +340,10 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             return new HashSet<Long>();
         }
 
-        Stack<Integer> st = new Stack<Integer>();
+        Stack<Long> st = new Stack<Long>();
         try {
             while (res.next()) {
-                // TODO get long not int
-                st.push(res.getInt("TwitterAccountId"));
+                st.push(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());

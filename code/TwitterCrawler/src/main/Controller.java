@@ -72,25 +72,6 @@ public class Controller extends Thread {
         thrdAccountUpdate = new Thread(accountUpdate);
         thrdAccountUpdate.start();
 
-        // get hashSet with AccountId's
-        // HashSet<Long> accounts = null;
-        // DBcrawler dbc = null;
-        // try {
-        // dbc = new DBcrawler(accessData, logger);
-        // dbc.connect();
-        // accounts = dbc.getAccounts();
-        // dbc.disconnect();
-        // } catch (InstantiationException | IllegalAccessException
-        // | ClassNotFoundException | SQLException e1) {
-        // if (dbc != null) {
-        // dbc.disconnect();
-        // }
-        // logger.warning("Starting statusProcessors with an empty HashSet");
-        // if (accounts == null) {
-        // accounts = new HashSet<Long>();
-        // }
-        // }
-
         // create threads that extract informations of status and store them in
         // the db
         for (int i = 0; i < THREADNUM; ++i) {
@@ -138,8 +119,8 @@ public class Controller extends Thread {
             statusProcessor[i].run = false;
         }
 
-        // join Controller
-        // TODO
+        // join/stop Controller
+        this.interrupt();
 
         // join crawler
         System.out.print("\n Terminating crawler..");
@@ -268,7 +249,7 @@ public class Controller extends Thread {
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
             } catch (InterruptedException e) {
-                logger.info("Controller has been interrupted\n"
+                logger.info("Controller has been interrupted: \n"
                         + e.getMessage());
             }
             count += INTERVAL;
