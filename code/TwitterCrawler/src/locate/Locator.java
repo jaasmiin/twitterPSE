@@ -1,11 +1,19 @@
 package locate;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -21,8 +29,8 @@ import org.geonames.WebService;
 import twitter4j.GeoLocation;
 
 /**
- * class to locate words with a webservice !!! HashMap is just an idea and
- * should be discussed !!!
+ * class to locate words with a webservice !!! HashMap is just an idea and shoul
+ * be discussed !!!
  * 
  * @author Matthias Schimek
  * @version 1.0
@@ -32,21 +40,64 @@ public class Locator {
 
     private String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
 
-    private HashMap<String, String> map;
+    public HashMap<String, String> map;
     private Logger logger;
+    private int countMod = 0;
 
     public Locator(Logger log) {
         this.logger = log;
         map = new HashMap<String, String>();
-
+        readFromFile(new File("HashNeu"));
         map.put("tokyo", "JP");
         map.put("baghdad", "IQ");
         map.put("irkutsk", "RU");
         map.put("seoul", "KR");
-        map.put("budapest", "HU");
+        map.put("budapest", "HU"); 
 
     }
-
+    private void writeToFile(File file) {
+        Iterator it = map.entrySet().iterator();
+        try {
+            Writer writer = new FileWriter(file.getPath());
+            while(it.hasNext()) {
+                Map.Entry pairs = (Map.Entry)it.next();
+                writer.write(pairs.getKey()+"#"+pairs.getValue());
+              //  System.out.println(pairs.getKey()+"#"+pairs.getValue());
+                writer.append( System.getProperty("line.separator") );
+            }
+            writer.close();
+        } catch(IOException e) {
+            logger.warning("Cannot write HashMap to file"+ e.getMessage() );
+        }
+    }
+        
+    private void readFromFile(File file) {
+        String value = null;
+        String key = null;
+        String input = null;
+        try {
+            BufferedReader b=new BufferedReader (new FileReader(file.getPath()));
+            System.out.println(file.getAbsolutePath());
+            input = b.readLine();
+            while(input != null) {               
+                System.out.println(input);
+                String[] tmp = input.split("#");
+                if (tmp.length != 2) {
+                    logger.info("Wrong content in file, input does not fit pattern 'key#value'");
+                }
+                key = tmp[0].toLowerCase();
+                value = tmp[1];
+                map.put(key,value);
+                input =b.readLine();
+            }
+            
+            
+        } catch (IOException e) {
+            logger.warning("Cannot read from file to HashMap "+ e.getMessage());
+        }
+       
+        
+    }
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -77,7 +128,7 @@ public class Locator {
     }
 
     /**
-     * tries to determine the country/location of a given name or word
+     * try's to determine the country/location of a given name or word
      * 
      * @param location
      *            the input name or word to determine the country/location as
@@ -90,9 +141,9 @@ public class Locator {
      *         String
      */
 
-    public String getLocation(String location, String timezone) {
+    public String getLocation(String location, String timezone) {    
         String result = "0";
-
+        
         // format given parameter
 
         if (location == null && timezone == null) {
@@ -100,18 +151,19 @@ public class Locator {
         }
         if (location != null) {
             location = location.replace(' ', '+');
-            location = location.replaceAll("#", "");
-
+            location = location.replaceAll("#","");
+            
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
             timezone = location.replaceAll("#", "");
         }
-
+        
         // lookup in Hashtable to avoid calling the webservice
-        if (location != null && map.containsKey(location.toLowerCase())) {
-            return map.get(location.toLowerCase()) + "  from hashtable";
+        if(location != null && map.containsKey(location.toLowerCase())) {
+            return map.get(location.toLowerCase())+ "  from hashtable";
         }
+
 
         // connection to Webservice
         try {
@@ -146,18 +198,24 @@ public class Locator {
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
             return "0";
         }
-
+        
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
         if (result.equals("0")) {
             return "0";
         }
+        
 
-        result = result.trim();
-
-        // add positive result to Hashtable
-        map.put(location, result);
-        return result;
-
+    result = result.trim();
+    
+    // add positive result to Hashtable and save results periodically
+    countMod++;
+    map.put(location.toLowerCase(), result); 
+    if (countMod >= 5) {
+        writeToFile(new File("HashNeu"));
+        countMod = 0;
     }
+    return result;
+    }
+
 }
