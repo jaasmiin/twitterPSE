@@ -2,6 +2,7 @@ package mysql;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashSet;
 
 /**
  * interface for writing data into a database
@@ -56,6 +57,7 @@ public interface DBICrawler {
     public boolean[] addRetweet(long id, String location, Date date)
             throws SQLException;
 
+    // maybe private
     /**
      * inserts a new location into the database
      * 
@@ -81,8 +83,25 @@ public interface DBICrawler {
      * returns all AccountId's that aren't verified
      * 
      * @return all AccountId's from the database that aren't verified as
-     *         Integer-Array, null if an error occured
+     *         Integer-Array, null if an error occurred
      */
     public long[] getNonVerifiedAccounts();
+
+    // maybe private
+    /**
+     * returns a hashSet of all the country-codes from the database
+     * 
+     * @return a hashSet of all the country-codes from the database as
+     *         HashSet<String>, empty if an error occurred
+     */
+    public HashSet<String> getCountryCodes();
+
+    /**
+     * returns all AccountId's from the database
+     * 
+     * @return all AccountId's from the database as HashSet<Long>, empty if an
+     *         error occurred
+     */
+    public HashSet<Long> getAccounts();
 
 }

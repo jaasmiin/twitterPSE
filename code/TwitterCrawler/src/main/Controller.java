@@ -26,7 +26,7 @@ public class Controller extends Thread {
 
     private ConcurrentLinkedQueue<Status> statusQueue;
     private boolean run = true;
-    private Logger log;
+    private Logger logger;
     private AccessData accessData;
     private int runtime;
     private StreamListener streamListener;
@@ -46,8 +46,8 @@ public class Controller extends Thread {
      *             if an error with the LogFile.log has occurred
      */
     public Controller(int timeout, AccessData accessData) throws IOException {
-        log = getLogger();
-        log.info("Controller started");
+        logger = getLogger();
+        logger.info("Controller started");
         this.accessData = accessData;
         runtime = timeout;
 
@@ -57,37 +57,61 @@ public class Controller extends Thread {
     @Override
     public void run() {
         // create thread to pull status from twitter:
-        streamListener = new StreamListener(statusQueue, log, false);
+        streamListener = new StreamListener(statusQueue, logger, false);
         thrdStreamListener = new Thread(streamListener);
         thrdStreamListener.start();
-        log.info("Crawler started");
+        logger.info("Crawler started");
 
         ConcurrentHashMap<Long, Object> hashSet = new ConcurrentHashMap<Long, Object>();
         try {
-            accountUpdate = new AccountUpdate(log, hashSet, accessData);
+            accountUpdate = new AccountUpdate(logger, hashSet, accessData);
         } catch (SQLException e) {
-            log.severe("AccountUpdate not started - running without AccountUpdate:\n"
+            logger.severe("AccountUpdate not started - running without AccountUpdate:\n"
                     + e.getMessage());
         }
         thrdAccountUpdate = new Thread(accountUpdate);
         thrdAccountUpdate.start();
 
+        // get hashSet with AccountId's
+        // HashSet<Long> accounts = null;
+        // DBcrawler dbc = null;
+        // try {
+        // dbc = new DBcrawler(accessData, logger);
+        // dbc.connect();
+        // accounts = dbc.getAccounts();
+        // dbc.disconnect();
+        // } catch (InstantiationException | IllegalAccessException
+        // | ClassNotFoundException | SQLException e1) {
+        // if (dbc != null) {
+        // dbc.disconnect();
+        // }
+        // logger.warning("Starting statusProcessors with an empty HashSet");
+        // if (accounts == null) {
+        // accounts = new HashSet<Long>();
+        // }
+        // }
+
         // create threads that extract informations of status and store them in
         // the db
         for (int i = 0; i < THREADNUM; ++i) {
-            statusProcessor[i] = new StatusProcessor(statusQueue, hashSet, log,
-                    accessData);
-            thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
-            thrdStatusProcessor[i].start();
+            try {
+                statusProcessor[i] = new StatusProcessor(statusQueue, hashSet,
+                        logger, accessData);
+                thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
+                thrdStatusProcessor[i].start();
+            } catch (InstantiationException e) {
+                logger.warning("Couldn't start a statusProcessor: "
+                        + e.getMessage());
+            }
         }
-        log.info("StatusProcessors started");
+        logger.info("StatusProcessors started");
 
         // runtime always >= 0
         if (runtime > 0) {
             new java.util.Timer().schedule(new java.util.TimerTask() {
                 @Override
                 public void run() {
-                    shutdown();
+                    shutdown(false);
                     System.exit(0);
                 }
             }, runtime * 1000);
@@ -100,7 +124,8 @@ public class Controller extends Thread {
     /**
      * Shut down server
      */
-    public void shutdown() {
+    public void shutdown(boolean kill) {
+
         boolean success = true;
 
         // send stop message
@@ -122,7 +147,7 @@ public class Controller extends Thread {
             thrdStreamListener.join();
         } catch (InterruptedException e) {
             System.out.print(". Error (" + e.getMessage() + ").");
-            log.warning(e.getMessage());
+            logger.warning(e.getMessage());
             success = false;
         }
         if (success) {
@@ -136,47 +161,52 @@ public class Controller extends Thread {
             thrdAccountUpdate.join();
         } catch (InterruptedException e) {
             System.out.print(". Error (" + e.getMessage() + ").");
-            log.warning(e.getMessage());
+            logger.warning(e.getMessage());
             success = false;
         }
         if (success) {
             System.out.println(". done.");
         }
 
-        // waiting for empty queue
-        success = true;
-        System.out.print(" Terminating status processors..");
-        while (getQueueSize() > 0) {
-            try {
-                sleep(100);
-            } catch (InterruptedException e) {
-                System.out.print(". Error (" + e.getMessage() + ").");
-                log.warning(e.getMessage());
-                success = false;
-            } catch (IllegalArgumentException e) {
-                System.out.print(". Error (" + e.getMessage() + ").");
-                log.warning(e.getMessage());
-                success = false;
-            }
-        }
+        if (!kill) {
 
-        // join status processors
-        if (success) {
-            for (int i = 0; i < THREADNUM; ++i) {
+            // waiting for empty queue
+            success = true;
+            System.out.print(" Terminating status processors..");
+            while (getQueueSize() > 0) {
                 try {
-                    thrdStatusProcessor[i].join();
+                    sleep(100);
                 } catch (InterruptedException e) {
                     System.out.print(". Error (" + e.getMessage() + ").");
-                    log.warning(e.getMessage());
+                    logger.warning(e.getMessage());
                     success = false;
-                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.print(". Error (" + e.getMessage() + ").");
+                    logger.warning(e.getMessage());
+                    success = false;
                 }
             }
+
+            // join status processors
             if (success) {
-                System.out.println(". done.");
+                for (int i = 0; i < THREADNUM; ++i) {
+                    try {
+                        thrdStatusProcessor[i].join();
+                    } catch (InterruptedException e) {
+                        System.out.print(". Error (" + e.getMessage() + ").");
+                        logger.warning(e.getMessage());
+                        success = false;
+                        break;
+                    }
+                }
+                if (success) {
+                    System.out.println(". done.");
+                }
             }
+        } else {
+            // TODO close database connection
         }
-        log.info("Program terminated by user");
+        logger.info("Program terminated by user");
     }
 
     private Logger getLogger() throws SecurityException, IOException {
@@ -199,7 +229,8 @@ public class Controller extends Thread {
     public String toString() {
         int threadsAlive = 0;
         for (int i = 0; i < thrdStatusProcessor.length; i++) {
-            if (thrdStatusProcessor[i].isAlive()) {
+            if (thrdStatusProcessor[i] != null
+                    && thrdStatusProcessor[i].isAlive()) {
                 threadsAlive++;
             }
         }
@@ -225,7 +256,7 @@ public class Controller extends Thread {
 
             if (statusQueue.size() > MAX_SIZE) {
 
-                log.info("StatusQueue has been cleared at "
+                logger.info("StatusQueue has been cleared at "
                         + statusQueue.size() + " Elements");
 
                 for (int i = 0; i < MAX_SIZE / 2; i++) {
@@ -237,7 +268,8 @@ public class Controller extends Thread {
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
             } catch (InterruptedException e) {
-                log.info("Controller has been interrupted\n" + e.getMessage());
+                logger.info("Controller has been interrupted\n"
+                        + e.getMessage());
             }
             count += INTERVAL;
         }

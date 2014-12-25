@@ -63,7 +63,7 @@ public class CrawlerMain {
         BufferedReader console = new BufferedReader(new InputStreamReader(
                 System.in));
         String command = "";
-        while (!command.equals("exit")) {
+        while (!command.equals("exit") && !command.equals("kill")) {
             System.out.print("crawler> ");
             try {
                 command = console.readLine();
@@ -78,13 +78,16 @@ public class CrawlerMain {
                 break;
             case "exit":
                 break;
+            case "kill":
+                break;
             default:
                 System.out.println(" Error, could not find command '" + command
                         + "'.");
                 ;
             }
         }
-        cntrl.shutdown();
+
+        cntrl.shutdown(command.equals("kill"));
         System.exit(0);
     }
 }

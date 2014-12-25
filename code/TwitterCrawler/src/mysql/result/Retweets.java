@@ -10,7 +10,6 @@ import java.util.Date;
  */
 public class Retweets extends Tweets {
 
-    private int counterNonLocalized;
     private Location location;
 
     /**
@@ -20,25 +19,12 @@ public class Retweets extends Tweets {
      *            the date of the retweets as Date
      * @param counter
      *            the number of localized retweets as int
-     * @param counterNonLocalized
-     *            the number of NON localized retweets as int
      * @param location
      *            the location of this retweets as ResultLocation
      */
-    public Retweets(Date date, int counter, int counterNonLocalized,
-            Location location) {
+    public Retweets(Date date, int counter, Location location) {
         super(date, counter);
-        this.counterNonLocalized = counterNonLocalized;
         this.location = location;
-    }
-
-    /**
-     * returns the number of NON localized retweets
-     * 
-     * @return the number of NON localized retweets as int
-     */
-    public int getCounterNonLocalized() {
-        return counterNonLocalized;
     }
 
     /**

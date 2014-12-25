@@ -59,8 +59,8 @@ public abstract class DBConnection {
         // connect to database
         c = DriverManager.getConnection(accessData.getConnectionString(),
                 accessData.getUser(), accessData.getPassword());
-        logger.info("Connected to database " + accessData.getName()
-                + " with user " + accessData.getUser());
+        // logger.info("Connected to database " + accessData.getName()
+        // + " with user " + accessData.getUser());
     }
 
     /**
@@ -69,8 +69,8 @@ public abstract class DBConnection {
     public void disconnect() {
         try {
             c.close();
-            logger.info("Disonnected from database " + accessData.getName()
-                    + " with user " + accessData.getUser());
+            // logger.info("Disonnected from database " + accessData.getName()
+            // + " with user " + accessData.getUser());
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");

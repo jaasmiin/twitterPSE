@@ -32,7 +32,7 @@ public class StatusProcessor implements Runnable {
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     // use ConcurrentHashMap<Long,Object> as HashSet<Long>
-    private ConcurrentHashMap<Long, Object> accounts;
+    private ConcurrentHashMap<Long, Object> nonVerAccounts;
     private Locator locate;
 
     /**
@@ -48,20 +48,22 @@ public class StatusProcessor implements Runnable {
      *            a global logger for the whole program as Logger
      * @param accessData
      *            the access data for the root user of the database as String
+     * @throws InstantiationException
      */
     public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
             ConcurrentHashMap<Long, Object> accountsToTrack, Logger logger,
-            AccessData accessData) {
+            AccessData accessData) throws InstantiationException {
         this.queue = queue;
         this.logger = logger;
-        this.accounts = accountsToTrack;
+        this.nonVerAccounts = accountsToTrack;
         locate = new Locator(this.logger);
         try {
             dbc = new DBcrawler(accessData, logger);
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException e) {
+        } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
             dbc = null;
             logger.severe(e.getMessage() + "\n");
+            throw new InstantiationException(
+                    "Not able to instantiate Databaseconnection.");
         }
     }
 
@@ -164,7 +166,7 @@ public class StatusProcessor implements Runnable {
     private boolean checkUser(User user) {
         if (user.isVerified()) {
             return true;
-        } else if (accounts.containsKey(user.getId())) {
+        } else if (nonVerAccounts.containsKey(user.getId())) {
             return true;
         }
         return false;
@@ -189,6 +191,7 @@ public class StatusProcessor implements Runnable {
 
         dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
                 user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
+
     }
 
     /**
@@ -216,7 +219,7 @@ public class StatusProcessor implements Runnable {
         String loc = "0";
         if (place != null) {
             loc = place.getCountryCode();
-        }else {
+        } else {
             if (geotag != null) {
                 try {
                     loc = locate.getLocation(geotag);

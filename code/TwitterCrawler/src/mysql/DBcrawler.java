@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -20,6 +21,8 @@ import java.util.logging.Logger;
 public class DBcrawler extends DBConnection implements DBICrawler {
 
     private static final String DEFAULT_LOCATION = "0";
+    private HashSet<String> locationHash;
+    private HashSet<Long> accountHash;
 
     /**
      * configure the connection to the database
@@ -31,47 +34,59 @@ public class DBcrawler extends DBConnection implements DBICrawler {
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws ClassNotFoundException
+     * @throws SQLException
      */
     public DBcrawler(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,
-            ClassNotFoundException {
+            ClassNotFoundException, SQLException {
         super(accessData, logger);
+        connect();
+        locationHash = getCountryCodes();
+        accountHash = getAccounts();
+        disconnect();
     }
-
-    // SQL PREVENTION
-    //
-    // PreparedStatement stmt =
-    // connection.prepareStatement("SELECT * FROM users WHERE userid=? AND password=?");
-    // stmt.setString(1, userid);
-    // stmt.setString(2, password);
-    // ResultSet rs = stmt.executeQuery();
 
     @Override
     public boolean[] addAccount(String name, long id, boolean isVer,
             int follower, String location, String url, Date date, boolean tweet) {
 
-        location = checkString(location, 3, DEFAULT_LOCATION);
-        name = checkString(name, 30, null);
+        boolean result1 = false;
+        boolean result2 = false;
 
-        if (url != null) {
-            if (url.startsWith("http://www.")) {
-                url = url.substring(11, url.length());
-            } else if (url.startsWith("http://")) {
-                url = url.substring(7, url.length());
+        if (accountHash.contains(id)) {
+            // update follower
+            result1 = true;
+            result2 = updateAccount(id, follower);
+
+        } else {
+            // add account
+            location = checkString(location, 3, DEFAULT_LOCATION);
+            name = checkString(name, 30, null);
+
+            if (url != null) {
+                if (url.startsWith("http://www.")) {
+                    url = url.substring(11, url.length());
+                } else if (url.startsWith("http://")) {
+                    url = url.substring(7, url.length());
+                }
+                url = checkString(url, 100, null);
             }
-            url = checkString(url, 100, null);
-        }
 
-        // insert location
-        boolean result1 = true;
-        if (!addLocation(location, null)) {
-            location = DEFAULT_LOCATION;
-            result1 = false;
-        }
+            // insert location
+            result1 = true;
+            if (!addLocation(location, null)) {
+                location = DEFAULT_LOCATION;
+                result1 = false;
+            }
 
-        // insert account
-        boolean result2 = insertAccount(id, name, isVer, follower, location,
-                url);
+            // insert account
+            result2 = insertAccount(id, name, isVer, follower, location, url);
+
+            // add account to hashSet
+            if (result2) {
+                accountHash.add(id);
+            }
+        }
 
         // set Tweet count
         boolean result3 = insertTweet(id, tweet, date);
@@ -130,6 +145,24 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
         // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
         // }
+        return ret;
+    }
+
+    private boolean updateAccount(long id, int follower) {
+
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        boolean ret = false;
+        try {
+            stmt = c.prepareStatement("UPDATE accounts SET Follower = ? WHERE TwitterAccountId = ? ;");
+            stmt.setInt(1, follower);
+            stmt.setLong(2, id);
+            ret = stmt.executeUpdate() != 0 ? true : false;
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+        }
+
         return ret;
     }
 
@@ -224,9 +257,17 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     @Override
     public boolean addLocation(String code, String parent) {
 
+        // HashTable lookup
+        if (locationHash.contains(code)
+                && (parent == null || locationHash.contains(parent))) {
+            return true;
+        }
+
         // add parent to database
         if (parent != null && parent != DEFAULT_LOCATION) {
-            addLocation(parent, null);
+            if (addLocation(parent, null)) {
+                locationHash.add(parent);
+            }
         }
 
         // prevent SQL-injection
@@ -245,6 +286,9 @@ public class DBcrawler extends DBConnection implements DBICrawler {
                 stmt.setString(3, parent);
             }
             ret = stmt.executeUpdate() != 0 ? true : false;
+            if (ret) {
+                locationHash.add(code);
+            }
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -308,7 +352,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     @Override
     public long[] getNonVerifiedAccounts() {
 
-        String sqlCommand = "SELECT TwitterAccountId FROM accounts WHERE Verified = 0";
+        String sqlCommand = "SELECT TwitterAccountId FROM accounts WHERE Verified = 0;";
 
         ResultSet res = null;
         try {
@@ -322,6 +366,7 @@ public class DBcrawler extends DBConnection implements DBICrawler {
         Stack<Integer> st = new Stack<Integer>();
         try {
             while (res.next()) {
+                // TODO get long not int
                 st.push(res.getInt("TwitterAccountId"));
             }
         } catch (SQLException e) {
@@ -347,6 +392,68 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             }
             return ret;
         }
+    }
+
+    @Override
+    public HashSet<String> getCountryCodes() {
+
+        String sqlCommand = "SELECT Code FROM location;";
+
+        ResultSet res = null;
+        try {
+            Statement s = c.createStatement();
+            res = s.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+            return new HashSet<String>();
+        }
+
+        Stack<String> st = new Stack<String>();
+        try {
+            while (res.next()) {
+                st.push(res.getString("Code"));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            return new HashSet<String>();
+        }
+
+        HashSet<String> ret = new HashSet<String>(st.size());
+        for (int i = 0; i < st.size(); i++) {
+            ret.add(st.pop());
+        }
+        return ret;
+    }
+
+    @Override
+    public HashSet<Long> getAccounts() {
+        String sqlCommand = "SELECT TwitterAccountId FROM accounts;";
+
+        ResultSet res = null;
+        try {
+            Statement s = c.createStatement();
+            res = s.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+            return new HashSet<Long>();
+        }
+
+        Stack<Integer> st = new Stack<Integer>();
+        try {
+            while (res.next()) {
+                // TODO get long not int
+                st.push(res.getInt("TwitterAccountId"));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            return new HashSet<Long>();
+        }
+
+        HashSet<Long> ret = new HashSet<Long>(st.size());
+        for (int i = 0; i < st.size(); i++) {
+            ret.add((long) st.pop());
+        }
+        return ret;
     }
 
 }

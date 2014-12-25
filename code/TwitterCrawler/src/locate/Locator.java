@@ -95,7 +95,7 @@ public class Locator {
 
         // format given parameter
 
-        if (location == null || timezone == null) {
+        if (location == null && timezone == null) {
             return "0";
         }
         if (location != null) {
