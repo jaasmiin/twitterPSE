@@ -1,11 +1,18 @@
 package locate;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
 import java.io.StringReader;
+import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Logger;
 
@@ -44,10 +51,29 @@ public class Locator {
         map.put("baghdad", "IQ");
         map.put("irkutsk", "RU");
         map.put("seoul", "KR");
-        map.put("budapest", "HU");
+        map.put("budapest", "HU"); 
 
     }
-
+    private void writeToFile(File file) {
+        Iterator it = map.entrySet().iterator();
+        try {
+            Writer writer = new FileWriter(file.getPath());
+            while(it.hasNext()) {
+                Map.Entry pairs = (Map.Entry)it.next();
+                writer.write(pairs.getKey()+"#"+pairs.getValue());
+                System.out.println(pairs.getKey()+"#"+pairs.getValue());
+                writer.append( System.getProperty("line.separator") );
+            }
+            writer.close();
+        } catch(IOException e) {
+            logger.warning("Can not write HashMap to file"+ e.getMessage() );
+        }
+    }
+        
+    private void readFromFile(File file) {
+     
+        
+    }
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -154,13 +180,13 @@ public class Locator {
         if (result.equals("0")) {
             return "0";
         }
-        return result.trim();
-    }
+        
 
     result = result.trim();
     
     // add positive result to Hashtable
     map.put(location, result);
     return result;
-
+    }
+ 
 }
