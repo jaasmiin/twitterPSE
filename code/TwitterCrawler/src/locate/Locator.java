@@ -1,5 +1,6 @@
 package locate;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -39,14 +40,14 @@ public class Locator {
 
     private String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
 
-    private HashMap<String, String> map;
+    public HashMap<String, String> map;
     private Logger logger;
-
+    private int countMod = 0;
 
     public Locator(Logger log) {
         this.logger = log;
         map = new HashMap<String, String>();
-
+        readFromFile(new File("HashNeu"));
         map.put("tokyo", "JP");
         map.put("baghdad", "IQ");
         map.put("irkutsk", "RU");
@@ -61,17 +62,40 @@ public class Locator {
             while(it.hasNext()) {
                 Map.Entry pairs = (Map.Entry)it.next();
                 writer.write(pairs.getKey()+"#"+pairs.getValue());
-                System.out.println(pairs.getKey()+"#"+pairs.getValue());
+              //  System.out.println(pairs.getKey()+"#"+pairs.getValue());
                 writer.append( System.getProperty("line.separator") );
             }
             writer.close();
         } catch(IOException e) {
-            logger.warning("Can not write HashMap to file"+ e.getMessage() );
+            logger.warning("Cannot write HashMap to file"+ e.getMessage() );
         }
     }
         
     private void readFromFile(File file) {
-     
+        String value = null;
+        String key = null;
+        String input = null;
+        try {
+            BufferedReader b=new BufferedReader (new FileReader(file.getPath()));
+            System.out.println(file.getAbsolutePath());
+            input = b.readLine();
+            while(input != null) {               
+                System.out.println(input);
+                String[] tmp = input.split("#");
+                if (tmp.length != 2) {
+                    logger.info("Wrong content in file, input does not fit pattern 'key#value'");
+                }
+                key = tmp[0].toLowerCase();
+                value = tmp[1];
+                map.put(key,value);
+                input =b.readLine();
+            }
+            
+            
+        } catch (IOException e) {
+            logger.warning("Cannot read from file to HashMap "+ e.getMessage());
+        }
+       
         
     }
     /**
@@ -184,9 +208,14 @@ public class Locator {
 
     result = result.trim();
     
-    // add positive result to Hashtable
-    map.put(location, result);
+    // add positive result to Hashtable and save results periodically
+    countMod++;
+    map.put(location.toLowerCase(), result); 
+    if (countMod >= 5) {
+        writeToFile(new File("HashNeu"));
+        countMod = 0;
+    }
     return result;
     }
- 
+
 }

@@ -1,8 +1,10 @@
 package mysql;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.Date;
 import java.util.Stack;
 import java.util.logging.Logger;
@@ -12,7 +14,7 @@ import java.util.logging.Logger;
  * class to write data into a database
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class DBcrawler extends DBConnection implements DBICrawler {
@@ -67,7 +69,6 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             result1 = false;
         }
 
-        // TODO prevent sql injection
         // insert account
         boolean result2 = insertAccount(id, name, isVer, follower, location,
                 url);
@@ -81,57 +82,98 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     private boolean insertAccount(long id, String name, boolean isVer,
             int follower, String location, String url) {
 
-        String sqlCommand = "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ("
-                + id
-                + ",\""
-                + name
-                + "\","
-                + (isVer == true ? "1" : "0")
-                + ","
-                + follower
-                + ", "
-                + "(SELECT Id FROM location WHERE Code = \""
-                + location
-                + "\" LIMIT 1) , "
-                + (url == null ? "NULL" : "\"" + url + "\"")
-                + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
-
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
         boolean ret = false;
         try {
-            Statement s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+            stmt = c.prepareStatement("INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ( ? , ?, "
+                    + (isVer == true ? "1" : "0")
+                    + ", ? , (SELECT Id FROM location WHERE Code = ? LIMIT 1), ? , 0) ON DUPLICATE KEY UPDATE Follower = ? ;");
+            stmt.setLong(1, id);
+            stmt.setString(2, name);
+            stmt.setInt(3, follower);
+            stmt.setString(4, location);
+            if (url == null) {
+                stmt.setNull(5, Types.VARCHAR);
+            } else {
+                stmt.setString(5, url);
+            }
+            stmt.setInt(6, follower);
+            ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
+
+        // url = (url == null ? "NULL" : url);
+        // String sqlCommand =
+        // "INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ("
+        // + id
+        // + ",\""
+        // + name
+        // + "\","
+        // + (isVer == true ? "1" : "0")
+        // + ","
+        // + follower
+        // + ", "
+        // + "(SELECT Id FROM location WHERE Code = \""
+        // + location
+        // + "\" LIMIT 1) , "
+        // + url
+        // + ", 0) ON DUPLICATE KEY UPDATE Follower = " + follower + ";";
+        //
+        // boolean ret = false;
+        // try {
+        // Statement s = c.createStatement();
+        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+        // } catch (SQLException e) {
+        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+        // }
         return ret;
     }
 
     private boolean insertTweet(long id, boolean tweet, Date date) {
-        String sqlCommand = "INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = "
-                + id
-                + " LIMIT 1),"
-                + (tweet ? "1" : "0")
-                + ", (SELECT Id FROM day WHERE Day = \""
-                + dateFormat.format(date)
-                + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
-                + (tweet ? "1" : "0") + ";";
 
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
         boolean ret = false;
         try {
-            Statement s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+            stmt = c.prepareStatement("INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), "
+                    + (tweet ? "1" : "0")
+                    + ", (SELECT Id FROM day WHERE Day = ? LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
+                    + (tweet ? "1" : "0") + ";");
+            stmt.setLong(1, id);
+            stmt.setString(2, dateFormat.format(date));
+            ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
+
+        // String sqlCommand =
+        // "INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = "
+        // + id
+        // + " LIMIT 1),"
+        // + (tweet ? "1" : "0")
+        // + ", (SELECT Id FROM day WHERE Day = \""
+        // + dateFormat.format(date)
+        // + "\" LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
+        // + (tweet ? "1" : "0") + ";";
+        //
+        // boolean ret = false;
+        // try {
+        // Statement s = c.createStatement();
+        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+        // } catch (SQLException e) {
+        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+        // }
         return ret;
     }
 
     @Override
     public boolean[] addRetweet(long id, String location, Date date) {
-
-        // TODO prevent sql injection
 
         location = checkString(location, 3, DEFAULT_LOCATION);
 
@@ -141,24 +183,40 @@ public class DBcrawler extends DBConnection implements DBICrawler {
             result1 = false;
         }
 
-        String sqlCommand = "INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES ("
-                + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
-                + id
-                + "), (SELECT Id FROM location WHERE Code = \""
-                + location
-                + "\" LIMIT 1) , 1, (SELECT Id FROM day WHERE Day = \""
-                + dateFormat.format(date)
-                + "\")) ON DUPLICATE KEY UPDATE Counter = Counter + 1;";
-
-        Statement s;
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
         boolean result2 = false;
         try {
-            s = c.createStatement();
-            result2 = s.executeUpdate(sqlCommand) != 0 ? true : false;
+            stmt = c.prepareStatement("INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES "
+                    + "((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), (SELECT Id FROM location WHERE Code = ? LIMIT 1), 1, (SELECT Id FROM day WHERE Day = ? LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + 1;");
+            stmt.setLong(1, id);
+            stmt.setString(2, location);
+            stmt.setString(3, dateFormat.format(date));
+            result2 = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
+
+        // String sqlCommand =
+        // "INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES ("
+        // + "(SELECT Id FROM accounts WHERE TwitterAccountId = "
+        // + id
+        // + "), (SELECT Id FROM location WHERE Code = \""
+        // + location
+        // + "\" LIMIT 1) , 1, (SELECT Id FROM day WHERE Day = \""
+        // + dateFormat.format(date)
+        // + "\")) ON DUPLICATE KEY UPDATE Counter = Counter + 1;";
+        //
+        // Statement s;
+        // boolean result2 = false;
+        // try {
+        // s = c.createStatement();
+        // result2 = s.executeUpdate(sqlCommand) != 0 ? true : false;
+        // } catch (SQLException e) {
+        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+        // }
         return new boolean[] {result1, result2 };
 
     }
@@ -166,34 +224,52 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     @Override
     public boolean addLocation(String code, String parent) {
 
-        // code = checkString(code, 3, DEFAULT_LOCATION);
-        // parent = checkString(parent, 3, null);
-
-        // TODO prevent sql injection
-
         // add parent to database
         if (parent != null && parent != DEFAULT_LOCATION) {
             addLocation(parent, null);
         }
 
-        String parentId = parent != null ? ("(SELECT Id FROM location WHERE Code = \""
-                + parent + "\" LIMIT 1)")
-                : "NULL";
-        String sqlCommand = "INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", \""
-                + code
-                + "\", "
-                + parentId
-                + ") ON DUPLICATE KEY UPDATE ParentId = " + parentId + ";";
-
-        Statement s;
+        // prevent SQL-injection
         boolean ret = false;
+        PreparedStatement stmt = null;
         try {
-            s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+            if (parent == null) {
+                stmt = c.prepareStatement("INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", ?, ?) ON DUPLICATE KEY UPDATE ParentId = ?;");
+                stmt.setString(1, code);
+                stmt.setNull(2, Types.INTEGER);
+                stmt.setNull(3, Types.INTEGER);
+            } else {
+                stmt = c.prepareStatement("INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", ?, (SELECT Id FROM location WHERE Code = ? LIMIT 1)) ON DUPLICATE KEY UPDATE ParentId = (SELECT Id FROM location WHERE Code = ? LIMIT 1);");
+                stmt.setString(1, code);
+                stmt.setString(2, parent);
+                stmt.setString(3, parent);
+            }
+            ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
+
+        // String parentId = parent != null ?
+        // ("(SELECT Id FROM location WHERE Code = \""
+        // + parent + "\" LIMIT 1)")
+        // : "NULL";
+        // String sqlCommand =
+        // "INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", \""
+        // + code
+        // + "\", "
+        // + parentId
+        // + ") ON DUPLICATE KEY UPDATE ParentId = " + parentId + ";";
+        //
+        // Statement s;
+        // boolean ret = false;
+        // try {
+        // s = c.createStatement();
+        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+        // } catch (SQLException e) {
+        // logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+        // + e.getMessage() + "\n SQL-Query: " + sqlCommand + "\n");
+        // }
 
         return ret;
 
@@ -202,23 +278,36 @@ public class DBcrawler extends DBConnection implements DBICrawler {
     @Override
     public boolean addDay(Date date) {
 
-        String sqlCommand = "INSERT INTO day (Day) VALUES (\""
-                + dateFormat.format(date)
-                + "\") ON DUPLICATE KEY UPDATE Day = Day";
-        Statement s;
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
         boolean ret = false;
         try {
-            s = c.createStatement();
-            ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+            stmt = c.prepareStatement("INSERT INTO day (Day) VALUES (?) ON DUPLICATE KEY UPDATE Day = Day");
+            stmt.setString(1, dateFormat.format(date));
+            ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
-                    + e.getMessage() + "\n");
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
         }
+
+        // String sqlCommand = "INSERT INTO day (Day) VALUES (\""
+        // + dateFormat.format(date)
+        // + "\") ON DUPLICATE KEY UPDATE Day = Day";
+        // Statement s;
+        // boolean ret = false;
+        // try {
+        // s = c.createStatement();
+        // ret = s.executeUpdate(sqlCommand) != 0 ? true : false;
+        // } catch (SQLException e) {
+        // logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
+        // + e.getMessage() + "\n");
+        // }
         return ret;
     }
 
     @Override
     public long[] getNonVerifiedAccounts() {
+
         String sqlCommand = "SELECT TwitterAccountId FROM accounts WHERE Verified = 0";
 
         ResultSet res = null;
