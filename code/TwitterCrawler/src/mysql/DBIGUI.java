@@ -11,21 +11,22 @@ import mysql.result.Location;
  * @version 1.0
  * 
  */
-public interface DBIGUI {
+public interface DBIgui {
 
     public Category[] getCategories();
 
-    public Category[] getCategories(String search);
+    //public Category[] getCategories(String search);
 
     public Location[] getLocations();
 
-    public Location[] getLocations(String search);
+    //public Location[] getLocations(String search);
 
+    // return -1 on fault
     public int getAccountId(String accountName);
 
-    public Account[] getData(int[] categoryIds, int countryIds);
+    public Account[] getData(int[] categoryIds, int[] countryIds);
 
-    public Account[] getAccounts();
+    // public Account[] getAccounts();
 
     public Account[] getAccounts(String search);
 

@@ -1,5 +1,10 @@
 package mysql;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Stack;
 import java.util.logging.Logger;
 
 import mysql.result.Account;
@@ -13,7 +18,7 @@ import mysql.result.Location;
  * @version 1.0
  * 
  */
-public class DBgui extends DBConnection implements DBIGUI {
+public class DBgui extends DBConnection implements DBIgui {
 
     /**
      * configure the connection to the database
@@ -34,45 +39,140 @@ public class DBgui extends DBConnection implements DBIGUI {
 
     @Override
     public Category[] getCategories() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        String sqlCommand = "SELECT * FROM category;";
 
-    @Override
-    public Category[] getCategories(String search) {
-        // TODO Auto-generated method stub
-        return null;
+        ResultSet res = null;
+        try {
+            Statement s = c.createStatement();
+            res = s.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+            return null;
+        }
+
+        Stack<Category> st = new Stack<Category>();
+        try {
+            while (res.next()) {
+                // TODO parent relationship
+                st.push(new Category(res.getInt("Id"), res.getString("Name"),
+                        null));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            return null;
+        }
+
+        // TODO parent relationship
+
+        Category[] ret = new Category[st.size()];
+        for (int i = 0; i < st.size(); i++) {
+            ret[i] = st.pop();
+        }
+        return ret;
     }
 
     @Override
     public Location[] getLocations() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+        String sqlCommand = "SELECT * FROM location;";
 
-    @Override
-    public Location[] getLocations(String search) {
-        // TODO Auto-generated method stub
-        return null;
+        ResultSet res = null;
+        try {
+            Statement s = c.createStatement();
+            res = s.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+            return null;
+        }
+
+        Stack<Location> st = new Stack<Location>();
+        try {
+            while (res.next()) {
+                // TODO parent relationship
+                st.push(new Location(res.getInt("Id"), res.getString("Name"),
+                        res.getString("Code"), null));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            return null;
+        }
+
+        // TODO parent relationship
+
+        Location[] ret = new Location[st.size()];
+        for (int i = 0; i < st.size(); i++) {
+            ret[i] = st.pop();
+        }
+        return ret;
     }
 
     @Override
     public int getAccountId(String accountName) {
-        // TODO Auto-generated method stub
-        return 0;
+
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            // TODO Id or TwitterAccountId
+            stmt = c.prepareStatement("SELECT Id FROM accounts WHERE AccountName = ? LIMIT 1;");
+            stmt.setString(1, accountName);
+            res = stmt.executeQuery();
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            return -1;
+        }
+
+        int ret = -1;
+        try {
+            ret = res.getInt("Id");
+        } catch (SQLException e) {
+            ret = -1;
+        }
+
+        return ret;
     }
 
     @Override
-    public Account[] getData(int[] categoryIds, int countryIds) {
-        // TODO Auto-generated method stub
+    public Account[] getData(int[] categoryIds, int[] countryIds) {
+
+        // TODO
         return null;
+        // TODO
+        // String sqlCommand =
+        // "SELECT (Id, TwitterAccountId, AccountName, URL, Follower, LocationId) FROM accounts WHERE Id = ();";
+        //
+        // ResultSet res = null;
+        // try {
+        // Statement s = c.createStatement();
+        // res = s.executeQuery(sqlCommand);
+        // } catch (SQLException e) {
+        // logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+        // return null;
+        // }
+        //
+        // Stack<Account> st = new Stack<Account>();
+        // try {
+        // while (res.next()) {
+        // st.push(new Account(res.getInt("Id"), res
+        // .getLong("TwitterAccountId"), res
+        // .getString("AccountName"), res.getString("URL"), res
+        // .getInt("Follower"), res.getInt("LocationId")));
+        // }
+        // } catch (SQLException e) {
+        // logger.warning("Couldn't read sql result: \n" + e.getMessage());
+        // return null;
+        // }
+        // Account[] ret = new Account[st.size()];
+        // for (int i = 0; i < st.size(); i++) {
+        // ret[i] = st.pop();
+        // }
+        // return ret;
     }
 
-    @Override
-    public Account[] getAccounts() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // @Override
+    // public Account[] getAccounts() {
+    // // TODO Auto-generated method stub
+    // return null;
+    // }
 
     @Override
     public Account[] getAccounts(String search) {

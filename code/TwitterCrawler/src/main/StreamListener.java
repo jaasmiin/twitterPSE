@@ -23,7 +23,6 @@ public class StreamListener implements RunnableListener {
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     private TwitterStream twitterStream;
-    private boolean onlyRetweets;
 
     /**
      * 
@@ -34,31 +33,19 @@ public class StreamListener implements RunnableListener {
      *            consumer thread
      * @param logger
      *            a global logger for the whole program as Logger
-     * @param onlyRetweets
-     *            true if only retweets should be tracked, else false
      */
-    public StreamListener(ConcurrentLinkedQueue<Status> queue, Logger logger,
-            boolean onlyRetweets) {
+    public StreamListener(ConcurrentLinkedQueue<Status> queue, Logger logger) {
         this.queue = queue;
         this.logger = logger;
-        this.onlyRetweets = onlyRetweets;
     }
 
     @Override
     public void run() {
 
-        // try {
-
         String tracker[] = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
                 "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
                 "w", "x", "y", "z", "#", "@" };
         getStream(tracker);
-
-        // } catch (TwitterException e) {
-        // logger.warning("ErrorCode: " + e.getExceptionCode() + "\nMessage: "
-        // + e.getErrorMessage() + "\n");
-        // e.printStackTrace();
-        // }
 
     }
 
@@ -73,7 +60,10 @@ public class StreamListener implements RunnableListener {
                                            // TwitterException
     {
 
-        twitterStream = new TwitterStreamFactory().getInstance();
+        
+        // TODO
+        //twitterStream = TwitterStreamFactory.getSingleton();
+         twitterStream = new TwitterStreamFactory().getInstance();
 
         // get status objects
         StatusListener listener = new MyStatusListener(queue, logger);
@@ -95,23 +85,18 @@ public class StreamListener implements RunnableListener {
         twitterStream.addListener(listener);
         twitterStream.filter(filter);
 
-        // listening to all retweets
-        if (onlyRetweets) {
-            twitterStream.retweet();
-        }
-
     }
 
-    /**
-     * refresh connection by disconnecting from the twitterstream and then
-     * reconnecting to the twitterstream
-     */
-    public void refresh() {
-        exit();
-        twitterStream.cleanUp();
-        twitterStream.clearListeners();
-        run();
-    }
+    // /**
+    // * refresh connection by disconnecting from the twitterstream and then
+    // * reconnecting to the twitterstream
+    // */
+    // public void refresh() {
+    // exit();
+    // twitterStream.cleanUp();
+    // twitterStream.clearListeners();
+    // run();
+    // }
 
     @Override
     public void exit() {

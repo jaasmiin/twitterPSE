@@ -17,7 +17,7 @@ import mysql.result.Category;
  * @version 1.0
  * 
  */
-public class DBcategorizer extends DBConnection implements DBICategorizer {
+public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
     /**
      * configure the connection to the database

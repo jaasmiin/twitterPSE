@@ -12,8 +12,8 @@ public class Account extends Result {
     private String url;
     private long twitterId;
     private int follower;
-    private String location;
-    private Category[] categorys;
+    private int locationId;
+    private int[] categoryIds;
     private Tweets[] tweets;
     private Retweets[] retweets;
 
@@ -30,25 +30,25 @@ public class Account extends Result {
      *            the official url of the account as String
      * @param follower
      *            the number of followers of the account as int
-     * @param location
-     *            the location of the account as String
-     * @param categorys
-     *            the categories of the account as ResultCategory[]
+     * @param locationId
+     *            the location-id of the account as int
+     * @param categoryIds
+     *            the category-id's of the account as int[]
      * @param tweets
      *            the tweets of the account as ResultTweet[]
      * @param retweets
      *            the retweets of the account as ResultRetweet[]
      */
     public Account(int id, long twitterId, String name, String url,
-            int follower, String location, Category[] categorys,
-            Tweets[] tweets, Retweets[] retweets) {
+            int follower, int locationId, int[] categoryIds, Tweets[] tweets,
+            Retweets[] retweets) {
         super(id);
         this.twitterId = twitterId;
         this.name = name;
         this.url = url;
         this.follower = follower;
-        this.location = location;
-        this.categorys = categorys;
+        this.locationId = locationId;
+        this.categoryIds = categoryIds;
         this.tweets = tweets;
         this.retweets = retweets;
     }
@@ -66,14 +66,14 @@ public class Account extends Result {
      *            the official url of the account as String
      * @param follower
      *            the number of followers of the account as int
-     * @param location
-     *            the location of the account as String
-     * @param categorys
-     *            the categories of the account as ResultCategory[]
+     * @param locationId
+     *            the location-id of the account as int
+     * @param categories
+     *            the category-id's of the account as int[]
      */
     public Account(int id, long twitterId, String name, String url,
-            int follower, String location, Category[] categorys) {
-        this(id, twitterId, name, url, follower, location, categorys,
+            int follower, int locationId, int[] categories) {
+        this(id, twitterId, name, url, follower, locationId, categories,
                 new Tweets[0], new Retweets[0]);
     }
 
@@ -90,13 +90,13 @@ public class Account extends Result {
      *            the official url of the account as String
      * @param follower
      *            the number of followers of the account as int
-     * @param location
-     *            the location of the account as String
+     * @param locationId
+     *            the location-id of the account as int
      */
     public Account(int id, long twitterId, String name, String url,
-            int follower, String location) {
-        this(id, twitterId, name, url, follower, location,
-                new Category[0], new Tweets[0], new Retweets[0]);
+            int follower, int locationId) {
+        this(id, twitterId, name, url, follower, locationId, new int[0],
+                new Tweets[0], new Retweets[0]);
     }
 
     /**
@@ -108,7 +108,7 @@ public class Account extends Result {
      *            the official url of the account as String
      */
     public Account(int id, String url) {
-        this(id, 0, null, url, 0, null);
+        this(id, 0, null, url, 0, -1);
     }
 
     /**
@@ -148,21 +148,21 @@ public class Account extends Result {
     }
 
     /**
-     * returns the location of the account
+     * returns the location-id of the account
      * 
-     * @return the location of the account as String
+     * @return the location-id of the account as int
      */
-    public String getLocation() {
-        return location;
+    public int getLocationId() {
+        return locationId;
     }
 
     /**
-     * returns the categories of the account
+     * returns the category-id's of the account
      * 
-     * @return the categories of the account as ResultCategory[]
+     * @return the category-id's of the account as int[]
      */
-    public Category[] getCategorys() {
-        return categorys;
+    public int[] getCategoryIds() {
+        return categoryIds;
     }
 
     /**

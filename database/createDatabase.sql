@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS retweets (
 );
 
 
-/* Category-Account-Tabelle */
-CREATE TABLE IF NOT EXISTS categoryAccount (
+/* Account-Category-Tabelle */
+CREATE TABLE IF NOT EXISTS accountCategory (
 	Id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	AccountId INT UNSIGNED NOT NULL,
 	CategoryId INT UNSIGNED NOT NULL

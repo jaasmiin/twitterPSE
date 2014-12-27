@@ -10,7 +10,7 @@ import java.util.HashSet;
  * @author Holger Ebhart
  * @version 1.0
  */
-public interface DBICrawler {
+public interface DBIcrawler {
 
     /**
      * insert an account into the database

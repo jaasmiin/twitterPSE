@@ -87,10 +87,17 @@ public class StatusProcessor implements Runnable {
         Status status;
         while (run) {
 
+            try {
+                Thread.sleep(50); // sleep for 0.05s
+            } catch (InterruptedException e) {
+                logger.info("StatusProcessor interrupted\n" + e.getMessage());
+            }
+
             while (!queue.isEmpty()) {
+
                 status = null;
                 try {
-                    status = queue.remove();
+                    status = queue.poll();
                 } catch (Exception e) {
                     status = null;
                 }
@@ -98,12 +105,6 @@ public class StatusProcessor implements Runnable {
                 if (status != null) {
                     statusToDB(status);
                 }
-
-            }
-            try {
-                Thread.sleep(50); // sleep for 0.05s
-            } catch (InterruptedException e) {
-                logger.info("StatusProcessor interrupted\n" + e.getMessage());
             }
         }
 
@@ -186,7 +187,12 @@ public class StatusProcessor implements Runnable {
     private void accountToDB(User user, Date tweetDate, boolean tweet) {
 
         // locate account
+        // double a = System.currentTimeMillis();
         String loc = locate.getLocation(user.getLocation(), user.getTimeZone());
+        // if (System.currentTimeMillis() - a > 0.0) {
+        // System.out.println(System.currentTimeMillis() - a);
+        // }
+
         assert (loc != null);
 
         dbc.addAccount(user.getName(), user.getId(), user.isVerified(),

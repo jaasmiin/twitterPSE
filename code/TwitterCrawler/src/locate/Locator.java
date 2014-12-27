@@ -25,6 +25,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.geonames.GeoNamesException;
 import org.geonames.WebService;
+
 import twitter4j.GeoLocation;
 
 /**
@@ -51,54 +52,56 @@ public class Locator {
         map.put("baghdad", "IQ");
         map.put("irkutsk", "RU");
         map.put("seoul", "KR");
-        map.put("budapest", "HU"); 
+        map.put("budapest", "HU");
 
     }
+
     private void writeToFile(File file) {
-        // TODO add <Parameter>
-        Iterator it = map.entrySet().iterator();
+        Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         try {
             Writer writer = new FileWriter(file.getPath());
-            while(it.hasNext()) {
-                // TODO add <Parameter>
-                Map.Entry pairs = (Map.Entry)it.next();
-                writer.write(pairs.getKey()+"#"+pairs.getValue());
-              //  System.out.println(pairs.getKey()+"#"+pairs.getValue());
-                writer.append( System.getProperty("line.separator") );
+            while (it.hasNext()) {
+                Map.Entry<String, String> pairs = it.next();
+                writer.write(pairs.getKey() + "#" + pairs.getValue());
+                // System.out.println(pairs.getKey()+"#"+pairs.getValue());
+                writer.append(System.getProperty("line.separator"));
             }
             writer.close();
-        } catch(IOException e) {
-            logger.warning("Cannot write HashMap to file"+ e.getMessage() );
+        } catch (IOException e) {
+            logger.warning("Cannot write HashMap to file" + e.getMessage());
         }
     }
-        
+
     private void readFromFile(File file) {
         String value = null;
         String key = null;
         String input = null;
+
         try {
-            BufferedReader b=new BufferedReader (new FileReader(file.getPath()));
-            System.out.println(file.getAbsolutePath());
+            BufferedReader b = new BufferedReader(
+                    new FileReader(file.getPath()));
+            // System.out.println(file.getAbsolutePath());
             input = b.readLine();
-            while(input != null) {               
-                System.out.println(input);
+            while (input != null) {
+                // System.out.println(input);
                 String[] tmp = input.split("#");
                 if (tmp.length != 2) {
                     logger.info("Wrong content in file, input does not fit pattern 'key#value'");
                 }
                 key = tmp[0].toLowerCase();
                 value = tmp[1];
-                map.put(key,value);
-                input =b.readLine();
+                map.put(key, value);
+                input = b.readLine();
             }
-            
-            
+
+            b.close();
+
         } catch (IOException e) {
-            logger.warning("Cannot read from file to HashMap "+ e.getMessage());
+            logger.warning("Cannot read from file to HashMap " + e.getMessage());
         }
-       
-        
+
     }
+
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -142,9 +145,9 @@ public class Locator {
      *         String
      */
 
-    public String getLocation(String location, String timezone) {    
+    public String getLocation(String location, String timezone) {
         String result = "0";
-        
+
         // format given parameter
 
         if (location == null && timezone == null) {
@@ -152,19 +155,18 @@ public class Locator {
         }
         if (location != null) {
             location = location.replace(' ', '+');
-            location = location.replaceAll("#","");
-            
+            location = location.replaceAll("#", "");
+
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
             timezone = location.replaceAll("#", "");
         }
-        
-        // lookup in Hashtable to avoid calling the webservice
-        if(location != null && map.containsKey(location.toLowerCase())) {
-            return map.get(location.toLowerCase())+ "  from hashtable";
-        }
 
+        // lookup in Hashtable to avoid calling the webservice
+        if (location != null && map.containsKey(location.toLowerCase())) {
+            return map.get(location.toLowerCase()) + "  from hashtable";
+        }
 
         // connection to Webservice
         try {
@@ -199,24 +201,23 @@ public class Locator {
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
             return "0";
         }
-        
+
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
         if (result.equals("0")) {
             return "0";
         }
-        
 
-    result = result.trim();
-    
-    // add positive result to Hashtable and save results periodically
-    countMod++;
-    map.put(location.toLowerCase(), result); 
-    if (countMod >= 5) {
-        writeToFile(new File("HashNeu"));
-        countMod = 0;
-    }
-    return result;
+        result = result.trim();
+
+        // add positive result to Hashtable and save results periodically
+        countMod++;
+        map.put(location.toLowerCase(), result);
+        if (countMod >= 5) {
+            writeToFile(new File("HashNeu"));
+            countMod = 0;
+        }
+        return result;
     }
 
 }

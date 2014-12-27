@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  * @version 1.1
  * 
  */
-public class DBcrawler extends DBConnection implements DBICrawler {
+public class DBcrawler extends DBConnection implements DBIcrawler {
 
     private static final String DEFAULT_LOCATION = "0";
     private HashSet<String> locationHash;

@@ -11,7 +11,7 @@ import mysql.result.Category;
  * @author Holger Ebhart
  * @version 1.0
  */
-public interface DBICategorizer {
+public interface DBIcategorizer {
 
     /**
      * returns the non categorized accounts from the database (max. 100)

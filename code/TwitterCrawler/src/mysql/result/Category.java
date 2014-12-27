@@ -15,15 +15,16 @@ public class Category extends Result {
     /**
      * store the categories of an account
      * 
+     * @param id
+     *            the id of the category as int
+     * 
+     * @param name
+     *            the name of the category as String
      * @param parent
      *            the parent-category if available as ResultCategory otherwise
      *            null
-     * @param name
-     *            the name of the category as String
-     * @param id
-     *            the id of the category as int
      */
-    public Category(Category parent, String name, int id) {
+    public Category(int id, String name, Category parent) {
         super(id);
         this.parent = parent;
         this.category = name;
@@ -46,12 +47,4 @@ public class Category extends Result {
     public String getCategory() {
         return category;
     }
-
-    // /**
-    // * returns the id of the category
-    // *
-    // * @return the id of the category as int
-    // */
-    // public int getId();
-
 }

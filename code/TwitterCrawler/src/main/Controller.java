@@ -2,6 +2,9 @@ package main;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.FileHandler;
@@ -9,6 +12,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import mysql.AccessData;
+import mysql.DBcrawler;
 import twitter4j.Status;
 
 /**
@@ -20,21 +24,27 @@ import twitter4j.Status;
  * 
  */
 public class Controller extends Thread {
-    private final static int THREADNUM = 20; // 150?
+
+    // max. size of the buffer between streamListener and statusProcessors
     private final static int MAX_SIZE = 100000;
-    private final static int INTERVAL = 10; // interval to wait in seconds
+    // interval to wait in seconds
+    private final static int INTERVAL = 10;
+
+    private final int threadNum;
+    private final int runtime;
+    private AccessData accessData;
 
     private ConcurrentLinkedQueue<Status> statusQueue;
     private boolean run = true;
     private Logger logger;
-    private AccessData accessData;
-    private int runtime;
     private StreamListener streamListener;
     private Thread thrdStreamListener;
-    private Thread[] thrdStatusProcessor = new Thread[THREADNUM];
+    private Thread[] thrdStatusProcessor;
     private AccountUpdate accountUpdate;
     private Thread thrdAccountUpdate;
-    private StatusProcessor[] statusProcessor = new StatusProcessor[THREADNUM];
+    private StatusProcessor[] statusProcessor;
+    private DBcrawler dbc;
+    private Date dateForDB;
 
     /**
      * 
@@ -45,11 +55,22 @@ public class Controller extends Thread {
      * @throws IOException
      *             if an error with the LogFile.log has occurred
      */
-    public Controller(int timeout, AccessData accessData) throws IOException {
+    public Controller(int timeout, AccessData accessData, int numberOfThreads)
+            throws IOException {
+        threadNum = numberOfThreads;
+        thrdStatusProcessor = new Thread[threadNum];
+        statusProcessor = new StatusProcessor[threadNum];
+
         logger = getLogger();
         logger.info("Controller started");
         this.accessData = accessData;
         runtime = timeout;
+        dateForDB = new Date();
+        // add 800 days
+        GregorianCalendar cal = new GregorianCalendar();
+        cal.setTime(dateForDB);
+        cal.add(Calendar.DATE, 800);
+        dateForDB = cal.getTime();
 
         statusQueue = new ConcurrentLinkedQueue<Status>();
     }
@@ -57,7 +78,7 @@ public class Controller extends Thread {
     @Override
     public void run() {
         // create thread to pull status from twitter:
-        streamListener = new StreamListener(statusQueue, logger, false);
+        streamListener = new StreamListener(statusQueue, logger);
         thrdStreamListener = new Thread(streamListener);
         thrdStreamListener.start();
         logger.info("Crawler started");
@@ -74,7 +95,7 @@ public class Controller extends Thread {
 
         // create threads that extract informations of status and store them in
         // the db
-        for (int i = 0; i < THREADNUM; ++i) {
+        for (int i = 0; i < threadNum; ++i) {
             try {
                 statusProcessor[i] = new StatusProcessor(statusQueue, hashSet,
                         logger, accessData);
@@ -98,6 +119,13 @@ public class Controller extends Thread {
             }, runtime * 1000);
         }
 
+        try {
+            this.dbc = new DBcrawler(accessData, logger);
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException | SQLException e) {
+            logger.warning("No dates will be insert into the database because of: "
+                    + e.getMessage());
+        }
         limitQueue();
 
     }
@@ -115,8 +143,9 @@ public class Controller extends Thread {
         // exit and interrupt AccountUpdate
         accountUpdate.exit();
         thrdAccountUpdate.interrupt();
-        for (int i = 0; i < THREADNUM; i++) {
+        for (int i = 0; i < threadNum; i++) {
             statusProcessor[i].run = false;
+            thrdStatusProcessor[i].interrupt();
         }
 
         // join/stop Controller
@@ -149,11 +178,13 @@ public class Controller extends Thread {
             System.out.println(". done.");
         }
 
-        if (!kill) {
+        success = true;
+        System.out.print(" Terminating status processors..");
 
+        if (kill) {
+            statusQueue.clear();
+        } else {
             // waiting for empty queue
-            success = true;
-            System.out.print(" Terminating status processors..");
             while (getQueueSize() > 0) {
                 try {
                     sleep(100);
@@ -167,26 +198,25 @@ public class Controller extends Thread {
                     success = false;
                 }
             }
+        }
 
-            // join status processors
-            if (success) {
-                for (int i = 0; i < THREADNUM; ++i) {
-                    try {
-                        thrdStatusProcessor[i].join();
-                    } catch (InterruptedException e) {
-                        System.out.print(". Error (" + e.getMessage() + ").");
-                        logger.warning(e.getMessage());
-                        success = false;
-                        break;
-                    }
-                }
-                if (success) {
-                    System.out.println(". done.");
+        // join status processors
+        if (success) {
+            for (int i = 0; i < threadNum; ++i) {
+                try {
+                    thrdStatusProcessor[i].join();
+                } catch (InterruptedException e) {
+                    System.out.print(". Error (" + e.getMessage() + ").");
+                    logger.warning(e.getMessage());
+                    success = false;
+                    break;
                 }
             }
-        } else {
-            // TODO close database connection
+            if (success) {
+                System.out.println(". done.");
+            }
         }
+
         logger.info("Program terminated by user");
     }
 
@@ -221,7 +251,7 @@ public class Controller extends Thread {
                 + " Status of the Accountupdater: "
                 + (thrdAccountUpdate.isAlive() ? "running" : "crashed") + "\n"
                 + " Number of running workers: " + threadsAlive + "/"
-                + THREADNUM;
+                + threadNum;
     }
 
     private void limitQueue() {
@@ -231,14 +261,35 @@ public class Controller extends Thread {
             // one reconnect to twitter per day
             if (count >= 86400) {// one day = 86400 seconds
                 count = 0;
-                streamListener.refresh();
-                // TODO add a new day in the database
+
+                // refresh connection
+                streamListener.exit();
+                streamListener = new StreamListener(statusQueue, logger);
+                thrdStreamListener = new Thread(streamListener);
+                thrdStreamListener.start();
+                logger.info("StreamListener refreshed");
+                // streamListener.refresh();
+
+                // add a new date to the database
+                try {
+                    dbc.connect();
+                    GregorianCalendar cal = new GregorianCalendar();
+                    cal.setTime(dateForDB);
+                    if (dbc.addDay(dateForDB)) {
+                        cal.add(Calendar.DATE, 1);
+                        dateForDB = cal.getTime();
+                    }
+                    dbc.disconnect();
+                } catch (SQLException e) {
+                    logger.info("A date couldn't be insert into the database: "
+                            + e.getMessage());
+                }
             }
 
             if (statusQueue.size() > MAX_SIZE) {
 
-                logger.info("StatusQueue has been cleared at "
-                        + statusQueue.size() + " Elements");
+                // logger.info("StatusQueue has been cleared at "
+                // + statusQueue.size() + " Elements");
 
                 for (int i = 0; i < MAX_SIZE / 2; i++) {
                     statusQueue.poll();
