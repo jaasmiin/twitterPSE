@@ -60,10 +60,9 @@ public class StreamListener implements RunnableListener {
                                            // TwitterException
     {
 
-        
         // TODO
-        //twitterStream = TwitterStreamFactory.getSingleton();
-         twitterStream = new TwitterStreamFactory().getInstance();
+        // twitterStream = TwitterStreamFactory.getSingleton();
+        twitterStream = new TwitterStreamFactory().getInstance();
 
         // get status objects
         StatusListener listener = new MyStatusListener(queue, logger);

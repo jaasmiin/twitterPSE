@@ -259,7 +259,7 @@ public class Controller extends Thread {
         while (run) {
 
             // one reconnect to twitter per day
-            if (count >= 86400) {// one day = 86400 seconds
+            if (count >= 170000) {// one day = 86400 seconds
                 count = 0;
 
                 // refresh connection
