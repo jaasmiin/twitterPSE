@@ -7,9 +7,11 @@ import java.sql.Statement;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.Retweets;
 
 /**
  * class to modify the database restricted
@@ -111,7 +113,6 @@ public class DBgui extends DBConnection implements DBIgui {
         PreparedStatement stmt = null;
         ResultSet res = null;
         try {
-            // TODO Id or TwitterAccountId
             stmt = c.prepareStatement("SELECT Id FROM accounts WHERE AccountName = ? LIMIT 1;");
             stmt.setString(1, accountName);
             res = stmt.executeQuery();
@@ -132,13 +133,15 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public Account[] getData(int[] categoryIds, int[] countryIds) {
+    public Retweets[] getData(int[] categoryIds, int[] countryIds) {
 
+        // get sum of retweets
+        
         // TODO
         return null;
         // TODO
         // String sqlCommand =
-        // "SELECT (Id, TwitterAccountId, AccountName, URL, Follower, LocationId) FROM accounts WHERE Id = ();";
+        // "SELECT Id, TwitterAccountId, AccountName, URL, Follower, LocationId FROM accounts WHERE Id = ();";
         //
         // ResultSet res = null;
         // try {
@@ -168,32 +171,84 @@ public class DBgui extends DBConnection implements DBIgui {
         // return ret;
     }
 
-    // @Override
-    // public Account[] getAccounts() {
-    // // TODO Auto-generated method stub
-    // return null;
-    // }
-
     @Override
     public Account[] getAccounts(String search) {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
-    @Override
-    public boolean addAccount() {
-        // TODO Auto-generated method stub
-        return false;
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        try {
+            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, LocationId FROM accounts WHERE AccountName LIKE ? LIMIT 50;");
+            stmt.setString(1, "%" + search + "%");
+            res = stmt.executeQuery();
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+        }
+
+        if (res == null)
+            return null;
+
+        Stack<Account> st = new Stack<Account>();
+        try {
+            while (res.next()) {
+                st.push(new Account(res.getInt("Id"), res
+                        .getLong("TwitterAccountId"), res
+                        .getString("AccountName"), res.getBoolean("Verified"),
+                        res.getString("URL"), res.getInt("Follower"), res
+                                .getInt("LocationId")));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            return null;
+        }
+        Account[] ret = new Account[st.size()];
+        for (int i = 0; i < st.size(); i++) {
+            ret[i] = st.pop();
+        }
+        return ret;
     }
 
     @Override
     public boolean setCategory(int accountId, int categoryId) {
-        // TODO Auto-generated method stub
-        return false;
+
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        boolean ret = false;
+        try {
+            stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
+            stmt.setInt(1, accountId);
+            stmt.setInt(2, categoryId);
+            ret = stmt.executeUpdate() != 0 ? true : false;
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+        }
+
+        return ret;
     }
 
     @Override
-    public boolean setLocation(int accountId, int locationId) {
+    public boolean setLocation(int accountId, int locationId, boolean active) {
+
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        boolean ret = false;
+        try {
+            stmt = c.prepareStatement("UPDATE accounts SET LocationId = ? WHERE Id = ?;");
+            stmt.setInt(1, accountId);
+            stmt.setInt(2, locationId);
+            ret = stmt.executeUpdate() != 0 ? true : false;
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+        }
+
+        return ret;
+    }
+
+    @Override
+    public boolean addAccount(User user) {
         // TODO Auto-generated method stub
         return false;
     }

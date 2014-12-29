@@ -362,3 +362,9 @@ Dez 27, 2014 4:55:42 PM locate.Locator getLocation
 Information: Webservice meldet Fehler: Connection timed out: connect
 Dez 27, 2014 4:55:42 PM main.Controller shutdown
 Information: Program terminated by user
+Dez 28, 2014 1:19:54 PM mysql.DBcategorizer getNonCategorized
+Warnung: Couldn't execute sql query
+Operand should contain 1 column(s)
+Dez 28, 2014 1:20:48 PM mysql.DBcategorizer getNonCategorized
+Warnung: Couldn't execute sql query
+Operand should contain 1 column(s)

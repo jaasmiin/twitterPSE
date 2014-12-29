@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.logging.Logger;
+import mysql.DBcrawler;
 
 public class InsertDates {
 
@@ -51,7 +52,7 @@ public class InsertDates {
                 cal.setTime(d);
                 System.out.println(d.toString());
                 do {
-                    t.writeDay(d);
+                    t.addDay(d);
                     cal.add(Calendar.DATE, 1);
                     d = cal.getTime();
                 } while (d.compareTo((new SimpleDateFormat(

@@ -9,6 +9,7 @@ package mysql.result;
  */
 public class Category extends Result {
 
+    private final static int MAX_LENGTH = 50;
     private Category parent;
     private String category;
 
@@ -27,6 +28,9 @@ public class Category extends Result {
     public Category(int id, String name, Category parent) {
         super(id);
         this.parent = parent;
+        if (name.length() > MAX_LENGTH) {
+            name = name.substring(0, MAX_LENGTH - 1);
+        }
         this.category = name;
     }
 

@@ -212,15 +212,13 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         PreparedStatement stmt = null;
         try {
             if (parent == null) {
-                stmt = c.prepareStatement("INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", ?, ?) ON DUPLICATE KEY UPDATE ParentId = ?;");
+                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) VALUES (\"null\", ?, ?);");
                 stmt.setString(1, code);
                 stmt.setNull(2, Types.INTEGER);
-                stmt.setNull(3, Types.INTEGER);
             } else {
-                stmt = c.prepareStatement("INSERT INTO location (Name, Code, ParentId) VALUES (\"null\", ?, (SELECT Id FROM location WHERE Code = ? LIMIT 1)) ON DUPLICATE KEY UPDATE ParentId = (SELECT Id FROM location WHERE Code = ? LIMIT 1);");
+                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) VALUES (\"null\", ?, (SELECT Id FROM location WHERE Code = ? LIMIT 1));");
                 stmt.setString(1, code);
                 stmt.setString(2, parent);
-                stmt.setString(3, parent);
             }
             ret = stmt.executeUpdate() != 0 ? true : false;
             if (ret) {
@@ -241,7 +239,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         PreparedStatement stmt = null;
         boolean ret = false;
         try {
-            stmt = c.prepareStatement("INSERT INTO day (Day) VALUES (?) ON DUPLICATE KEY UPDATE Day = Day");
+            stmt = c.prepareStatement("INSERT IGNORE INTO day (Day) VALUES (?);");
             stmt.setString(1, dateFormat.format(date));
             ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
@@ -277,7 +275,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
         long[] ret = new long[st.size()];
         for (int i = 0; i < st.size(); i++) {
-            ret[i] = (long) st.pop();
+            ret[i] = st.pop();
         }
         return ret;
     }

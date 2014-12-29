@@ -5,16 +5,16 @@ In \cref{fig:crawler_package} ist die Grobstruktur des Crawlers als Paketdiagram
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_package}
-	\caption{Paketdiagramm des Crawlers}
+	\caption{Packetdiagramm des Crawlers}
 	\label{fig:crawler_package}
 \end{figure}
 
 \begin{description}
 \item[main] Dieses Paket beinhaltet die wesentliche Programmlogik.
 \item[mysql] In diesem Paket sind Klassen, welche Methoden bereitstellen um auf eine MySQL-Datenbank zuzugreifen. Außerdem ist noch ein Paket mit Klassen zur Verwaltung von Twitter-Daten integriert.
-\item[locate] Das locate-Paket dient zur Lokalisierung von Twitter-Accounts und Retweets mittels Webdiensten.
-\item[java 1.8] Standard java 1.8 Bibliothek.
-\item[twitter4j] twitter4j Bibliothek.
+\item[locate]
+\item[java]
+\item[twitter4j]
 \end{description}
 
 \subsection{Klassendiagramm}

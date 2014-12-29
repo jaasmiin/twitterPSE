@@ -13,6 +13,7 @@ public class Account extends Result {
     private long twitterId;
     private int follower;
     private int locationId;
+    private boolean verified;
     private int[] categoryIds;
     private Tweets[] tweets;
     private Retweets[] retweets;
@@ -26,6 +27,7 @@ public class Account extends Result {
      *            the id of the twitter account as long
      * @param name
      *            the name of the account as String
+     * @param verified
      * @param url
      *            the official url of the account as String
      * @param follower
@@ -39,10 +41,11 @@ public class Account extends Result {
      * @param retweets
      *            the retweets of the account as ResultRetweet[]
      */
-    public Account(int id, long twitterId, String name, String url,
-            int follower, int locationId, int[] categoryIds, Tweets[] tweets,
-            Retweets[] retweets) {
+    public Account(int id, long twitterId, String name, boolean verified,
+            String url, int follower, int locationId, int[] categoryIds,
+            Tweets[] tweets, Retweets[] retweets) {
         super(id);
+        this.verified = verified;
         this.twitterId = twitterId;
         this.name = name;
         this.url = url;
@@ -73,7 +76,7 @@ public class Account extends Result {
      */
     public Account(int id, long twitterId, String name, String url,
             int follower, int locationId, int[] categories) {
-        this(id, twitterId, name, url, follower, locationId, categories,
+        this(id, twitterId, name, false, url, follower, locationId, categories,
                 new Tweets[0], new Retweets[0]);
     }
 
@@ -86,6 +89,7 @@ public class Account extends Result {
      *            the id of the twitter account as long
      * @param name
      *            the name of the account as String
+     * @param verified
      * @param url
      *            the official url of the account as String
      * @param follower
@@ -93,10 +97,10 @@ public class Account extends Result {
      * @param locationId
      *            the location-id of the account as int
      */
-    public Account(int id, long twitterId, String name, String url,
-            int follower, int locationId) {
-        this(id, twitterId, name, url, follower, locationId, new int[0],
-                new Tweets[0], new Retweets[0]);
+    public Account(int id, long twitterId, String name, boolean verified,
+            String url, int follower, int locationId) {
+        this(id, twitterId, name, verified, url, follower, locationId,
+                new int[0], new Tweets[0], new Retweets[0]);
     }
 
     /**
@@ -108,7 +112,7 @@ public class Account extends Result {
      *            the official url of the account as String
      */
     public Account(int id, String url) {
-        this(id, 0, null, url, 0, -1);
+        this(id, 0, null, false, url, 0, -1);
     }
 
     /**
@@ -181,6 +185,14 @@ public class Account extends Result {
      */
     public Retweets[] getRetweets() {
         return retweets;
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public boolean isVerified() {
+        return verified;
     }
 
 }

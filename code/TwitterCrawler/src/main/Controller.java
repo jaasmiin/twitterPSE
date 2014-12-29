@@ -26,7 +26,7 @@ import twitter4j.Status;
 public class Controller extends Thread {
 
     // max. size of the buffer between streamListener and statusProcessors
-    private final static int MAX_SIZE = 100000;
+    private final static int MAX_SIZE = 50000;
     // interval to wait in seconds
     private final static int INTERVAL = 10;
 
@@ -259,7 +259,7 @@ public class Controller extends Thread {
         while (run) {
 
             // one reconnect to twitter per day
-            if (count >= 170000) {// one day = 86400 seconds
+            if (count >= 86400) {// one day = 86400 seconds
                 count = 0;
 
                 // refresh connection
@@ -294,8 +294,10 @@ public class Controller extends Thread {
                 for (int i = 0; i < MAX_SIZE / 2; i++) {
                     statusQueue.poll();
                 }
-
             }
+            
+            // call garbage-collector
+            System.gc();
 
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds

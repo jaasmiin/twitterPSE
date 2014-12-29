@@ -4,8 +4,8 @@ Man muss mit einem entsprechend maechtigen benutzer bei MySQL angemeldet sein. (
 */
 
 /* anlegen einer Datenbank Twitter */
-CREATE DATABASE IF NOT EXISTS twitter;
-USE twitter;
+CREATE DATABASE IF NOT EXISTS twittertest;
+USE twittertest;
 
 
 /* Accounts-Tabelle */
@@ -92,4 +92,31 @@ ALTER TABLE accountCategory ADD CONSTRAINT uc_accountcategory UNIQUE (AccountId,
 
 /* add required entrys for testing */
 INSERT INTO location (Name, Code, ParentId) VALUES ("defaultLocation","0",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("test0","T0",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("test1","T1",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("test2","T2",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("test3","T3",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("test4","T4",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("test5","T5",NULL);
+INSERT INTO location (Name, Code, ParentId) VALUES ("testParent","TP",2);
+
 INSERT INTO category (Name, ParentId) VALUES ("TestCategory", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC0", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC1", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC2", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC3", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC4", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC5", NULL);
+INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testCP", 2);
+
+INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (0,"Tester0",1,0,8,"url",0);
+INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (1,"Tester1",1,1,1,"url",0);
+INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (2,"Tester2",1,2,1,"url",0);
+INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (3,"Tester3",1,3,5,"url",1);
+INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (4,"Tester4",1,4,5,"url",0);
+INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (5,"Tester5",0,5,8,"url",0);
+
+INSERT INTO `day`(`Day`) VALUES ("2000-01-01");
+INSERT INTO `day`(`Day`) VALUES ("2000-01-02");
+INSERT INTO `day`(`Day`) VALUES ("2000-01-03");
+INSERT INTO `day`(`Day`) VALUES ("2000-01-04");

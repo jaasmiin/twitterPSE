@@ -18,15 +18,18 @@ public interface DBIcategorizer {
      * IMPORTANT only id and url are set
      * 
      * @return the non categorized accounts from the database as List of Account
+     *         (only id and url are valid)
      */
     public List<Account> getNonCategorized();
 
     /**
      * inserts first the category in the database and then an entry to connect
-     * the account with the category
+     * the account with the category and sets categorized on true
      * 
      * @param accountId
+     *            the id of the account to categorize as int
      * @param category
+     *            the category to set as Category
      * @return the result of the sql-query as boolean
      */
     public boolean addCategoryToAccount(int accountId, Category category);
