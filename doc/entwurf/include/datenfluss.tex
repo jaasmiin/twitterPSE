@@ -1,17 +1,13 @@
 \section{Datenflussdiagramm}
-
+Abschließend soll der Datenfluss innerhalb des Programms mithilfe von Abb. 6.1 genauer betrachtet werden.\\
+Der Datenfluss beginnt in der Klasse CrawlerMain, in der die main-Methode gestartet wird. Zuerst fließen dort Zugangsdaten der Datenbank an ein Controller Objekt, welche für seine Erzeugung notwendig sind. \\
+Ist dies abgeschlossen werden mehrere StatusProssesor Objekte erzeugt denen jeweils die Queue, in der später die zu verarbeitenden Tweets enthalten sein werden, und Zugangsdaten für die Datenbank übergeben. Diese StatusProcessor Objekte verbinden sich anschließend mit Hilfe der zuvor erhaltenen Zugangsdaten mit der Datenbank. Zeitgleich wird ein StreamListener Objekt erzeugt dem wiederum die vorhin beschriebene Queue und ein Logger Objekt übergeben wird. Sobald diese Initialisierung abgeschlossen ist erzeugt das StreamListener-Objekt ein MyStreamListener, dem es wieder die Queue und einen Logger mitliefert. Sobald dies geschehen ist beginnt der MyStreamListener Daten aus dem TwitterStream auszulesen und sie in die Queue zu schreiben, die der StatusProcessor permanent bearbeitet. Solche Tweet-Objekte fließen also durch die Queue zu einer der StatusProcessor Instanzen. \\
+Sobald ein StatusProcessor Objekt erkennt, dass der gerade in Bearbeitung befindlicheTweet von einem verifizierten Account kommt, wird der Account mit Hilfe der Daten, die der Kategorisierer liefert, (dieser benutzt dafür Daten aus der DMOZ-Datenbank) und der Daten, die der Lokalisierer liefert (dieser benutzt den Web-Lokalisierungsdienst), in die Datenbank geladen. Stellt der StatusProcessor fest, dass es ein Retweet war, wird er zusammen mit den Daten aus dem Lokalisierer in die Datenbank geladen.\\
+Sind Daten in der Datenbank vorhanden können diese dann auf der TwitterGUI visualisiert werden. Dazu fließen die entsprechenden aufgearbeiteten Daten zusammen mit den notwendigen Daten die für die UnfoldingMap-Darstellung zur GUI. Werden nun in der GUI zusätzlilche Accounts zum Tracken angegeben, werden diese an die Datenbank gesendet und der Kreislauf wird geschlossen.\\
+Die TwitterGUI ist somit ein zweiter Startpunkt für den Datenfluss.	
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=0.8\textheight,keepaspectratio=true]{dia/datenflussdiagramm}
 	\caption{Datenflussdiagramm des gesamten Systems}
 	\label{fig:datenflussdiagramm}
-	
-	\begin{description}
-	Abschließend soll der Datenfluss innerhalb des Programms mithilfe von Abb. 6.1 genauer betrachtet werden.\\
-	Der Datenfluss beginnt in der Klasse CrawlerMain, in der die main-Methode gestartet wird. Zuerst fließen dort Zugangsdaten der Datenbank an ein Controller Objekt, welche für seine Erzeugung notwendig sind. \\
-	Ist dies abgeschlossen werden mehrere StatusProssesor Objekte erzeugt denen jeweils die Queue, in der später die zu verarbeitenden Tweets enthalten sein werden, und Zugangsdaten für die Datenbank übergeben. Diese StatusProcessor Objekte verbinden sich anschließend mit Hilfe der zuvor erhaltenen Zugangsdaten mit der Datenbank. Zeitgleich wird ein StreamListener Objekt erzeugt dem wiederum die vorhin beschriebene Queue und ein Logger Objekt übergeben wird. Sobald diese Initialisierung abgeschlossen ist erzeugt das StreamListener-Objekt ein MyStreamListener, dem es wieder die Queue und einen Logger mitliefert. Sobald dies geschehen ist beginnt der MyStreamListener Daten aus dem TwitterStream auszulesen und sie in die Queue zu schreiben, die der StatusProcessor permanent bearbeitet. Solche Tweet-Objekte fließen also durch die Queue zu einer der StatusProcessor Instanzen. \\
-	Sobald ein StatusProcessor Objekt erkennt, dass der gerade in Bearbeitung befindlicheTweet von einem verifizierten Account kommt, wird der Account mit Hilfe der Daten, die der Kategorisierer liefert, (dieser benutzt dafür Daten aus der DMOZ-Datenbank) und der Daten, die der Lokalisierer liefert (dieser benutzt den Web-Lokalisierungsdienst), in die Datenbank geladen. Stellt der StatusProcessor fest, dass es ein Retweet war, wird er zusammen mit den Daten aus dem Lokalisierer in die Datenbank geladen.\\
-	Sind Daten in der Datenbank vorhanden können diese dann auf der TwitterGUI visualisiert werden. Dazu fließen die entsprechenden aufgearbeiteten Daten zusammen mit den notwendigen Daten die für die UnfoldingMap-Darstellung zur GUI. Werden nun in der GUI zusätzlilche Accounts zum Tracken angegeben, werden diese an die Datenbank gesendet und der Kreislauf wird geschlossen.\\
-	Die TwitterGUI ist somit ein zweiter Startpunkt für den Datenfluss.	
-	\end{description}
-\end{figure}
+\end{figure}	
