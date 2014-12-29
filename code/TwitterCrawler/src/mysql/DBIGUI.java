@@ -13,7 +13,7 @@ import mysql.result.Retweets;
  * @version 1.0
  * 
  */
-public interface DBIgui {
+public interface DBIGUI {
 
     /**
      * Get all categories from db.
@@ -46,7 +46,7 @@ public interface DBIgui {
      * @return
      */
     // TODO: Probably problem with existing Result classes.
-    public Retweets[] getData(int[] categoryIds, int[] countryIds);
+    public Retweets[] getData(int[] categoryIDs, int[] locationIDs);
 
     /**
      * Return list of accounts which name contains search
@@ -57,8 +57,13 @@ public interface DBIgui {
      */
     public Account[] getAccounts(String search);
 
-    // TODO: not ready
-    public boolean addAccount(User user, int locationId);
+    /**
+     * Add a new account to db.
+     * @param user TwitterUser
+     * @param locationId of the TwitterUser 
+     * @return true if successful
+     */
+    public boolean addAccount(User user, int locationID);
 
     /**
      * Change category of an account.
@@ -69,7 +74,7 @@ public interface DBIgui {
      *            of a category
      * @return true on success
      */
-    public boolean setCategory(int accountId, int categoryId);
+    public boolean setCategory(int accountID, int categoryID);
 
     /**
      * Add or remove a location from an account.
