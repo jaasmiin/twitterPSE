@@ -58,7 +58,7 @@ public interface DBIgui {
     public Account[] getAccounts(String search);
 
     // TODO: not ready
-    public boolean addAccount(User user);
+    public boolean addAccount(User user, int locationId);
 
     /**
      * Change category of an account.

@@ -1,5 +1,5 @@
 \section{Aufbau}
-Der Kategorisierer wird in regelmäßigen Abständen vom Betriebssystem gestartet und verbindet sich mit der Datenbank. Über die Datenbankschnittstelle ließt er die bislang unkategorisierten Twitteraccounts aus Accountstabelle aus und sucht in der DMOZ-Datenbank nach passenden Kategorien. Diese werden dann in die Kreuztabelle AccountCategory eingetragen.
+Der Kategorisierer wird in regelmäßigen Abständen vom Betriebssystem gestartet und verbindet sich mit der Datenbank. Über die Datenbankschnittstelle ließt er die bislang unkategorisierten Twitteraccounts aus der Accountstabelle aus und sucht in der DMOZ-Datenbank nach passenden Kategorien. Diese werden dann in die Kreuztabelle AccountCategory eingetragen.
 
 Im Diagramm \ref{fig:categorizer} ist der grundlegende Aufbau des Kategorisierers dargestellt:
 \begin{figure}[h!]
@@ -12,7 +12,7 @@ Im Diagramm \ref{fig:categorizer} ist der grundlegende Aufbau des Kategorisierer
 	\item[Account] siehe \cref{sec:datenbankzugriff}
 	\item[Category] siehe \cref{sec:datenbankzugriff}
 	\item[DBcategorizer] Über diese Klasse kommuniziert der Kategorsierer mit der Datenbank. Sie enthält Methoden zum Holen der unkategorisierten Accounts, zum Finden von Kategorien, zum Eintragen einer Kategorie und zum Auffinden aller Subkategorien einer Kategorie.
-	\item[Categorizer] Dies ist die Haupt-Klasse des Kategorisierers. Sie nutzt die Methoden von \lstinline{DBcategorizer}, um unkategorisierte Accounts zu suchen und gefundeene Kategorien einzutragen.
+	\item[Categorizer] Dies ist die Haupt-Klasse des Kategorisierers. Sie nutzt die Methoden von \lstinline{DBcategorizer}, um unkategorisierte Accounts zu suchen und gefundene Kategorien einzutragen.
 \end{description}
 
 \section{Start des Kategorisierers}

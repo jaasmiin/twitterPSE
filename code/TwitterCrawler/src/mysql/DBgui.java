@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import java.util.logging.Logger;
 
@@ -52,11 +54,10 @@ public class DBgui extends DBConnection implements DBIgui {
             return null;
         }
 
-        Stack<Category> st = new Stack<Category>();
+        List<Category> list = new ArrayList<Category>();
         try {
             while (res.next()) {
-                // TODO parent relationship
-                st.push(new Category(res.getInt("Id"), res.getString("Name"),
+                list.add(new Category(res.getInt("Id"), res.getString("Name"),
                         null));
             }
         } catch (SQLException e) {
@@ -64,11 +65,11 @@ public class DBgui extends DBConnection implements DBIgui {
             return null;
         }
 
-        // TODO parent relationship
-
-        Category[] ret = new Category[st.size()];
-        for (int i = 0; i < st.size(); i++) {
-            ret[i] = st.pop();
+        Category[] ret = new Category[list.size()];
+        int i = 0;
+        for (Category c : list) {
+            // TODO parent relationship
+            ret[i++] = c;
         }
         return ret;
     }
@@ -86,11 +87,10 @@ public class DBgui extends DBConnection implements DBIgui {
             return null;
         }
 
-        Stack<Location> st = new Stack<Location>();
+        List<Location> list = new ArrayList<Location>();
         try {
             while (res.next()) {
-                // TODO parent relationship
-                st.push(new Location(res.getInt("Id"), res.getString("Name"),
+                list.add(new Location(res.getInt("Id"), res.getString("Name"),
                         res.getString("Code"), null));
             }
         } catch (SQLException e) {
@@ -98,11 +98,11 @@ public class DBgui extends DBConnection implements DBIgui {
             return null;
         }
 
-        // TODO parent relationship
-
-        Location[] ret = new Location[st.size()];
-        for (int i = 0; i < st.size(); i++) {
-            ret[i] = st.pop();
+        Location[] ret = new Location[list.size()];
+        int i = 0;
+        for (Location l : list) {
+            // TODO parent relationship
+            ret[i++] = l;
         }
         return ret;
     }
@@ -136,7 +136,7 @@ public class DBgui extends DBConnection implements DBIgui {
     public Retweets[] getData(int[] categoryIds, int[] countryIds) {
 
         // get sum of retweets
-        
+
         // TODO
         return null;
         // TODO
@@ -248,9 +248,26 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public boolean addAccount(User user) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean addAccount(User user, int locationId) {
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        boolean ret = false;
+        try {
+            stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES (?, ?, "
+                    + (user.isVerified() ? "1" : "0") + ", ?, ?, ?, 0);");
+            stmt.setLong(1, user.getId());
+            stmt.setString(2, user.getScreenName());
+            stmt.setInt(3, user.getFollowersCount());
+            stmt.setInt(4, locationId);
+            stmt.setString(5,
+                    user.getURL().replace("\\", "/").replace("\"", "\"\""));
+            ret = stmt.executeUpdate() != 0 ? true : false;
+        } catch (SQLException e) {
+            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
+                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+        }
+
+        return ret;
     }
 
 }
