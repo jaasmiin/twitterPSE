@@ -1,7 +1,5 @@
 \section{Aufbau}
-
 \subsection{Paketdiagramm}
-
 \subsection{Klassendiagramm}
 Die GUI ermöglicht die Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar. 
 \begin{figure}[h!]
@@ -21,17 +19,27 @@ Die GUI ermöglicht die Interaktion des Benutzers mit der Anwendung und stellt d
 	\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
 	\item [myUnfoldingMap] Diese Klasse kapselt die eigentliche Darstellung sämtlicher Kartenanzeigen. Sie ist die 'Schnittstelle' zur Unfolding-Library, welche für die Anzeige der Weltkarte verwendet wird.
 \end{description}
-
 \section{Sequenzdiagramme}
+\subsection{GUI Initialisierung}
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=0.6\textheight,keepaspectratio=true]{dia/GUISequenz_Start}
 	\caption{Sequenzdiagramm der Initialisierung der GUI.}
 	\label{fig:GUIStartSeq}
 \end{figure}
+\subsection{Kommunikation: GUI und Datenbank}
+In \cref{fig:GUISeq} ist die Auswahl einer neuen Kategorie in einem Sequenzdiagramm dargestellt. Der Benutzer klickt auf eine Kategorie in der Liste, woraufhin \emph{handle(mouseEvent)} ausgelöst wird. Der \emph{SelectionOfQuerryController} gibt dieses Ereignis dem \emph{GuiController} weiter bzw. übergibt ihm eine Liste aller IDs ausgewählter Kategorien. Diese Klasse wiederum läd mittels \emph{getData} neue Daten zu den sich geänderten Kategorien. Die IDs ausgewählter Kategorien, Locations und Accounts (siehe Parameter der Operation \emph{getData}) sind dabei lokal in der Klasse \emph{GUIController} gespeichert.
+
+Alle GUI-Elemente werden dann mittels \emph{update} über geänderte Daten informiert. Als Parameter wird ein Enum übergeben, der den Typ der Datenänderung angibt. Es gibt folgende Typen:
+\begin{description}
+	\item[TWEET] Die Information Anzahl Retweets pro Land und Tweet hat sich geändert. Hier ist bspw. eine Karte, die die Anzahl der Retweets pro Land graphisch darstellt, oder eine Tabelle mit vorher genannten Daten betroffen. 
+	\item[CATEGORY] Eine lokale Liste der Kategorien wurde verändert. Die Liste, aus der der Benutzer Kategorien auswählt muss aktualisiert werden.
+	\item[LOCATION] Länder bzw. Orte wurden aktualisiert. Auch hier ist z.B. die Liste im Filter, aus dem der Benutzer ein Land auswählt betroffen.
+\end{description}
+Bei Änderungen vom Typ \emph{TWEET} ist bspw. die \emph{StandardMapView} betroffen und fordert mittels \emph{getTweets()} die neue Informationen an und aktualisiert somit die aktuell angezeigte Karte. Einfachheitshalber wird hier nur die Aktualisierung eines GUI Elements visualisiert. Die Operation \emph{udpate} wird auf jedem GUI-Element, welches sich beim \emph{GUIController} mittels \emph{subscribe} angemeldet hat, aufgerufen.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/TwitterGUI_Erweiterung_SequenzDiagramm}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/TwitterGUI_Erweiterung_SequenzDiagramm}
 	\caption{Sequenzdiagramm für Auswahl einer neuen Kategorie in der GUI.}
 	\label{fig:GUISeq}
 \end{figure}
