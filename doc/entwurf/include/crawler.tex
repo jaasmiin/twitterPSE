@@ -4,7 +4,7 @@
 In \cref{fig:crawler_package} ist die Grobstruktur des Crawlers als Paketdiagramm zu sehen.
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/crawler_package}
+	\includegraphics[width=\textwidth,height=0.4\textheight,keepaspectratio=true]{dia/crawler_package}
 	\caption{Paketdiagramm des Crawlers}
 	\label{fig:crawler_package}
 \end{figure}
@@ -23,8 +23,9 @@ Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/uml_crawler}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/uml_crawler}
 	\caption{UML-Klassendiagramm des Crawlers}
+	%\includegraphics[width=0.9\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/uml_crawler}
 	\label{fig:uml_crawler}
 \end{figure}
 
@@ -45,7 +46,8 @@ Beim Starten des Crawlers werden sämtliche notwendigen Komponenten der Reihe na
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_start_sequence}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/crawler_start_sequence}
+	%\includegraphics[width=0.9\textheight,height=0.9\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_start_sequence}
 	\caption{Sequenzdiagramm zum Start des Crawlers}
 	\label{fig:crawler_start}
 \end{figure}
@@ -60,7 +62,8 @@ Wird der Crawler vom Benutzer beendet, so sendet der Controller jedem Objekt, we
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_initialize_stream}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/crawler_initialize_stream}
+	%\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_initialize_stream}
 	\caption{Sequenzdiagramm zur Initialisierung des TwitterStreams}
 	\label{fig:initialize_stream}
 \end{figure}
@@ -74,7 +77,8 @@ Um zu verdeutlichen wie die Daten von Twitter innerhalb des Crawlers verarbeitet
 
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_process_sequence}
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/crawler_process_sequence}
+	%\includegraphics[width=\textheight,height=\textwidth,keepaspectratio=true,angle=-90]{dia/crawler_process_sequence}
 	\caption{Sequenzdiagramm der Verarbeitung der Daten von Twitter}
 	\label{fig:crawler_process}
 \end{figure}
