@@ -44,11 +44,20 @@ public class Category extends Result {
     }
 
     /**
-     * returns the name of the category
-     * 
-     * @return the name of the category as String
+     * Returns the name of the category
+     * @return the name of the category as string
+     * @deprecated replaced by {@link #toString()}
      */
     public String getCategory() {
         return category;
+    }
+    
+    /**
+     * Returns the name of the category
+     * @return the name of the category as String
+     */
+    @Override
+    public String toString() {
+    	return category;
     }
 }

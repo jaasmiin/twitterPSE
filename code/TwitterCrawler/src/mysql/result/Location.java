@@ -33,9 +33,9 @@ public class Location extends Result {
     }
 
     /**
-     * returns the name of the category
-     * 
+     * Returns the name of the category
      * @return the name of the category as String
+     * @deprecated replaced by {@link #toString()}
      */
     public String getName() {
         return name;
@@ -58,5 +58,13 @@ public class Location extends Result {
     public String getLocCode() {
         return locCode;
     }
-
+    
+    /**
+     * Returns the name of the category
+     * @return the name of the category as string
+     */
+    @Override
+    public String toString() {
+    	return name;
+    }
 }

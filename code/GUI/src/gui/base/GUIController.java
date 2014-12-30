@@ -50,6 +50,15 @@ public class GUIController extends Application implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		// TODO: code below added for testing
+		categories.add(new Category(31, "Musiker", null));
+		categories.add(new Category(22, "Schriftsteller", null));
+		categories.add(new Category(13, "Politiker", null));
+		locations.add(new Location(21, "Deutschland", "1234", null));
+		locations.add(new Location(82, "Frankreich", "1234", null));
+		locations.add(new Location(43, "Finnland", "1234", null));
+		locations.add(new Location(14, "Ungarn", "1234", null));
+		// TODO: code before add for testing
 		selectionOfQueryController.setParent(this);
 	}
 	
@@ -75,6 +84,30 @@ public class GUIController extends Application implements Initializable {
 		}
 		return filteredCategories;
 	}
+	
+	/**
+	 * Get lost of all locations
+	 * @return list of locations
+	 */
+	public ArrayList<Location> getLocations() {
+		return locations;
+	}
+	
+	/**
+	 * Get locations containing text
+	 * @param text which locations should contain
+	 * @return list of locations containing text
+	 */
+	public ArrayList<Location> getLocations(String text) {
+		ArrayList<Location> filteredLocations = new ArrayList<Location>();
+		for (Location location : locations) {
+			if (location.getName().contains(text)) {
+				filteredLocations.add(location);
+			}
+		}
+		return filteredLocations;
+	}
+	
 	
 	// TODO: many functions are missing
 }
