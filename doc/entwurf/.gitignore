@@ -1,9 +1,11 @@
 entwurf.pdf
+make.exe
 *.dvi
 *.log
 *.aux
 *.toc
 *.lof
 *.out
+*.bak
 *~
 *.gz

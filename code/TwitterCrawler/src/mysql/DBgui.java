@@ -133,7 +133,7 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public Retweets[] getData(int[] categoryIds, int[] countryIds) {
+    public Account[] getData(int[] categoryIds, int[] countryIds, boolean separateDate) {
 
         // get sum of retweets
 

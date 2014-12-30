@@ -44,3 +44,15 @@ Die Datenbank besteht aus sieben Tabellen, die über Fremdschlüssel miteinander
 	\caption{ER-Modell der MySQL-Datenbank}
 	\label{fig:mysql-er}
 \end{figure}
+
+\section{Datenbankzugriff der GUI}
+Beschreibung wie die GUI auf die Datenbank zugreift (entweder in chapter Datenbank oder in chapter GUI)
+
+Da die GUI zur Visualisierung der Daten aus der Datenbank dient, ist es nötig, dass sie diese Daten in möglichst kompakter und vollständiger Form abrufen kann. Dazu stehen der GUI mehrere Möglichkeiten zur Verfügung die im Folgenden aufgelistet sind. Dabei sollen zum einen die Fähigkeiten der Datenbank ausgenutzt werden um Daten zusammenzufassen, zum Anderen sollen aber auch alle relevanten Daten einzeln zur Verfügung stehen.
+\begin{description}
+\item[Kategorien und Orte] Diese Informationen können jeweils als komplette Tabelle von der Datenbank geholt werden.
+\item[Accounts] Mithilfe eines Account-Namens ist es möglich die AccountId herauszufinden. Außerdem kann mittels eines Worts nach Accounts gesucht werden, welche dieses Wort im Namen beinhalten.
+\item[Tweets und Retweets]
+TODO
+\end{description}
+

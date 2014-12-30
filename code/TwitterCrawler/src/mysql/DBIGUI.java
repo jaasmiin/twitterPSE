@@ -4,7 +4,6 @@ import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.Retweets;
 
 /**
  * interface for modifying some data from a database (with restrictions)
@@ -13,7 +12,7 @@ import mysql.result.Retweets;
  * @version 1.0
  * 
  */
-public interface DBIGUI {
+public interface DBIgui {
 
     /**
      * Get all categories from db.
@@ -38,15 +37,9 @@ public interface DBIGUI {
      */
     public int getAccountId(String accountName);
 
-    /**
-     * Get
-     * 
-     * @param categoryIds
-     * @param countryIds
-     * @return
-     */
     // TODO: Probably problem with existing Result classes.
-    public Retweets[] getData(int[] categoryIDs, int[] locationIDs);
+    public Account[] getData(int[] categoryIDs, int[] locationIDs,
+            boolean separateDate);
 
     /**
      * Return list of accounts which name contains search
@@ -59,8 +52,11 @@ public interface DBIGUI {
 
     /**
      * Add a new account to db.
-     * @param user TwitterUser
-     * @param locationId of the TwitterUser 
+     * 
+     * @param user
+     *            TwitterUser
+     * @param locationId
+     *            of the TwitterUser
      * @return true if successful
      */
     public boolean addAccount(User user, int locationID);

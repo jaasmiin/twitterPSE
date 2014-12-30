@@ -1,6 +1,6 @@
 twitter4j.properties
+/mysql
 /.gitignore
 /locate
 /main
-/mysql
 /test
