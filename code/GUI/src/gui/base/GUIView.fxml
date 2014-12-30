@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.base.GUIController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="NEVER" />
+    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints fillHeight="false" vgrow="NEVER" />
+      <RowConstraints fillHeight="false" minHeight="20.0" prefHeight="30.0" vgrow="NEVER" />
+      <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+  </rowConstraints>
+   <children>
+      <MenuBar GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+        <menus>
+          <Menu mnemonicParsing="false" text="Datei">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Beenden" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Bearbeiten">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Benutzer hinzufügen" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Hilfe">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Über" />
+              </items>
+            </Menu>
+        </menus>
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </MenuBar>
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="2">
+        <tabs>
+          <Tab closable="false" text="Karte">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab closable="false" text="Tabelle">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <TextField fx:id="txtSearch" GridPane.columnIndex="2">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+      </TextField>
+      <ListView focusTraversable="false" maxWidth="1.7976931348623157E308" prefHeight="50.0" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
+      <Label maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Info" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+      <fx:include source="../../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</GridPane>
