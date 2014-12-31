@@ -90,7 +90,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             temp = stack.pop();
 
             // hashtable lookup
-            if (!categories.contains(temp.getCategory())) {
+            if (!categories.contains(temp.toString())) {
 
                 // prevent SQL-injection
                 PreparedStatement stmt = null;
@@ -105,10 +105,10 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                         // set parent (SELECT Id FROM category WHERE Name = ?)
                         stmt = c.prepareStatement("INSERT INTO category (Name, ParentId) VALUES "
                                 + "(?, (SELECT Id FROM category WHERE Name = ?)) ON DUPLICATE KEY UPDATE ParentId = (SELECT Id FROM category WHERE Name = ?);");
-                        stmt.setString(2, temp.getParent().getCategory());
-                        stmt.setString(3, temp.getParent().getCategory());
+                        stmt.setString(2, temp.getParent().toString());
+                        stmt.setString(3, temp.getParent().toString());
                     }
-                    stmt.setString(1, temp.getCategory());
+                    stmt.setString(1, temp.toString());
                     
                     result1 = stmt.executeUpdate() != 0 ? true : false;
                 } catch (SQLException e) {
@@ -119,7 +119,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
                 // on success
                 if (result1) {
-                    categories.add(temp.getCategory());
+                    categories.add(temp.toString());
                 }
             }
         }
@@ -132,7 +132,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             try {
                 stmt = c.prepareStatement("INSERT INTO accountCategory (AccountId, CategoryId) VALUES (?, (SELECT Id FROM category WHERE Name = ? LIMIT 1));");
                 stmt.setInt(1, accountId);
-                stmt.setString(2, category.getCategory());
+                stmt.setString(2, category.toString());
                 result2 = stmt.executeUpdate() != 0 ? true : false;
             } catch (SQLException e) {
                 logger.warning("SQL-Status: " + e.getSQLState()

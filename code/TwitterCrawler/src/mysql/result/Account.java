@@ -188,8 +188,9 @@ public class Account extends Result {
     }
 
     /**
+     * returns if the account is verified or not
      * 
-     * @return
+     * @return true if the account is verified, else false
      */
     public boolean isVerified() {
         return verified;

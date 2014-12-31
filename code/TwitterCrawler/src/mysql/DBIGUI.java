@@ -4,6 +4,7 @@ import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.TweetsAndRetweets;
 
 /**
  * interface for modifying some data from a database (with restrictions)
@@ -37,9 +38,60 @@ public interface DBIgui {
      */
     public int getAccountId(String accountName);
 
-    // TODO: Probably problem with existing Result classes.
-    public Account[] getData(int[] categoryIDs, int[] locationIDs,
-            boolean separateDate);
+    /**
+     * returns all accounts that match a category- and a location-ID, with the
+     * associated total-number of Tweets and Retweets
+     * 
+     * @param categoryIDs
+     *            the ids of the selected categorys as int[]
+     * @param locationIDs
+     *            the ids of the selected locations as int[]
+     * @return all accounts that match a category- and a location-ID, with the
+     *         associated total-number of Tweets and Retweets as Account[]
+     */
+    public Account[] getAllData(int[] categoryIDs, int[] locationIDs);
+
+    /**
+     * returns the total number of tweets and retweets from all the accounts
+     * that match a category- and a location-ID per location
+     * 
+     * @param categoryIDs
+     *            the ids of the selected categorys as int[]
+     * @param locationIDs
+     *            the ids of the selected locations as int[]
+     * @return the total number of tweets and retweets from all the accounts
+     *         that match a category- and a location-ID per location as
+     *         TweetsAndRetweets
+     */
+    public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs);
+
+    /**
+     * returns all accounts that match a category- and a location-ID, with the
+     * associated number of Tweets and Retweets per Day
+     * 
+     * @param categoryIDs
+     *            the ids of the selected categorys as int[]
+     * @param locationIDs
+     *            the ids of the selected locations as int[]
+     * @return all accounts that match a category- and a location-ID, with the
+     *         associated number of Tweets and Retweets per Day as Account[]
+     */
+    public Account[] getAllDataWithDates(int[] categoryIDs, int[] locationIDs);
+
+    /**
+     * returns the total number of tweets and retweets from all the accounts
+     * that match a category- and a location-ID per location per day
+     * 
+     * @param categoryIDs
+     *            the ids of the selected categorys as int[]
+     * @param locationIDs
+     *            the ids of the selected locations as int[]
+     * @return the total number of tweets and retweets from all the accounts
+     *         that match a category- and a location-ID per location per Day as
+     *         TweetsAndRetweets
+     */
+    public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
+            int[] locationIDs);
 
     /**
      * Return list of accounts which name contains search
@@ -55,7 +107,7 @@ public interface DBIgui {
      * 
      * @param user
      *            TwitterUser
-     * @param locationId
+     * @param locationID
      *            of the TwitterUser
      * @return true if successful
      */
@@ -64,9 +116,9 @@ public interface DBIgui {
     /**
      * Change category of an account.
      * 
-     * @param accountId
+     * @param accountID
      *            of an account
-     * @param categoryId
+     * @param categoryID
      *            of a category
      * @return true on success
      */

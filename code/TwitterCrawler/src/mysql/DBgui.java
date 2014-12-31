@@ -13,7 +13,7 @@ import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.Retweets;
+import mysql.result.TweetsAndRetweets;
 
 /**
  * class to modify the database restricted
@@ -132,44 +132,45 @@ public class DBgui extends DBConnection implements DBIgui {
         return ret;
     }
 
-    @Override
-    public Account[] getData(int[] categoryIds, int[] countryIds, boolean separateDate) {
-
-        // get sum of retweets
-
-        // TODO
-        return null;
-        // TODO
-        // String sqlCommand =
-        // "SELECT Id, TwitterAccountId, AccountName, URL, Follower, LocationId FROM accounts WHERE Id = ();";
-        //
-        // ResultSet res = null;
-        // try {
-        // Statement s = c.createStatement();
-        // res = s.executeQuery(sqlCommand);
-        // } catch (SQLException e) {
-        // logger.warning("Couldn't execute sql query: \n" + e.getMessage());
-        // return null;
-        // }
-        //
-        // Stack<Account> st = new Stack<Account>();
-        // try {
-        // while (res.next()) {
-        // st.push(new Account(res.getInt("Id"), res
-        // .getLong("TwitterAccountId"), res
-        // .getString("AccountName"), res.getString("URL"), res
-        // .getInt("Follower"), res.getInt("LocationId")));
-        // }
-        // } catch (SQLException e) {
-        // logger.warning("Couldn't read sql result: \n" + e.getMessage());
-        // return null;
-        // }
-        // Account[] ret = new Account[st.size()];
-        // for (int i = 0; i < st.size(); i++) {
-        // ret[i] = st.pop();
-        // }
-        // return ret;
-    }
+    // @Override
+    // public Account[] getData(int[] categoryIds, int[] countryIds, boolean
+    // separateDate) {
+    //
+    // // get sum of retweets
+    //
+    // return null;
+    // 
+    // // String sqlCommand =
+    // //
+    // "SELECT Id, TwitterAccountId, AccountName, URL, Follower, LocationId FROM accounts WHERE Id = ();";
+    // //
+    // // ResultSet res = null;
+    // // try {
+    // // Statement s = c.createStatement();
+    // // res = s.executeQuery(sqlCommand);
+    // // } catch (SQLException e) {
+    // // logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+    // // return null;
+    // // }
+    // //
+    // // Stack<Account> st = new Stack<Account>();
+    // // try {
+    // // while (res.next()) {
+    // // st.push(new Account(res.getInt("Id"), res
+    // // .getLong("TwitterAccountId"), res
+    // // .getString("AccountName"), res.getString("URL"), res
+    // // .getInt("Follower"), res.getInt("LocationId")));
+    // // }
+    // // } catch (SQLException e) {
+    // // logger.warning("Couldn't read sql result: \n" + e.getMessage());
+    // // return null;
+    // // }
+    // // Account[] ret = new Account[st.size()];
+    // // for (int i = 0; i < st.size(); i++) {
+    // // ret[i] = st.pop();
+    // // }
+    // // return ret;
+    // }
 
     @Override
     public Account[] getAccounts(String search) {
@@ -268,6 +269,31 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         return ret;
+    }
+
+    @Override
+    public Account[] getAllData(int[] categoryIDs, int[] locationID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Account[] getAllDataWithDates(int[] categoryIDs, int[] locationID) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
+            int[] locationID) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
