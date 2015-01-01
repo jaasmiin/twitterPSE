@@ -22,6 +22,15 @@ Die GUI ermöglicht die Interaktion des Benutzers mit der Anwendung und stellt d
 \end{description}
 \section{Sequenzdiagramme}
 \subsection{GUI Initialisierung}
+
+\cref{fig:GUIStartSeq} veranschaulicht den Ablauf der Initialisierung der Benutzeroberfläche. Nach dem Aufrufen des Programmes durch den Benutzer erzeugt die Main-Klasse zuerst mit \emph{DBIGUI} eine Verbindung zu Datenbank.
+Daraufhin wird mittels eines von JavaFX bereitgestellten FXML-Loaders die Hauptverwaltungseinheit der GUI, bestehend aus ihrer Anzeige, dem \emph{GuiControllerView} , und der zugehörigen Kontolle, dem \emph{GuiController} geladen und initialisiert.
+Danach können GUI-Elemente in beliebiger Reihenfolge hinzugefügt werden, wie hier am Beispiel der \emph{selectionOfQuery}.
+Auch hier erstellt der FXML-Loader Anzeige und Kontrolle des GUI-Elements und ruft dann die zugehörige initialize-Methode auf.
+In dieser verbindet sich das GUI-Element mit dem \emph{GuiController} und erhält über diesen eine Verbindung zur Datenbank. Es holt sich die nötigen Daten ab und initialisiert dann seine Komponenten und erstellt die notwendigen Event-Handler.
+Nach erfolgreicher Erstellung des GUI-Elements meldet die  Main-Klasse die Kontrolle des GUI-Elements beim \emph{GuiController} als Beobachter an.
+Der Vorgang ist beendet, sobald alle GUI-Elemente an der Hauptverwaltungseinheit angemeldet sind.
+
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=0.5\textheight,keepaspectratio=true]{dia/GUISequenz_Start}
