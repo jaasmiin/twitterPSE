@@ -24,8 +24,7 @@ public class Location extends Result {
      * @param parent
      *            the parent location of this location as ResultLocation
      */
-    public Location(int id, String name, String locCode,
-            Location parent) {
+    public Location(int id, String name, String locCode, Location parent) {
         super(id);
         this.name = name;
         this.locCode = locCode;
@@ -34,6 +33,7 @@ public class Location extends Result {
 
     /**
      * Returns the name of the category
+     * 
      * @return the name of the category as String
      * @deprecated replaced by {@link #toString()}
      */
@@ -58,13 +58,24 @@ public class Location extends Result {
     public String getLocCode() {
         return locCode;
     }
-    
+
     /**
      * Returns the name of the category
+     * 
      * @return the name of the category as string
      */
     @Override
     public String toString() {
-    	return name;
+        return name;
+    }
+
+    /**
+     * set the parent location of this location
+     * 
+     * @param parentLocation
+     *            the parent location as Location
+     */
+    public void setParent(Location parentLocation) {
+        parent = parentLocation;
     }
 }

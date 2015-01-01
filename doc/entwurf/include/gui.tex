@@ -1,7 +1,15 @@
 \section{Aufbau}
 \subsection{Paketdiagramm}
+
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
+	\caption{Paketdiagramm der GUI}
+	\label{fig:GUI}
+\end{figure}
+
 \subsection{Klassendiagramm}
-Die GUI ermöglicht die Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar. 
+Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar. 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/TwitterGUI_Erweiterung}
@@ -23,8 +31,8 @@ Die GUI ermöglicht die Interaktion des Benutzers mit der Anwendung und stellt d
 \section{Sequenzdiagramme}
 \subsection{GUI Initialisierung}
 
-\cref{fig:GUIStartSeq} veranschaulicht den Ablauf der Initialisierung der Benutzeroberfläche. Nach dem Aufrufen des Programmes durch den Benutzer erzeugt die Main-Klasse zuerst mit \emph{DBIGUI} eine Verbindung zu Datenbank.
-Daraufhin wird mittels eines von JavaFX bereitgestellten FXML-Loaders die Hauptverwaltungseinheit der GUI, bestehend aus ihrer Anzeige, dem \emph{GuiControllerView} , und der zugehörigen Kontolle, dem \emph{GuiController} geladen und initialisiert.
+\cref{fig:GUIStartSeq} veranschaulicht den Ablauf der Initialisierung der Benutzeroberfläche. Nach dem Aufrufen des Programmes durch den Benutzer erzeugt die Main-Klasse zuerst mit \emph{DBIgui} eine Verbindung zu Datenbank.
+Daraufhin wird mittels eines von JavaFX bereitgestellten FXML-Loaders die Hauptverwaltungseinheit der GUI, bestehend aus ihrer Anzeige, der \emph{GuiControllerView} und der zugehörigen Kontolle, dem \emph{GuiController} geladen und initialisiert.
 Danach können GUI-Elemente in beliebiger Reihenfolge hinzugefügt werden, wie hier am Beispiel der \emph{selectionOfQuery}.
 Auch hier erstellt der FXML-Loader Anzeige und Kontrolle des GUI-Elements und ruft dann die zugehörige initialize-Methode auf.
 In dieser verbindet sich das GUI-Element mit dem \emph{GuiController} und erhält über diesen eine Verbindung zur Datenbank. Es holt sich die nötigen Daten ab und initialisiert dann seine Komponenten und erstellt die notwendigen Event-Handler.

@@ -11,8 +11,8 @@ Im Diagramm \ref{fig:categorizer} ist der grundlegende Aufbau des Kategorisierer
 \begin{description}
 	\item[Account] siehe \cref{sec:datenbankzugriff}
 	\item[Category] siehe \cref{sec:datenbankzugriff}
-	\item[DBcategorizer] Über diese Klasse kommuniziert der Kategorsierer mit der Datenbank. Sie enthält Methoden zum Holen der unkategorisierten Accounts, zum Finden von Kategorien, zum Eintragen einer Kategorie und zum Auffinden aller Subkategorien einer Kategorie.
-	\item[Categorizer] Dies ist die Haupt-Klasse des Kategorisierers. Sie nutzt die Methoden von \lstinline{DBcategorizer}, um unkategorisierte Accounts zu suchen und gefundene Kategorien einzutragen.
+	\item[DBIcategorizer] Über dieses Interface kommuniziert der Kategorsierer mit der Datenbank. Es enthält Methoden zum Holen der unkategorisierten Accounts, zum Finden von Kategorien, zum Eintragen einer Kategorie und zum Auffinden aller Subkategorien einer Kategorie.
+	\item[Categorizer] Dies ist die Haupt-Klasse des Kategorisierers. Sie nutzt die Methoden von \lstinline{DBIcategorizer}, um unkategorisierte Accounts zu suchen und gefundene Kategorien einzutragen.
 \end{description}
 
 \section{Start des Kategorisierers}

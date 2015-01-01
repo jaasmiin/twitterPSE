@@ -45,19 +45,31 @@ public class Category extends Result {
 
     /**
      * Returns the name of the category
+     * 
      * @return the name of the category as string
      * @deprecated replaced by {@link #toString()}
      */
     public String getCategory() {
         return category;
     }
-    
+
     /**
      * Returns the name of the category
+     * 
      * @return the name of the category as String
      */
     @Override
     public String toString() {
-    	return category;
+        return category;
+    }
+
+    /**
+     * set the parent category of this category
+     * 
+     * @param parentCategory
+     *            the parent category as Category
+     */
+    public void setParent(Category parentCategory) {
+        parent = parentCategory;
     }
 }

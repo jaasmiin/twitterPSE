@@ -42,14 +42,10 @@ public class MyStatusListener implements StatusListener {
 
     @Override
     public void onDeletionNotice(StatusDeletionNotice arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void onScrubGeo(long arg0, long arg1) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -63,13 +59,16 @@ public class MyStatusListener implements StatusListener {
 
     @Override
     public void onStatus(Status status) {
-        queue.add(status);
+        // TODO check if it works better
+        if (status.isRetweet() || status.getUser().isVerified()) {
+            queue.add(status);
+        }
     }
 
     @Override
     public void onTrackLimitationNotice(int arg0) {
-        //logger.info("Track limitation notice: " + arg0);
-        // TODO sends number of transmitted statusobjects
+        // logger.info("Track limitation notice: " + arg0);
+        // sends number of transmitted statusobjects
     }
 
 }

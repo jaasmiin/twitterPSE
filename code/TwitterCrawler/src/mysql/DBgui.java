@@ -58,7 +58,7 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 list.add(new Category(res.getInt("Id"), res.getString("Name"),
-                        null));
+                        new Category(res.getInt("ParentId"), "", null)));
             }
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
@@ -68,7 +68,14 @@ public class DBgui extends DBConnection implements DBIgui {
         Category[] ret = new Category[list.size()];
         int i = 0;
         for (Category c : list) {
-            // TODO parent relationship
+            // TODO with inner join
+            // parent relationship
+            for (Category p : list) {
+                if (c.getParent().getId() == p.getId()) {
+                    c.setParent(p);
+                    break;
+                }
+            }
             ret[i++] = c;
         }
         return ret;
@@ -91,7 +98,8 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 list.add(new Location(res.getInt("Id"), res.getString("Name"),
-                        res.getString("Code"), null));
+                        res.getString("Code"), new Location(res
+                                .getInt("ParentId"), null, null, null)));
             }
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
@@ -101,7 +109,14 @@ public class DBgui extends DBConnection implements DBIgui {
         Location[] ret = new Location[list.size()];
         int i = 0;
         for (Location l : list) {
-            // TODO parent relationship
+            // TODO with inner join
+            // parent relationship
+            for (Location p : list) {
+                if (l.getParent().getId() == p.getId()) {
+                    l.setParent(p);
+                    break;
+                }
+            }
             ret[i++] = l;
         }
         return ret;
@@ -131,46 +146,6 @@ public class DBgui extends DBConnection implements DBIgui {
 
         return ret;
     }
-
-    // @Override
-    // public Account[] getData(int[] categoryIds, int[] countryIds, boolean
-    // separateDate) {
-    //
-    // // get sum of retweets
-    //
-    // return null;
-    // 
-    // // String sqlCommand =
-    // //
-    // "SELECT Id, TwitterAccountId, AccountName, URL, Follower, LocationId FROM accounts WHERE Id = ();";
-    // //
-    // // ResultSet res = null;
-    // // try {
-    // // Statement s = c.createStatement();
-    // // res = s.executeQuery(sqlCommand);
-    // // } catch (SQLException e) {
-    // // logger.warning("Couldn't execute sql query: \n" + e.getMessage());
-    // // return null;
-    // // }
-    // //
-    // // Stack<Account> st = new Stack<Account>();
-    // // try {
-    // // while (res.next()) {
-    // // st.push(new Account(res.getInt("Id"), res
-    // // .getLong("TwitterAccountId"), res
-    // // .getString("AccountName"), res.getString("URL"), res
-    // // .getInt("Follower"), res.getInt("LocationId")));
-    // // }
-    // // } catch (SQLException e) {
-    // // logger.warning("Couldn't read sql result: \n" + e.getMessage());
-    // // return null;
-    // // }
-    // // Account[] ret = new Account[st.size()];
-    // // for (int i = 0; i < st.size(); i++) {
-    // // ret[i] = st.pop();
-    // // }
-    // // return ret;
-    // }
 
     @Override
     public Account[] getAccounts(String search) {
@@ -295,5 +270,45 @@ public class DBgui extends DBConnection implements DBIgui {
         // TODO Auto-generated method stub
         return null;
     }
+
+    // @Override
+    // public Account[] getData(int[] categoryIds, int[] countryIds, boolean
+    // separateDate) {
+    //
+    // // get sum of retweets
+    //
+    // return null;
+    //
+    // // String sqlCommand =
+    // //
+    // "SELECT Id, TwitterAccountId, AccountName, URL, Follower, LocationId FROM accounts WHERE Id = ();";
+    // //
+    // // ResultSet res = null;
+    // // try {
+    // // Statement s = c.createStatement();
+    // // res = s.executeQuery(sqlCommand);
+    // // } catch (SQLException e) {
+    // // logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+    // // return null;
+    // // }
+    // //
+    // // Stack<Account> st = new Stack<Account>();
+    // // try {
+    // // while (res.next()) {
+    // // st.push(new Account(res.getInt("Id"), res
+    // // .getLong("TwitterAccountId"), res
+    // // .getString("AccountName"), res.getString("URL"), res
+    // // .getInt("Follower"), res.getInt("LocationId")));
+    // // }
+    // // } catch (SQLException e) {
+    // // logger.warning("Couldn't read sql result: \n" + e.getMessage());
+    // // return null;
+    // // }
+    // // Account[] ret = new Account[st.size()];
+    // // for (int i = 0; i < st.size(); i++) {
+    // // ret[i] = st.pop();
+    // // }
+    // // return ret;
+    // }
 
 }
