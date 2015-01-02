@@ -69,6 +69,22 @@ Da die GUI zur Visualisierung der Daten aus der Datenbank dient, ist es nötig, 
 	\end{itemize}
 \end{itemize}
 Die Berechnungen werden so weit möglich in die Datenbank ausgelagert, sodass diese die Summation übernimmt. Dadurch kann die Geschwindigkeit der Datenbank ausgenutzt werden und die Ressourcen auf Client-Seite werden geschont.
+\end{description}
 
+\section{Kategorisieren mit der DMOZ-Datenbank}
+Zur Kategorisierung einzelner Accounts sollen die Informationen der DMOZ-Datenbank\footnote{Daten unter \url{http://www.dmoz.org/docs/en/rdf.html}} genutzt werden. Die Daten aus den zum Download angebotenen RDF-Dateien sollen in oben beschriebenes Tabellenlayout eingebettet werden. Hier soll kurz auf die Tags im RDF-Format eingegangen werden, sodass mit diesem Wissen ein Script zum Einlesen geschrieben werden kann.
 
+\subsection{Einlesen der Kategorienhierachie}\label{sec:katHierachie}
+Im Folgenden sind die relevanten Tags aufgelistet:
+\begin{description}
+	\item[Topic] Das Attribut \lstinline{id} enthält den Kategorienamen im Format \emph{Top/World/Deutsch/...}. Aus diesem String soll der Baum erstellt werden.
+	\item[narrow, narrow1, narrow2] Diese Tags werden innerhalb von \lstinline{topic}-Tags genutzt. Über das Attribut \lstinline{resource} werden die Kindkategorien angegeben. Der Unterschied zwischen den drei Tags kann für unsere Zwecke ignoriert werden.
+	\item[altlang, altlang1] Diese Tags werden ebenfalls innerhalb von \lstinline{topic} verwendet und verweisen auf die gleiche Kategorie in anderen Sprachen. Dabei wird \lstinline{altlang1} für den Verweis auf die Englische "`Hauptkategorie"' verwendet. Anhand dieses Tags soll der Implizit aus der RDF-Datei hervorgehende Baum so transformiert werden, dass alle eingetargenen Webseiten in der Englischen Kategorie zu finden sind. Dies entspricht einer intuitiveren Kategorienhierachie.
+\end{description}
+
+\subsection{Einlesen der eingetragenen Webseiten}
+\begin{description}
+	\item[Topic] siehe Abschnitt \ref{sec:katHierachie}
+	\item[ExternalPage] Das Attribut \lstinline{about} enthält die URL der referenzierten Webseite.
+	\item[d:Title, d:Description] Beide Tags werden innerhalb von \lstinline{ExternalPage} verwendet und geben einen Titel sowie eine kurze Beschreibun zur jeweiligen Webseite.
 \end{description}
