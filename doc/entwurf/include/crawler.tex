@@ -19,7 +19,7 @@ In \cref{fig:crawler_package} ist die Grobstruktur des Crawlers als Paketdiagram
 
 \subsection{Klassendiagramm}
 Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die Twitter-Streaming-API Daten sammelt. Dazu ist es nötig diese Daten zu empfangen, dann zu puffern und schlussendlich in die Datenbank zu schreiben. Allerdings müssen die Daten noch gefiltert werden, da wir nur Daten von verifizierten Twitter-Accounts (und manuell hinzugefügten) speichern. Sind die Daten gefiltert, werden sie vom Crawler noch lokalisiert. Das heißt, dass jedem Account beziehungsweise jedem Retweet ein Ort zugeordnet wird. Ist dies erfolgt so werden die Daten in die Datenbank geschrieben.
-\\ In \cref{fig:uml_crawler} ist der Aufbau des Crawlers anhand eines UML-Klassendiagramms spezifiziert.
+\\ In \cref{fig:uml_crawler} ist der Aufbau des Crawlers anhand eines UML-Klassendiagramms mit zugehöriger Beschreibung spezifiziert.\\
 
 \begin{figure}[h!]
 	\centering
@@ -35,7 +35,7 @@ Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die
 \item[Controller] Diese Klasse koordiniert alle Aktionen die nötig sind um Daten bei Twitter abzuholen und in die Datenbank zu schreiben. Dazu startet sie einen StreamListener, ein AccountUpdate und mehrere StatusProcessors jeweils als Thread. Außerdem kontrolliert sie den Puffer und sorgt für ein sauberes Beenden des Programms indem alle Verbindungen ordnungsgemäß geschlossen und die Threads beendet werden.
 \item[StreamListener] Stellt eine Verbindung zur Twitter-Streaming-API her und initialisiert einen MyStatusListener.
 \item[AccountUpdate] Diese Klasse stellt eine Methode zur Verfügung um in der Datenbank periodisch nach Accounts zu suchen, welche manuell hinzugefügt wurden, nicht verifiziert sind, aber auch getracked werden sollen.
-\item[StatusProcessor] Diese Klasse stellt die Funktionalität zur Filterung der Daten von Twitter zur Verfügung, welche sie aus dem Puffer nimmt. Außerdem bietet sie die Möglichkeit diese Daten in die Datenbank zu schreiben.
+\item[StatusProcessor] Diese Klasse stellt die Funktionalität zur Filterung der Daten von Twitter zur Verfügung, welche sie aus dem Puffer nimmt. Außerdem bietet sie die Möglichkeit diese Daten zu vervollständigen und in die Datenbank zu schreiben.
 \item[MyStatusListener] Diese Klasse nimmt die Daten von Twitter entgegen und schreibt diese in einen Puffer.
 \item[MyRateLimitStatusListener] Diese Klasse nimmt Meldungen von Twitter bezüglich RateLimits entgegen.
 \item[Locator] Der Locator lokalisiert Accounts und Retweets mithilfe mehrerer Webdienste.
@@ -86,5 +86,7 @@ Um zu verdeutlichen wie die Daten von Twitter innerhalb des Crawlers verarbeitet
 
 Zuerst werden die Daten, welche im MyStatusListener auflaufen in eine (threadsichere) Warteschlange geschoben.
 Hat dann ein StatusProcessor freie Kapazitäten so entnimmt er das erste Element der Warteschlange. Dieses Status-Objekt enthält alle relevanten Informationen um zu entscheiden ob das Objekt interessant ist oder nicht.
-Interessante Status-Objekte enthalten verifizierte Twitter-Accounts oder Retweets auf Tweets von verifizierten Accounts. Ist ein verifizierter Account in einem Status-Objekt gefunden worden, so wird der Account (hier: user) dem Locator zur Lokalisierung übergeben. Dieser versucht dann anhand eines Orts-Strings den Account einem Land zuzuordnen. Ist dies geschehen so wird der Account in die Datenbank geschrieben. Genauso wird auch mit den Status-Objekten verfahren die einen Retweet enthalten.
+Interessante Status-Objekte enthalten verifizierte Twitter-Accounts oder Retweets auf Tweets von verifizierten Accounts. Ist ein verifizierter Account in einem Status-Objekt gefunden worden, so wird der Account (hier: user) für die Datenbank freigegeben. Das heißt das DBcrawler-Objekt übergibt
+dem Locator zur Lokalisierung den Account, falls dieser noch nicht in der Datenbank steht. Dieser versucht dann anhand eines Orts-Strings den Account einem Land zuzuordnen. Ist dies geschehen so wird der Account in die Datenbank geschrieben. 
+Bei Status-Objekten die Retweets enthalten wird genau nach dem selben Schema vorgegangen, allerdings übernimmt hier das StatusProcessor-Objekt die Aufgabe den Retweet zu lokalisieren.
 Ist ein solches Status-Objekt verarbeitet, so beginnt der ganze Verarbeitungsprozess wieder von vorne.

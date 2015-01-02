@@ -58,7 +58,7 @@ public class StatusProcessor implements Runnable {
         this.nonVerAccounts = accountsToTrack;
         locate = new Locator(this.logger);
         try {
-            dbc = new DBcrawler(accessData, logger);
+            dbc = new DBcrawler(accessData, locate, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
             dbc = null;
             logger.severe(e.getMessage() + "\n");
@@ -123,7 +123,7 @@ public class StatusProcessor implements Runnable {
         if (status != null) {
 
             if (checkUser(status.getUser())) {
-                accountToDB(status.getUser(), status.getCreatedAt(), true);
+                accountToDB(status, true);
             }
 
             if (status.isRetweet()) {
@@ -134,8 +134,7 @@ public class StatusProcessor implements Runnable {
                 while (tweet.isRetweet()) {
                     if (checkUser(tweet.getUser())) {
                         // addAccount
-                        accountToDB(tweet.getUser(), tweet.getCreatedAt(),
-                                false);
+                        accountToDB(tweet, false);
                     }
                     retweet = tweet;
                     tweet = tweet.getRetweetedStatus();
@@ -143,7 +142,7 @@ public class StatusProcessor implements Runnable {
 
                 if (checkUser(tweet.getUser())) {
                     // add Account
-                    accountToDB(tweet.getUser(), tweet.getCreatedAt(), false);
+                    accountToDB(tweet, false);
 
                     // addRetweet
                     retweetToDB(tweet.getUser().getId(),
@@ -176,27 +175,31 @@ public class StatusProcessor implements Runnable {
     /**
      * insert an account into the database
      * 
-     * @param user
-     *            the user to write into the database as User
-     * @param tweetDate
-     *            the date when the tweet has been created as Date
      * @param tweet
+     *            the status-object of the tweet, that contains the account to
+     *            add as user as Status
+     * @param isTweet
      *            true if a tweet status object has been read, false if a
      *            retweet status object has been read
      */
-    private void accountToDB(User user, Date tweetDate, boolean tweet) {
+    private void accountToDB(Status tweet, boolean isTweet) {
+
+        User user = tweet.getUser();
 
         // locate account
         // double a = System.currentTimeMillis();
-        String loc = locate.getLocation(user.getLocation(), user.getTimeZone());
+        // String loc = locate.getLocation(user.getLocation(),
+        // user.getTimeZone());
+        // if (loc == "0" && tweet.getPlace() != null) {
+        // loc = tweet.getPlace().getCountryCode();
+        // }
         // if (System.currentTimeMillis() - a > 0.0) {
         // System.out.println(System.currentTimeMillis() - a);
         // }
 
-        assert (loc != null);
+        // assert (loc != null);
 
-        dbc.addAccount(user.getName(), user.getId(), user.isVerified(),
-                user.getFollowersCount(), loc, user.getURL(), tweetDate, tweet);
+        dbc.addAccount(user, tweet.getPlace(), tweet.getCreatedAt(), isTweet);
 
     }
 
