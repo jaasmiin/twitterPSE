@@ -1,20 +1,22 @@
 package gui.selectionOfQuery;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import mysql.result.Category;
 import mysql.result.Location;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import gui.InputElement;
-import gui.base.GUIController;
 
-public class SelectionOfQueryController implements EventHandler<Event>, InputElement {
+public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
 	
 	@FXML
 	private TextField txtFilterSearch;
@@ -23,28 +25,8 @@ public class SelectionOfQueryController implements EventHandler<Event>, InputEle
 	@FXML
 	private TreeView<Location> trvLocation;
 	@FXML
-	private TitledPane tipLocation, tipAccount, tipCategory;
-	
-	private GUIController parent;
-	
-	
-	/**
-	 * Set super controller.
-	 * @param parent is a super controller, which coordinates between GUI elements.
-	 */
-	public void setParent(GUIController parent) {
-		System.out.println("setParent");
-		this.parent = parent;
+	private TitledPane tipLocation, tipAccount, tipCategory;	
 		
-		trvCategory.setOnMouseClicked(this);
-		trvLocation.setOnMouseClicked(this);
-		txtFilterSearch.setOnKeyReleased(this);
-		
-		updateCategory(parent.getCategories());
-		updateLocation(parent.getLocations());
-		
-	}
-	
 	private void updateCategory(ArrayList<Category> categories) {
 		TreeItem<Category> rootItem = new TreeItem<Category>(new Category(1, "Alles", null));
 		rootItem.setExpanded(true);		
@@ -67,12 +49,13 @@ public class SelectionOfQueryController implements EventHandler<Event>, InputEle
 	
 	@Override
 	public void update(UpdateType type) {
+		System.out.println("SelectionOfQuerryController.update()");
 		if (type == UpdateType.TWEET) {
 			// TODO: load data and update elements
 		} else if (type == UpdateType.LOCATION) {
-			// TODO: load data and update elements
+			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
-			// TODO: load data and update elements
+			updateCategory(superController.getCategories(txtFilterSearch.getText()));
 		} 
 	}
 	
@@ -81,24 +64,34 @@ public class SelectionOfQueryController implements EventHandler<Event>, InputEle
 		if (e.getSource().equals(trvCategory)) {
 			System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
 					" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-			// TODO: update selection list & map
+			superController.setCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
 		} else if (e.getSource().equals(trvLocation)) {
 			System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
 					" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-			// TODO: update selection list & map
+			superController.setLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			System.out.println("Eingabe: " + txtFilterSearch.getText());
 			if (tipCategory.isExpanded()) {
-				updateCategory(parent.getCategories(txtFilterSearch.getText()));
+				updateCategory(superController.getCategories(txtFilterSearch.getText()));
 			} else if (tipAccount.isExpanded()) {
 				// TODO: reload list
 			} else if (tipLocation.isExpanded()) {
-				updateLocation(parent.getLocations(txtFilterSearch.getText()));
+				updateLocation(superController.getLocations(txtFilterSearch.getText()));
 			}
 		} else {
 			System.out.println("Something else.");
 			// TODO: update selection list & map
 		}
+	}
+
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		super.initialize(location, resources);
+		superController.subscribe(this);
+		
+		trvCategory.setOnMouseClicked(this);
+		trvLocation.setOnMouseClicked(this);
+		txtFilterSearch.setOnKeyReleased(this);
 	}
 
 }

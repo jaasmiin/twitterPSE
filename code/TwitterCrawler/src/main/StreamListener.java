@@ -56,9 +56,7 @@ public class StreamListener implements RunnableListener {
      * @param track
      *            keywords to track
      */
-    private void getStream(String[] track) // throws IllegalStateException,
-                                           // TwitterException
-    {
+    private void getStream(String[] track)     {
 
         // TODO
         // twitterStream = TwitterStreamFactory.getSingleton();
@@ -100,5 +98,9 @@ public class StreamListener implements RunnableListener {
     @Override
     public void exit() {
         twitterStream.shutdown();
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+        }
     }
 }

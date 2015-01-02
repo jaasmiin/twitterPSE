@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -43,6 +44,7 @@ public class Controller extends Thread {
     private AccountUpdate accountUpdate;
     private Thread thrdAccountUpdate;
     private StatusProcessor[] statusProcessor;
+    // note: no Locator is set
     private DBcrawler dbc;
     private Date dateForDB;
 
@@ -120,7 +122,7 @@ public class Controller extends Thread {
         }
 
         try {
-            this.dbc = new DBcrawler(accessData, logger);
+            this.dbc = new DBcrawler(accessData, null, logger);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException | SQLException e) {
             logger.warning("No dates will be insert into the database because of: "
@@ -164,7 +166,7 @@ public class Controller extends Thread {
             System.out.println(". done.");
         }
 
-        // join accountupdater
+        // join accountUpdate
         success = true;
         System.out.print(" Terminating accountUpdater..");
         try {
@@ -222,6 +224,7 @@ public class Controller extends Thread {
 
     private Logger getLogger() throws SecurityException, IOException {
         Logger l = Logger.getLogger("logger");
+        new File("LogFile.log").createNewFile();
         FileHandler fh = new FileHandler("LogFile.log", true);
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
@@ -295,7 +298,7 @@ public class Controller extends Thread {
                     statusQueue.poll();
                 }
             }
-            
+
             // call garbage-collector
             System.gc();
 

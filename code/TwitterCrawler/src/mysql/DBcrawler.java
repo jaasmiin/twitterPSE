@@ -10,6 +10,10 @@ import java.util.HashSet;
 import java.util.Stack;
 import java.util.logging.Logger;
 
+import locate.Locator;
+import twitter4j.Place;
+import twitter4j.User;
+
 /**
  * 
  * class to write data into a database
@@ -23,6 +27,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     private static final String DEFAULT_LOCATION = "0";
     private HashSet<String> locationHash;
     private HashSet<Long> accountHash;
+    private Locator locator;
 
     /**
      * configure the connection to the database
@@ -36,10 +41,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
      * @throws ClassNotFoundException
      * @throws SQLException
      */
-    public DBcrawler(AccessData accessData, Logger logger)
+    public DBcrawler(AccessData accessData, Locator locator, Logger logger)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, SQLException {
         super(accessData, logger);
+        this.locator = locator;
         connect();
         locationHash = getCountryCodes();
         accountHash = getAccounts();
@@ -47,8 +53,12 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     }
 
     @Override
-    public boolean[] addAccount(String name, long id, boolean isVer,
-            int follower, String location, String url, Date date, boolean tweet) {
+    public boolean[] addAccount(User user, Place place, Date date, boolean tweet) {
+
+        long id = user.getId();
+        String location = user.getLocation();
+        String url = user.getURL();
+        String name = user.getScreenName();
 
         boolean result1 = false;
         boolean result2 = false;
@@ -56,10 +66,19 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         if (accountHash.contains(id)) {
             // update follower
             result1 = true;
-            result2 = updateAccount(id, follower);
+            result2 = updateAccount(id, user.getFollowersCount());
 
         } else {
             // add account
+
+            // locate account
+            if (location != null) {
+                location = locator.getLocation(location, user.getTimeZone());
+            }
+            if ((location == "0" || location == null) && place != null) {
+                location = place.getCountryCode();
+            }
+
             location = checkString(location, 3, DEFAULT_LOCATION);
             name = checkString(name, 30, null);
 
@@ -80,7 +99,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             }
 
             // insert account
-            result2 = insertAccount(id, name, isVer, follower, location, url);
+            result2 = insertAccount(id, name, user.isVerified(),
+                    user.getFollowersCount(), location, url);
 
             // add account to hashSet
             if (result2) {

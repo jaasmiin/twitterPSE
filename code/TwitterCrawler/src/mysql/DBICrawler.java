@@ -4,6 +4,9 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 
+import twitter4j.Place;
+import twitter4j.User;
+
 /**
  * interface for writing data into a database
  * 
@@ -12,21 +15,28 @@ import java.util.HashSet;
  */
 public interface DBIcrawler {
 
+    // * @param name
+    // * the name of the account as String
+    // * @param id
+    // * the official twitter id of the account as long
+    // * @param isVer
+    // * true if the account is verified, else false
+    // * @param follower
+    // * the number of followers as int
+    // * @param location
+    // * the location of the account as String
+    // * @param timeZone
+    // * the time-zone of the user as String
+    // * @param url
+    // * the url of the verified user as String
+
     /**
      * insert an account into the database
      * 
-     * @param name
-     *            the name of the account as String
-     * @param id
-     *            the official twitter id of the account as long
-     * @param isVer
-     *            true if the account is verified, else false
-     * @param follower
-     *            the number of followers as int
-     * @param location
-     *            the location of the account as String
-     * @param url
-     *            the url of the verified user as String
+     * @param user
+     *            the user to add as User
+     * @param place
+     *            if set the place of the user, else null as Place
      * @param date
      *            the date of the tweet as Date
      * @param tweet
@@ -37,8 +47,7 @@ public interface DBIcrawler {
      *         the account and third is for adding the tweet.
      * 
      */
-    public boolean[] addAccount(String name, long id, boolean isVer,
-            int follower, String location, String url, Date date, boolean tweet);
+    public boolean[] addAccount(User user, Place place, Date date, boolean tweet);
 
     /**
      * inserts a retweet into the database, if it's still in the database the
