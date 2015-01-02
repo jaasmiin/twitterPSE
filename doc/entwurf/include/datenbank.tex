@@ -50,16 +50,16 @@ Die Datenbank besteht aus sieben Tabellen, die über Fremdschlüssel miteinander
 Da die GUI zur Visualisierung der Daten aus der Datenbank dient, ist es nötig, dass sie diese Daten in möglichst kompakter und vollständiger Form abrufen kann. Dazu stehen der GUI mehrere Möglichkeiten zur Verfügung die im Folgenden aufgelistet sind. Dabei sollen zum einen die Fähigkeiten der Datenbank ausgenutzt werden um Daten zusammenzufassen, zum Anderen sollen aber auch alle relevanten Daten einzeln zur Verfügung stehen.
 \begin{description}
 \item[Kategorien und Orte] Diese Informationen können jeweils als komplette Tabelle von der Datenbank geholt werden.
-\item[Accounts] Mithilfe eines Account-Namens ist es möglich die AccountId herauszufinden. Außerdem kann mittels eines Worts nach Accounts gesucht werden, welche dieses Wort im Namen beinhalten.
+\item[Accounts] Mithilfe eines Account-Namens ist es möglich die AccountId herauszufinden. Außerdem können alle in der Datenbank vorhandenen Accounts geliefert werden. Dabei wird allerdings nur der Account-Name und die eigene Datenbank-Id übertragen.
 \item[Tweets und Retweets] Um zu vorgegebenen Kategorien und Orten die Daten zu bekommen, sollen 4 Methoden zur Verfügung stehen. Im Folgenden werden jeweils nur die Tweets und Retweets von Accounts betrachtet, auf welche die Kategorie-Ort-Kombination/en passen.
 
 \begin{itemize}
-	\item Methoden welche über alle Kalenderdaten summieren:
+	\item Methoden, welche über alle Kalenderdaten summieren:
 	\begin{itemize}
 		\item Eine Methode liefert jeweils die Summe der Tweets und Retweets pro Ort zurück, also für jeden Ort aus der Datenbank eine Summe von Tweets und eine Summe von Retweets.
 		\item Eine weitere Methode liefert alle Accounts mit der Summe ihrer Tweets zurück auf die die Kategorie-Orts-Kombination passt. Dabei wird zu jeder Account-Orts Kombination eine Summe der Retweets mitgeliefert.
 	\end{itemize}
-	\item Methoden welche die Daten nach Kalenderdaten separieren:
+	\item Methoden, welche die Daten nach Kalenderdaten separieren:
 	\begin{itemize}
 		\item Eine Methode liefert für jede Ort-Datums Kombination, die Summe über alle Tweets und Retweets zurück, sodass dann zu jedem Ort zu jedem Datum eine Summe von Tweets und Retweets bekannt ist.
 		\item Eine weitere Methode liefert alle betroffenen Accounts zurück und pro Account noch die Anzahl der Retweets pro Ort pro Tag und die Tweets pro Tag.
