@@ -1,6 +1,16 @@
 \section{Aufbau}
+Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar.\\
 \subsection{Paketdiagramm}
-
+Das Paket {guiControll} beinhaltet die Steuerungslogik der GUI. Die einzelnen Unterpakete enthalten d Komponenten der GUI. Somit wird innerhalb der Unterpakete ein starker Zusammenhalt erreicht. Gleichzeitig kann die GUI einfach um Funktionalität erweitert werden, indem weitere Komponenten hinzugefügt werden. Da die Unterpakete keine Beziehungen und Abhängigkeiten untereinander aufweisen, kann somit eine Erweiterung der Funktionalität ohne Änderung der Programmlogik der anderen Pakete erfolgen. 
+Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
+\begin{description}
+		\item [selectionOfQuery] Dieses Paket enthält Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.)
+		\item[databaseOptions] Dieses Paket enthält die Darstellung und Anwendungslogik für Änderungen an der Datenbank, wie das Hinzufügen eines bisher nicht mitgetrackten Accounts.
+		
+		\item [standardMap] Das Paket enthält Anwendungslogik und Darstellung für die Standardkarte, welche die Länder nach dem jeweiligen Tweet-Retweet-Aufkommen einfärbt.
+		\item [table] Paket, welches Anwendungslogik und Darstellung für die Erstellungen und Anzeige des Datenblattes zur aktuellen Anfrage enthält.
+		\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
+\end{description}
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
@@ -9,7 +19,7 @@
 \end{figure}
 
 \subsection{Klassendiagramm}
-Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar.\\
+Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten enthalten.
 
 \begin{figure}[h!]
 	\centering
@@ -19,14 +29,15 @@ Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt 
 	\label{fig:GUI}
 \end{figure}
 \begin{description}
-	\item[GuiController] Diese Klasse enthält alle GUI-Elemente. Damit kann über diese Klasse jedes einzelne Element angesprochen und damit gesteuert werden. Außerdem speichert sie die jeweils aktuellen Resultate der Datenbankabfragen zentral. Jede Erweiterung muss sich im GuiController als 'Observer' eintragen, um über Änderungen der Daten informiert zu werden. 
-	\item[GuiElement] Interface, das jedes GUI-Element implementieren muss.
-	\item [selectionOfQuery] Dieses Paket enthält Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.)
-	\item[databaseOptions] Dieses Paket enthält die Darstellung und Anwendungslogik für Änderungen an der Datenbank, wie das Hinzufügen eines bisher nicht mitgetrackten Accounts.
-	
-	\item [standardMap] Das Paket enthält Anwendungslogik und Darstellung für die Standardkarte, welche die Länder nach dem jeweiligen Tweet-Retweet-Aufkommen einfärbt.
-	\item [table] Paket, welches Anwendungslogik und Darstellung für die Erstellungen und Anzeige des Datenblattes zur aktuellen Anfrage enthält.
-	\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
+	\item[GuiController] Diese Klasse enthält alle GUI-Elemente. Damit kann über diese Klasse jedes einzelne Element angesproche gesteuert werden. Außerdem speichert sie die jeweils aktuellen Resultate der Datenbankabfragen zentral. Jede Erweiterung muss sich im GuiController als 'Observer' eintragen, um über Änderungen der Daten informiert zu werden. 
+	\item[GuiElement] Abstrakte Klasse, von welchem jedes GUI-Element erben muss.
+	\item[SelectionSuperController] Steuert die zugehörige 'View'. Die eigentliche Steuerung wird an die Subcontroller 'SelectionController' und 'SearchController' delegiert.
+    \item[SelectionController] Enthält die Programmlogik für den Bereich der Auswahl der gewünschten Kategorien, Länder und Accounts.
+	\item[SearchController] Enthält die Programmlogik für die Suche nach einzelnen Kategorien, Ländern und Accounts in der Datenbank, welche ausgewählt werden können. 
+    \item[DatabaseOptController] Enthält die Progammlogik der zugehörigen 'View'-Klasse.
+    \item [StandardMapController] Steuert und berechnet die Anzeige der ausgwählten Daten auf der Weltkarte.
+    \item [ContentTableController] Steuert und berechnet die Anzeige der Tabellendarstellung der Daten
+	\item [TimeSliderMapController] Steuert und berechnet die Anzeige auf der Weltkarte. Zusätzlich stellt die Klasse eine Methode bereit, über welche der Zeitraum der dargestellten Daten gesetzt werden kann.
 	\item [myUnfoldingMap] Diese Klasse kapselt die eigentliche Darstellung sämtlicher Kartenanzeigen. Sie ist die 'Schnittstelle' zur Unfolding-Library, welche für die Anzeige der Weltkarte verwendet wird.
 \end{description}
 \section{Sequenzdiagramme}
