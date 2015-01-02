@@ -1,5 +1,5 @@
 package gui;
 
-public interface InputElement extends GUIElement {
+public abstract class InputElement extends GUIElement {
 
 }
