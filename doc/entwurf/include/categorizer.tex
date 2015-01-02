@@ -1,5 +1,5 @@
 \section{Aufbau}
-Der Kategorisierer wird in regelmäßigen Abständen vom Betriebssystem gestartet und verbindet sich mit der Datenbank. Über die Datenbankschnittstelle ließt er die bislang unkategorisierten Twitteraccounts aus der Accountstabelle aus und sucht in der DMOZ-Datenbank nach passenden Kategorien. Diese werden dann in die Kreuztabelle AccountCategory eingetragen.
+Über die Datenbankschnittstelle ließt er die bislang unkategorisierten Twitteraccounts aus der Accountstabelle. Diese sind durch das Feld \lstinline{Categorized} bestimmt. SEr sucht dann in der DMOZ-Datenbank nach passenden Kategorien. Diese werden dann in die Kreuztabelle AccountCategory eingetragen.
 
 Im Diagramm \ref{fig:categorizer} ist der grundlegende Aufbau des Kategorisierers dargestellt:
 \begin{figure}[h!]
