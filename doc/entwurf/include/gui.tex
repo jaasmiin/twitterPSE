@@ -2,6 +2,14 @@
 Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar.\\
 \subsection{Paketdiagramm}
 Das Paket {guiControll} beinhaltet die Steuerungslogik der GUI. Die einzelnen Unterpakete enthalten d Komponenten der GUI. Somit wird innerhalb der Unterpakete ein starker Zusammenhalt erreicht. Gleichzeitig kann die GUI einfach um Funktionalität erweitert werden, indem weitere Komponenten hinzugefügt werden. Da die Unterpakete keine Beziehungen und Abhängigkeiten untereinander aufweisen, kann somit eine Erweiterung der Funktionalität ohne Änderung der Programmlogik der anderen Pakete erfolgen. 
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
+	\caption{Paketdiagramm der GUI}
+	\label{fig:GUI}
+\end{figure}
+
+
 Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
 \begin{description}
 		\item [selectionOfQuery] Dieses Paket enthält Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.)
@@ -11,12 +19,6 @@ Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
 		\item [table] Paket, welches Anwendungslogik und Darstellung für die Erstellungen und Anzeige des Datenblattes zur aktuellen Anfrage enthält.
 		\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
 \end{description}
-\begin{figure}[h!]
-	\centering
-	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
-	\caption{Paketdiagramm der GUI}
-	\label{fig:GUI}
-\end{figure}
 
 \subsection{Klassendiagramm}
 Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten enthalten.
