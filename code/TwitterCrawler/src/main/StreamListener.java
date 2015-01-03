@@ -4,9 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import twitter4j.FilterQuery;
-import twitter4j.RateLimitStatusListener;
 import twitter4j.Status;
-import twitter4j.StatusListener;
 import twitter4j.TwitterStream;
 import twitter4j.TwitterStreamFactory;
 
@@ -23,6 +21,7 @@ public class StreamListener implements RunnableListener {
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     private TwitterStream twitterStream;
+    private MyStatusListener listener;
 
     /**
      * 
@@ -56,14 +55,12 @@ public class StreamListener implements RunnableListener {
      * @param track
      *            keywords to track
      */
-    private void getStream(String[] track)     {
+    private void getStream(String[] track) {
 
-        // TODO
-        // twitterStream = TwitterStreamFactory.getSingleton();
         twitterStream = new TwitterStreamFactory().getInstance();
 
         // get status objects
-        StatusListener listener = new MyStatusListener(queue, logger);
+        listener = new MyStatusListener(queue, logger);
 
         // filter twitter stream
         FilterQuery filter = new FilterQuery();
@@ -72,13 +69,18 @@ public class StreamListener implements RunnableListener {
         filter.track(track);
 
         // watch rate limits
-        RateLimitStatusListener rateLimitListener = new MyRateLimitStatusListener(
-                logger);
+        // RateLimitStatusListener rateLimitListener = new
+        // MyRateLimitStatusListener(
+        // logger);
 
-        // ConnectionLifeCycleListener??
+        // TODO
+        // ConnectionLifeCycleListener clcl = new
+        // MyConnectionLifeCycleListener();
 
         // set streaming details
-        twitterStream.addRateLimitStatusListener(rateLimitListener);
+        // twitterStream.addRateLimitStatusListener(rateLimitListener);
+        // TODO
+        // twitterStream.addConnectionLifeCycleListener(clcl);
         twitterStream.addListener(listener);
         twitterStream.filter(filter);
 
@@ -94,6 +96,11 @@ public class StreamListener implements RunnableListener {
     // twitterStream.clearListeners();
     // run();
     // }
+
+    @Override
+    public String toString() {
+        return listener.toString();
+    }
 
     @Override
     public void exit() {

@@ -90,7 +90,8 @@ public class StatusProcessor implements Runnable {
             try {
                 Thread.sleep(50); // sleep for 0.05s
             } catch (InterruptedException e) {
-                logger.info("StatusProcessor interrupted\n" + e.getMessage());
+                // logger.info("StatusProcessor interrupted\n" +
+                // e.getMessage());
             }
 
             while (!queue.isEmpty()) {
@@ -120,38 +121,32 @@ public class StatusProcessor implements Runnable {
      */
     private void statusToDB(Status status) {
 
-        if (status != null) {
+        if (checkUser(status.getUser())) {
+            accountToDB(status, true);
+        }
 
-            if (checkUser(status.getUser())) {
-                accountToDB(status, true);
+        if (status.isRetweet()) {
+
+            Status retweet = status;
+            Status tweet = status.getRetweetedStatus();
+
+            while (tweet.isRetweet()) {
+                if (checkUser(tweet.getUser())) {
+                    // addAccount
+                    accountToDB(tweet, false);
+                }
+                retweet = tweet;
+                tweet = tweet.getRetweetedStatus();
             }
 
-            if (status.isRetweet()) {
+            if (checkUser(tweet.getUser())) {
+                // add Account
+                accountToDB(tweet, false);
 
-                Status retweet = status;
-                Status tweet = status.getRetweetedStatus();
-
-                while (tweet.isRetweet()) {
-                    if (checkUser(tweet.getUser())) {
-                        // addAccount
-                        accountToDB(tweet, false);
-                    }
-                    retweet = tweet;
-                    tweet = tweet.getRetweetedStatus();
-                }
-
-                if (checkUser(tweet.getUser())) {
-                    // add Account
-                    accountToDB(tweet, false);
-
-                    // addRetweet
-                    retweetToDB(tweet.getUser().getId(),
-                            retweet.getGeoLocation(), retweet.getUser()
-                                    .getLocation(), retweet.getPlace(),
-                            retweet.getCreatedAt(), retweet.getUser()
-                                    .getTimeZone());
-                }
-
+                // addRetweet
+                retweetToDB(tweet.getUser().getId(), retweet.getGeoLocation(),
+                        retweet.getUser().getLocation(), retweet.getPlace(),
+                        retweet.getCreatedAt(), retweet.getUser().getTimeZone());
             }
         }
     }
@@ -184,7 +179,7 @@ public class StatusProcessor implements Runnable {
      */
     private void accountToDB(Status tweet, boolean isTweet) {
 
-        User user = tweet.getUser();
+        // User user = tweet.getUser();
 
         // locate account
         // double a = System.currentTimeMillis();
@@ -199,7 +194,8 @@ public class StatusProcessor implements Runnable {
 
         // assert (loc != null);
 
-        dbc.addAccount(user, tweet.getPlace(), tweet.getCreatedAt(), isTweet);
+        dbc.addAccount(tweet.getUser(), tweet.getPlace(), tweet.getCreatedAt(),
+                isTweet);
 
     }
 

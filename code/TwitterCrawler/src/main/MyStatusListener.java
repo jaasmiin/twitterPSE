@@ -19,6 +19,7 @@ public class MyStatusListener implements StatusListener {
 
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
+    private boolean connected;
 
     /**
      * initialize a new listener to listen to the twitter streaming api
@@ -32,12 +33,14 @@ public class MyStatusListener implements StatusListener {
     public MyStatusListener(ConcurrentLinkedQueue<Status> queue, Logger logger) {
         this.queue = queue;
         this.logger = logger;
+        connected = true;
 
     }
 
     @Override
     public void onException(Exception arg0) {
         logger.warning(arg0.getMessage() + "\n");
+        connected = false;
     }
 
     @Override
@@ -69,6 +72,11 @@ public class MyStatusListener implements StatusListener {
     public void onTrackLimitationNotice(int arg0) {
         // logger.info("Track limitation notice: " + arg0);
         // sends number of transmitted statusobjects
+    }
+
+    @Override
+    public String toString() {
+        return connected ? "connected" : "maybe crashed";
     }
 
 }

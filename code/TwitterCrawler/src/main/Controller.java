@@ -29,7 +29,7 @@ public class Controller extends Thread {
     // max. size of the buffer between streamListener and statusProcessors
     private final static int MAX_SIZE = 50000;
     // interval to wait in seconds
-    private final static int INTERVAL = 10;
+    private final static int INTERVAL = 20;
 
     private final int threadNum;
     private final int runtime;
@@ -104,6 +104,8 @@ public class Controller extends Thread {
                 thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
                 thrdStatusProcessor[i].start();
             } catch (InstantiationException e) {
+                statusProcessor[i] = null;
+                thrdStatusProcessor[i] = null;
                 logger.warning("Couldn't start a statusProcessor: "
                         + e.getMessage());
             }
@@ -146,8 +148,12 @@ public class Controller extends Thread {
         accountUpdate.exit();
         thrdAccountUpdate.interrupt();
         for (int i = 0; i < threadNum; i++) {
-            statusProcessor[i].run = false;
-            thrdStatusProcessor[i].interrupt();
+            if (statusProcessor[i] != null) {
+                statusProcessor[i].run = false;
+            }
+            if (thrdStatusProcessor[i] != null) {
+                thrdStatusProcessor[i].interrupt();
+            }
         }
 
         // join/stop Controller
@@ -168,7 +174,7 @@ public class Controller extends Thread {
 
         // join accountUpdate
         success = true;
-        System.out.print(" Terminating accountUpdater..");
+        System.out.print(" Terminating accountUpdate..");
         try {
             thrdAccountUpdate.join();
         } catch (InterruptedException e) {
@@ -206,7 +212,9 @@ public class Controller extends Thread {
         if (success) {
             for (int i = 0; i < threadNum; ++i) {
                 try {
-                    thrdStatusProcessor[i].join();
+                    if (thrdStatusProcessor[i] != null) {
+                        thrdStatusProcessor[i].join();
+                    }
                 } catch (InterruptedException e) {
                     System.out.print(". Error (" + e.getMessage() + ").");
                     logger.warning(e.getMessage());
@@ -250,7 +258,8 @@ public class Controller extends Thread {
         }
         return " STATE OF THE CRAWLER: " + "\n"
                 + " Number of status-objects in queue: " + getQueueSize()
-                + "\n" + " Status of the Streamlistener: " + "\n"
+                + "\n" + " Status of the Streamlistener: "
+                + streamListener.toString() + "\n"
                 + " Status of the Accountupdater: "
                 + (thrdAccountUpdate.isAlive() ? "running" : "crashed") + "\n"
                 + " Number of running workers: " + threadsAlive + "/"
@@ -266,11 +275,12 @@ public class Controller extends Thread {
                 count = 0;
 
                 // refresh connection
-                streamListener.exit();
-                streamListener = new StreamListener(statusQueue, logger);
-                thrdStreamListener = new Thread(streamListener);
-                thrdStreamListener.start();
-                logger.info("StreamListener refreshed");
+                // logger.info("Try to refresh the connection!");
+                // streamListener.exit();
+                // streamListener = new StreamListener(statusQueue, logger);
+                // thrdStreamListener = new Thread(streamListener);
+                // thrdStreamListener.start();
+                // logger.info("StreamListener refreshed");
                 // streamListener.refresh();
 
                 // add a new date to the database
@@ -300,7 +310,7 @@ public class Controller extends Thread {
             }
 
             // call garbage-collector
-            System.gc();
+            // System.gc();
 
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds

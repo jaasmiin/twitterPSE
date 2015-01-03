@@ -2,9 +2,9 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.FileHandler;
@@ -12,7 +12,6 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import mysql.AccessData;
-import mysql.DBConnection;
 import mysql.DBcategorizer;
 import mysql.result.Account;
 import mysql.result.Category;
@@ -42,6 +41,9 @@ public class DBcategorizerTest {
         }
     }
 
+    /**
+     * test if the right accounts where returned
+     */
     @Test
     public void testGetNonCategorized() {
         List<Account> list = new ArrayList<Account>();
@@ -52,25 +54,111 @@ public class DBcategorizerTest {
         }
     }
 
+    /**
+     * test to add null
+     */
     @Test
     public void test1AddCategoryToAccount() {
         assertFalse(dbc.addCategoryToAccount(0, null));
     }
 
+    /**
+     * test if categories where set right
+     */
     @Test
     public void test2AddCategoryToAccount() {
-        assertTrue(dbc
-                .addCategoryToAccount(1, new Category(-1, "testCP", null)));
-        List<Account> list = new ArrayList<Account>();
-        list = dbc.getNonCategorized();
+        boolean res = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                null));
+        List<Account> list = dbc.getNonCategorized();
         try {
             DBtest t = new DBtest(access, log);
             t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
             t.sql(" DELETE FROM accountCategory WHERE 1;");
+            t.sql("DELETE FROM category WHERE Name = \"testCP\";");
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             e.printStackTrace();
         }
+        assertTrue(res);
+        assertEquals(4, list.size());
+    }
+
+    /**
+     * test if categories where set right even if they were set twice
+     */
+    @Test
+    public void test3AddCategoryToAccount() {
+        // try to execute 3-times the same query
+        boolean res1 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                null));
+        boolean res2 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                null));
+        boolean res3 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                null));
+        List<Account> list = dbc.getNonCategorized();
+        try {
+            DBtest t = new DBtest(access, log);
+            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+            t.sql(" DELETE FROM accountCategory WHERE 1;");
+            t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        assertTrue(res1);
+        assertTrue(res2);
+        assertTrue(res3);
+        assertEquals(4, list.size());
+    }
+
+    /**
+     * test if categories with parents where set right
+     */
+    @Test
+    public void test4AddCategoryToAccount() {
+        boolean res = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                new Category(0, "parent", null)));
+        List<Account> list = dbc.getNonCategorized();
+        try {
+            DBtest t = new DBtest(access, log);
+            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+            t.sql(" DELETE FROM accountCategory WHERE 1;");
+            t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+            t.sql("DELETE FROM category WHERE Name = \"parent\";");
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        assertTrue(res);
+        assertEquals(4, list.size());
+    }
+
+    /**
+     * test if categories with parents where set right even if they where added
+     * multiple
+     */
+    @Test
+    public void test5AddCategoryToAccount() {
+        boolean res1 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                new Category(0, "parent", null)));
+        boolean res2 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                new Category(0, "parent", null)));
+        boolean res3 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
+                new Category(0, "parent", null)));
+        List<Account> list = dbc.getNonCategorized();
+        try {
+            DBtest t = new DBtest(access, log);
+            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+            t.sql(" DELETE FROM accountCategory WHERE 1;");
+            t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+            t.sql("DELETE FROM category WHERE Name = \"parent\";");
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        assertTrue(res1);
+        assertTrue(res2);
+        assertTrue(res3);
         assertEquals(4, list.size());
     }
 
@@ -81,6 +169,7 @@ public class DBcategorizerTest {
 
     private Logger getLogger() throws SecurityException, IOException {
         Logger l = Logger.getLogger("logger");
+        new File("LogFile.log").createNewFile();
         FileHandler fh = new FileHandler("TestLog.log", true);
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
@@ -90,31 +179,4 @@ public class DBcategorizerTest {
         l.setUseParentHandlers(false);
         return l;
     }
-
-    class DBtest extends DBConnection {
-
-        public DBtest(AccessData accessData, Logger logger)
-                throws InstantiationException, IllegalAccessException,
-                ClassNotFoundException {
-            super(accessData, logger);
-        }
-
-        public void sql(String sql) {
-
-            try {
-                connect();
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-            }
-
-            try {
-                Statement s = c.createStatement();
-                s.executeUpdate(sql);
-            } catch (SQLException e) {
-                log.warning("Couldn't execute sql query\n" + e.getMessage());
-            }
-            disconnect();
-        }
-    }
-
 }
