@@ -19,7 +19,7 @@ Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
 \end{figure}
 
 \subsection{Klassendiagramm}
-Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten enthalten.
+Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten kapseln. Die Beschreibung der einzelnen Klassen erfolgt aufgeteitl nach Unterpaketen.
 
 \begin{figure}[h!]
 	\centering
@@ -30,15 +30,36 @@ Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die
 \end{figure}
 \begin{description}
 	\item[GuiController] Diese Klasse enthält alle GUI-Elemente. Damit kann über diese Klasse jedes einzelne Element angesproche gesteuert werden. Außerdem speichert sie die jeweils aktuellen Resultate der Datenbankabfragen zentral. Jede Erweiterung muss sich im GuiController als 'Observer' eintragen, um über Änderungen der Daten informiert zu werden. 
-	\item[GuiElement] Abstrakte Klasse, von welchem jedes GUI-Element erben muss.
-	\item[SelectionSuperController] Steuert die zugehörige 'View'. Die eigentliche Steuerung wird an die Subcontroller 'SelectionController' und 'SearchController' delegiert.
-    \item[SelectionController] Enthält die Programmlogik für den Bereich der Auswahl der gewünschten Kategorien, Länder und Accounts.
-	\item[SearchController] Enthält die Programmlogik für die Suche nach einzelnen Kategorien, Ländern und Accounts in der Datenbank, welche ausgewählt werden können. 
-    \item[DatabaseOptController] Enthält die Progammlogik der zugehörigen 'View'-Klasse.
-    \item [StandardMapController] Steuert und berechnet die Anzeige der ausgwählten Daten auf der Weltkarte.
-    \item [ContentTableController] Steuert und berechnet die Anzeige der Tabellendarstellung der Daten
-	\item [TimeSliderMapController] Steuert und berechnet die Anzeige auf der Weltkarte. Zusätzlich stellt die Klasse eine Methode bereit, über welche der Zeitraum der dargestellten Daten gesetzt werden kann.
-	\item [myUnfoldingMap] Diese Klasse kapselt die eigentliche Darstellung sämtlicher Kartenanzeigen. Sie ist die 'Schnittstelle' zur Unfolding-Library, welche für die Anzeige der Weltkarte verwendet wird.
+	\item[GuiElement] Abstrakte Klasse, von welchem jedes GUI-Element erben muss. Enthält die Rückverbindung zum 'GuiController'
+	\item[selectionOfQuery]  
+	\quad
+		 \begin{description}  	
+		\item[SelectionSuperController] Steuert die zugehörige 'View'. Die eigentliche Steuerung wird an die Subcontroller 'SelectionController' und 'SearchController' delegiert.
+		\item[SelectionController] Enthält die Programmlogik für den Bereich der Auswahl der gewünschten Kategorien, Länder und Accounts.
+		\item[SearchController] Enthält die Programmlogik für die Suche nach einzelnen Kategorien, Ländern und Accounts in der Datenbank, welche ausgewählt werden können. 
+		\item[]
+		\end{description}
+	\item[databaseOptions] 	\quad
+		\begin{description}
+			\item[DatabaseOptController] Enthält die Progammlogik der zugehörigen 'View'-Klasse.
+		\end{description}
+    \item[standardMap] \quad
+	    \begin{description}
+	    	\item [StandardMapController] Und berechnet die Anzeige der ausgewählten Daten auf der Weltkarte.
+	    \end{description}
+    \item[table] \quad
+	    \begin{description}
+	    	\item [ContentTableController] Steuert und berechnet die Anzeige der Tabellendarstellung der Daten
+	    \end{description}
+    \item[timesliderMap] \quad
+	    \begin{description}
+	    	\item [TimeSliderMapController] Steuert und berechnet die Anzeige auf der Weltkarte. Zusätzlich stellt die Klasse eine Methode bereit, über welche der Zeitraum der dargestellten Daten gesetzt werden kann.
+	    \end{description}
+	\item[unfolding] \quad
+		\begin{description}
+			\item [myUnfoldingMap] Diese Klasse kapselt die eigentliche Darstellung sämtlicher Kartenanzeigen. Sie ist die 'Schnittstelle' zur Unfolding-Library, welche für die Anzeige der Weltkarte verwendet wird.
+		\end{description}
+	
 \end{description}
 \section{Sequenzdiagramme}
 \subsection{GUI Initialisierung}
