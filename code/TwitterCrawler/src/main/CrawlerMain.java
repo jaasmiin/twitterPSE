@@ -65,11 +65,14 @@ public class CrawlerMain {
         String command = "";
         while (!command.equals("exit") && !command.equals("kill")) {
             System.out.print("crawler> ");
-            try {
-                command = console.readLine();
-            } catch (IOException e) {
-                System.out.println(" Error, problem with reading user input.");
-            }
+            do {
+                try {
+                    command = console.readLine();
+                } catch (IOException e) {
+                    System.out
+                            .println(" Error, problem with reading user input.");
+                }
+            } while (command == null || command == "");
             switch (command) {
             case "status":
                 System.out.println(cntrl.toString());
