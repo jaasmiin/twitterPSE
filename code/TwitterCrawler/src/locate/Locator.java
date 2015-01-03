@@ -165,7 +165,7 @@ public class Locator {
 
         // lookup in Hashtable to avoid calling the webservice
         if (location != null && map.containsKey(location.toLowerCase())) {
-        	logger.info("Hahtable match");
+        	logger.info("Hahtable match:  " + location.toLowerCase());
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 
