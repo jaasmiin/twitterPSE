@@ -17,6 +17,7 @@ Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
 		\item[search] Dieses Paket enthält Darstellung und Anwendungslogik für eine allgemeine Suchfunktion.
 		\item [standardMap] Das Paket enthält Anwendungslogik und Darstellung für die Standardkarte, welche die Länder nach dem jeweiligen Tweet-Retweet-Aufkommen einfärbt.
 		\item [table] Paket, welches Anwendungslogik und Darstellung für die Erstellungen und Anzeige des Datenblattes zur aktuellen Anfrage enthält.
+		\item[diffMap] Paket, welches Anwendungslogik und Darstellung für die Anzeige der Darstellung des Unerschiedes im Tweet-Retweet-Verhalten zwischen zwei Zeitpunkten enthält.
 		\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
 		
 \end{description}
@@ -55,8 +56,12 @@ Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die
 		
     \item[standardMap] \quad
 	    \begin{description}
-	    	\item [StandardMapController] Und berechnet die Anzeige der ausgewählten Daten auf der Weltkarte.
+	    	\item [StandardMapController] Steuert und berechnet die Anzeige der ausgewählten Daten auf der Weltkarte.
 	    \end{description}
+	\item[diffMap] \quad
+		\begin{description}
+			\item [DiffMapController] Berechnet die Differenz im Tweet-Retweet-Verhalten zwischen zwei Zeitpunkten und steuert deren Visualisierung in der 'View'-Klasse.
+		\end{description}
     \item[table] \quad
 	    \begin{description}
 	    	\item [ContentTableController] Steuert und berechnet die Anzeige der Tabellendarstellung der Daten
