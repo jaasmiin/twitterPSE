@@ -41,6 +41,7 @@ Die Datenbank besteht aus sieben Tabellen, die über Fremdschlüssel miteinander
 \begin{description}
 	\item[accounts] Enthält alle verifizierten Accounts, die der Crawler im Twitter Stream mitgelesen hat, bzw. auch nicht verifizierte Accounts, die in der GUI hinzugefügt wurden. Dabei entspricht \emph{TwitterAccountId} der ID des Accounts in Twitter und \emph{id} ist ein Datenbank interner Primärschlüssel. Die Attribute \emph{Verified}, \emph{URL} und \emph{AccountName} entsprechen jeweils in Twitter hinterlegten Daten. \emph{Categorized} gibt an ob dieser Account bereits kategorisiert wurde und \emph{LocationId} Enthält den vom Loakaliserer berechneten zugehörigen Ort.
 	\item[category] speichert die hierarchisch strukturierten (\emph{ParentId}) Kategorien.
+	\item[page] In dieser Tabelle werden die einzelnen Webseiten (\emph{page}) gespeichert. Die Informationen dazu stammen aus der geparsten DMOZ-Datenbank.
 	\item[accountCategory] Stellt die Relation zwischen	\emph{accounts} und \emph{category} in einer separaten Tabelle her, da einem Account mehrere Kategorien zugeordnet werden können.
 	\item[location] Enthält die vom Lokalisierer ermittelten Orte, die jeweils \emph{Code} und \emph{Name} enthalten und auch per \emph{ParentId} hierarchisch gegliedert sein können.	
 	\item[day] Enthält unterschiedliche Daten (\emph{Day}), die mittels \emph{Id} referenziert werden.
