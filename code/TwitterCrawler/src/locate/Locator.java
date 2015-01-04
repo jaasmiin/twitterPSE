@@ -29,7 +29,7 @@ import org.geonames.WebService;
 import twitter4j.GeoLocation;
 
 /**
- * class to locate words with a webservice !!! HashMap is just an idea and shoul
+ * class to locate words with a webservice !!! HashMap is just an idea and should
  * be discussed !!!
  * 
  * @author Matthias Schimek
@@ -132,7 +132,7 @@ public class Locator {
     }
 
     /**
-     * try's to determine the country/location of a given name or word
+     * tryies to determine the country/location of a given name or word
      * 
      * @param location
      *            the input name or word to determine the country/location as
@@ -165,6 +165,7 @@ public class Locator {
 
         // lookup in Hashtable to avoid calling the webservice
         if (location != null && map.containsKey(location.toLowerCase())) {
+        	logger.info("Hahtable match:  " + location.toLowerCase());
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 

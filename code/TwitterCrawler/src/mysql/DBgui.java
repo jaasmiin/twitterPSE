@@ -195,7 +195,7 @@ public class DBgui extends DBConnection implements DBIgui {
             stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
             stmt.setInt(1, accountId);
             stmt.setInt(2, categoryId);
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -214,7 +214,7 @@ public class DBgui extends DBConnection implements DBIgui {
             stmt = c.prepareStatement("UPDATE accounts SET LocationId = ? WHERE Id = ?;");
             stmt.setInt(1, accountId);
             stmt.setInt(2, locationId);
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -237,7 +237,7 @@ public class DBgui extends DBConnection implements DBIgui {
             stmt.setInt(4, locationId);
             stmt.setString(5,
                     user.getURL().replace("\\", "/").replace("\"", "\"\""));
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
