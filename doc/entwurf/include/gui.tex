@@ -79,13 +79,12 @@ Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die
 \section{GUI Initialisierung}
 
 \cref{fig:GUIStartSeq} veranschaulicht den Ablauf der Initialisierung der Benutzeroberfläche. Nach dem Aufrufen des Programmes durch den Benutzer ruft die main-Methode der GuiController-Klasse zuerst, wie von JavaFX vorgegeben die launch- und dann darin die start-Methode auf.
-In dieser wird mittels eines von JavaFX bereitgestellten FXML-Loaders die Hauptverwaltungseinheit der GUI, bestehend aus ihrer Anzeige, der \emph{GuiView} und der zugehörigen Kontolle, dem \emph{GuiController} geladen und initialisiert.
-Da diese aber schon die in das fxml-Dokument eingefügten GUI-Elemente enthalten müssen während des Ladevorgangs der Hauptverwaltungseinheit zuerst diese geladen werden.
-Es können beliebig viele GUI-Elemente hinzugefügt werden. Hier wird das Element \emph{selectionOfQuery} exemplarisch herausgegriffen. 
-Der FXML-Loader erstellt Anzeige und Kontrolle des GUI-Elements und startet dann die initialize-Methode des \emph{GuiControllers}.
-Dieser verbindet sich darin mittels einer Instanz von \emph{DBIGui} mit der Datenbank und ruft dann die setParent-Methode des \emph{SelectionOfQueryController} auf.
-Dieser erhält darin eine Referenz auf den \emph{GuiController}, setzt seine EventHandler und holt sich die zur Initialisierung benötigten Daten ab.
-Der Vorgang ist beendet, sobald alle GUI-Elemente geladen und die Erstellung der Hauptverwaltungseinheit daraufhin abgeschlossen ist.
+In dieser wird als erstes ein Singleton des GuiControllers und eine Verbindung zur Datenbank mit einer Instanz von \emph{DBIgui} erstellt. Danach wird mittels des von JavaFX bereitgestellten FXML-Loaders die Anzeige der GUI, der \emph{GuiView}, und dann die zugehörigen GUI-Elemente geladen.
+Exemplarisch für diesen Vorgang wird das Element \emph{SelectionOfQuery} herausgegriffen.
+Der FXML-Loader erstellt mit \emph{SelectionOfQueryView} und \emph{SelectionOfQueryController} Anzeige und Kontrolle des GUI-Elements und ruft die initialize-Methode des \emph{SelectionOfQueryController} auf.
+Darin holt sich die Kontrolle des GUI-Elements durch die getInstance-Methode eine Referenz auf den \emph{GuiController}, meldet sich bei diesem mit der subscribe-Methode an und setzt die benötigten Event-Handler.
+Nachdem alle GUI-Elemente nach diesem Prinzip geladen wurden, wird die reloadAll-Methode des \emph{GuiController} aufgerufen. Dieser holt sich die Informationen über Länder, Kategorien und Accounts aus der Datenbank und ruft für alle GUI-Elemente nacheinander deren update-Methode auf, in der die Elemente für sie relevante Informationen auswählen und verarbeiten.
+Danach kann die Benutzeroberfläche angezeigt werden.
 
 \begin{figure}[h!]
 	\centering
