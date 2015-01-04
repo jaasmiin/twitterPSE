@@ -42,7 +42,7 @@ public class AccountUpdate implements RunnableListener {
         this.logger = logger;
         myAccounts = new HashSet<Long>();
         try {
-            reader = new DBcrawler(accessData,null, logger);
+            reader = new DBcrawler(accessData, null, logger);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             this.logger.warning(e.getMessage() + "\n");
@@ -82,8 +82,8 @@ public class AccountUpdate implements RunnableListener {
             try {
                 Thread.sleep(3600000); // sleep for 1 hour
             } catch (InterruptedException e) {
-                logger.info("AccountUpdate has been interrupted: \n"
-                        + e.getMessage());
+                // logger.info("AccountUpdate has been interrupted: \n"
+                // + e.getMessage());
             }
         }
     }

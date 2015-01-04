@@ -1,3 +1,5 @@
 .settings
 LogFile.log.lck
 LogFile.log
+TestLog.log
+TestLog.log.*

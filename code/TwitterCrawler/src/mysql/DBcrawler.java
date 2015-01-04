@@ -55,6 +55,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean[] addAccount(User user, Place place, Date date, boolean tweet) {
 
+        if (user == null || date == null) {
+            return new boolean[] {false, false, false };
+        }
+
         long id = user.getId();
         String location = user.getLocation();
         String url = user.getURL();
@@ -152,7 +156,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt = c.prepareStatement("UPDATE accounts SET Follower = ? WHERE TwitterAccountId = ? ;");
             stmt.setInt(1, follower);
             stmt.setLong(2, id);
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -173,7 +177,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                     + (tweet ? "1" : "0") + ";");
             stmt.setLong(1, id);
             stmt.setString(2, dateFormat.format(date));
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -202,7 +206,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt.setLong(1, id);
             stmt.setString(2, location);
             stmt.setString(3, dateFormat.format(date));
-            result2 = stmt.executeUpdate() != 0 ? true : false;
+            result2 = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -214,6 +218,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean addLocation(String code, String parent) {
 
+        code = checkString(code, 3, "0");
+        parent = checkString(parent, 3, null);
+
         // HashTable lookup
         if (locationHash.contains(code)
                 && (parent == null || locationHash.contains(parent))) {
@@ -221,9 +228,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         // add parent to database
-        if (parent != null && parent != DEFAULT_LOCATION) {
+        if (parent != null && !parent.equals(DEFAULT_LOCATION)) {
             if (addLocation(parent, null)) {
                 locationHash.add(parent);
+            } else {
+                parent = null;
             }
         }
 
@@ -236,11 +245,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 stmt.setString(1, code);
                 stmt.setNull(2, Types.INTEGER);
             } else {
-                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) VALUES (\"null\", ?, (SELECT Id FROM location WHERE Code = ? LIMIT 1));");
+                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) SELECT \"null\", ?, Id FROM location WHERE Code = ?;");
                 stmt.setString(1, code);
                 stmt.setString(2, parent);
             }
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
             if (ret) {
                 locationHash.add(code);
             }
@@ -261,7 +270,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO day (Day) VALUES (?);");
             stmt.setString(1, dateFormat.format(date));
-            ret = stmt.executeUpdate() != 0 ? true : false;
+            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
                     + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
@@ -308,7 +317,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             String ret = word.replace("\\", "/");
             ret = ret.replace("\"", "\"\"");
             if (ret.length() > maxLength) {
-                ret = ret.substring(0, maxLength - 1);
+                ret = ret.substring(0, maxLength);
             }
             return ret;
         }
@@ -331,7 +340,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         Stack<String> st = new Stack<String>();
         try {
             while (res.next()) {
-                st.push(res.getString("Code"));
+                st.push(res.getString(1));
             }
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
@@ -339,8 +348,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         HashSet<String> ret = new HashSet<String>(st.size());
-        for (int i = 0; i < st.size(); i++) {
-            ret.add(st.pop());
+        for (String code : st) {
+            ret.add(code);
         }
         return ret;
     }
@@ -369,8 +378,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         HashSet<Long> ret = new HashSet<Long>(st.size());
-        for (int i = 0; i < st.size(); i++) {
-            ret.add((long) st.pop());
+        for (long l : st) {
+            ret.add(l);
         }
         return ret;
     }

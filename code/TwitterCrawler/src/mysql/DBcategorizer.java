@@ -90,27 +90,27 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             temp = stack.pop();
 
             // hashtable lookup
-            if (!categories.contains(temp.toString())) {
+            if (categories.contains(temp.toString())) {
+                result1 = true;
+            } else {
 
                 // prevent SQL-injection
                 PreparedStatement stmt = null;
                 try {
 
                     if (temp.getParent() == null) {
-                        stmt = c.prepareStatement("INSERT INTO category (Name, ParentId) VALUES "
-                                + "(?, ?) ON DUPLICATE KEY UPDATE ParentId = ?;");
+                        stmt = c.prepareStatement("INSERT IGNORE INTO category (Name, ParentId) VALUES "
+                                + "(?, ?);");
                         stmt.setNull(2, Types.INTEGER);
-                        stmt.setNull(3, Types.INTEGER);
                     } else {
-                        // set parent (SELECT Id FROM category WHERE Name = ?)
-                        stmt = c.prepareStatement("INSERT INTO category (Name, ParentId) VALUES "
-                                + "(?, (SELECT Id FROM category WHERE Name = ?)) ON DUPLICATE KEY UPDATE ParentId = (SELECT Id FROM category WHERE Name = ?);");
+                        // set parent
+                        stmt = c.prepareStatement("INSERT IGNORE INTO category (Name, ParentId) SELECT "
+                                + "?, Id FROM category WHERE Name = ?;");
                         stmt.setString(2, temp.getParent().toString());
-                        stmt.setString(3, temp.getParent().toString());
                     }
                     stmt.setString(1, temp.toString());
-                    
-                    result1 = stmt.executeUpdate() != 0 ? true : false;
+
+                    result1 = stmt.executeUpdate() >= 0 ? true : false;
                 } catch (SQLException e) {
                     logger.warning("SQL-Status: " + e.getSQLState()
                             + "\n Message: " + e.getMessage()
@@ -130,10 +130,10 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             // prevent SQL-injection
             PreparedStatement stmt = null;
             try {
-                stmt = c.prepareStatement("INSERT INTO accountCategory (AccountId, CategoryId) VALUES (?, (SELECT Id FROM category WHERE Name = ? LIMIT 1));");
+                stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, (SELECT Id FROM category WHERE Name = ? LIMIT 1));");
                 stmt.setInt(1, accountId);
                 stmt.setString(2, category.toString());
-                result2 = stmt.executeUpdate() != 0 ? true : false;
+                result2 = stmt.executeUpdate() >= 0 ? true : false;
             } catch (SQLException e) {
                 logger.warning("SQL-Status: " + e.getSQLState()
                         + "\n Message: " + e.getMessage() + "\n SQL-Query: "
@@ -149,7 +149,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         if (result2) {
             try {
                 Statement s = c.createStatement();
-                result3 = s.executeUpdate(sqlCommand) != 0 ? true : false;
+                result3 = s.executeUpdate(sqlCommand) >= 0 ? true : false;
             } catch (SQLException e) {
                 logger.warning("Couldn't execute sql query: \n"
                         + e.getMessage());
