@@ -64,7 +64,14 @@ CREATE TABLE IF NOT EXISTS tweets (
 	DayId INT UNSIGNED NOT NULL
 );
 
+/* table for DMOZ data */
+CREATE TABLE IF NOT EXISTS page (
+	Id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
+	CategoryId UNSIGNED INT NOT NULL,
+	Page VARCHAR(200) NOT NULL
+);
 
+/* Tabelle zum Speichern von Daten */
 CREATE TABLE IF NOT EXISTS day (
 	Id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
 	Day DATE NOT NULL
@@ -82,6 +89,7 @@ ALTER TABLE tweets ADD CONSTRAINT FOREIGN KEY (DayId) REFERENCES day (Id);
 ALTER TABLE retweets ADD CONSTRAINT FOREIGN KEY (DayId) REFERENCES day (Id);
 ALTER TABLE accountCategory ADD CONSTRAINT FOREIGN KEY (AccountId) REFERENCES accounts (Id);
 ALTER TABLE accountCategory ADD CONSTRAINT FOREIGN KEY (CategoryId) REFERENCES category (Id);
+ALTER TABLE page ADD CONSTRAINT FOREIGN KEY (CategoryId) REFERENCES category (Id);
 /* Unikate erzwingen */
 ALTER TABLE accounts ADD CONSTRAINT uc_twitteraccountid UNIQUE (TwitterAccountId);
 ALTER TABLE retweets ADD CONSTRAINT uc_retweet UNIQUE (AccountId, DayId, LocationId);
@@ -89,6 +97,7 @@ ALTER TABLE tweets ADD CONSTRAINT uc_tweet UNIQUE (AccountId, DayId);
 ALTER TABLE day ADD CONSTRAINT uc_day UNIQUE (Day);
 ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Code);
 ALTER TABLE accountCategory ADD CONSTRAINT uc_accountcategory UNIQUE (AccountId, CategoryId);
+ALTER TABLE page ADD CONSTRAINT uc_page UNIQUE (CategoryId, Page);
 
 /* add required entrys for testing */
 INSERT INTO location (Name, Code, ParentId) VALUES ("defaultLocation","0",NULL);

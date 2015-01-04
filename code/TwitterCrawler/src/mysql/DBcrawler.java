@@ -189,6 +189,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean[] addRetweet(long id, String location, Date date) {
 
+        if (date == null) {
+            return new boolean[] {false, false };
+        }
+
         location = checkString(location, 3, DEFAULT_LOCATION);
 
         boolean result1 = true;
