@@ -1,7 +1,7 @@
 \section{Aufbau}
 Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar.\\
 \subsection{Paketdiagramm}
-Das Paket {guiControll} beinhaltet die Steuerungslogik der GUI. Die einzelnen Unterpakete enthalten d Komponenten der GUI. Somit wird innerhalb der Unterpakete ein starker Zusammenhalt erreicht. Gleichzeitig kann die GUI einfach um Funktionalität erweitert werden, indem weitere Komponenten hinzugefügt werden. Da die Unterpakete keine Beziehungen und Abhängigkeiten untereinander aufweisen, kann somit eine Erweiterung der Funktionalität ohne Änderung der Programmlogik der anderen Pakete erfolgen. 
+Das Paket {guiControll} beinhaltet die Steuerlogik der GUI. Die einzelnen Unterpakete enthalten die Komponenten der GUI. Somit wird innerhalb der Unterpakete ein starker Zusammenhalt erreicht. Gleichzeitig kann die GUI einfach um Funktionalität erweitert werden, indem weitere Komponenten hinzugefügt werden. Da die Unterpakete keine Beziehungen und Abhängigkeiten untereinander aufweisen, kann somit eine Erweiterung der Funktionalität ohne Änderung der Programmlogik der anderen Pakete erfolgen. 
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
@@ -10,7 +10,7 @@ Das Paket {guiControll} beinhaltet die Steuerungslogik der GUI. Die einzelnen Un
 \end{figure}
 
 
-Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
+Im folgenden ist eine kurze Beschreibung der einzelnen Unterpakete zu finden:
 \begin{description}
 		\item [selectionOfQuery] Dieses Paket enthält Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.)
 		\item[databaseOptions] Dieses Paket enthält die Darstellung und Anwendungslogik für Änderungen an der Datenbank, wie das Hinzufügen eines bisher nicht mitgetrackten Accounts.
@@ -19,11 +19,12 @@ Im folgenden eine kurze Beschreibung der einzelnen Unterpakte.
 		\item [table] Paket, welches Anwendungslogik und Darstellung für die Erstellungen und Anzeige des Datenblattes zur aktuellen Anfrage enthält.
 		\item[diffMap] Paket, welches Anwendungslogik und Darstellung für die Anzeige der Darstellung des Unerschiedes im Tweet-Retweet-Verhalten zwischen zwei Zeitpunkten enthält.
 		\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
+		\item [unfolding] In diesem Paket wird die Kartendarstellung berechnet. Dabei wird die unfolding-Bibliothek verwendet.
 		
 \end{description}
 
 \subsection{Klassendiagramm}
-Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten kapseln. Die Beschreibung der einzelnen Klassen erfolgt aufgeteitl nach Unterpaketen.
+Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten kapseln.
 
 \begin{figure}[h!]
 	\centering
@@ -35,8 +36,8 @@ Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die
 \quad
 \begin{description}
 	
-	\item[GuiController] Diese Klasse enthält alle GUI-Elemente. Damit kann über diese Klasse jedes einzelne Element angesproche gesteuert werden. Außerdem speichert sie die jeweils aktuellen Resultate der Datenbankabfragen zentral. Jede Erweiterung muss sich im GuiController als 'Observer' eintragen, um über Änderungen der Daten informiert zu werden. 
-	\item[GuiElement] Abstrakte Klasse, von welchem jedes GUI-Element erben muss. Enthält die Rückverbindung zum 'GuiController'
+	\item[GuiController] Diese Klasse enthält alle GUI-Elemente. Damit kann über diese Klasse jedes einzelne Element angesprochen werden. Außerdem speichert sie die jeweils aktuellen Daten der Datenbankabfragen zentral. Jede Erweiterung muss sich im GuiController als 'Observer' eintragen, um über Änderungen der Daten informiert zu werden. 
+	\item[GuiElement] Abstrakte Klasse, von welchem jedes GUI-Element erben muss. Enthält die Rückverbindung zum 'GuiController'.
 	\item[selectionOfQuery]  
 	\quad
 		 \begin{description}  	
@@ -64,7 +65,7 @@ Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die
 		\end{description}
     \item[table] \quad
 	    \begin{description}
-	    	\item [ContentTableController] Steuert und berechnet die Anzeige der Tabellendarstellung der Daten
+	    	\item [ContentTableController] Steuert und berechnet die Anzeige der Tabellendarstellung der Daten.
 	    \end{description}
     \item[timesliderMap] \quad
 	    \begin{description}
@@ -72,18 +73,18 @@ Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die
 	    \end{description}
 	\item[unfolding] \quad
 		\begin{description}
-			\item [myUnfoldingMap] Diese Klasse kapselt die eigentliche Darstellung sämtlicher Kartenanzeigen. Sie ist die 'Schnittstelle' zur Unfolding-Library, welche für die Anzeige der Weltkarte verwendet wird.
+			\item [MyUnfoldingMap] Diese Klasse kapselt die eigentliche Darstellung sämtlicher Kartenanzeigen. Sie ist die 'Schnittstelle' zur Unfolding-Library, welche für die Anzeige der Weltkarte verwendet wird.
 		\end{description}
 	
 \end{description}
 \section{GUI Initialisierung}
 
 \cref{fig:GUIStartSeq} veranschaulicht den Ablauf der Initialisierung der Benutzeroberfläche. Nach dem Aufrufen des Programmes durch den Benutzer ruft die main-Methode der GuiController-Klasse zuerst, wie von JavaFX vorgegeben die launch- und dann darin die start-Methode auf.
-In dieser wird als erstes ein Singleton des GuiControllers und eine Verbindung zur Datenbank mit einer Instanz von \emph{DBIgui} erstellt. Danach wird mittels des von JavaFX bereitgestellten FXML-Loaders die Anzeige der GUI, der \emph{GuiView}, und dann die zugehörigen GUI-Elemente geladen.
+In dieser wird als erstes ein Singleton des \emph{GuiControllers} und eine Verbindung zur Datenbank mit einer Instanz von \emph{DBIgui} erstellt. Danach wird mittels des von JavaFX bereitgestellten FXML-Loaders die Anzeige der GUI, die \emph{GuiView} und dann die zugehörigen GUI-Elemente geladen.
 Exemplarisch für diesen Vorgang wird das Element \emph{SelectionOfQuery} herausgegriffen.
 Der FXML-Loader erstellt mit \emph{SelectionOfQueryView} und \emph{SelectionOfQueryController} Anzeige und Kontrolle des GUI-Elements und ruft die initialize-Methode des \emph{SelectionOfQueryController} auf.
 Darin holt sich die Kontrolle des GUI-Elements durch die getInstance-Methode eine Referenz auf den \emph{GuiController}, meldet sich bei diesem mit der subscribe-Methode an und setzt die benötigten Event-Handler.
-Nachdem alle GUI-Elemente nach diesem Prinzip geladen wurden, wird die reloadAll-Methode des \emph{GuiController} aufgerufen. Dieser holt sich die Informationen über Länder, Kategorien und Accounts aus der Datenbank und ruft für alle GUI-Elemente nacheinander deren update-Methode auf, in der die Elemente für sie relevante Informationen auswählen und verarbeiten.
+Nachdem alle GUI-Elemente nach diesem Prinzip geladen wurden, wird die reloadAll-Methode des \emph{GuiController} aufgerufen. Dieser holt sich die Informationen über Länder, Kategorien und Accounts aus der Datenbank und ruft für alle GUI-Elemente nacheinander deren update-Methode auf, in der die Elemente die für sie relevante Informationen auswählen und verarbeiten.
 Danach kann die Benutzeroberfläche angezeigt werden.
 
 \begin{figure}[h!]
@@ -93,16 +94,16 @@ Danach kann die Benutzeroberfläche angezeigt werden.
 	\label{fig:GUIStartSeq}
 \end{figure}
 \section{Kommunikation: GUI und Datenbank}
-In \cref{fig:GUISeq} ist die Auswahl einer neuen Kategorie in einem Sequenzdiagramm dargestellt. Der Benutzer klickt auf eine Kategorie in der Liste, woraufhin \emph{handle(mouseEvent)} ausgelöst wird. Der \emph{SelectionOfQuerryController} gibt dieses Ereignis dem \emph{GuiController} weiter bzw.  teilt ihm mit welche Kategorie ausgewählt wurde. Diese Klasse wiederum läd mittels \emph{getSumOfData} neue Daten zu den sich geänderten ausgewählten Kategorien. Die IDs ausgewählter Kategorien, Locations und Accounts (siehe Parameter der Operation \emph{getSumOfData}) sind dabei lokal in der Klasse \emph{GUIController} gespeichert.
+In \cref{fig:GUISeq} ist die Auswahl einer neuen Kategorie in einem Sequenzdiagramm dargestellt. Der Benutzer klickt auf eine Kategorie in der Liste, woraufhin \emph{handle(mouseEvent)} ausgelöst wird. Der \emph{SelectionOfQuerryController} gibt dieses Ereignis dem \emph{GuiController} weiter bzw.  teilt ihm mit welche Kategorie ausgewählt wurde. Diese Klasse wiederum lädt mittels \emph{getSumOfData} neue Daten zu den sich geänderten ausgewählten Kategorien. Die IDs ausgewählter Kategorien, Locations und Accounts (siehe Parameter der Operation \emph{getSumOfData}) sind dabei lokal in der Klasse \emph{GUIController} gespeichert.
 
 Alle GUI-Elemente werden dann mittels \emph{update} über geänderte Daten informiert. Als Parameter wird ein Enum übergeben, der den Typ der Datenänderung angibt. Es gibt folgende Typen:
 \begin{description}
-	\item[TWEET] Die Information Anzahl Retweets pro Land und Tweet hat sich geändert. Hier ist bspw. eine Karte, die die Anzahl der Retweets pro Land graphisch darstellt, oder eine Tabelle mit vorher genannten Daten betroffen. 
-	\item[CATEGORY] Eine lokale Liste der Kategorien wurde verändert. Die Liste, aus der der Benutzer Kategorien auswählt muss aktualisiert werden.
+	\item[TWEET] Die Information Anzahl Retweets pro Land und Tweet hat sich geändert. Hier ist bspw. eine Karte, die die Anzahl der Retweets pro Land grafisch darstellt, oder eine Tabelle mit vorher genannten Daten betroffen. 
+	\item[CATEGORY] Eine lokale Liste der Kategorien wurde geändert. Die Liste, aus der der Benutzer Kategorien auswählt muss aktualisiert werden.
 	\item[LOCATION] Länder bzw. Orte wurden aktualisiert. Auch hier ist z.B. die Liste im Filter, aus dem der Benutzer ein Land auswählt betroffen.
 	\item[ACCOUNT] Accounts wurden verändert und bspw. die Account Liste im Filter muss aktualisiert werden.
 \end{description}
-Bei Änderungen vom Typ \emph{TWEET} ist bspw. die \emph{StandardMapView} betroffen und fordert mittels \emph{getSummedData()} die neue Informationen an und aktualisiert somit die aktuell angezeigte Karte. Einfachheitshalber wird hier nur die Aktualisierung eines GUI Elements visualisiert. Die Operation \emph{udpate} wird auf jedem GUI-Element, welches sich beim \emph{GUIController} mittels \emph{subscribe} angemeldet hat, aufgerufen.
+Bei Änderungen vom Typ \emph{TWEET} ist beispielsweise die \emph{StandardMapView} betroffen und fordert mittels \emph{getSummedData()} die neue Informationen an und aktualisiert somit die aktuell angezeigte Karte. Einfachheitshalber wird hier nur die Aktualisierung eines GUI Elements visualisiert. Die Operation \emph{udpate} wird auf jedem GUI-Element, welches sich beim \emph{GUIController} mittels \emph{subscribe} angemeldet hat, aufgerufen.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/TwitterGUI_Erweiterung_SequenzDiagramm}
