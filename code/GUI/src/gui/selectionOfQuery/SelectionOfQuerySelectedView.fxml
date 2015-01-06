@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane maxHeight="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.selectionOfQuery.SelectionOfQueryController">
+   <children>
+      <GridPane layoutX="107.0" layoutY="-137.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+            <ColumnConstraints fillWidth="false" hgrow="NEVER" />
+          <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+         <children>
+            <ListView fx:id="lstSelectedCategories" focusTraversable="false" maxWidth="1.7976931348623157E308" orientation="HORIZONTAL" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets top="5.0" />
+               </GridPane.margin></ListView>
+            <ListView fx:id="lstSelectedLocations" focusTraversable="false" maxWidth="1.7976931348623157E308" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ListView fx:id="lstSelectedAccounts" focusTraversable="false" maxWidth="1.7976931348623157E308" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Kategorien:">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin></Label>
+            <Label text="Orte:" GridPane.rowIndex="1">
+            </Label>
+            <Label text="Accounts:" GridPane.rowIndex="2">
+            </Label>
+         </children>
+         <rowConstraints>
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+         </rowConstraints>
+      </GridPane>
+   </children>
+</AnchorPane>

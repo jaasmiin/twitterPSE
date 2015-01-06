@@ -2,7 +2,9 @@ package gui.base;
 	
 import gui.GUIElement;
 import gui.GUIElement.UpdateType;
+
 import java.util.ArrayList;
+
 import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
@@ -14,6 +16,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
@@ -22,6 +25,8 @@ public class GUIController extends Application {
 	private Pane paSelectionOfQuery;
 	@FXML
 	private TextField txtSearch;
+	@FXML
+	private Label lblInfo;
 	
 	private static GUIController instance = null;
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
@@ -114,6 +119,21 @@ public class GUIController extends Application {
 		reloadLocation();
 	}
 	
+	private void setInfo(String text) {
+		if (lblInfo != null) {
+			lblInfo.setText(text);
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					lblInfo.setText("");
+					try {
+						wait(1500);
+					} catch (InterruptedException e) {}
+				}
+			}).start();
+		}
+	}
+	
 	/**
 	 * Get list of all categories
 	 * @return list of categories
@@ -176,6 +196,29 @@ public class GUIController extends Application {
 			selectedCategories.remove(id);
 		}
 		reloadSummedData();
+	}
+	
+	public ArrayList<String> getSelectedAccounts() {
+		// TODO: add correct code
+		ArrayList<String> a = new ArrayList<String>();
+		a.add("ZDF");
+		return a;
+	}
+	
+	public ArrayList<String> getSelectedCategories() {
+		// TODO: add correct code
+		ArrayList<String> a = new ArrayList<String>();
+		a.add("Musiker");
+		a.add("Schornsteinfeger");
+		return a;
+	}
+	public ArrayList<String> getSelectedLocations() {
+		// TODO: add correct code
+		ArrayList<String> a = new ArrayList<String>();
+		a.add("Deutschland");
+		a.add("Frankreich");
+		a.add("Österreich");
+		return a;
 	}
 	
 	public void setAccount(int id, boolean selected) {

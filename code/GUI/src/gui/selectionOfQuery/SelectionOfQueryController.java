@@ -4,12 +4,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
+import com.sun.org.apache.bcel.internal.generic.LLOAD;
+
 import mysql.result.Category;
 import mysql.result.Location;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
@@ -26,7 +29,17 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	private TreeView<Location> trvLocation;
 	@FXML
 	private TitledPane tipLocation, tipAccount, tipCategory;	
-		
+	@FXML
+	private ListView<String> lstSelectedCategories;
+	@FXML
+	private ListView<String> lstSelectedLocations;
+	@FXML
+	private ListView<String> lstSelectedAccounts;
+	
+	private void updateSelected(ListView<String> lstView, ArrayList<String> selected) {
+		// TODO: add code
+	}
+	
 	private void updateCategory(ArrayList<Category> categories) {
 		TreeItem<Category> rootItem = new TreeItem<Category>(new Category(1, "Alles", null));
 		rootItem.setExpanded(true);		
@@ -52,6 +65,9 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		System.out.println("SelectionOfQuerryController.update()");
 		if (type == UpdateType.TWEET) {
 			// TODO: load data and update elements
+			updateSelected(lstSelectedAccounts, superController.getSelectedAccounts());
+			updateSelected(lstSelectedCategories, superController.getSelectedCategories());
+			updateSelected(lstSelectedLocations, superController.getSelectedLocations());
 		} else if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
@@ -78,6 +94,8 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			} else if (tipLocation.isExpanded()) {
 				updateLocation(superController.getLocations(txtFilterSearch.getText()));
 			}
+		} else if (e.getSource().equals(null)) {
+
 		} else {
 			System.out.println("Something else.");
 			// TODO: update selection list & map
@@ -86,12 +104,25 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		super.initialize(location, resources);
-		superController.subscribe(this);
 		
-		trvCategory.setOnMouseClicked(this);
-		trvLocation.setOnMouseClicked(this);
-		txtFilterSearch.setOnKeyReleased(this);
+		if (trvCategory != null) { // SelectionOfQueryView
+			super.initialize(location, resources);
+			superController.subscribe(this);
+		
+			trvCategory.setOnMouseClicked(this);
+			trvLocation.setOnMouseClicked(this);
+			txtFilterSearch.setOnKeyReleased(this);
+		} else { // SelectionOfQuerySelectedView
+			lstSelectedAccounts.setOnMouseClicked(this);
+			lstSelectedCategories.setOnMouseClicked(this);
+			lstSelectedLocations.setOnMouseClicked(this);
+			
+			// TODO: remove following lines
+			lstSelectedAccounts.getItems().add("KIT");
+			lstSelectedCategories.getItems().add("Musiker");
+			lstSelectedLocations.getItems().add("Deutschland");
+			lstSelectedLocations.getItems().add("Frankreich");
+		}
 	}
 
 }

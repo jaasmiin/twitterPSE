@@ -13,11 +13,11 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints fillHeight="false" vgrow="NEVER" />
-      <RowConstraints fillHeight="false" minHeight="20.0" prefHeight="30.0" vgrow="NEVER" />
-      <RowConstraints fillHeight="false" maxHeight="-Infinity" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+    <RowConstraints fillHeight="false" minHeight="100" prefHeight="100" vgrow="NEVER" />
+    <RowConstraints fillHeight="true" maxHeight="-Infinity" minHeight="5.0" prefHeight="5.0" vgrow="NEVER" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
    <children>
       <MenuBar GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
@@ -43,6 +43,9 @@
          </GridPane.margin>
       </MenuBar>
       <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="2">
+      <GridPane.margin>
+            <Insets left="5.0" />
+         </GridPane.margin>
         <tabs>
           <Tab closable="false" text="Karte">
             <content>
@@ -58,11 +61,11 @@
       </TabPane>
       <TextField fx:id="txtSearch" GridPane.columnIndex="2">
          <GridPane.margin>
-            <Insets />
+            <Insets left="5.0" />
          </GridPane.margin>
       </TextField>
-      <ListView focusTraversable="false" maxWidth="1.7976931348623157E308" prefHeight="50.0" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
-      <Label maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="Info" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
+      <fx:include source="../../../src/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
+      <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
       <fx:include source="../../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
    </children>
    <padding>
