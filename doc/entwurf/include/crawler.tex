@@ -10,7 +10,7 @@ In \cref{fig:crawler_package} ist die Grobstruktur des Crawlers als Paketdiagram
 \end{figure}
 
 \begin{description}
-\item[main] Dieses Paket beinhaltet die wesentliche Programmlogik.
+\item[main] Dieses Paket beinhaltet die wesentliche Programmlogik des Crawlers.
 \item[mysql] In diesem Paket sind Klassen, welche Methoden bereitstellen um auf eine MySQL-Datenbank zuzugreifen. Außerdem ist noch ein Paket mit Klassen zur Verwaltung von Twitter-Daten integriert.
 \item[locate] Das locate-Paket dient zur Lokalisierung von Twitter-Accounts und Retweets mittels Webdiensten.
 \item[java 1.8] Standard java 1.8 Bibliothek.
@@ -18,7 +18,7 @@ In \cref{fig:crawler_package} ist die Grobstruktur des Crawlers als Paketdiagram
 \end{description}
 
 \subsection{Klassendiagramm}
-Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die Twitter-Streaming-API Daten sammelt. Dazu ist es nötig diese Daten zu empfangen, dann zu puffern und schlussendlich in die Datenbank zu schreiben. Allerdings müssen die Daten noch gefiltert werden, da wir nur Daten von verifizierten Twitter-Accounts (und manuell hinzugefügten) speichern. Sind die Daten gefiltert, werden sie vom Crawler noch lokalisiert. Das heißt, dass jedem Account beziehungsweise jedem Retweet ein Ort zugeordnet wird. Ist dies erfolgt so werden die Daten in die Datenbank geschrieben.
+Zum Sammeln der Daten von Twitter verwenden wir einen Crawler, welcher über die Twitter-Streaming-API Daten sammelt. Dazu ist es nötig diese Daten zu empfangen, dann zu puffern und schlussendlich in die Datenbank zu schreiben. Allerdings müssen die Daten noch gefiltert werden, da wir nur Daten von verifizierten Twitter-Accounts (und manuell Hinzugefügten) speichern. Sind die Daten gefiltert, werden sie vom Crawler über einen Webdienst lokalisiert. Das heißt, dass jedem Account, beziehungsweise jedem Retweet ein Ort zugeordnet wird. Ist dies erfolgt so werden die Daten in die Datenbank geschrieben.
 \\ In \cref{fig:uml_crawler} ist der Aufbau des Crawlers anhand eines UML-Klassendiagramms mit zugehöriger Beschreibung spezifiziert.\\
 
 \begin{figure}[h!]
@@ -30,7 +30,7 @@ Zum Sammeln von Daten von Twitter verwenden wir einen Crawler, welcher über die
 \end{figure}
 
 \begin{description}
-\item[CrawlerMain] Klasse enthält die main-Methode zum Aufrufen des Programms. Sie überprüft die Eingabe für die Datenbankverbindung und startet einen Controller. Danach steht sie dem Benutzer über die Konsole zur Verfügung um das Programm zu überwachen.
+\item[CrawlerMain] Diese Klasse enthält die main-Methode zum Aufrufen des Programms. Sie überprüft die Eingabe für die Datenbankverbindung und startet einen Controller. Danach steht sie dem Benutzer zur Überwachung des Programms über die Konsole zur Verfügung.
 \item[RunnableListener] Interface, welches Runnable erweitert und zusätzlich noch eine exit-Methode fordert um Threads zu beenden.
 \item[Controller] Diese Klasse koordiniert alle Aktionen die nötig sind um Daten bei Twitter abzuholen und in die Datenbank zu schreiben. Dazu startet sie einen StreamListener, ein AccountUpdate und mehrere StatusProcessors jeweils als Thread. Außerdem kontrolliert sie den Puffer und sorgt für ein sauberes Beenden des Programms indem alle Verbindungen ordnungsgemäß geschlossen und die Threads beendet werden.
 \item[StreamListener] Stellt eine Verbindung zur Twitter-Streaming-API her und initialisiert einen MyStatusListener.
@@ -69,7 +69,7 @@ Wird der Crawler vom Benutzer beendet, so sendet der Controller jedem Objekt, we
 	\label{fig:initialize_stream}
 \end{figure}
 
-Um eine Verbindung zur Twitter-Streaming-API herzustellen, wird zuerst ein ConnectionLifeCycleListener erstellt um auf Verbindungsabbrüche zu reagieren (indem z.B. die Verbindung neu hergestellt wird). Danach wird noch ein Filter erstellt mit dem der Twitterstream durchsucht wird und ein MyStatusListener um über eingehende Daten benachrichtigt zu werden.
+Um eine Verbindung zur Twitter-Streaming-API herzustellen, wird zuerst ein ConnectionLifeCycleListener erstellt um auf Verbindungsabbrüche reagieren zu können (indem z.B. die Verbindung neu hergestellt wird). Danach wird noch ein Filter erstellt mit dem der Twitterstream durchsucht wird und ein MyStatusListener um über eingehende Daten benachrichtigt zu werden.
 Anschließend wird ein TwitterStream-Objekt aus der twitter4j-Bibliothek geholt (als Singleton). Auf diesem werden dann die Methoden zur Initialisierung aufgerufen und somit die Listener und der Filter gesetzt.\\
 Zum Schließen des Streams wird auf dem TwitterStrem-Objekt die shutdown-Methode aufgerufen.
 
@@ -85,8 +85,8 @@ Um zu verdeutlichen wie die Daten von Twitter innerhalb des Crawlers verarbeitet
 \end{figure}
 
 Zuerst werden die Daten, welche im MyStatusListener auflaufen in eine (threadsichere) Warteschlange geschoben.
-Hat dann ein StatusProcessor freie Kapazitäten so entnimmt er das erste Element der Warteschlange. Dieses Status-Objekt enthält alle relevanten Informationen um zu entscheiden ob das Objekt interessant ist oder nicht.
-Interessante Status-Objekte enthalten verifizierte Twitter-Accounts oder Retweets auf Tweets von verifizierten Accounts. Ist ein verifizierter Account in einem Status-Objekt gefunden worden, so wird der Account (hier: user) für die Datenbank freigegeben. Das heißt das DBcrawler-Objekt übergibt
-dem Locator zur Lokalisierung den Account, falls dieser noch nicht in der Datenbank steht. Dieser versucht dann anhand eines Orts-Strings den Account einem Land zuzuordnen. Ist dies geschehen so wird der Account in die Datenbank geschrieben. 
+Hat dann ein StatusProcessor freie Kapazitäten so entnimmt er das erste Element der Warteschlange. Dieses Status-Objekt enthält alle relevanten Informationen um zu entscheiden, ob das Objekt interessant ist oder nicht.
+Interessante Status-Objekte enthalten verifizierte Twitter-Accounts oder Retweets auf Tweets von verifizierten Accounts. Ist ein verifizierter Account in einem Status-Objekt gefunden, so wird der Account (hier: user) für die Datenbank freigegeben. Das heißt das DBcrawler-Objekt übergibt
+dem Locator den Account zur Lokalisierung, falls dieser noch nicht in der Datenbank steht. Dieser versucht dann anhand eines Orts-Strings den Account einem Land zuzuordnen. Ist dies geschehen so wird der Account in die Datenbank geschrieben. 
 Bei Status-Objekten die Retweets enthalten wird genau nach dem selben Schema vorgegangen, allerdings übernimmt hier das StatusProcessor-Objekt die Aufgabe den Retweet zu lokalisieren.
 Ist ein solches Status-Objekt verarbeitet, so beginnt der ganze Verarbeitungsprozess wieder von vorne.

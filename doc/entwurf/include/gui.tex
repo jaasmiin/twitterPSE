@@ -12,19 +12,19 @@ Das Paket {guiControll} beinhaltet die Steuerlogik der GUI. Die einzelnen Unterp
 
 Im folgenden ist eine kurze Beschreibung der einzelnen Unterpakete zu finden:
 \begin{description}
-		\item [selectionOfQuery] Dieses Paket enthält Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.)
+		\item [selectionOfQuery] Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.) werden in diesem Paket gekapselt.
 		\item[databaseOptions] Dieses Paket enthält die Darstellung und Anwendungslogik für Änderungen an der Datenbank, wie das Hinzufügen eines bisher nicht mitgetrackten Accounts.
 		\item[search] Dieses Paket enthält Darstellung und Anwendungslogik für eine allgemeine Suchfunktion.
 		\item [standardMap] Das Paket enthält Anwendungslogik und Darstellung für die Standardkarte, welche die Länder nach dem jeweiligen Tweet-Retweet-Aufkommen einfärbt.
 		\item [table] Paket, welches Anwendungslogik und Darstellung für die Erstellungen und Anzeige des Datenblattes zur aktuellen Anfrage enthält.
-		\item[diffMap] Paket, welches Anwendungslogik und Darstellung für die Anzeige der Darstellung des Unerschiedes im Tweet-Retweet-Verhalten zwischen zwei Zeitpunkten enthält.
+		\item[diffMap] Paket, welches Anwendungslogik und Darstellung für die Anzeige der Darstellung des Unterschiedes im Tweet-Retweet-Verhalten zwischen zwei Zeitpunkten enthält.
 		\item [timeSliderMap] Paket, welches Anwendungslogik und Darstellung für Erstellung und Anzeige des Tweet-Retweet-Aufkommens in Abhängigkeit des gewählten Zeitraums anzeigt.
 		\item [unfolding] In diesem Paket wird die Kartendarstellung berechnet. Dabei wird die unfolding-Bibliothek verwendet.
 		
 \end{description}
 
 \subsection{Klassendiagramm}
-Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nur aufgeführt und nicht beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten kapseln.
+Die Klassen werden soweit möglich nach Unterpaketen gegliedert beschrieben. Die jeweiligen 'View' Klassen werden nicht einzeln beschrieben, da sie jeweils nur die grafische Darstellung der einzelnen Komponenten kapseln.
 
 \begin{figure}[h!]
 	\centering
@@ -101,7 +101,7 @@ Alle GUI-Elemente werden dann mittels \emph{update} über geänderte Daten infor
 	\item[TWEET] Die Information Anzahl Retweets pro Land und Tweet hat sich geändert. Hier ist bspw. eine Karte, die die Anzahl der Retweets pro Land grafisch darstellt, oder eine Tabelle mit vorher genannten Daten betroffen. 
 	\item[CATEGORY] Eine lokale Liste der Kategorien wurde geändert. Die Liste, aus der der Benutzer Kategorien auswählt muss aktualisiert werden.
 	\item[LOCATION] Länder bzw. Orte wurden aktualisiert. Auch hier ist z.B. die Liste im Filter, aus dem der Benutzer ein Land auswählt betroffen.
-	\item[ACCOUNT] Accounts wurden verändert und bspw. die Account Liste im Filter muss aktualisiert werden.
+	\item[ACCOUNT] Accounts wurden verändert, es muss z.B. die Account Liste im Filter aktualisiert werden.
 \end{description}
 Bei Änderungen vom Typ \emph{TWEET} ist beispielsweise die \emph{StandardMapView} betroffen und fordert mittels \emph{getSummedData()} die neue Informationen an und aktualisiert somit die aktuell angezeigte Karte. Einfachheitshalber wird hier nur die Aktualisierung eines GUI Elements visualisiert. Die Operation \emph{udpate} wird auf jedem GUI-Element, welches sich beim \emph{GUIController} mittels \emph{subscribe} angemeldet hat, aufgerufen.
 \begin{figure}[h!]
