@@ -1,7 +1,9 @@
 \section{Aufbau}
 Die GUI ermöglicht eine Interaktion des Benutzers mit der Anwendung und stellt die über den Crawler gesammelten Daten grafisch aufbereitet dar.\\
 \subsection{Paketdiagramm}
-Das Paket {guiControll} beinhaltet die Steuerlogik der GUI. Die einzelnen Unterpakete enthalten die Komponenten der GUI. Somit wird innerhalb der Unterpakete ein starker Zusammenhalt erreicht. Gleichzeitig kann die GUI einfach um Funktionalität erweitert werden, indem weitere Komponenten hinzugefügt werden. Da die Unterpakete keine Beziehungen und Abhängigkeiten untereinander aufweisen, kann somit eine Erweiterung der Funktionalität ohne Änderung der Programmlogik der anderen Pakete erfolgen. 
+Das Paket {guiControll} beinhaltet die Steuerlogik der GUI. Die einzelnen Unterpakete enthalten  Komponenten der GUI. Somit wird innerhalb der Unterpakete ein starker Zusammenhalt erreicht. Gleichzeitig kann die GUI einfach um Funktionalität erweitert werden, indem weitere Komponenten hinzugefügt werden. Da die Unterpakete keine Beziehungen oder Abhängigkeiten untereinander aufweisen, kann somit eine Erweiterung der Funktionalität ohne Änderung der Programmlogik der anderen Pakete erfolgen. 
+
+
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
@@ -10,9 +12,9 @@ Das Paket {guiControll} beinhaltet die Steuerlogik der GUI. Die einzelnen Unterp
 \end{figure}
 
 
-Im folgenden ist eine kurze Beschreibung der einzelnen Unterpakete zu finden:
+Im Folgenden ist eine kurze Beschreibung der einzelnen Unterpakete zu finden:
 \begin{description}
-		\item [selectionOfQuery] Darstellung und Anwendungslogik für die Auswahl einer Suchanfrage (Auswahl von Kategorie, Land, usw.) werden in diesem Paket gekapselt.
+		\item [selectionOfQuery] Darstellung und Anwendungslogik  der Auswahl von Suchanfragen (Auswahl von Kategorie, Land, usw.) werden in diesem Paket gekapselt.
 		\item[databaseOptions] Dieses Paket enthält die Darstellung und Anwendungslogik für Änderungen an der Datenbank, wie das Hinzufügen eines bisher nicht mitgetrackten Accounts.
 		\item[search] Dieses Paket enthält Darstellung und Anwendungslogik für eine allgemeine Suchfunktion.
 		\item [standardMap] Das Paket enthält Anwendungslogik und Darstellung für die Standardkarte, welche die Länder nach dem jeweiligen Tweet-Retweet-Aufkommen einfärbt.
