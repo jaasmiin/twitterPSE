@@ -84,9 +84,7 @@ In dieser wird als erstes ein Singleton des \emph{GuiControllers} und eine Verbi
 Exemplarisch für diesen Vorgang wird das Element \emph{SelectionOfQuery} herausgegriffen.
 Der FXML-Loader erstellt mit \emph{SelectionOfQueryView} und \emph{SelectionOfQueryController} Anzeige und Kontrolle des GUI-Elements und ruft die initialize-Methode des \emph{SelectionOfQueryController} auf.
 Darin holt sich die Kontrolle des GUI-Elements durch die getInstance-Methode eine Referenz auf den \emph{GuiController}, meldet sich bei diesem mit der subscribe-Methode an und setzt die benötigten Event-Handler.
-Nachdem alle GUI-Elemente nach diesem Prinzip geladen wurden, wird die reloadAll-Methode des \emph{GuiController} aufgerufen. Dieser holt sich die Informationen über Länder, Kategorien und Accounts aus der Datenbank und ruft für alle GUI-Elemente nacheinander deren update-Methode auf, in der die Elemente die für sie relevante Informationen auswählen und verarbeiten.
-Danach kann die Benutzeroberfläche angezeigt werden.
-
+Die Daten aus der Datenbank werden nun wie im folgenden Kapitel geladen und dann in der GUI dargestellt.
 \begin{figure}[h!]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUISequenz_Start}
