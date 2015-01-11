@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -152,8 +153,8 @@ public class Locator {
         // format strings
         if (location != null) {
             location = location.replace(' ', '+');
-            location = location.replaceAll("#", "");
             location = location.replaceAll(",","+");
+            location = location.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]","");
 
         }
         else {
@@ -161,8 +162,8 @@ public class Locator {
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
-            timezone = location.replaceAll("#", "");
-            location = location.replaceAll(",","+");
+            timezone = timezone.replaceAll(",","+");
+            timezone = timezone.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]","");
         }
         else {
         	timezone = "";
@@ -177,6 +178,8 @@ public class Locator {
         // connection to Webservice
         try {
         	
+        	location =  URLEncoder.encode( location.trim(), "UTF-8");
+        	timezone =  URLEncoder.encode(timezone.trim(), "UTF-8");
             URL u = new URL(webServiceURL + "userlocation=" + location
                     + "&timezone=" + timezone);
             // nur zu Testzwecken
