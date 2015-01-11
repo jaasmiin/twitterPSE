@@ -48,11 +48,7 @@ public class Locator {
         this.logger = log;
         map = new HashMap<String, String>();
         readFromFile(new File("HashNeu"));
-        map.put("tokyo", "JP");
-        map.put("baghdad", "IQ");
-        map.put("irkutsk", "RU");
-        map.put("seoul", "KR");
-        map.put("budapest", "HU");
+
 
     }
 
@@ -144,7 +140,6 @@ public class Locator {
      * @return the code of the country/location on success and "0" otherwise as
      *         String
      */
-
     public String getLocation(String location, String timezone) {
         String result = "0";
 
@@ -153,14 +148,24 @@ public class Locator {
         if (location == null && timezone == null) {
             return "0";
         }
+        
+        // format strings
         if (location != null) {
             location = location.replace(' ', '+');
             location = location.replaceAll("#", "");
+            location = location.replaceAll(",","+");
 
+        }
+        else {
+        	location = "";
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
             timezone = location.replaceAll("#", "");
+            location = location.replaceAll(",","+");
+        }
+        else {
+        	timezone = "";
         }
 
         // lookup in Hashtable to avoid calling the webservice
@@ -171,18 +176,23 @@ public class Locator {
 
         // connection to Webservice
         try {
+        	
             URL u = new URL(webServiceURL + "userlocation=" + location
                     + "&timezone=" + timezone);
+            // nur zu Testzwecken
+            if (u == null) {
+            	logger.severe("URI is null  Location = "+location + "  timezone = "+ timezone);
+            }
             InputStream stream = u.openStream();
             Scanner scanner = new Scanner(stream);
             result = scanner.useDelimiter("//Z").next();
             stream.close();
             scanner.close();
         } catch (MalformedURLException e1) {
-            logger.info("URL nicht korrekt: " + e1.getMessage());
+            logger.info("URL nicht korrekt: " + e1.getMessage() + "   location= " + location+ " timezone="+ timezone);
             return "0";
         } catch (IOException e2) {
-            logger.info("Webservice meldet Fehler: " + e2.getMessage());
+            logger.info("Webservice meldet Fehler: " + e2.getMessage() +  "   location= " + location+ " timezone="+ timezone);
             return "0";
         }
         // parsing received String to XML-Doc and get content from created
@@ -195,10 +205,10 @@ public class Locator {
             Document doc = bldr.parse(insrc);
             result = doc.getFirstChild().getTextContent();
         } catch (ParserConfigurationException | IOException e1) {
-            // System.out.println("Error 1!");
+            logger.info("XML or IO error!");
             return "0";
         } catch (SAXException e2) {
-            // System.out.println("Error 2!");
+            
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
             return "0";
         }
