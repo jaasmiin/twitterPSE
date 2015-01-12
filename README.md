@@ -1,13 +1,14 @@
 ﻿#Visualizing Trends – Was verrät uns Twitter?
 PSE Projekt B im WS14/15
 
-### Verantwortlichkeiten
+### Verantwortlichkeiten Implementierung
 
 Bereich | Verantworliche/r
 ------------ | -------------
 Crawler | Holger
 Kategorisierer | Paul
-GUI | Maximilian, Philipp, Matthias, Lidia?
+GUI | Maximilian, Philipp, Matthias, Lidia
+Datenbankzugriff | Holger
 eigene Datenbank | Holger, Paul
 DMOZ | Paul
 unfoldingMaps | Lidia
