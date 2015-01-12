@@ -44,12 +44,13 @@ public class Locator {
     public HashMap<String, String> map;
     private Logger logger;
     private int countMod = 0;
-
+    private long countHashMatches = 0;
+    private long countTotalNumberRequest = 0;
     public Locator(Logger log) {
         this.logger = log;
         map = new HashMap<String, String>();
         readFromFile(new File("HashNeu"));
-
+        
 
     }
 
@@ -98,7 +99,39 @@ public class Locator {
         }
 
     }
+    private void readStatFromFile(File file) {
+    	
 
+    	  try {
+              Scanner b = new Scanner(
+                      new FileReader(file.getPath()));
+              
+              countHashMatches = b.nextLong();
+              countTotalNumberRequest = b.nextLong();
+              
+          } catch (IOException e) {
+              logger.warning("Cannot read from file to RequestStat " + e.getMessage());
+          }
+
+    }
+    private void writeStatToFile(File file) {
+    	String name = file.getPath();
+    	file.delete();
+    	file = new File(name);
+    	try {
+            Writer writer = new FileWriter(file.getPath());
+            
+                
+                writer.write(countHashMatches + ","  + countTotalNumberRequest);
+                
+                writer.append(System.getProperty("line.separator"));
+            
+            writer.close();
+        } catch (IOException e) {
+            logger.warning("Cannot write Statistic to file" + e.getMessage());
+        }
+    	
+    }
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -142,8 +175,12 @@ public class Locator {
      *         String
      */
     public String getLocation(String location, String timezone) {
+    	// **** just for analyzing:
+    	countTotalNumberRequest++;
+    	//*****
+    	
         String result = "0";
-
+        
         // format given parameter
 
         if (location == null && timezone == null) {
@@ -170,8 +207,14 @@ public class Locator {
         }
 
         // lookup in Hashtable to avoid calling the webservice
+        
+        
         if (location != null && map.containsKey(location.toLowerCase())) {
-        	logger.info("Hahtable match:  " + location.toLowerCase());
+        	// **** just for analyzing:
+        	countHashMatches++;
+        	//*****
+        	logger.info("Hahtable match:  " + location.toLowerCase() + "  HashMatches: "+ countHashMatches +
+        			"  total number of request: "+ countTotalNumberRequest);
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 
@@ -229,6 +272,7 @@ public class Locator {
         map.put(location.toLowerCase(), result);
         if (countMod >= 5) {
             writeToFile(new File("HashNeu"));
+            
             countMod = 0;
         }
         return result;
