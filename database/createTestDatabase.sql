@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS tweets (
 /* table for DMOZ data */
 CREATE TABLE IF NOT EXISTS page (
 	Id INT UNSIGNED AUTO_INCREMENT NOT NULL PRIMARY KEY,
-	CategoryId UNSIGNED INT NOT NULL,
+	CategoryId INT UNSIGNED NOT NULL,
 	Page VARCHAR(200) NOT NULL
 );
 
@@ -129,3 +129,6 @@ INSERT INTO `day`(`Day`) VALUES ("2000-01-01");
 INSERT INTO `day`(`Day`) VALUES ("2000-01-02");
 INSERT INTO `day`(`Day`) VALUES ("2000-01-03");
 INSERT INTO `day`(`Day`) VALUES ("2000-01-04");
+
+INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (2,1);
+INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (3,2);
