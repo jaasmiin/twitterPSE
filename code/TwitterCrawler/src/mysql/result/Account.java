@@ -1,5 +1,8 @@
 package mysql.result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * class to transmit and store the results from the database
  * 
@@ -15,8 +18,8 @@ public class Account extends Result {
     private int locationId;
     private boolean verified;
     private int[] categoryIds;
-    private Tweets[] tweets;
-    private Retweets[] retweets;
+    private List<Tweets> tweets;
+    private List<Retweets> retweets;
 
     /**
      * create a new object to store a account-data
@@ -37,13 +40,13 @@ public class Account extends Result {
      * @param categoryIds
      *            the category-id's of the account as int[]
      * @param tweets
-     *            the tweets of the account as ResultTweet[]
+     *            the tweets of the account as List<Tweets>
      * @param retweets
-     *            the retweets of the account as ResultRetweet[]
+     *            the retweets of the account as List<Retweets>
      */
     public Account(int id, long twitterId, String name, boolean verified,
             String url, int follower, int locationId, int[] categoryIds,
-            Tweets[] tweets, Retweets[] retweets) {
+            List<Tweets> tweets, List<Retweets> retweets) {
         super(id);
         this.verified = verified;
         this.twitterId = twitterId;
@@ -77,7 +80,7 @@ public class Account extends Result {
     public Account(int id, long twitterId, String name, String url,
             int follower, int locationId, int[] categories) {
         this(id, twitterId, name, false, url, follower, locationId, categories,
-                new Tweets[0], new Retweets[0]);
+                new ArrayList<Tweets>(), new ArrayList<Retweets>());
     }
 
     /**
@@ -100,7 +103,39 @@ public class Account extends Result {
     public Account(int id, long twitterId, String name, boolean verified,
             String url, int follower, int locationId) {
         this(id, twitterId, name, verified, url, follower, locationId,
-                new int[0], new Tweets[0], new Retweets[0]);
+                new int[0], new ArrayList<Tweets>(), new ArrayList<Retweets>());
+    }
+
+    /**
+     * create a new object to store a account-data
+     * 
+     * @param id
+     *            the id of the account in the database as int
+     * @param name
+     *            the name of the account as String
+     * @param tweets
+     *            a sum of tweets of the account as Tweets
+     */
+    public Account(int id, String name, Tweets tweets) {
+        this(id, 0, name, false, null, 0, 0, new int[0],
+                new ArrayList<Tweets>(), new ArrayList<Retweets>());
+        addTweet(tweets);
+    }
+
+    /**
+     * create a new object to store a account-data
+     * 
+     * @param id
+     *            the id of the account in the database as int
+     * @param name
+     *            the name of the account as String
+     * @param tweets
+     *            a sum of tweets of the account as Tweets
+     */
+    public Account(int id, String name, Retweets retweets) {
+        this(id, 0, name, false, null, 0, 0, new int[0],
+                new ArrayList<Tweets>(), new ArrayList<Retweets>());
+        addRetweet(retweets);
     }
 
     /**
@@ -172,18 +207,18 @@ public class Account extends Result {
     /**
      * returns the tweets of the account
      * 
-     * @return the tweets of the account as ResultTweet[]
+     * @return the tweets of the account as List<Tweets>
      */
-    public Tweets[] getTweets() {
+    public List<Tweets> getTweets() {
         return tweets;
     }
 
     /**
      * returns the retweets of the account
      * 
-     * @return the retweets of the account as ResultRetweet[]
+     * @return the retweets of the account as List<Retweet>
      */
-    public Retweets[] getRetweets() {
+    public List<Retweets> getRetweets() {
         return retweets;
     }
 
@@ -194,6 +229,49 @@ public class Account extends Result {
      */
     public boolean isVerified() {
         return verified;
+    }
+
+    /**
+     * set the retweets array from this account
+     * 
+     * @param retweets
+     *            the new array with the actual retweets as Retweets[]
+     */
+    public void setRetweets(List<Retweets> retweets) {
+        this.retweets = retweets;
+    }
+
+    /**
+     * adds a Tweets-Object to the tweets-list of this account
+     * 
+     * @param tweet
+     *            the sum of tweets to add as Tweets
+     */
+    public void addTweet(Tweets tweet) {
+        tweets.add(tweet);
+    }
+
+    /**
+     * adds a Retweets-Object to the retweets-list of this account
+     * 
+     * @param retweet
+     *            the sum of retweets to add as Retweets
+     */
+    public void addRetweet(Retweets retweet) {
+        retweets.add(retweet);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Account) {
+            Account a = (Account) obj;
+            return getId() == a.getId();
+        } else if (obj instanceof Integer) {
+            int a = (int) obj;
+            return getId() == a;
+
+        }
+        return false;
     }
 
 }

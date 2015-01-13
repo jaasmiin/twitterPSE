@@ -1,5 +1,8 @@
 package mysql;
 
+import java.sql.SQLException;
+import java.util.Date;
+
 import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
@@ -30,6 +33,13 @@ public interface DBIgui {
     public Location[] getLocations();
 
     /**
+     * get all dates from the database
+     * 
+     * @return all dates from the database as Date[]
+     */
+    public Date[] getDates();
+
+    /**
      * Get id of account with accountName.
      * 
      * @param accountName
@@ -46,10 +56,13 @@ public interface DBIgui {
      *            the ids of the selected categorys as int[]
      * @param locationIDs
      *            the ids of the selected locations as int[]
+     * @param accountIDs
+     *            the ids of the additional accounts as int[]
      * @return all accounts that match a category- and a location-ID, with the
      *         associated total-number of Tweets and Retweets as Account[]
      */
-    public Account[] getAllData(int[] categoryIDs, int[] locationIDs);
+    public Account[] getAllData(int[] categoryIDs, int[] locationIDs,
+            int[] accountIDs) throws IllegalArgumentException, SQLException;
 
     /**
      * returns the total number of tweets and retweets from all the accounts
@@ -59,11 +72,14 @@ public interface DBIgui {
      *            the ids of the selected categorys as int[]
      * @param locationIDs
      *            the ids of the selected locations as int[]
+     * @param accountIDs
+     *            the ids of the additional accounts as int[]
      * @return the total number of tweets and retweets from all the accounts
      *         that match a category- and a location-ID per location as
      *         TweetsAndRetweets
      */
-    public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs);
+    public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs,
+            int[] accountIDs) throws IllegalArgumentException, SQLException;
 
     /**
      * returns all accounts that match a category- and a location-ID, with the
@@ -73,10 +89,13 @@ public interface DBIgui {
      *            the ids of the selected categorys as int[]
      * @param locationIDs
      *            the ids of the selected locations as int[]
+     * @param accountIDs
+     *            the ids of the additional accounts as int[]
      * @return all accounts that match a category- and a location-ID, with the
      *         associated number of Tweets and Retweets per Day as Account[]
      */
-    public Account[] getAllDataWithDates(int[] categoryIDs, int[] locationIDs);
+    public Account[] getAllDataWithDates(int[] categoryIDs, int[] locationIDs,
+            int[] accountIDs) throws IllegalArgumentException, SQLException;
 
     /**
      * returns the total number of tweets and retweets from all the accounts
@@ -86,12 +105,16 @@ public interface DBIgui {
      *            the ids of the selected categorys as int[]
      * @param locationIDs
      *            the ids of the selected locations as int[]
+     * @param accountIDs
+     *            the ids of the additional accounts as int[]
      * @return the total number of tweets and retweets from all the accounts
      *         that match a category- and a location-ID per location per Day as
      *         TweetsAndRetweets
+     * @throws IllegalArgumentException
      */
     public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
-            int[] locationIDs);
+            int[] locationIDs, int[] accountIDs)
+            throws IllegalArgumentException, SQLException;
 
     /**
      * Return list of accounts which name contains search

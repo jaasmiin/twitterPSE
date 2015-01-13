@@ -10,7 +10,7 @@ import java.util.Date;
  */
 public class Retweets extends Tweets {
 
-    private Location location;
+    private int locationId;
 
     /**
      * store the retweets of a day
@@ -20,20 +20,20 @@ public class Retweets extends Tweets {
      * @param counter
      *            the number of localized retweets as int
      * @param location
-     *            the location of this retweets as ResultLocation
+     *            the id of the location of this retweets as int
      */
-    public Retweets(Date date, int counter, Location location) {
+    public Retweets(Date date, int counter, int locationId) {
         super(date, counter);
-        this.location = location;
+        this.locationId = locationId;
     }
 
     /**
-     * returns the location of this retweets
+     * returns the locationId of this retweets
      * 
-     * @return the location of this retweets as ResultLocation
+     * @return the locationId of this retweets as int
      */
-    public Location getLocation() {
-        return location;
+    public int getLocation() {
+        return locationId;
     }
 
 }

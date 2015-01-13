@@ -140,8 +140,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt.setInt(6, follower);
             ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return ret;
@@ -158,8 +165,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt.setLong(2, id);
             ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return ret;
@@ -179,8 +193,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt.setString(2, dateFormat.format(date));
             ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return ret;
@@ -212,8 +233,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt.setString(3, dateFormat.format(date));
             result2 = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return new boolean[] {result1, result2 };
@@ -258,8 +286,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 locationHash.add(code);
             }
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return ret;
@@ -276,8 +311,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             stmt.setString(1, dateFormat.format(date));
             ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
-            logger.warning("SQL-Status: " + e.getSQLState() + "\n Message: "
-                    + e.getMessage() + "\n SQL-Query: " + stmt + "\n");
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return ret;
@@ -288,13 +330,14 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
         String sqlCommand = "SELECT TwitterAccountId FROM accounts WHERE Verified = 0;";
 
+        Statement stmt = null;
         ResultSet res = null;
         try {
-            Statement s = c.createStatement();
-            res = s.executeQuery(sqlCommand);
+            stmt = c.createStatement();
+            res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
-            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
-            return null;
+            sqlExceptionLog(e, stmt);
+            return new long[0];
         }
 
         Stack<Long> st = new Stack<Long>();
@@ -304,8 +347,24 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             }
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
-            return null;
+            return new long[0];
+        } finally {
+            if (res != null) {
+                try {
+                    res.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
+
         long[] ret = new long[st.size()];
         for (int i = 0; i < st.size(); i++) {
             ret[i] = st.pop();
@@ -331,13 +390,13 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     public HashSet<String> getCountryCodes() {
 
         String sqlCommand = "SELECT Code FROM location;";
-
+        Statement stmt = null;
         ResultSet res = null;
         try {
-            Statement s = c.createStatement();
-            res = s.executeQuery(sqlCommand);
+            stmt = c.createStatement();
+            res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
-            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+            sqlExceptionLog(e, stmt);
             return new HashSet<String>();
         }
 
@@ -349,6 +408,21 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
             return new HashSet<String>();
+        } finally {
+            if (res != null) {
+                try {
+                    res.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         HashSet<String> ret = new HashSet<String>(st.size());
@@ -360,14 +434,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
     @Override
     public HashSet<Long> getAccounts() {
-        String sqlCommand = "SELECT TwitterAccountId FROM accounts;";
 
+        String sqlCommand = "SELECT TwitterAccountId FROM accounts;";
+        Statement stmt = null;
         ResultSet res = null;
         try {
-            Statement s = c.createStatement();
-            res = s.executeQuery(sqlCommand);
+            stmt = c.createStatement();
+            res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
-            logger.warning("Couldn't execute sql query: \n" + e.getMessage());
+            sqlExceptionLog(e, stmt);
             return new HashSet<Long>();
         }
 
@@ -379,6 +454,21 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result: \n" + e.getMessage());
             return new HashSet<Long>();
+        } finally {
+            if (res != null) {
+                try {
+                    res.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         HashSet<Long> ret = new HashSet<Long>(st.size());
@@ -386,6 +476,17 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             ret.add(l);
         }
         return ret;
+    }
+
+    private void sqlExceptionLog(SQLException e) {
+        logger.warning("SQL-Exception: SQL-Status: " + e.getSQLState()
+                + "\n Message: " + e.getMessage());
+    }
+
+    private void sqlExceptionLog(SQLException e, Statement statement) {
+        logger.warning("Couldn't execute sql query! SQL-Status: "
+                + e.getSQLState() + "\n Message: " + e.getMessage()
+                + "\n SQL-Query: " + statement + "\n");
     }
 
 }

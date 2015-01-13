@@ -49,11 +49,12 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         String sqlCommand = "SELECT Id, URL FROM accounts WHERE Categorized = 0 LIMIT 100;";
 
         ResultSet result = null;
+        Statement stmt = null;
         try {
-            Statement s = c.createStatement();
-            result = s.executeQuery(sqlCommand);
+            stmt = c.createStatement();
+            result = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
-            logger.warning("Couldn't execute sql query\n" + e.getMessage());
+            sqlExceptionLog(e, stmt);
             return new ArrayList<Account>();
         }
 
@@ -66,6 +67,21 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         } catch (SQLException e) {
             logger.warning("Couldn't read sql result\n" + e.getMessage());
             ret.remove(ret.size() - 1);
+        } finally {
+            if (result != null) {
+                try {
+                    result.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
         }
 
         return ret;
@@ -112,9 +128,15 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
                     result1 = stmt.executeUpdate() >= 0 ? true : false;
                 } catch (SQLException e) {
-                    logger.warning("SQL-Status: " + e.getSQLState()
-                            + "\n Message: " + e.getMessage()
-                            + "\n SQL-Query: " + stmt + "\n");
+                    sqlExceptionLog(e, stmt);
+                } finally {
+                    if (stmt != null) {
+                        try {
+                            stmt.close();
+                        } catch (SQLException e) {
+                            sqlExceptionLog(e);
+                        }
+                    }
                 }
 
                 // on success
@@ -135,9 +157,15 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                 stmt.setString(2, category.toString());
                 result2 = stmt.executeUpdate() >= 0 ? true : false;
             } catch (SQLException e) {
-                logger.warning("SQL-Status: " + e.getSQLState()
-                        + "\n Message: " + e.getMessage() + "\n SQL-Query: "
-                        + stmt + "\n");
+                sqlExceptionLog(e, stmt);
+            } finally {
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        sqlExceptionLog(e);
+                    }
+                }
             }
         }
 
@@ -147,15 +175,77 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
         boolean result3 = false;
         if (result2) {
+            Statement stmt = null;
             try {
-                Statement s = c.createStatement();
-                result3 = s.executeUpdate(sqlCommand) >= 0 ? true : false;
+                stmt = c.createStatement();
+                result3 = stmt.executeUpdate(sqlCommand) >= 0 ? true : false;
             } catch (SQLException e) {
-                logger.warning("Couldn't execute sql query: \n"
-                        + e.getMessage());
+                sqlExceptionLog(e, stmt);
+            } finally {
+                if (stmt != null) {
+                    try {
+                        stmt.close();
+                    } catch (SQLException e) {
+                        sqlExceptionLog(e);
+                    }
+                }
             }
         }
 
         return result1 && result2 && result3;
     }
+
+    @Override
+    public List<Integer> getCategoriesForAccount(String url) {
+
+        ResultSet result = null;
+        PreparedStatement stmt = null;
+        try {
+            stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? LIMIT 100;");
+            stmt.setString(1, url);
+            result = stmt.executeQuery();
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+            return new ArrayList<Integer>();
+        }
+
+        List<Integer> ret = new ArrayList<Integer>();
+        try {
+            while (result.next()) {
+                ret.add(result.getInt(1));
+            }
+        } catch (SQLException e) {
+            logger.warning("Couldn't read sql result\n" + e.getMessage());
+            ret.remove(ret.size() - 1);
+        } finally {
+            if (result != null) {
+                try {
+                    result.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    private void sqlExceptionLog(SQLException e) {
+        logger.warning("SQL-Exception: SQL-Status: " + e.getSQLState()
+                + "\n Message: " + e.getMessage());
+    }
+
+    private void sqlExceptionLog(SQLException e, Statement statement) {
+        logger.warning("Couldn't execute sql query! SQL-Status: "
+                + e.getSQLState() + "\n Message: " + e.getMessage()
+                + "\n SQL-Query: " + statement + "\n");
+    }
+
 }

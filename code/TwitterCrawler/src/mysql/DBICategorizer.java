@@ -23,6 +23,16 @@ public interface DBIcategorizer {
     public List<Account> getNonCategorized();
 
     /**
+     * returns the categoryIds where an url match was successful
+     * 
+     * @param url
+     *            the url from twitter of the website of this account as String
+     * @return a list of categoryIds where an url match was successful as
+     *         List<Integer>
+     */
+    public List<Integer> getCategoriesForAccount(String url);
+
+    /**
      * inserts first the category in the database and then an entry to connect
      * the account with the category and sets categorized on true
      * 
