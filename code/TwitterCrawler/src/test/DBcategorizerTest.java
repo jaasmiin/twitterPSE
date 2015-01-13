@@ -74,7 +74,7 @@ public class DBcategorizerTest {
             DBtest t = new DBtest(access, log);
             t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
             t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            // t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+             t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             e.printStackTrace();
@@ -100,7 +100,7 @@ public class DBcategorizerTest {
             DBtest t = new DBtest(access, log);
             t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
             t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            // t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             e.printStackTrace();
@@ -123,7 +123,7 @@ public class DBcategorizerTest {
             DBtest t = new DBtest(access, log);
             t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
             t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            // t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
             t.sql("DELETE FROM category WHERE Name = \"parent\";");
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
@@ -150,7 +150,7 @@ public class DBcategorizerTest {
             DBtest t = new DBtest(access, log);
             t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
             t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            // t.sql("DELETE FROM category WHERE Name = \"testCP\";");
+            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
             t.sql("DELETE FROM category WHERE Name = \"parent\";");
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {

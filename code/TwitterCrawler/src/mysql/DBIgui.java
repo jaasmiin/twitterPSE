@@ -1,7 +1,6 @@
 package mysql;
 
 import java.sql.SQLException;
-import java.util.Date;
 
 import twitter4j.User;
 import mysql.result.Account;
@@ -32,12 +31,12 @@ public interface DBIgui {
      */
     public Location[] getLocations();
 
-    /**
-     * get all dates from the database
-     * 
-     * @return all dates from the database as Date[]
-     */
-    public Date[] getDates();
+    // /**
+    // * get all dates from the database
+    // *
+    // * @return all dates from the database as Date[]
+    // */
+    // public Date[] getDates();
 
     /**
      * Get id of account with accountName.

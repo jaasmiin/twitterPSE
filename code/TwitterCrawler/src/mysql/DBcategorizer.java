@@ -65,7 +65,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                         .getString("URL")));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't read sql result\n" + e.getMessage());
+            sqlExceptionResultLog(e);
             ret.remove(ret.size() - 1);
         } finally {
             if (result != null) {
@@ -215,7 +215,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                 ret.add(result.getInt(1));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't read sql result\n" + e.getMessage());
+            sqlExceptionResultLog(e);
             ret.remove(ret.size() - 1);
         } finally {
             if (result != null) {
@@ -236,16 +236,4 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
         return ret;
     }
-
-    private void sqlExceptionLog(SQLException e) {
-        logger.warning("SQL-Exception: SQL-Status: " + e.getSQLState()
-                + "\n Message: " + e.getMessage());
-    }
-
-    private void sqlExceptionLog(SQLException e, Statement statement) {
-        logger.warning("Couldn't execute sql query! SQL-Status: "
-                + e.getSQLState() + "\n Message: " + e.getMessage()
-                + "\n SQL-Query: " + statement + "\n");
-    }
-
 }

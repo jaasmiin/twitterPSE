@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.util.logging.Logger;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -76,4 +77,40 @@ public abstract class DBConnection {
                     + e.getMessage() + "\n");
         }
     }
+
+    /**
+     * logs an SQLException
+     * 
+     * @param e
+     *            the SQLException to log
+     */
+    protected void sqlExceptionLog(SQLException e) {
+        logger.warning("SQL-Exception: SQL-Status: " + e.getSQLState()
+                + "\n Message: " + e.getMessage());
+    }
+
+    /**
+     * logs an SQLException that has been thrown by reading the resultset
+     * 
+     * @param e
+     *            the SQLException to log
+     */
+    protected void sqlExceptionResultLog(SQLException e) {
+        logger.warning("Couldn't read sql result: \n" + e.getMessage());
+    }
+
+    /**
+     * logs an SQLException with the responsible statement
+     * 
+     * @param e
+     *            the SQLException to log
+     * @param statement
+     *            the statement that causes the exception as Statement
+     */
+    protected void sqlExceptionLog(SQLException e, Statement statement) {
+        logger.warning("Couldn't execute sql query! SQL-Status: "
+                + e.getSQLState() + "\n Message: " + e.getMessage()
+                + "\n SQL-Query: " + statement.toString() + "\n");
+    }
+
 }

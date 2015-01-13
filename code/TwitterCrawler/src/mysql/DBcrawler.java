@@ -346,7 +346,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 st.push(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            sqlExceptionResultLog(e);
             return new long[0];
         } finally {
             if (res != null) {
@@ -406,7 +406,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 st.push(res.getString(1));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            sqlExceptionResultLog(e);
             return new HashSet<String>();
         } finally {
             if (res != null) {
@@ -452,7 +452,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 st.push(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
-            logger.warning("Couldn't read sql result: \n" + e.getMessage());
+            sqlExceptionResultLog(e);
             return new HashSet<Long>();
         } finally {
             if (res != null) {
@@ -476,17 +476,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             ret.add(l);
         }
         return ret;
-    }
-
-    private void sqlExceptionLog(SQLException e) {
-        logger.warning("SQL-Exception: SQL-Status: " + e.getSQLState()
-                + "\n Message: " + e.getMessage());
-    }
-
-    private void sqlExceptionLog(SQLException e, Statement statement) {
-        logger.warning("Couldn't execute sql query! SQL-Status: "
-                + e.getSQLState() + "\n Message: " + e.getMessage()
-                + "\n SQL-Query: " + statement + "\n");
     }
 
 }

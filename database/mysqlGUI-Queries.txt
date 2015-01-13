@@ -15,27 +15,27 @@ INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN acco
 /* über alle Accounts aufsummiert */
 
 /* liefert Summe der Tweets */
-SELECT SUM(Counter) FROM final JOIN tweets ON final.val=tweets.AccountId;
+SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;
 
 /* liefert Summe der Retweets pro Land */
-SELECT SUM(Counter), LocationId FROM final JOIN retweets ON final.val=retweets.AccountId GROUP BY LocationId;
+SELECT SUM(Counter), LocationId FROM retweets JOIN final ON retweets.AccountId=final.val GROUP BY LocationId;
 
 /* liefert Summe der Tweets pro Datum */
-SELECT SUM(Counter), Day FROM final JOIN tweets ON final.val=tweets.AccountId JOIN day ON tweets.DayId=Day.Id GROUP BY DayId;
+SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=Day.Id GROUP BY DayId;
 
 /* liefert Summe der Retweets pro Land pro Datum */
-SELECT SUM(Counter), LocationId, Day FROM final JOIN retweets ON final.val=retweets.AccountId JOIN day ON retweets.DayId=Day.Id GROUP BY LocationId, DayId;
+SELECT SUM(Counter), LocationId, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id GROUP BY LocationId, DayId;
 
 /* Daten pro Account */
 
 /* liefert Summe der Tweets pro Accounts */
-SELECT SUM(Counter),AccountName, tweets.AccountId FROM final JOIN tweets ON final.val=tweets.AccountId JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;
+SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;
 
 /* liefert Summe der Retweets pro Land pro Account*/
-SELECT SUM(Counter),retweets.LocationId, AccountId FROM final JOIN retweets ON final.val=retweets.AccountId GROUP BY LocationId, AccountId;
+SELECT SUM(Counter),retweets.LocationId, AccountId FROM retweets JOIN final ON retweets.AccountId=final.val GROUP BY LocationId, AccountId;
 
 /* liefert Summe der Tweets pro Datum pro Account */
-SELECT Counter, AccountName, tweets.AccountId, Day FROM final JOIN tweets ON final.val=tweets.AccountId JOIN day ON tweets.DayId=Day.Id JOIN accounts ON final.val=accounts.Id;
+SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=Day.Id JOIN accounts ON final.val=accounts.Id;
 
 /* liefert Summe der Retweets pro Land pro Datum pro Account */
-SELECT Counter, retweets.LocationId, AccountId, Day FROM final JOIN retweets ON final.val=retweets.AccountId JOIN day ON retweets.DayId=Day.Id;
+SELECT Counter, retweets.LocationId, AccountId, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id;

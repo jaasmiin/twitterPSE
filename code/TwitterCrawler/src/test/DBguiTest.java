@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -67,12 +66,6 @@ public class DBguiTest {
     }
 
     @Test
-    public void testGetDates() {
-        Date[] d = dbg.getDates();
-        assertEquals(4, d.length);
-    }
-
-    @Test
     public void test1GetAccountId() {
         int result = dbg.getAccountId("Irgendwas");
         assertEquals(-1, result);
@@ -124,17 +117,18 @@ public class DBguiTest {
             e.printStackTrace();
         }
     }
-    
+
     @Test
     public void test2GetSumOfData() {
         TweetsAndRetweets test = new TweetsAndRetweets();
         try {
-            test = dbg.getSumOfData(new int[] {1, 2 }, new int[] {1 },
-                    new int[0]);
+            test = dbg.getSumOfData(new int[] {1 }, new int[] {1 }, new int[0]);
         } catch (IllegalArgumentException | SQLException e) {
             e.printStackTrace();
         }
         assertEquals(1, test.tweets.size());
+        assertEquals(6, test.tweets.get(0).getCounter());
+        assertNull(test.tweets.get(0).getDate());
         assertEquals(3, test.retweets.size());
     }
 
@@ -142,13 +136,17 @@ public class DBguiTest {
     public void test2GetSumOfDataWithDates() {
         TweetsAndRetweets test = new TweetsAndRetweets();
         try {
-            test = dbg.getSumOfDataWithDates(new int[] {1, 2 }, new int[] {1 },
+            test = dbg.getSumOfDataWithDates(new int[] {1 }, new int[] {1 },
                     new int[0]);
         } catch (IllegalArgumentException | SQLException e) {
             e.printStackTrace();
         }
         assertEquals(3, test.tweets.size());
+        assertEquals(3, test.tweets.get(0).getCounter());
+        assertEquals(2, test.tweets.get(1).getCounter());
+        assertEquals(1, test.tweets.get(2).getCounter());
         assertEquals(4, test.retweets.size());
+        assertEquals(10, test.retweets.get(3).getCounter());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -158,6 +156,56 @@ public class DBguiTest {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test1GetAllDataWithDates() {
+        try {
+            dbg.getAllDataWithDates(new int[0], new int[0], new int[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test2GetAllDataWithDates() {
+        Account[] res = null;
+        try {
+            res = dbg.getAllDataWithDates(new int[] {1 }, new int[] {1 },
+                    new int[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        assertEquals(2, res.length);
+        assertEquals(2, res[0].getTweets().size());
+        assertEquals(1, res[1].getTweets().size());
+        assertEquals(3, res[0].getRetweets().size());
+        assertEquals(2, res[1].getRetweets().size());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test1GetAllData() {
+        try {
+            dbg.getAllData(new int[0], new int[0], new int[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test2GetAllData() {
+        Account[] res = null;
+        try {
+            res = dbg.getAllData(new int[] {1 }, new int[] {1 }, new int[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        assertEquals(2, res.length);
+        assertEquals(1, res[0].getTweets().size());
+        assertEquals(1, res[1].getTweets().size());
+        System.out.println(res[0].getRetweets().get(0).getLocation());
+        assertEquals(2, res[0].getRetweets().size());
+        assertEquals(2, res[1].getRetweets().size());
     }
 
     @After
@@ -184,6 +232,7 @@ public class DBguiTest {
             dbt.connect();
             dbt.sql("INSERT INTO tweets (AccountId,Counter,DayId) VALUES (3,3,1), (3,2,2), (2,1,3);");
             dbt.sql("INSERT INTO retweets (AccountId,LocationId,Counter,DayId) VALUES (3,1,4,1), (3,1,3,2), (3,3,6,2), (2,3,4,2), (2,2,8,1);");
+            dbt.sql("INSERT INTO accountCategory (AccountId, CategoryId) VALUES (3,1);");
             dbt.disconnect();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -195,6 +244,7 @@ public class DBguiTest {
             dbt.connect();
             dbt.sql("DELETE FROM tweets WHERE 1;");
             dbt.sql("DELETE FROM retweets WHERE 1;");
+            dbt.sql("DELETE FROM accountCategory WHERE AccountId=3 AND CategoryId=1;");
             dbt.disconnect();
         } catch (SQLException e) {
             e.printStackTrace();
