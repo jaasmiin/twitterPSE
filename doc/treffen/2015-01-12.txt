@@ -1,0 +1,15 @@
+﻿Treffen am 12.01.2015
+=====================
+
+
+Fragen:
+-------
+
+[ ] Welche Tests in Implementierungsphase und Testphase?
+[ ] Array und Listen: Datentyp Änderungen?
+
+
+ToDo:
+
+[ ] Code Formatierung @Holger
+[ ] Termin für Präsentation Implementierung
