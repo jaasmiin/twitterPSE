@@ -86,17 +86,6 @@ public class StreamListener implements RunnableListener {
 
     }
 
-    // /**
-    // * refresh connection by disconnecting from the twitterstream and then
-    // * reconnecting to the twitterstream
-    // */
-    // public void refresh() {
-    // exit();
-    // twitterStream.cleanUp();
-    // twitterStream.clearListeners();
-    // run();
-    // }
-
     @Override
     public String toString() {
         return listener.toString();
@@ -104,10 +93,7 @@ public class StreamListener implements RunnableListener {
 
     @Override
     public void exit() {
+        twitterStream.cleanUp();
         twitterStream.shutdown();
-        try {
-            Thread.sleep(250);
-        } catch (InterruptedException e) {
-        }
     }
 }

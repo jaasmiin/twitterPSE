@@ -57,6 +57,8 @@ public class MyStatusListener implements StatusListener {
 
         if (arg0.getPercentFull() >= 50) {
             // TODO reconnect
+        }else{
+            connected = true;
         }
     }
 

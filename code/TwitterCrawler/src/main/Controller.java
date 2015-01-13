@@ -27,9 +27,9 @@ import twitter4j.Status;
 public class Controller extends Thread {
 
     // max. size of the buffer between streamListener and statusProcessors
-    private final static int MAX_SIZE = 50000;
+    private final static int MAX_SIZE = 100000;
     // interval to wait in seconds
-    private final static int INTERVAL = 20;
+    private final static int INTERVAL = 30;
 
     private final int threadNum;
     private final int runtime;
@@ -274,15 +274,6 @@ public class Controller extends Thread {
             if (count >= 86400) {// one day = 86400 seconds
                 count = 0;
 
-                // refresh connection
-                // logger.info("Try to refresh the connection!");
-                // streamListener.exit();
-                // streamListener = new StreamListener(statusQueue, logger);
-                // thrdStreamListener = new Thread(streamListener);
-                // thrdStreamListener.start();
-                // logger.info("StreamListener refreshed");
-                // streamListener.refresh();
-
                 // add a new date to the database
                 try {
                     dbc.connect();
@@ -301,16 +292,10 @@ public class Controller extends Thread {
 
             if (statusQueue.size() > MAX_SIZE) {
 
-                // logger.info("StatusQueue has been cleared at "
-                // + statusQueue.size() + " Elements");
-
                 for (int i = 0; i < MAX_SIZE / 2; i++) {
                     statusQueue.poll();
                 }
             }
-
-            // call garbage-collector
-            // System.gc();
 
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
