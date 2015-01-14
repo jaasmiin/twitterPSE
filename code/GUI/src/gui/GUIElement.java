@@ -4,7 +4,6 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import javafx.fxml.Initializable;
-import gui.base.GUIController;
 
 public abstract class GUIElement implements Initializable {
 	protected GUIController superController;
