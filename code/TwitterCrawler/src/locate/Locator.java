@@ -292,5 +292,24 @@ public class Locator {
         }
         return "0";
     }
+   
+    /**
+     * Returns the statistics for this instance of the 'Locator'
+     * @return Content of the single values in the result array:
+     * 0: number of request
+     * 1: number of successfully located requests (a countrycode could be returned)
+     * 2: number of requests located via place-attribute
+     * 3: number of requests located via geotag
+     * 4: number of requests located via location and timezone (webservice+hashmap, actually redundant information :))
+     * 5: number of requests located via webservice 
+     * 6: number of requests located via hashmap
+     * 7: number of requests containing place-attribute
+     * 8: number of requests containing geotag
+     * 9: number of request containing location information
+     */
+    public int[] getStatistic() {
+    	
+    	return null;
+    }
 
 }
