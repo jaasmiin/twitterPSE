@@ -296,7 +296,7 @@ public class Locator {
     /**
      * Returns the statistics for this instance of the 'Locator'
      * @return Content of the single values in the result array:
-     * 0: number of request
+     * 0: number of requests
      * 1: number of successfully located requests (a countrycode could be returned)
      * 2: number of requests located via place-attribute
      * 3: number of requests located via geotag
