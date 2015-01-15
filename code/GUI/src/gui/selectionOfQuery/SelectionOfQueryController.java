@@ -104,7 +104,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		
 		if (trvCategory != null) { // SelectionOfQueryView
 			super.initialize(location, resources);
 			superController.subscribe(this);
