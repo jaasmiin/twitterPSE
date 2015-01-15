@@ -3,6 +3,8 @@ package mysql;
 import java.sql.Connection;
 import java.util.logging.Logger;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
@@ -12,7 +14,7 @@ import java.text.SimpleDateFormat;
  * class to connect to a MySQL database
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public abstract class DBConnection {
@@ -75,6 +77,61 @@ public abstract class DBConnection {
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
+        }
+    }
+
+    /**
+     * executes the update method of a PreparedStatement
+     * 
+     * @param stmt
+     *            the statement to execute as update as PreparedStatement
+     * @return true if the update on the database was successfully, else false
+     */
+    protected boolean executeStatementUpdate(PreparedStatement stmt) {
+
+        if (stmt == null) {
+            return false;
+        }
+
+        boolean ret = false;
+        try {
+            ret = stmt.executeUpdate() >= 0 ? true : false;
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (SQLException e) {
+                    sqlExceptionLog(e);
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * closes a Statement and it's result
+     * 
+     * @param stmt
+     *            the statement to close as Statement
+     * @param result
+     *            the result to close as ResultSet
+     */
+    protected void closeResultAndStatement(Statement stmt, ResultSet result) {
+        if (result != null) {
+            try {
+                result.close();
+            } catch (SQLException e) {
+                sqlExceptionLog(e);
+            }
+        }
+        if (stmt != null) {
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                sqlExceptionLog(e);
+            }
         }
     }
 

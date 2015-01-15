@@ -11,6 +11,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 import locate.Locator;
+import twitter4j.GeoLocation;
 import twitter4j.Place;
 import twitter4j.User;
 
@@ -53,14 +54,13 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     }
 
     @Override
-    public boolean[] addAccount(User user, Place place, Date date, boolean tweet) {
+    public boolean[] addAccount(User user, Place place,GeoLocation geotag, Date date, boolean tweet) {
 
         if (user == null || date == null) {
             return new boolean[] {false, false, false };
         }
 
         long id = user.getId();
-        String location = user.getLocation();
         String url = user.getURL();
         String name = user.getScreenName();
 
@@ -76,14 +76,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             // add account
 
             // locate account
-            if (location != null) {
-                location = locator.getLocation(location, user.getTimeZone());
-            }
-            if ((location == "0" || location == null) && place != null) {
-                location = place.getCountryCode();
-            }
-
-            location = checkString(location, 3, DEFAULT_LOCATION);
+           String location = locator.locate(place, geotag, user.getLocation(), user.getTimeZone());
+            
             name = checkString(name, 30, null);
 
             if (url != null) {
@@ -123,7 +117,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ( ? , ?, "
                     + (isVer == true ? "1" : "0")
@@ -138,52 +131,32 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 stmt.setString(5, url);
             }
             stmt.setInt(6, follower);
-            ret = stmt.executeUpdate() != 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     private boolean updateAccount(long id, int follower) {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("UPDATE accounts SET Follower = ? WHERE TwitterAccountId = ? ;");
             stmt.setInt(1, follower);
             stmt.setLong(2, id);
-            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     private boolean insertTweet(long id, boolean tweet, Date date) {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), "
                     + (tweet ? "1" : "0")
@@ -191,20 +164,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                     + (tweet ? "1" : "0") + ";");
             stmt.setLong(1, id);
             stmt.setString(2, dateFormat.format(date));
-            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     @Override
@@ -224,25 +188,17 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean result2 = false;
         try {
             stmt = c.prepareStatement("INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES "
                     + "((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), (SELECT Id FROM location WHERE Code = ? LIMIT 1), 1, (SELECT Id FROM day WHERE Day = ? LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + 1;");
             stmt.setLong(1, id);
             stmt.setString(2, location);
             stmt.setString(3, dateFormat.format(date));
-            result2 = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
+
+        boolean result2 = executeStatementUpdate(stmt);
 
         return new boolean[] {result1, result2 };
     }
@@ -269,7 +225,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         // prevent SQL-injection
-        boolean ret = false;
         PreparedStatement stmt = null;
         try {
             if (parent == null) {
@@ -281,20 +236,13 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
                 stmt.setString(1, code);
                 stmt.setString(2, parent);
             }
-            ret = stmt.executeUpdate() >= 0 ? true : false;
-            if (ret) {
-                locationHash.add(code);
-            }
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+        }
+
+        boolean ret = executeStatementUpdate(stmt);
+        if (ret) {
+            locationHash.add(code);
         }
 
         return ret;
@@ -305,24 +253,14 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO day (Day) VALUES (?);");
             stmt.setString(1, dateFormat.format(date));
-            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     @Override
@@ -349,20 +287,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionResultLog(e);
             return new long[0];
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt,res);
         }
 
         long[] ret = new long[st.size()];
@@ -409,20 +334,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionResultLog(e);
             return new HashSet<String>();
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt,res);
         }
 
         HashSet<String> ret = new HashSet<String>(st.size());
@@ -455,20 +367,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionResultLog(e);
             return new HashSet<Long>();
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt,res);
         }
 
         HashSet<Long> ret = new HashSet<Long>(st.size());

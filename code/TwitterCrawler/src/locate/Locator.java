@@ -28,10 +28,11 @@ import org.geonames.GeoNamesException;
 import org.geonames.WebService;
 
 import twitter4j.GeoLocation;
+import twitter4j.Place;
 
 /**
- * class to locate words with a webservice !!! HashMap is just an idea and should
- * be discussed !!!
+ * class to locate words with a webservice !!! HashMap is just an idea and
+ * should be discussed !!!
  * 
  * @author Matthias Schimek
  * @version 1.0
@@ -46,11 +47,11 @@ public class Locator {
     private int countMod = 0;
     private long countHashMatches = 0;
     private long countTotalNumberRequest = 0;
+
     public Locator(Logger log) {
         this.logger = log;
         map = new HashMap<String, String>();
         readFromFile(new File("HashNeu"));
-        
 
     }
 
@@ -99,39 +100,40 @@ public class Locator {
         }
 
     }
-    private void readStatFromFile(File file) {
-    	
 
-    	  try {
-              Scanner b = new Scanner(
-                      new FileReader(file.getPath()));
-              
-              countHashMatches = b.nextLong();
-              countTotalNumberRequest = b.nextLong();
-              
-          } catch (IOException e) {
-              logger.warning("Cannot read from file to RequestStat " + e.getMessage());
-          }
+    private void readStatFromFile(File file) {
+
+        try {
+            Scanner b = new Scanner(new FileReader(file.getPath()));
+
+            countHashMatches = b.nextLong();
+            countTotalNumberRequest = b.nextLong();
+
+        } catch (IOException e) {
+            logger.warning("Cannot read from file to RequestStat "
+                    + e.getMessage());
+        }
 
     }
+
     private void writeStatToFile(File file) {
-    	String name = file.getPath();
-    	file.delete();
-    	file = new File(name);
-    	try {
+        String name = file.getPath();
+        file.delete();
+        file = new File(name);
+        try {
             Writer writer = new FileWriter(file.getPath());
-            
-                
-                writer.write(countHashMatches + ","  + countTotalNumberRequest);
-                
-                writer.append(System.getProperty("line.separator"));
-            
+
+            writer.write(countHashMatches + "," + countTotalNumberRequest);
+
+            writer.append(System.getProperty("line.separator"));
+
             writer.close();
         } catch (IOException e) {
             logger.warning("Cannot write Statistic to file" + e.getMessage());
         }
-    	
+
     }
+
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -142,8 +144,7 @@ public class Locator {
      * @throws GeoNamesException
      * @throws IOException
      */
-    public String getLocation(GeoLocation geotag) throws IOException,
-            GeoNamesException {
+    public String getLocation(GeoLocation geotag) {
         String res = "0";
         WebService.setGeoNamesServerFailover(null);
         WebService.setUserName("KIT_PSE");
@@ -175,59 +176,58 @@ public class Locator {
      *         String
      */
     public String getLocation(String location, String timezone) {
-    	// **** just for analyzing:
-    	countTotalNumberRequest++;
-    	//*****
-    	
+        // **** just for analyzing:
+        countTotalNumberRequest++;
+        // *****
+
         String result = "0";
-        
+
         // format given parameter
 
         if (location == null && timezone == null) {
             return "0";
         }
-        
+
         // format strings
         if (location != null) {
             location = location.replace(' ', '+');
-            location = location.replaceAll(",","+");
-            location = location.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]","");
+            location = location.replaceAll(",", "+");
+            location = location.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]", "");
 
-        }
-        else {
-        	location = "";
+        } else {
+            location = "";
         }
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
-            timezone = timezone.replaceAll(",","+");
-            timezone = timezone.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]","");
-        }
-        else {
-        	timezone = "";
+            timezone = timezone.replaceAll(",", "+");
+            timezone = timezone.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]", "");
+        } else {
+            timezone = "";
         }
 
         // lookup in Hashtable to avoid calling the webservice
-        
-        
+
         if (location != null && map.containsKey(location.toLowerCase())) {
-        	// **** just for analyzing:
-        	countHashMatches++;
-        	//*****
-        	logger.info("Hahtable match:  " + location.toLowerCase() + "  HashMatches: "+ countHashMatches +
-        			"  total number of request: "+ countTotalNumberRequest);
+            // **** just for analyzing:
+            countHashMatches++;
+            // *****
+            logger.info("Hahtable match:  " + location.toLowerCase()
+                    + "  HashMatches: " + countHashMatches
+                    + "  total number of request: " + countTotalNumberRequest);
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 
         // connection to Webservice
         try {
-        	
-        	location =  URLEncoder.encode( location.trim(), "UTF-8");
-        	timezone =  URLEncoder.encode(timezone.trim(), "UTF-8");
+
+            location = URLEncoder.encode(location.trim(), "UTF-8");
+            timezone = URLEncoder.encode(timezone.trim(), "UTF-8");
             URL u = new URL(webServiceURL + "userlocation=" + location
                     + "&timezone=" + timezone);
             // nur zu Testzwecken
             if (u == null) {
-            	logger.severe("URI is null  Location = "+location + "  timezone = "+ timezone);
+                logger.severe("URI is null  Location = " + location
+                        + "  timezone = " + timezone);
             }
             InputStream stream = u.openStream();
             Scanner scanner = new Scanner(stream);
@@ -235,10 +235,12 @@ public class Locator {
             stream.close();
             scanner.close();
         } catch (MalformedURLException e1) {
-            logger.info("URL nicht korrekt: " + e1.getMessage() + "   location= " + location+ " timezone="+ timezone);
+            logger.info("URL nicht korrekt: " + e1.getMessage()
+                    + "   location= " + location + " timezone=" + timezone);
             return "0";
         } catch (IOException e2) {
-            logger.info("Webservice meldet Fehler: " + e2.getMessage() +  "   location= " + location+ " timezone="+ timezone);
+            logger.info("Webservice meldet Fehler: " + e2.getMessage()
+                    + "   location= " + location + " timezone=" + timezone);
             return "0";
         }
         // parsing received String to XML-Doc and get content from created
@@ -254,7 +256,7 @@ public class Locator {
             logger.info("XML or IO error!");
             return "0";
         } catch (SAXException e2) {
-            
+
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
             return "0";
         }
@@ -272,10 +274,23 @@ public class Locator {
         map.put(location.toLowerCase(), result);
         if (countMod >= 5) {
             writeToFile(new File("HashNeu"));
-            
+
             countMod = 0;
         }
         return result;
+    }
+
+    public String locate(Place place, GeoLocation geotag, String location,
+            String timeZone) {
+
+        if (place != null) {
+            return place.getCountryCode();
+        } else if (geotag != null) {
+            return getLocation(geotag);
+        } else if (location != null && location != "") {
+            return getLocation(location, timeZone);
+        }
+        return "0";
     }
 
 }

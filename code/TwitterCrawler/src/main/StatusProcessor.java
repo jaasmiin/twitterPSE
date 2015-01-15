@@ -1,13 +1,10 @@
 package main;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
-
-import org.geonames.GeoNamesException;
 
 import locate.Locator;
 import mysql.AccessData;
@@ -179,23 +176,8 @@ public class StatusProcessor implements Runnable {
      */
     private void accountToDB(Status tweet, boolean isTweet) {
 
-        // User user = tweet.getUser();
-
-        // locate account
-        // double a = System.currentTimeMillis();
-        // String loc = locate.getLocation(user.getLocation(),
-        // user.getTimeZone());
-        // if (loc == "0" && tweet.getPlace() != null) {
-        // loc = tweet.getPlace().getCountryCode();
-        // }
-        // if (System.currentTimeMillis() - a > 0.0) {
-        // System.out.println(System.currentTimeMillis() - a);
-        // }
-
-        // assert (loc != null);
-
-        dbc.addAccount(tweet.getUser(), tweet.getPlace(), tweet.getCreatedAt(),
-                isTweet);
+        dbc.addAccount(tweet.getUser(), tweet.getPlace(),
+                tweet.getGeoLocation(), tweet.getCreatedAt(), isTweet);
 
     }
 
@@ -221,22 +203,7 @@ public class StatusProcessor implements Runnable {
     private void retweetToDB(long id, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
-        String loc = "0";
-        if (place != null) {
-            loc = place.getCountryCode();
-        } else {
-            if (geotag != null) {
-                try {
-                    loc = locate.getLocation(geotag);
-                } catch (IOException | GeoNamesException e) {
-                    loc = "0";
-                }
-            }
-            if (loc == "0" && location != null) {
-                loc = locate.getLocation(location, timeZone);
-            }
-        }
-        assert (loc != null);
+        String loc = locate.locate(place, geotag, location, timeZone);
 
         dbc.addRetweet(id, loc, date);
 

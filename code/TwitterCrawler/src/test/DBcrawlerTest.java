@@ -83,7 +83,7 @@ public class DBcrawlerTest {
 
     @Test
     public void test1AddAccount() {
-        boolean[] res = dbc.addAccount(null, null, date, true);
+        boolean[] res = dbc.addAccount(null, null, null, date, true);
         assertTrue(!res[0]);
         assertTrue(!res[1]);
         assertTrue(!res[2]);
@@ -96,7 +96,7 @@ public class DBcrawlerTest {
     public void test2AddAccount() {
         dbc.addDay(date);
         boolean[] res = dbc.addAccount(new MyUser("name", 111, "timeZone",
-                "location", "http://url", 11, true), null, date, false);
+                "location", "http://url", 11, true), null, null, date, false);
         HashSet<Long> h = dbc.getAccounts();
         long[] l = dbc.getNonVerifiedAccounts();
         cleaner.sql("DELETE FROM tweets WHERE 1;");
@@ -118,9 +118,10 @@ public class DBcrawlerTest {
     public void test3AddAccount() {
         dbc.addDay(date);
         boolean[] res1 = dbc.addAccount(new MyUser("name", 111, "timeZone",
-                "location", "http://www.url", 11, true), null, date, false);
+                "location", "http://www.url", 11, true), null, null, date,
+                false);
         boolean[] res2 = dbc.addAccount(new MyUser("name2", 999, "timeZone",
-                "location", null, 11, false), null, date, true);
+                "location", null, 11, false), null, null, date, true);
         HashSet<Long> h = dbc.getAccounts();
         long[] l = dbc.getNonVerifiedAccounts();
         cleaner.sql("DELETE FROM tweets WHERE 1;");
@@ -147,9 +148,9 @@ public class DBcrawlerTest {
     public void test4AddAccount() {
         dbc.addDay(date);
         boolean[] res1 = dbc.addAccount(new MyUser("name", 111, "timeZone",
-                "location", "url", 11, true), null, date, false);
+                "location", "url", 11, true), null, null, date, false);
         boolean[] res2 = dbc.addAccount(new MyUser("name", 111, "timeZone",
-                "location", "url", 11, true), null, date, false);
+                "location", "url", 11, true), null, null, date, false);
         HashSet<Long> h = dbc.getAccounts();
         long[] l = dbc.getNonVerifiedAccounts();
         cleaner.sql("DELETE FROM tweets WHERE 1;");

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
 
+import twitter4j.GeoLocation;
 import twitter4j.Place;
 import twitter4j.User;
 
@@ -37,6 +38,8 @@ public interface DBIcrawler {
      *            the user to add as User
      * @param place
      *            if set the place of the user, else null as Place
+     * @param geotag
+     *            the geolocation of the tweet from this account as GeoLocation
      * @param date
      *            the date of the tweet as Date
      * @param tweet
@@ -47,7 +50,8 @@ public interface DBIcrawler {
      *         the account and third is for adding the tweet.
      * 
      */
-    public boolean[] addAccount(User user, Place place, Date date, boolean tweet);
+    public boolean[] addAccount(User user, Place place, GeoLocation geotag,
+            Date date, boolean tweet);
 
     /**
      * inserts a retweet into the database, if it's still in the database the
