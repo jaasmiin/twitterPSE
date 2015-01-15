@@ -99,6 +99,17 @@ ALTER TABLE location ADD CONSTRAINT uc_location UNIQUE (Code);
 ALTER TABLE accountCategory ADD CONSTRAINT uc_accountcategory UNIQUE (AccountId, CategoryId);
 ALTER TABLE page ADD CONSTRAINT uc_page UNIQUE (CategoryId, Page);
 
+/* Indizes fuer effiziente Abfragen */
+CREATE INDEX idxCategoryId ON page(CategoryId);
+CREATE INDEX idxPage ON page(Page);
+CREATE INDEX idxAccountCategory ON accountCategory(CategoryId);
+CREATE INDEX idxTweets ON tweets(AccountId);
+CREATE INDEX idxRetweets ON retweets(AccountId);
+CREATE INDEX idxAccounts ON accounts(AccountName);
+CREATE INDEX idxTweets ON tweets(DayId);
+CREATE INDEX idxRetweets ON retweets(DayId);
+CREATE INDEX idxRetweets ON retweets(LocationId);
+
 /* add required entrys for testing */
 INSERT INTO location (Name, Code, ParentId) VALUES ("defaultLocation","0",NULL);
 INSERT INTO location (Name, Code, ParentId) VALUES ("test0","T0",NULL);

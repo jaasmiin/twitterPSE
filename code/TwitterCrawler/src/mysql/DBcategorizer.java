@@ -18,7 +18,7 @@ import mysql.result.Category;
  * class to address a database with the categorizer
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class DBcategorizer extends DBConnection implements DBIcategorizer {
@@ -68,20 +68,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             sqlExceptionResultLog(e);
             ret.remove(ret.size() - 1);
         } finally {
-            if (result != null) {
-                try {
-                    result.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, result);
         }
 
         return ret;
@@ -125,19 +112,10 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                         stmt.setString(2, temp.getParent().toString());
                     }
                     stmt.setString(1, temp.toString());
-
-                    result1 = stmt.executeUpdate() >= 0 ? true : false;
                 } catch (SQLException e) {
                     sqlExceptionLog(e, stmt);
-                } finally {
-                    if (stmt != null) {
-                        try {
-                            stmt.close();
-                        } catch (SQLException e) {
-                            sqlExceptionLog(e);
-                        }
-                    }
                 }
+                result1 = executeStatementUpdate(stmt);
 
                 // on success
                 if (result1) {
@@ -155,18 +133,10 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                 stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, (SELECT Id FROM category WHERE Name = ? LIMIT 1));");
                 stmt.setInt(1, accountId);
                 stmt.setString(2, category.toString());
-                result2 = stmt.executeUpdate() >= 0 ? true : false;
             } catch (SQLException e) {
                 sqlExceptionLog(e, stmt);
-            } finally {
-                if (stmt != null) {
-                    try {
-                        stmt.close();
-                    } catch (SQLException e) {
-                        sqlExceptionLog(e);
-                    }
-                }
             }
+            result2 = executeStatementUpdate(stmt);
         }
 
         // set categorized = true
@@ -218,20 +188,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             sqlExceptionResultLog(e);
             ret.remove(ret.size() - 1);
         } finally {
-            if (result != null) {
-                try {
-                    result.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, result);
         }
 
         return ret;

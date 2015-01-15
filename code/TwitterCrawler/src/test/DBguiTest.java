@@ -62,7 +62,7 @@ public class DBguiTest {
     public void testGetCategories() {
         Category[] c = dbg.getCategories();
         // check parent
-        assertEquals(8, c.length);
+        assertTrue(8 <= c.length);
     }
 
     @Test

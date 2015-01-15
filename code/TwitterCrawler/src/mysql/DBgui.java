@@ -23,13 +23,11 @@ import mysql.result.TweetsAndRetweets;
  * class to modify the database restricted
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class DBgui extends DBConnection implements DBIgui {
 
-    // TODO tweets calls retweets
-    
     /**
      * configure the connection to the database
      * 
@@ -49,7 +47,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public Category[] getCategories() {
-        String sqlCommand = "SELECT * FROM category;";
+        String sqlCommand = "SELECT Id, Name, ParentId  FROM category;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -71,20 +69,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return new Category[0];
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
 
         Category[] ret = new Category[list.size()];
@@ -105,7 +90,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public Location[] getLocations() {
-        String sqlCommand = "SELECT * FROM location;";
+        String sqlCommand = "SELECT Id, Name, Code, ParentId FROM location;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -128,20 +113,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return new Location[0];
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
 
         Location[] ret = new Location[list.size()];
@@ -187,20 +159,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return new Date[0];
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
 
         Date[] ret = new Date[sd.size()];
@@ -232,20 +191,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } catch (SQLException e) {
             ret = -1;
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
         return ret;
     }
@@ -280,20 +226,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return new Account[0];
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
 
         Account[] ret = new Account[st.size()];
@@ -308,25 +241,15 @@ public class DBgui extends DBConnection implements DBIgui {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
             stmt.setInt(1, accountId);
             stmt.setInt(2, categoryId);
-            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     @Override
@@ -334,32 +257,21 @@ public class DBgui extends DBConnection implements DBIgui {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("UPDATE accounts SET LocationId = ? WHERE Id = ?;");
             stmt.setInt(1, accountId);
             stmt.setInt(2, locationId);
-            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     @Override
     public boolean addAccount(User user, int locationId) {
         // prevent SQL-injection
         PreparedStatement stmt = null;
-        boolean ret = false;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES (?, ?, "
                     + (user.isVerified() ? "1" : "0") + ", ?, ?, ?, 0);");
@@ -369,20 +281,11 @@ public class DBgui extends DBConnection implements DBIgui {
             stmt.setInt(4, locationId);
             stmt.setString(5,
                     user.getURL().replace("\\", "/").replace("\"", "\"\""));
-            ret = stmt.executeUpdate() >= 0 ? true : false;
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-        } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
         }
 
-        return ret;
+        return executeStatementUpdate(stmt);
     }
 
     @Override
@@ -410,14 +313,10 @@ public class DBgui extends DBConnection implements DBIgui {
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
-        TweetsAndRetweets ret = new TweetsAndRetweets();
-        ret.tweets = getTweetSum(stmt, byDate);
-        ret.retweets = getRetweetSum(stmt, byDate);
-
-        return ret;
+        return getTweetSum(stmt, byDate);
     }
 
-    private List<Tweets> getTweetSum(Statement stmt, boolean byDate) {
+    private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
         String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=Day.Id GROUP BY DayId;";
         String b = "SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;";
@@ -430,34 +329,29 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
         }
 
-        if (res == null)
-            return new ArrayList<Tweets>();
-
-        List<Tweets> ret = new ArrayList<Tweets>();
-        try {
-            while (res.next()) {
-                ret.add(new Tweets((byDate ? res.getDate("Day") : null), res
-                        .getInt(1)));
-            }
-        } catch (SQLException e) {
-            sqlExceptionResultLog(e);
-            return new ArrayList<Tweets>();
-        } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
+        List<Tweets> tweets = new ArrayList<Tweets>();
+        if (res != null) {
+            try {
+                while (res.next()) {
+                    tweets.add(new Tweets((byDate ? res.getDate("Day") : null),
+                            res.getInt(1)));
+                }
+            } catch (SQLException e) {
+                sqlExceptionResultLog(e);
+            } finally {
+                if (res != null) {
+                    try {
+                        res.close();
+                    } catch (SQLException e) {
+                        sqlExceptionLog(e);
+                    }
                 }
             }
-            // if (stmt != null) {
-            // try {
-            // stmt.close();
-            // } catch (SQLException e) {
-            // sqlExceptionLog(e);
-            // }
-            // }
         }
+
+        TweetsAndRetweets ret = new TweetsAndRetweets();
+        ret.tweets = tweets;
+        ret.retweets = getRetweetSum(stmt, byDate);
 
         return ret;
     }
@@ -488,20 +382,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return new ArrayList<Retweets>();
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
 
         return ret;
@@ -530,21 +411,6 @@ public class DBgui extends DBConnection implements DBIgui {
                 accountIDs);
 
         Account[] ret = getTweetSumPerAccount(stmt, byDates);
-        List<Account> temp = getRetweetSumPerAccount(stmt, byDates);
-
-        // match Account lists
-        for (int i = 0; i < ret.length; i++) {
-            for (int j = 0; j < temp.size(); j++) {
-                if (temp.get(j).getId() == ret[i].getId()) {
-                    // match
-                    for (Retweets r : temp.get(j).getRetweets()) {
-                        ret[i].addRetweet(r);
-                    }
-                    temp.remove(j);
-                    j = temp.size();
-                }
-            }
-        }
 
         return ret;
     }
@@ -607,18 +473,33 @@ public class DBgui extends DBConnection implements DBIgui {
                     sqlExceptionLog(e);
                 }
             }
-            // if (stmt != null) {
-            // try {
-            // stmt.close();
-            // } catch (SQLException e) {
-            // sqlExceptionLog(e);
-            // }
-            // }
         }
 
+        // get retweets
+        List<Account> retweets = getRetweetSumPerAccount(stmt, byDate);
+
+        // match Account lists
         Account[] ret = new Account[accounts.size()];
+
         int i = 0;
+
         for (Account account : accounts) {
+            Iterator<Account> it = retweets.iterator();
+            // add retweets
+            boolean exit = false;
+            while (it.hasNext() && !exit) {
+                Account temp = it.next();
+
+                if (temp.getId() == account.getId()) {
+                    // match
+                    for (Retweets r : temp.getRetweets()) {
+                        account.addRetweet(r);
+                    }
+                    it.remove();
+                    exit = true;
+                }
+            }
+            // create array
             ret[i++] = account;
         }
 
@@ -632,7 +513,6 @@ public class DBgui extends DBConnection implements DBIgui {
 
         ResultSet res = null;
         try {
-            // stmt.executeBatch();
             res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
@@ -671,20 +551,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return new ArrayList<Account>();
         } finally {
-            if (res != null) {
-                try {
-                    res.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            closeResultAndStatement(stmt, res);
         }
 
         return ret;
