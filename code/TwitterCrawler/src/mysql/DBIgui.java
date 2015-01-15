@@ -1,6 +1,7 @@
 package mysql;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import twitter4j.User;
 import mysql.result.Account;
@@ -20,23 +21,16 @@ public interface DBIgui {
     /**
      * Get all categories from db.
      * 
-     * @return an array of all categories.
+     * @return a list of all categories.
      */
-    public Category[] getCategories();
+    public List<Category> getCategories();
 
     /**
      * Get all locations from db.
      * 
-     * @return an array of locations.
+     * @return a list of locations.
      */
-    public Location[] getLocations();
-
-    // /**
-    // * get all dates from the database
-    // *
-    // * @return all dates from the database as Date[]
-    // */
-    // public Date[] getDates();
+    public List<Location> getLocations();
 
     /**
      * Get id of account with accountName.
@@ -58,9 +52,9 @@ public interface DBIgui {
      * @param accountIDs
      *            the ids of the additional accounts as int[]
      * @return all accounts that match a category- and a location-ID, with the
-     *         associated total-number of Tweets and Retweets as Account[]
+     *         associated total-number of Tweets and Retweets as List<Account>
      */
-    public Account[] getAllData(int[] categoryIDs, int[] locationIDs,
+    public List<Account> getAllData(int[] categoryIDs, int[] locationIDs,
             int[] accountIDs) throws IllegalArgumentException, SQLException;
 
     /**
@@ -91,10 +85,11 @@ public interface DBIgui {
      * @param accountIDs
      *            the ids of the additional accounts as int[]
      * @return all accounts that match a category- and a location-ID, with the
-     *         associated number of Tweets and Retweets per Day as Account[]
+     *         associated number of Tweets and Retweets per Day as List<Account>
      */
-    public Account[] getAllDataWithDates(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs) throws IllegalArgumentException, SQLException;
+    public List<Account> getAllDataWithDates(int[] categoryIDs,
+            int[] locationIDs, int[] accountIDs)
+            throws IllegalArgumentException, SQLException;
 
     /**
      * returns the total number of tweets and retweets from all the accounts
@@ -119,10 +114,10 @@ public interface DBIgui {
      * Return list of accounts which name contains search
      * 
      * @param search
-     * @return an array of accounts (Limit 50, no tweets, retweets and
+     * @return a list of accounts (Limit 50, no tweets, retweets and
      *         categories), on fault return null.
      */
-    public Account[] getAccounts(String search);
+    public List<Account> getAccounts(String search);
 
     /**
      * Add a new account to db.

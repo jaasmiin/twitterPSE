@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -53,16 +54,16 @@ public class DBguiTest {
 
     @Test
     public void testGetLocations() {
-        Location[] l = dbg.getLocations();
+        List<Location> l = dbg.getLocations();
         // check parent
-        assertEquals(8, l.length);
+        assertEquals(8, l.size());
     }
 
     @Test
     public void testGetCategories() {
-        Category[] c = dbg.getCategories();
+        List<Category> c = dbg.getCategories();
         // check parent
-        assertTrue(8 <= c.length);
+        assertTrue(8 <= c.size());
     }
 
     @Test
@@ -85,28 +86,28 @@ public class DBguiTest {
 
     @Test
     public void test1GetAccounts() {
-        Account[] a = dbg.getAccounts("Tester3");
-        assertEquals(1, a.length);
-        assertEquals(a[0].getName(), "Tester3");
+        List<Account> a = dbg.getAccounts("Tester3");
+        assertEquals(1, a.size());
+        assertEquals(a.get(0).getName(), "Tester3");
     }
 
     @Test
     public void test2GetAccounts() {
-        Account[] a = dbg.getAccounts("Tester");
-        assertEquals(6, a.length);
+        List<Account> a = dbg.getAccounts("Tester");
+        assertEquals(6, a.size());
     }
 
     @Test
     public void test3GetAccounts() {
-        Account[] a = dbg.getAccounts("er0");
-        assertEquals(1, a.length);
-        assertEquals(a[0].getName(), "Tester0");
+        List<Account> a = dbg.getAccounts("er0");
+        assertEquals(1, a.size());
+        assertEquals(a.get(0).getName(), "Tester0");
     }
 
     @Test
     public void test4GetAccounts() {
-        Account[] a = dbg.getAccounts("blabla");
-        assertEquals(0, a.length);
+        List<Account> a = dbg.getAccounts("blabla");
+        assertEquals(0, a.size());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -169,18 +170,18 @@ public class DBguiTest {
 
     @Test
     public void test2GetAllDataWithDates() {
-        Account[] res = null;
+        List<Account> res = null;
         try {
             res = dbg.getAllDataWithDates(new int[] {1 }, new int[] {1 },
                     new int[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        assertEquals(2, res.length);
-        assertEquals(2, res[0].getTweets().size());
-        assertEquals(1, res[1].getTweets().size());
-        assertEquals(3, res[0].getRetweets().size());
-        assertEquals(2, res[1].getRetweets().size());
+        assertEquals(2, res.size());
+        assertEquals(2, res.get(0).getTweets().size());
+        assertEquals(1, res.get(1).getTweets().size());
+        assertEquals(3, res.get(0).getRetweets().size());
+        assertEquals(2, res.get(1).getRetweets().size());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -194,18 +195,18 @@ public class DBguiTest {
 
     @Test
     public void test2GetAllData() {
-        Account[] res = null;
+        List<Account> res = null;
         try {
             res = dbg.getAllData(new int[] {1 }, new int[] {1 }, new int[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        assertEquals(2, res.length);
-        assertEquals(1, res[0].getTweets().size());
-        assertEquals(1, res[1].getTweets().size());
-        System.out.println(res[0].getRetweets().get(0).getLocation());
-        assertEquals(2, res[0].getRetweets().size());
-        assertEquals(2, res[1].getRetweets().size());
+        assertEquals(2, res.size());
+        assertEquals(1, res.get(0).getTweets().size());
+        assertEquals(1, res.get(1).getTweets().size());
+        System.out.println(res.get(0).getRetweets().get(0).getLocation());
+        assertEquals(2, res.get(0).getRetweets().size());
+        assertEquals(2, res.get(1).getRetweets().size());
     }
 
     @After

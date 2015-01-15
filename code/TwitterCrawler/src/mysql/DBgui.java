@@ -46,7 +46,7 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public Category[] getCategories() {
+    public List<Category> getCategories() {
         String sqlCommand = "SELECT Id, Name, ParentId  FROM category;";
 
         ResultSet res = null;
@@ -56,40 +56,37 @@ public class DBgui extends DBConnection implements DBIgui {
             res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            return new Category[0];
+            return new ArrayList<Category>();
         }
 
-        List<Category> list = new ArrayList<Category>();
+        List<Category> ret = new ArrayList<Category>();
         try {
             while (res.next()) {
-                list.add(new Category(res.getInt("Id"), res.getString("Name"),
+                ret.add(new Category(res.getInt("Id"), res.getString("Name"),
                         new Category(res.getInt("ParentId"), "", null)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new Category[0];
+            return new ArrayList<Category>();
         } finally {
             closeResultAndStatement(stmt, res);
         }
 
-        Category[] ret = new Category[list.size()];
-        int i = 0;
-        for (Category c : list) {
+        for (Category c : ret) {
             // TODO with inner join
             // parent relationship
-            for (Category p : list) {
+            for (Category p : ret) {
                 if (c.getParent().getId() == p.getId()) {
                     c.setParent(p);
                     break;
                 }
             }
-            ret[i++] = c;
         }
         return ret;
     }
 
     @Override
-    public Location[] getLocations() {
+    public List<Location> getLocations() {
         String sqlCommand = "SELECT Id, Name, Code, ParentId FROM location;";
 
         ResultSet res = null;
@@ -99,35 +96,32 @@ public class DBgui extends DBConnection implements DBIgui {
             res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            return new Location[0];
+            return new ArrayList<Location>();
         }
 
-        List<Location> list = new ArrayList<Location>();
+        List<Location> ret = new ArrayList<Location>();
         try {
             while (res.next()) {
-                list.add(new Location(res.getInt("Id"), res.getString("Name"),
+                ret.add(new Location(res.getInt("Id"), res.getString("Name"),
                         res.getString("Code"), new Location(res
                                 .getInt("ParentId"), null, null, null)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new Location[0];
+            return new ArrayList<Location>();
         } finally {
             closeResultAndStatement(stmt, res);
         }
 
-        Location[] ret = new Location[list.size()];
-        int i = 0;
-        for (Location l : list) {
+        for (Location l : ret) {
             // TODO with inner join
             // parent relationship
-            for (Location p : list) {
+            for (Location p : ret) {
                 if (l.getParent().getId() == p.getId()) {
                     l.setParent(p);
                     break;
                 }
             }
-            ret[i++] = l;
         }
         return ret;
     }
@@ -197,7 +191,7 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public Account[] getAccounts(String search) {
+    public List<Account> getAccounts(String search) {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;
@@ -211,12 +205,12 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         if (res == null)
-            return new Account[0];
+            return new ArrayList<Account>();
 
-        Stack<Account> st = new Stack<Account>();
+        List<Account> ret = new ArrayList<Account>();
         try {
             while (res.next()) {
-                st.push(new Account(res.getInt("Id"), res
+                ret.add(new Account(res.getInt("Id"), res
                         .getLong("TwitterAccountId"), res
                         .getString("AccountName"), res.getBoolean("Verified"),
                         res.getString("URL"), res.getInt("Follower"), res
@@ -224,15 +218,11 @@ public class DBgui extends DBConnection implements DBIgui {
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new Account[0];
+            return new ArrayList<Account>();
         } finally {
             closeResultAndStatement(stmt, res);
         }
 
-        Account[] ret = new Account[st.size()];
-        for (int i = 0; i < st.size(); i++) {
-            ret[i] = st.pop();
-        }
         return ret;
     }
 
@@ -389,20 +379,21 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public Account[] getAllData(int[] categoryIDs, int[] locationIDs,
+    public List<Account> getAllData(int[] categoryIDs, int[] locationIDs,
             int[] accountIDs) throws IllegalArgumentException, SQLException {
         return getDataPerAccount(categoryIDs, locationIDs, accountIDs, false);
     }
 
     @Override
-    public Account[] getAllDataWithDates(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs) throws IllegalArgumentException, SQLException {
+    public List<Account> getAllDataWithDates(int[] categoryIDs,
+            int[] locationIDs, int[] accountIDs)
+            throws IllegalArgumentException, SQLException {
         return getDataPerAccount(categoryIDs, locationIDs, accountIDs, true);
     }
 
-    private Account[] getDataPerAccount(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
-            SQLException {
+    private List<Account> getDataPerAccount(int[] categoryIDs,
+            int[] locationIDs, int[] accountIDs, boolean byDates)
+            throws IllegalArgumentException, SQLException {
         if (categoryIDs == null || categoryIDs.length < 1
                 || locationIDs == null || locationIDs.length < 1) {
             throw new IllegalArgumentException();
@@ -410,12 +401,10 @@ public class DBgui extends DBConnection implements DBIgui {
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
-        Account[] ret = getTweetSumPerAccount(stmt, byDates);
-
-        return ret;
+        return getTweetSumPerAccount(stmt, byDates);
     }
 
-    private Account[] getTweetSumPerAccount(Statement stmt, boolean byDate) {
+    private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {
 
         String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=Day.Id JOIN accounts ON final.val=accounts.Id;";
         String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
@@ -429,7 +418,7 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         if (res == null)
-            return new Account[0];
+            return new ArrayList<Account>();
 
         List<Account> accounts = new ArrayList<Account>();
         try {
@@ -464,7 +453,7 @@ public class DBgui extends DBConnection implements DBIgui {
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new Account[0];
+            return new ArrayList<Account>();
         } finally {
             if (res != null) {
                 try {
@@ -479,10 +468,6 @@ public class DBgui extends DBConnection implements DBIgui {
         List<Account> retweets = getRetweetSumPerAccount(stmt, byDate);
 
         // match Account lists
-        Account[] ret = new Account[accounts.size()];
-
-        int i = 0;
-
         for (Account account : accounts) {
             Iterator<Account> it = retweets.iterator();
             // add retweets
@@ -499,11 +484,9 @@ public class DBgui extends DBConnection implements DBIgui {
                     exit = true;
                 }
             }
-            // create array
-            ret[i++] = account;
         }
 
-        return ret;
+        return accounts;
     }
 
     private List<Account> getRetweetSumPerAccount(Statement stmt, boolean byDate) {
