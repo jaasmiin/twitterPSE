@@ -274,11 +274,11 @@ public class Controller extends Thread {
         int count = 0;
         while (run) {
 
-            if (m >= 60) {
+            if (m >= 2) {
                 m = 0;
                 writeStatistic();
             }
-            m++;
+            m += INTERVAL;
 
             // one reconnect to twitter per day
             if (count >= 86400) {// one day = 86400 seconds
@@ -344,15 +344,15 @@ public class Controller extends Thread {
         msg += "Summe vorhandener Places: " + sum[7] + "\n";
         msg += "Summe vorhandener Geotags: " + sum[8] + "\n";
         msg += "Summe vorhandener location-Information: " + sum[9] + "\n";
-
+        
         statisticLogger.info(msg);
     }
 
     private Logger getStatisticLogger() {
-        Logger l = Logger.getLogger("logger");
+        Logger l = Logger.getLogger("statlog");
         try {
             new File("Statistic.log").createNewFile();
-            FileHandler fh = new FileHandler("LogFile.log", true);
+            FileHandler fh = new FileHandler("Statistic.log", true);
             SimpleFormatter formatter = new SimpleFormatter();
             fh.setFormatter(formatter);
             l.addHandler(fh);
