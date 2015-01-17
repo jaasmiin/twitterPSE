@@ -256,16 +256,17 @@ public class Locator {
         result = callWebservice(location,timezone);
 
         // add positive result to Hashtable and save results periodically
-        countMod++;
-        map.put(location.toLowerCase(), result);
-        if (countMod >= 5) {
-            writeToFile(new File("HashNeu"));
-
-            countMod = 0;
-        }
         if (!result.equals("0")) {
         	numberOfWebserviceLoc++;
+        	countMod++;
+            map.put(location.toLowerCase(), result);
+            if (countMod >= 5) {
+                writeToFile(new File("HashNeu"));
+
+                countMod = 0;
+            }
         }
+        
         return result;
     }
     /**
