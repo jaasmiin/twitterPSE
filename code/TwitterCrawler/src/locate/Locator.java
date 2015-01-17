@@ -43,16 +43,17 @@ public class Locator {
     public HashMap<String, String> map;
     private Logger logger;
     private int countMod = 0;
-    // 
-    private int numberOfReq;
-    private int numberOfLocReq;
-    private int numberOfPlaceLoc;
-    private int numberOfGeoTagLoc;
-    private int numberOfWebserviceLoc;
-    private int numberOfHashMapLoc;
-    private int reqWithPlace;
-    private int reqWithGeoTag;
-    private int reqWithLocation;
+ 
+    private int numberOfReq = 0;
+    private int numberOfLocReq = 0;
+    private int numberOfPlaceLoc = 0;
+    private int numberOfGeoTagLoc = 0;
+    private int numberOfLocationTagLoc = 0;
+    private int numberOfWebserviceLoc = 0;
+    private int numberOfHashMapLoc = 0;
+    private int reqWithPlace = 0;
+    private int reqWithGeoTag = 0;
+    private int reqWithLocation = 0;
  
     
     /**
@@ -141,58 +142,17 @@ public class Locator {
         }
         return res;
     }
-
     /**
-     * tryies to determine the country/location of a given name or word
-     * 
-     * @param location
-     *            the input name or word to determine the country/location as
-     *            String
-     * 
-     * @param timezone
-     *            timezone delivered by twitter (use the name you get from
-     *            twitter status object)
-     * @return the code of the country/location on success and "0" otherwise as
-     *         String
+     * Method that actually calls webservice, does not check input strings for forbidden characters 
+     * e.g. '&','@' etc.
+     * @param location location attribute
+     * @param timezone timezone attribue
+     * @return countrycode in case of success, '0' otherwise
      */
-    public String getLocation(String location, String timezone) {
-        
-        String result = "0";
-
-        // format given parameter
-
-        if (location == null && timezone == null) {
-            return "0";
-        }
-
-        // format strings
-        if (location != null) {
-            location = location.replace(' ', '+');
-            location = location.replaceAll(",", "+");
-            location = location.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]", "");
-
-        } else {
-            location = "";
-        }
-        if (timezone != null) {
-            timezone = timezone.replace(' ', '+');
-            timezone = timezone.replaceAll(",", "+");
-            timezone = timezone.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]", "");
-        } else {
-            timezone = "";
-        }
-
-        // lookup in Hashtable to avoid calling the webservice
-
-        if (location != null && map.containsKey(location.toLowerCase())) {
-            // **** just for statistics
-             numberOfHashMapLoc++;
-            return map.get(location.toLowerCase()) + "  from hashtable";
-        }
-
-        // connection to Webservice
-        try {
-
+    private String callWebservice(String location, String timezone) {
+    	String result = "0";
+    	try {
+        	
             location = URLEncoder.encode(location.trim(), "UTF-8");
             timezone = URLEncoder.encode(timezone.trim(), "UTF-8");
             URL u = new URL(webServiceURL + "userlocation=" + location
@@ -237,10 +197,63 @@ public class Locator {
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
         if (result.equals("0")) {
+        	
             return "0";
         }
 
         result = result.trim();
+        return result;
+    }
+    /**
+     * tries to determine the country/location of a given name or word
+     * 
+     * @param location
+     *            the input name or word to determine the country/location as
+     *            String
+     * 
+     * @param timezone
+     *            timezone delivered by twitter (use the name you get from
+     *            twitter status object)
+     * @return the code of the country/location on success and "0" otherwise as
+     *         String
+     */
+    private String getLocation(String location, String timezone) {
+        
+        String result = "0";
+
+        // format given parameter
+
+        if (location == null && timezone == null) {
+            return "0";
+        }
+
+        // format strings
+        if (location != null) {
+            location = location.replace(' ', '+');
+            location = location.replaceAll(",", "+");
+            location = location.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]", "");
+
+        } else {
+            location = "";
+        }
+        if (timezone != null) {
+            timezone = timezone.replace(' ', '+');
+            timezone = timezone.replaceAll(",", "+");
+            timezone = timezone.replaceAll("[!#$%&'()*,/:;=?@\\[\\]]", "");
+        } else {
+            timezone = "";
+        }
+
+        // lookup in Hashtable to avoid calling the webservice
+
+        if (location != null && map.containsKey(location.toLowerCase())) {
+            // **** just for statistics
+             numberOfHashMapLoc++;
+            return map.get(location.toLowerCase()) + "  from hashtable";
+        }
+
+        // connection to Webservice
+        result = callWebservice(location,timezone);
 
         // add positive result to Hashtable and save results periodically
         countMod++;
@@ -250,30 +263,66 @@ public class Locator {
 
             countMod = 0;
         }
+        if (!result.equals("0")) {
+        	numberOfWebserviceLoc++;
+        }
         return result;
     }
-
+    /**
+     * Tries to locate a 'tweet', specified by the given parameters 
+     * @param place Twitter-Place-Object
+     * @param geotag Twitter-Geotag-Object
+     * @param location String containing information about the location of a 'tweet'
+     * @param timeZone String containing information about the timezone of a 'tweet'
+     * @return countrycode if 'Tweet' could be located, "0" otherwise
+     */
+    // presumption: whenever  place != null the request for location is positive!
     public String locate(Place place, GeoLocation geotag, String location,
             String timeZone) {
-        private int numberOfReq;
-        private int numberOfLocReq;
-        private int numberOfPlaceLoc;
-        private int numberOfGeoTagLoc;
-        private int numberOfWebserviceLoc;
-        private int numberOfHashMapLoc;
-        private int reqWithPlace;
-        private int reqWithGeoTag;
-        private int reqWithLocation;
+    	String result = "0";
+    	
+    	//statistics
+    	numberOfReq++;
+    	if (place != null) {
+    		reqWithPlace++;
+    	}
+    	if (geotag != null) {
+    		 reqWithGeoTag++;
+    	}
+    	if (location != null && !location.equals("")) {
+    		reqWithLocation++;
+    	}
+       
+        
+        
+        
+        
         if (place != null) {
-        	reqWithPlace++;
+        	
         	numberOfPlaceLoc++;
-            return place.getCountryCode();    
+            result =  place.getCountryCode(); 
+            if (!result.equals("0")) {
+        		numberOfPlaceLoc++;
+        	}
+        
         } else if (geotag != null) {
-            return getLocation(geotag);
+        	
+        	result = getLocation(geotag);
+        	if (!result.equals("0")) {
+        		numberOfGeoTagLoc++;
+        	}
+            
         } else if (location != null && location != "") {
-            return getLocation(location, timeZone);
+        	reqWithLocation++;
+        	result = getLocation(location, timeZone);
+            if (!result.equals("0")) {
+            	numberOfLocationTagLoc++;
+            }
         }
-        return "0";
+        if (!result.equals("0")) {
+        	numberOfLocReq++;
+        }
+        return result;
     }
    
     /**
@@ -291,8 +340,12 @@ public class Locator {
      * 9: number of request containing location information
      */
     public int[] getStatistic() {
+    	int [] statistics = {numberOfReq, numberOfLocReq, numberOfPlaceLoc, numberOfGeoTagLoc, 
+    						numberOfLocationTagLoc, numberOfWebserviceLoc, numberOfHashMapLoc,
+    						reqWithPlace, reqWithGeoTag, reqWithLocation};
+    	return statistics;
+    
     	
-    	return null;
     }
 
 }
