@@ -70,7 +70,7 @@ public class Locator {
     private void writeToFile(File file) {
         Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         try {
-            Writer writer = new FileWriter(file.getPath(),true);
+            Writer writer = new FileWriter(file.getPath(),false);
             while (it.hasNext()) {
                 Map.Entry<String, String> pairs = it.next();
                 writer.write(pairs.getKey() + "#" + pairs.getValue());
@@ -101,7 +101,10 @@ public class Locator {
                 }
                 key = tmp[0].toLowerCase();
                 value = tmp[1];
-                map.put(key, value);
+                // only insert in hashMap if hashMap does not already contain that key
+                if(!map.containsKey(key)) {
+                	map.put(key, value);
+                }
                 input = b.readLine();
             }
 
@@ -261,6 +264,7 @@ public class Locator {
         	countMod++;
             map.put(location.toLowerCase(), result);
             if (countMod >= 5) {
+            	readFromFile(new File("HashNeu"));
                 writeToFile(new File("HashNeu"));
 
                 countMod = 0;
