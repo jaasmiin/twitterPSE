@@ -70,7 +70,7 @@ public class Locator {
     private void writeToFile(File file) {
         Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         try {
-            Writer writer = new FileWriter(file.getPath());
+            Writer writer = new FileWriter(file.getPath(),true);
             while (it.hasNext()) {
                 Map.Entry<String, String> pairs = it.next();
                 writer.write(pairs.getKey() + "#" + pairs.getValue());
