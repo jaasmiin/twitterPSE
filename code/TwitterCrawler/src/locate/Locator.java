@@ -31,8 +31,6 @@ import twitter4j.GeoLocation;
 import twitter4j.Place;
 
 /**
- * class to locate words with a webservice !!! HashMap is just an idea and
- * should be discussed !!!
  * 
  * @author Matthias Schimek
  * @version 1.0
@@ -45,9 +43,22 @@ public class Locator {
     public HashMap<String, String> map;
     private Logger logger;
     private int countMod = 0;
-    private long countHashMatches = 0;
-    private long countTotalNumberRequest = 0;
-
+    // 
+    private int numberOfReq;
+    private int numberOfLocReq;
+    private int numberOfPlaceLoc;
+    private int numberOfGeoTagLoc;
+    private int numberOfWebserviceLoc;
+    private int numberOfHashMapLoc;
+    private int reqWithPlace;
+    private int reqWithGeoTag;
+    private int reqWithLocation;
+ 
+    
+    /**
+     * Initiates a new instance of 'Locator'
+     * @param log Logger to log all remarkable events
+     */
     public Locator(Logger log) {
         this.logger = log;
         map = new HashMap<String, String>();
@@ -101,38 +112,6 @@ public class Locator {
 
     }
 
-    private void readStatFromFile(File file) {
-
-        try {
-            Scanner b = new Scanner(new FileReader(file.getPath()));
-
-            countHashMatches = b.nextLong();
-            countTotalNumberRequest = b.nextLong();
-
-        } catch (IOException e) {
-            logger.warning("Cannot read from file to RequestStat "
-                    + e.getMessage());
-        }
-
-    }
-
-    private void writeStatToFile(File file) {
-        String name = file.getPath();
-        file.delete();
-        file = new File(name);
-        try {
-            Writer writer = new FileWriter(file.getPath());
-
-            writer.write(countHashMatches + "," + countTotalNumberRequest);
-
-            writer.append(System.getProperty("line.separator"));
-
-            writer.close();
-        } catch (IOException e) {
-            logger.warning("Cannot write Statistic to file" + e.getMessage());
-        }
-
-    }
 
     /**
      * determine the country/location of given geo-coordinates
@@ -145,6 +124,7 @@ public class Locator {
      * @throws IOException
      */
     public String getLocation(GeoLocation geotag) {
+ 
         String res = "0";
         WebService.setGeoNamesServerFailover(null);
         WebService.setUserName("KIT_PSE");
@@ -176,10 +156,7 @@ public class Locator {
      *         String
      */
     public String getLocation(String location, String timezone) {
-        // **** just for analyzing:
-        countTotalNumberRequest++;
-        // *****
-
+        
         String result = "0";
 
         // format given parameter
@@ -208,12 +185,8 @@ public class Locator {
         // lookup in Hashtable to avoid calling the webservice
 
         if (location != null && map.containsKey(location.toLowerCase())) {
-            // **** just for analyzing:
-            countHashMatches++;
-            // *****
-            logger.info("Hahtable match:  " + location.toLowerCase()
-                    + "  HashMatches: " + countHashMatches
-                    + "  total number of request: " + countTotalNumberRequest);
+            // **** just for statistics
+             numberOfHashMapLoc++;
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 
@@ -282,9 +255,19 @@ public class Locator {
 
     public String locate(Place place, GeoLocation geotag, String location,
             String timeZone) {
-
+        private int numberOfReq;
+        private int numberOfLocReq;
+        private int numberOfPlaceLoc;
+        private int numberOfGeoTagLoc;
+        private int numberOfWebserviceLoc;
+        private int numberOfHashMapLoc;
+        private int reqWithPlace;
+        private int reqWithGeoTag;
+        private int reqWithLocation;
         if (place != null) {
-            return place.getCountryCode();
+        	reqWithPlace++;
+        	numberOfPlaceLoc++;
+            return place.getCountryCode();    
         } else if (geotag != null) {
             return getLocation(geotag);
         } else if (location != null && location != "") {
