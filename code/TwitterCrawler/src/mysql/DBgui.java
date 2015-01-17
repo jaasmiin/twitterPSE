@@ -20,7 +20,7 @@ import mysql.result.Tweets;
 import mysql.result.TweetsAndRetweets;
 
 /**
- * class to modify the database restricted
+ * class to modify the database restricted and to get data from the database
  * 
  * @author Holger Ebhart
  * @version 1.1
@@ -36,8 +36,11 @@ public class DBgui extends DBConnection implements DBIgui {
      * @param logger
      *            a global logger for the whole program as Logger
      * @throws InstantiationException
+     *             thrown if the mysql-driver hasn't been found
      * @throws IllegalAccessException
+     *             thrown if the mysql-driver hasn't been found
      * @throws ClassNotFoundException
+     *             thrown if the mysql-driver hasn't been found
      */
     public DBgui(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,
@@ -73,7 +76,6 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         for (Category c : ret) {
-            // TODO with inner join
             // parent relationship
             for (Category p : ret) {
                 if (c.getParent().getId() == p.getId()) {
@@ -114,7 +116,6 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         for (Location l : ret) {
-            // TODO with inner join
             // parent relationship
             for (Location p : ret) {
                 if (l.getParent().getId() == p.getId()) {
@@ -126,6 +127,12 @@ public class DBgui extends DBConnection implements DBIgui {
         return ret;
     }
 
+    /**
+     * returns all dates from the database
+     * 
+     * @return all dates from the database as Date[]
+     * @deprecated method should not be needed
+     */
     @Deprecated
     public Date[] getDates() {
         String sqlCommand = "SELECT Id,Day FROM day;";
@@ -280,21 +287,8 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs) throws IllegalArgumentException, SQLException {
-        return getSummedData(categoryIDs, locationIDs, accountIDs, false);
-    }
-
-    @Override
-    public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs)
-            throws IllegalArgumentException, SQLException {
-        return getSummedData(categoryIDs, locationIDs, accountIDs, true);
-
-    }
-
-    private TweetsAndRetweets getSummedData(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs, boolean byDate)
-            throws SQLException {
+            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
+            SQLException {
 
         if (categoryIDs == null || categoryIDs.length < 1
                 || locationIDs == null || locationIDs.length < 1) {
@@ -303,7 +297,22 @@ public class DBgui extends DBConnection implements DBIgui {
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
-        return getTweetSum(stmt, byDate);
+        return getTweetSum(stmt, byDates);
+    }
+
+    @Deprecated
+    public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
+            int[] locationIDs, int[] accountIDs)
+            throws IllegalArgumentException, SQLException {
+        if (categoryIDs == null || categoryIDs.length < 1
+                || locationIDs == null || locationIDs.length < 1) {
+            throw new IllegalArgumentException();
+        }
+        Statement stmt = createBasicStatement(categoryIDs, locationIDs,
+                accountIDs);
+
+        return getTweetSum(stmt, true);
+
     }
 
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
@@ -380,20 +389,9 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public List<Account> getAllData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs) throws IllegalArgumentException, SQLException {
-        return getDataPerAccount(categoryIDs, locationIDs, accountIDs, false);
-    }
+            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
+            SQLException {
 
-    @Override
-    public List<Account> getAllDataWithDates(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs)
-            throws IllegalArgumentException, SQLException {
-        return getDataPerAccount(categoryIDs, locationIDs, accountIDs, true);
-    }
-
-    private List<Account> getDataPerAccount(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs, boolean byDates)
-            throws IllegalArgumentException, SQLException {
         if (categoryIDs == null || categoryIDs.length < 1
                 || locationIDs == null || locationIDs.length < 1) {
             throw new IllegalArgumentException();
@@ -402,6 +400,21 @@ public class DBgui extends DBConnection implements DBIgui {
                 accountIDs);
 
         return getTweetSumPerAccount(stmt, byDates);
+    }
+
+    @Deprecated
+    public List<Account> getAllDataWithDates(int[] categoryIDs,
+            int[] locationIDs, int[] accountIDs)
+            throws IllegalArgumentException, SQLException {
+
+        if (categoryIDs == null || categoryIDs.length < 1
+                || locationIDs == null || locationIDs.length < 1) {
+            throw new IllegalArgumentException();
+        }
+        Statement stmt = createBasicStatement(categoryIDs, locationIDs,
+                accountIDs);
+
+        return getTweetSumPerAccount(stmt, true);
     }
 
     private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {

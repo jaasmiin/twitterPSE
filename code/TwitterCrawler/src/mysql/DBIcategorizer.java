@@ -15,7 +15,7 @@ public interface DBIcategorizer {
 
     /**
      * returns the non categorized accounts from the database (max. 100)
-     * IMPORTANT only id and url are set
+     * IMPORTANT only id and url are valid
      * 
      * @return the non categorized accounts from the database as List of Account
      *         (only id and url are valid)

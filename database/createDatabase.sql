@@ -103,12 +103,12 @@ ALTER TABLE page ADD CONSTRAINT uc_page UNIQUE (CategoryId, Page);
 CREATE INDEX idxCategoryId ON page(CategoryId);
 CREATE INDEX idxPage ON page(Page);
 CREATE INDEX idxAccountCategory ON accountCategory(CategoryId);
-CREATE INDEX idxTweets ON tweets(AccountId);
-CREATE INDEX idxRetweets ON retweets(AccountId);
+CREATE INDEX idxTweets1 ON tweets(AccountId);
+CREATE INDEX idxRetweets1 ON retweets(AccountId);
 CREATE INDEX idxAccounts ON accounts(AccountName);
-CREATE INDEX idxTweets ON tweets(DayId);
-CREATE INDEX idxRetweets ON retweets(DayId);
-CREATE INDEX idxRetweets ON retweets(LocationId);
+CREATE INDEX idxTweets2 ON tweets(DayId);
+CREATE INDEX idxRetweets2 ON retweets(DayId);
+CREATE INDEX idxRetweets3 ON retweets(LocationId);
 
 /* add required entrys for testing */
 INSERT INTO location (Name, Code, ParentId) VALUES ("defaultLocation","0",NULL);

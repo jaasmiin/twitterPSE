@@ -51,11 +51,18 @@ public interface DBIgui {
      *            the ids of the selected locations as int[]
      * @param accountIDs
      *            the ids of the additional accounts as int[]
+     * @param byDates
+     *            false if the data should be aggregated over days, if not true
      * @return all accounts that match a category- and a location-ID, with the
      *         associated total-number of Tweets and Retweets as List<Account>
+     * @throws IllegalArgumentException
+     *             thrown if categoryIDs or/and LocationIDs is empty or null
+     * @throws SQLException
+     *             thrown if the sql-query couldn't be built
      */
     public List<Account> getAllData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs) throws IllegalArgumentException, SQLException;
+            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
+            SQLException;
 
     /**
      * returns the total number of tweets and retweets from all the accounts
@@ -67,12 +74,19 @@ public interface DBIgui {
      *            the ids of the selected locations as int[]
      * @param accountIDs
      *            the ids of the additional accounts as int[]
+     * @param byDates
+     *            false if the data should be aggregated over days, if not true
      * @return the total number of tweets and retweets from all the accounts
      *         that match a category- and a location-ID per location as
      *         TweetsAndRetweets
+     * @throws IllegalArgumentException
+     *             thrown if categoryIDs or/and LocationIDs is empty or null
+     * @throws SQLException
+     *             thrown if the sql-query couldn't be built
      */
     public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs) throws IllegalArgumentException, SQLException;
+            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
+            SQLException;
 
     /**
      * returns all accounts that match a category- and a location-ID, with the
@@ -86,6 +100,11 @@ public interface DBIgui {
      *            the ids of the additional accounts as int[]
      * @return all accounts that match a category- and a location-ID, with the
      *         associated number of Tweets and Retweets per Day as List<Account>
+     * @throws IllegalArgumentException
+     *             thrown if categoryIDs or/and LocationIDs is empty or null
+     * @throws SQLException
+     *             thrown if the sql-query couldn't be built
+     * @deprecated use getAllData and set byDates on true
      */
     public List<Account> getAllDataWithDates(int[] categoryIDs,
             int[] locationIDs, int[] accountIDs)
@@ -105,6 +124,10 @@ public interface DBIgui {
      *         that match a category- and a location-ID per location per Day as
      *         TweetsAndRetweets
      * @throws IllegalArgumentException
+     *             thrown if categoryIDs or/and LocationIDs is empty or null
+     * @throws SQLException
+     *             thrown if the sql-query couldn't be built
+     * @deprecated use getSumOfData and set byDates on true
      */
     public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
             int[] locationIDs, int[] accountIDs)
@@ -114,6 +137,7 @@ public interface DBIgui {
      * Return list of accounts which name contains search
      * 
      * @param search
+     *            the word to search as String
      * @return a list of accounts (Limit 50, no tweets, retweets and
      *         categories), on fault return null.
      */
@@ -123,9 +147,10 @@ public interface DBIgui {
      * Add a new account to db.
      * 
      * @param user
-     *            TwitterUser
+     *            the twitter-user to add as User
      * @param locationID
-     *            of the TwitterUser
+     *            the locationID of the TwitterUser as int (has to reference a
+     *            guilty location in the database)
      * @return true if successful
      */
     public boolean addAccount(User user, int locationID);

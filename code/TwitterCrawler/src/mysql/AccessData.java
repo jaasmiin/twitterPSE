@@ -46,32 +46,14 @@ public class AccessData {
         return "jdbc:mysql://" + hostname + ":" + port + "/" + name;
     }
 
-    // /**
-    // * return the hostname for the database
-    // *
-    // * @return the hostname for the database as String
-    // */
-    // public String getHostname() {
-    // return hostname;
-    // }
-    //
-    // /**
-    // * return the port for the database
-    // *
-    // * @return the port for the database as String
-    // */
-    // public String getPort() {
-    // return port;
-    // }
-    
-     /**
+    /**
      * return the name for the database
-     *
+     * 
      * @return the name for the database as String
      */
-     public String getName() {
-     return name;
-     }
+    public String getName() {
+        return name;
+    }
 
     /**
      * return the user for the database

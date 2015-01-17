@@ -17,8 +17,8 @@ import mysql.AccessData;
 public class CrawlerMain {
     private static Controller cntrl;
     private final static String ERROR = "ERROR: A big error has occuered!"
-            + "The program will be shut down. Please check your input:"
-            + "'[number-of-worker] [timeout] [hostname] [port] [database-name] [database-user] [database-password]'.";
+            + "The program will be shut down. Please check your input: ";
+    private final static String INPUT = "'[number-of-worker] [timeout] [hostname] [port] [database-name] [database-user] [database-password]'.";
 
     /**
      * starts a crawler, that collects data from twitter
@@ -44,14 +44,14 @@ public class CrawlerMain {
                         new AccessData(args[2], args[3], args[4], args[5],
                                 args[6]), Integer.parseInt(args[0]));
             } catch (NumberFormatException | SecurityException | IOException e) {
-                System.out.println(ERROR);
+                System.out.println(ERROR + INPUT);
                 return;
             }
             cntrl.start();
             userInput();
         } else {
-            System.out
-                    .println(" Error. Wrong argument. Using: crawler [number-of-worker] [runtime] [hostname] [port] [databaseName] [userName] [password]");
+            System.out.println(" Error. Wrong argument. Using: crawler "
+                    + INPUT);
             System.out
                     .println("  runtime:\t The run-time in seconds that the crawler should run.");
             System.out

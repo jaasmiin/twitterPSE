@@ -46,6 +46,7 @@ public class StatusProcessor implements Runnable {
      * @param accessData
      *            the access data for the root user of the database as String
      * @throws InstantiationException
+     *             thrown if it is not possible to connect to the database
      */
     public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
             ConcurrentHashMap<Long, Object> accountsToTrack, Logger logger,

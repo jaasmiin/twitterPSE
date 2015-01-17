@@ -103,8 +103,9 @@ public class Locator {
 
     private void readStatFromFile(File file) {
 
+        Scanner b = null;
         try {
-            Scanner b = new Scanner(new FileReader(file.getPath()));
+            b = new Scanner(new FileReader(file.getPath()));
 
             countHashMatches = b.nextLong();
             countTotalNumberRequest = b.nextLong();
@@ -112,6 +113,10 @@ public class Locator {
         } catch (IOException e) {
             logger.warning("Cannot read from file to RequestStat "
                     + e.getMessage());
+        } finally {
+            if (b != null) {
+                b.close();
+            }
         }
 
     }
@@ -211,9 +216,9 @@ public class Locator {
             // **** just for analyzing:
             countHashMatches++;
             // *****
-            logger.info("Hahtable match:  " + location.toLowerCase()
-                    + "  HashMatches: " + countHashMatches
-                    + "  total number of request: " + countTotalNumberRequest);
+            // logger.info("Hahtable match:  " + location.toLowerCase()
+            // + "  HashMatches: " + countHashMatches
+            // + "  total number of request: " + countTotalNumberRequest);
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 

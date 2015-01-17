@@ -10,6 +10,7 @@ import twitter4j.RateLimitStatusListener;
  * 
  * @author Holger Ebhart
  * @version 1.0
+ * @deprecated not necessary to listen to rate limits
  */
 public class MyRateLimitStatusListener implements RateLimitStatusListener {
 

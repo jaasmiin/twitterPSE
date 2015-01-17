@@ -33,8 +33,11 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
      * @param logger
      *            a global logger for the whole program as Logger
      * @throws InstantiationException
+     *             thrown if the mysql-driver hasn't been found
      * @throws IllegalAccessException
+     *             thrown if the mysql-driver hasn't been found
      * @throws ClassNotFoundException
+     *             thrown if the mysql-driver hasn't been found
      */
     public DBcategorizer(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,

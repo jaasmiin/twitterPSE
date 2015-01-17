@@ -3,6 +3,7 @@ package main;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
+import twitter4j.ConnectionLifeCycleListener;
 import twitter4j.FilterQuery;
 import twitter4j.Status;
 import twitter4j.TwitterStream;
@@ -22,6 +23,7 @@ public class StreamListener implements RunnableListener {
     private Logger logger;
     private TwitterStream twitterStream;
     private MyStatusListener listener;
+    private ConnectionLifeCycleListener clcl;
 
     /**
      * 
@@ -73,14 +75,11 @@ public class StreamListener implements RunnableListener {
         // MyRateLimitStatusListener(
         // logger);
 
-        // TODO
-        // ConnectionLifeCycleListener clcl = new
-        // MyConnectionLifeCycleListener();
+        clcl = new MyConnectionLifeCycleListener();
 
         // set streaming details
         // twitterStream.addRateLimitStatusListener(rateLimitListener);
-        // TODO
-        // twitterStream.addConnectionLifeCycleListener(clcl);
+        twitterStream.addConnectionLifeCycleListener(clcl);
         twitterStream.addListener(listener);
         twitterStream.filter(filter);
 
@@ -88,7 +87,7 @@ public class StreamListener implements RunnableListener {
 
     @Override
     public String toString() {
-        return listener.toString();
+        return clcl.toString();
     }
 
     @Override

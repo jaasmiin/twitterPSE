@@ -38,9 +38,13 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
      * @param logger
      *            a global logger for the whole program as Logger
      * @throws InstantiationException
+     *             thrown if the mysql-driver hasn't been found
      * @throws IllegalAccessException
+     *             thrown if the mysql-driver hasn't been found
      * @throws ClassNotFoundException
+     *             thrown if the mysql-driver hasn't been found
      * @throws SQLException
+     *             thrown if a database-connection couldn't be established now
      */
     public DBcrawler(AccessData accessData, Locator locator, Logger logger)
             throws InstantiationException, IllegalAccessException,
@@ -54,7 +58,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     }
 
     @Override
-    public boolean[] addAccount(User user, Place place,GeoLocation geotag, Date date, boolean tweet) {
+    public boolean[] addAccount(User user, Place place, GeoLocation geotag,
+            Date date, boolean tweet) {
 
         if (user == null || date == null) {
             return new boolean[] {false, false, false };
@@ -76,8 +81,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             // add account
 
             // locate account
-           String location = locator.locate(place, geotag, user.getLocation(), user.getTimeZone());
-            
+            String location = locator.locate(place, geotag, user.getLocation(),
+                    user.getTimeZone());
+
             name = checkString(name, 30, null);
 
             if (url != null) {
@@ -287,7 +293,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionResultLog(e);
             return new long[0];
         } finally {
-            closeResultAndStatement(stmt,res);
+            closeResultAndStatement(stmt, res);
         }
 
         long[] ret = new long[st.size()];
@@ -334,7 +340,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionResultLog(e);
             return new HashSet<String>();
         } finally {
-            closeResultAndStatement(stmt,res);
+            closeResultAndStatement(stmt, res);
         }
 
         HashSet<String> ret = new HashSet<String>(st.size());
@@ -367,7 +373,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionResultLog(e);
             return new HashSet<Long>();
         } finally {
-            closeResultAndStatement(stmt,res);
+            closeResultAndStatement(stmt, res);
         }
 
         HashSet<Long> ret = new HashSet<Long>(st.size());
