@@ -20,6 +20,7 @@ public class MyStatusListener implements StatusListener {
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
     private boolean connected;
+    private int sumOverAll;
 
     /**
      * initialize a new listener to listen to the twitter streaming api
@@ -34,6 +35,7 @@ public class MyStatusListener implements StatusListener {
         this.queue = queue;
         this.logger = logger;
         connected = true;
+        sumOverAll = 0;
 
     }
 
@@ -57,14 +59,16 @@ public class MyStatusListener implements StatusListener {
 
         if (arg0.getPercentFull() >= 50) {
             // TODO reconnect
-        }else{
+        } else {
             connected = true;
         }
     }
 
     @Override
     public void onStatus(Status status) {
-        // TODO check if it works better
+
+        sumOverAll++;
+
         if (status.isRetweet() || status.getUser().isVerified()) {
             queue.add(status);
         }
@@ -79,6 +83,15 @@ public class MyStatusListener implements StatusListener {
     @Override
     public String toString() {
         return connected ? "connected" : "maybe crashed";
+    }
+
+    /**
+     * returns the sum over all status objects received from twitter
+     * 
+     * @return the sum over all status objects received from twitter as int
+     */
+    public int getCounter() {
+        return sumOverAll;
     }
 
 }

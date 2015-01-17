@@ -47,6 +47,7 @@ public class Controller extends Thread {
     // note: no Locator is set
     private DBcrawler dbc;
     private Date dateForDB;
+    private Logger statisticLogger;
 
     /**
      * 
@@ -62,6 +63,8 @@ public class Controller extends Thread {
         threadNum = numberOfThreads;
         thrdStatusProcessor = new Thread[threadNum];
         statusProcessor = new StatusProcessor[threadNum];
+
+        statisticLogger = getStatisticLogger();
 
         logger = getLogger();
         logger.info("Controller started");
@@ -267,8 +270,15 @@ public class Controller extends Thread {
     }
 
     private void limitQueue() {
+        int m = 0;
         int count = 0;
         while (run) {
+
+            if (m >= 60) {
+                m = 0;
+                writeStatistic();
+            }
+            m++;
 
             // one reconnect to twitter per day
             if (count >= 86400) {// one day = 86400 seconds
@@ -306,4 +316,54 @@ public class Controller extends Thread {
             count += INTERVAL;
         }
     }
+
+    private void writeStatistic() {
+
+        String msg = "";
+        msg += "Summe aller empfangener Status-Objekte: "
+                + streamListener.getCounter() + "\n";
+        int[] sum = new int[11];
+        for (int j = 0; j < sum.length; j++) {
+            sum[j] = 0;
+        }
+        for (StatusProcessor sp : statusProcessor) {
+            int[] temp = sp.getCounter();
+            for (int i = 0; i < sum.length; i++) {
+                sum[i] += temp[i];
+            }
+        }
+        msg += "Summe aller interessanten Status-Objekte: " + sum[10] + "\n";
+        msg += "LOKALISIERUNG\n";
+        msg += "Summe Anfragen: " + sum[0] + "\n";
+        msg += "Erfolgreicher Locationen: " + sum[1] + "\n";
+        msg += "davon über place lokalisiert: " + sum[2] + "\n";
+        msg += "davon über geotag lokalisiert: " + sum[3] + "\n";
+        msg += "davon über String und Zeitzone lokalisiert: " + sum[4] + "\n";
+        msg += "über Webservice lokalisiert: " + sum[5] + "\n";
+        msg += "über HashMap lokalisiert" + sum[6] + "\n";
+        msg += "Summe vorhandener Places: " + sum[7] + "\n";
+        msg += "Summe vorhandener Geotags: " + sum[8] + "\n";
+        msg += "Summe vorhandener location-Information: " + sum[9] + "\n";
+
+        statisticLogger.info(msg);
+    }
+
+    private Logger getStatisticLogger() {
+        Logger l = Logger.getLogger("logger");
+        try {
+            new File("Statistic.log").createNewFile();
+            FileHandler fh = new FileHandler("LogFile.log", true);
+            SimpleFormatter formatter = new SimpleFormatter();
+            fh.setFormatter(formatter);
+            l.addHandler(fh);
+        } catch (IOException e) {
+            logger.severe("Couldn't instantiate statistic-logger: "
+                    + e.getMessage());
+        }
+
+        l.setUseParentHandlers(false);
+
+        return l;
+    }
+
 }
