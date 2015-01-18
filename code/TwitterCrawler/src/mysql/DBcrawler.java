@@ -8,6 +8,7 @@ import java.sql.Types;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Stack;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import locate.Locator;
@@ -141,7 +142,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, true);
     }
 
     private boolean updateAccount(long id, int follower) {
@@ -156,7 +157,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, false);
     }
 
     private boolean insertTweet(long id, boolean tweet, Date date) {
@@ -174,7 +175,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, false);
     }
 
     @Override
@@ -204,7 +205,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionLog(e, stmt);
         }
 
-        boolean result2 = executeStatementUpdate(stmt);
+        boolean result2 = executeStatementUpdate(stmt, false);
 
         return new boolean[] {result1, result2 };
     }
@@ -246,7 +247,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionLog(e, stmt);
         }
 
-        boolean ret = executeStatementUpdate(stmt);
+        boolean ret = executeStatementUpdate(stmt, false);
         if (ret) {
             locationHash.add(code);
         }
@@ -266,7 +267,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, false);
     }
 
     @Override
@@ -303,20 +304,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         return ret;
     }
 
-    private String checkString(String word, int maxLength, String byDefault) {
-        if (word == null) {
-            return byDefault;
-
-        } else {
-            String ret = word.replace("\\", "/");
-            ret = ret.replace("\"", "\"\"");
-            if (ret.length() > maxLength) {
-                ret = ret.substring(0, maxLength);
-            }
-            return ret;
-        }
-    }
-
     @Override
     public HashSet<String> getCountryCodes() {
 
@@ -331,10 +318,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             return new HashSet<String>();
         }
 
-        Stack<String> st = new Stack<String>();
+        HashSet<String> ret = new HashSet<String>(100);
         try {
             while (res.next()) {
-                st.push(res.getString(1));
+                ret.add(res.getString(1));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -343,10 +330,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             closeResultAndStatement(stmt, res);
         }
 
-        HashSet<String> ret = new HashSet<String>(st.size());
-        for (String code : st) {
-            ret.add(code);
-        }
         return ret;
     }
 
@@ -364,10 +347,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             return new HashSet<Long>();
         }
 
-        Stack<Long> st = new Stack<Long>();
+        HashSet<Long> ret = new HashSet<Long>(10000);
         try {
             while (res.next()) {
-                st.push(res.getLong("TwitterAccountId"));
+                ret.add(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -376,11 +359,75 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             closeResultAndStatement(stmt, res);
         }
 
-        HashSet<Long> ret = new HashSet<Long>(st.size());
-        for (long l : st) {
-            ret.add(l);
-        }
         return ret;
+    }
+
+    @Override
+    public ConcurrentHashMap<String, String> getLocationStrings() {
+
+        String sqlCommand = "SELECT Word, Code FROM wordLocation JOIN location ON wordLocation.LocationId=location.Id LIMIT 1000000;";
+        Statement stmt = null;
+        ResultSet res = null;
+        try {
+            stmt = c.createStatement();
+            res = stmt.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+            return new ConcurrentHashMap<String, String>();
+        }
+
+        ConcurrentHashMap<String, String> ret = new ConcurrentHashMap<String, String>(
+                50000);
+        try {
+            while (res.next()) {
+                ret.put(res.getString("Word"), res.getString("Code"));
+            }
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            return new ConcurrentHashMap<String, String>();
+        } finally {
+            closeResultAndStatement(stmt, res);
+        }
+
+        return ret;
+    }
+
+    @Override
+    public boolean addLocationString(String code, String word) {
+
+        code = checkString(code, 3, null);
+        word = checkString(word, 250, null);
+        if (word == null || code == null)
+            return false;
+
+        if (!addLocation(code, null))
+            return false;
+
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        try {
+            stmt = c.prepareStatement("INSERT IGNORE INTO wordLocation (Word, LocationId) VALUES (?,?);");
+            stmt.setString(1, word);
+            stmt.setString(2, code);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        }
+
+        return executeStatementUpdate(stmt, false);
+    }
+
+    private String checkString(String word, int maxLength, String byDefault) {
+        if (word == null) {
+            return byDefault;
+
+        } else {
+            String ret = word.replace("\\", "/");
+            ret = ret.replace("\"", "\"\"");
+            if (ret.length() > maxLength) {
+                ret = ret.substring(0, maxLength);
+            }
+            return ret;
+        }
     }
 
 }

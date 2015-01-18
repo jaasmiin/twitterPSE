@@ -3,6 +3,7 @@ package mysql;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 import twitter4j.GeoLocation;
 import twitter4j.Place;
@@ -116,5 +117,26 @@ public interface DBIcrawler {
      *         error occurred
      */
     public HashSet<Long> getAccounts();
+    
+    /**
+     * returns a threadsafe hashmap that maps words from the database to
+     * location-codes
+     * 
+     * @return a threadsafe hashmap that maps words from the database to
+     *         location-codes as ConcurrentHashMap<String, String>
+     */
+    public ConcurrentHashMap<String, String> getLocationStrings();
+
+    /**
+     * inserts a location-code - word combination to the database
+     * 
+     * @param code
+     *            the location-code as String (max. length 3)
+     * @param word
+     *            the word to connect with the location-code as String (max.
+     *            length 250)
+     * @return true if data has been insert into the database, else false
+     */
+    public boolean addLocationString(String code, String word);
 
 }

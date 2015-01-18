@@ -246,7 +246,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, false);
     }
 
     @Override
@@ -262,7 +262,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, false);
     }
 
     @Override
@@ -282,7 +282,7 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt);
+        return executeStatementUpdate(stmt, false);
     }
 
     @Override

@@ -87,7 +87,8 @@ public abstract class DBConnection {
      *            the statement to execute as update as PreparedStatement
      * @return true if the update on the database was successfully, else false
      */
-    protected boolean executeStatementUpdate(PreparedStatement stmt) {
+    protected boolean executeStatementUpdate(PreparedStatement stmt,
+            boolean resultNotNull) {
 
         if (stmt == null) {
             return false;
@@ -95,7 +96,11 @@ public abstract class DBConnection {
 
         boolean ret = false;
         try {
-            ret = stmt.executeUpdate() >= 0 ? true : false;
+            if (resultNotNull) {
+                ret = stmt.executeUpdate() != 0 ? true : false;
+            } else {
+                ret = stmt.executeUpdate() >= 0 ? true : false;
+            }
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         } finally {

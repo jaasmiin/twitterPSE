@@ -118,7 +118,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
                 } catch (SQLException e) {
                     sqlExceptionLog(e, stmt);
                 }
-                result1 = executeStatementUpdate(stmt);
+                result1 = executeStatementUpdate(stmt, false);
 
                 // on success
                 if (result1) {
@@ -139,7 +139,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             } catch (SQLException e) {
                 sqlExceptionLog(e, stmt);
             }
-            result2 = executeStatementUpdate(stmt);
+            result2 = executeStatementUpdate(stmt, false);
         }
 
         // set categorized = true
