@@ -180,6 +180,7 @@ public class Locator {
      * @return the code of the country/location on success and "0" otherwise as
      *         String
      */
+    @SuppressWarnings("unused")
     public String getLocation(String location, String timezone) {
         // **** just for analyzing:
         countTotalNumberRequest++;

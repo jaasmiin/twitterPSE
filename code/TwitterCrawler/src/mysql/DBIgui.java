@@ -1,6 +1,7 @@
 package mysql;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 
 import twitter4j.User;
@@ -41,16 +42,18 @@ public interface DBIgui {
      */
     public int getAccountId(String accountName);
 
+    public HashMap<String, Integer> getAllRetweetsPerLocation();
+
     /**
      * returns all accounts that match a category- and a location-ID, with the
      * associated total-number of Tweets and Retweets
      * 
      * @param categoryIDs
-     *            the ids of the selected categorys as int[]
+     *            the ids of the selected categorys as Integer[]
      * @param locationIDs
-     *            the ids of the selected locations as int[]
+     *            the ids of the selected locations as Integer[]
      * @param accountIDs
-     *            the ids of the additional accounts as int[]
+     *            the ids of the additional accounts as Integer[]
      * @param byDates
      *            false if the data should be aggregated over days, if not true
      * @return all accounts that match a category- and a location-ID, with the
@@ -60,20 +63,20 @@ public interface DBIgui {
      * @throws SQLException
      *             thrown if the sql-query couldn't be built
      */
-    public List<Account> getAllData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
-            SQLException;
+    public List<Account> getAllData(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
+            throws IllegalArgumentException, SQLException;
 
     /**
      * returns the total number of tweets and retweets from all the accounts
      * that match a category- and a location-ID per location
      * 
      * @param categoryIDs
-     *            the ids of the selected categorys as int[]
+     *            the ids of the selected categorys as Integer[]
      * @param locationIDs
-     *            the ids of the selected locations as int[]
+     *            the ids of the selected locations as Integer[]
      * @param accountIDs
-     *            the ids of the additional accounts as int[]
+     *            the ids of the additional accounts as Integer[]
      * @param byDates
      *            false if the data should be aggregated over days, if not true
      * @return the total number of tweets and retweets from all the accounts
@@ -84,9 +87,9 @@ public interface DBIgui {
      * @throws SQLException
      *             thrown if the sql-query couldn't be built
      */
-    public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
-            SQLException;
+    public TweetsAndRetweets getSumOfData(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
+            throws IllegalArgumentException, SQLException;
 
     /**
      * returns all accounts that match a category- and a location-ID, with the
@@ -106,8 +109,8 @@ public interface DBIgui {
      *             thrown if the sql-query couldn't be built
      * @deprecated use getAllData and set byDates on true
      */
-    public List<Account> getAllDataWithDates(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs)
+    public List<Account> getAllDataWithDates(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs)
             throws IllegalArgumentException, SQLException;
 
     /**
@@ -129,8 +132,8 @@ public interface DBIgui {
      *             thrown if the sql-query couldn't be built
      * @deprecated use getSumOfData and set byDates on true
      */
-    public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs)
+    public TweetsAndRetweets getSumOfDataWithDates(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs)
             throws IllegalArgumentException, SQLException;
 
     /**

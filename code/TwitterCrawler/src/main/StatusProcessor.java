@@ -32,12 +32,17 @@ public class StatusProcessor implements Runnable {
     private ConcurrentHashMap<Long, Object> nonVerAccounts;
     private Locator locate;
 
+    private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
+    private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
+
     /**
      * initialize class to handle status object from the twitter stream api
      * 
      * @param queue
      *            the queue for communication between producer thread and
      *            consumer thread
+     * @param locateAccountQueue
+     * @param locateRetweetQueue
      * @param accountsToTrack
      *            the twitter-account-id's of the non verified accounts that
      *            should be tracked as ConcurrentMap<Long, Object>
@@ -49,9 +54,13 @@ public class StatusProcessor implements Runnable {
      *             thrown if it is not possible to connect to the database
      */
     public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
+            ConcurrentLinkedQueue<StatusAccount> locateAccountQueue,
+            ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue,
             ConcurrentHashMap<Long, Object> accountsToTrack, Logger logger,
             AccessData accessData) throws InstantiationException {
         this.queue = queue;
+        this.locateAccountQueue = locateAccountQueue;
+        this.locateRetweetQueue = locateRetweetQueue;
         this.logger = logger;
         this.nonVerAccounts = accountsToTrack;
         locate = new Locator(this.logger);
@@ -177,6 +186,13 @@ public class StatusProcessor implements Runnable {
      */
     private void accountToDB(Status tweet, boolean isTweet) {
 
+        // if (locate.locate(place, geotag, location, timeZone)) {
+        // dbc.addAccount(tweet.getUser(), tweet.getPlace(),
+        // tweet.getGeoLocation(), tweet.getCreatedAt(), isTweet);
+        // } else {
+        // locateAccountQueue.add(new StatusAccount(tweet, isTweet));
+        // }
+
         dbc.addAccount(tweet.getUser(), tweet.getPlace(),
                 tweet.getGeoLocation(), tweet.getCreatedAt(), isTweet);
 
@@ -203,6 +219,13 @@ public class StatusProcessor implements Runnable {
      */
     private void retweetToDB(long id, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
+
+        // if (locate.locate(place, geotag, location, timeZone)) {
+        // dbc.addRetweet(id, loc, date);
+        // } else {
+        // locateRetweetQueue.add(new StatusRetweet(id, date, location,
+        // timeZone));
+        // }
 
         String loc = locate.locate(place, geotag, location, timeZone);
 

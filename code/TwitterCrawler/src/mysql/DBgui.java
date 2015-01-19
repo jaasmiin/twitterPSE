@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
@@ -286,8 +287,8 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public TweetsAndRetweets getSumOfData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
+    public TweetsAndRetweets getSumOfData(Integer[] categoryIDs, Integer[] locationIDs,
+            Integer[] accountIDs, boolean byDates) throws IllegalArgumentException,
             SQLException {
 
         if (categoryIDs == null || categoryIDs.length < 1
@@ -301,8 +302,8 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Deprecated
-    public TweetsAndRetweets getSumOfDataWithDates(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs)
+    public TweetsAndRetweets getSumOfDataWithDates(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs)
             throws IllegalArgumentException, SQLException {
         if (categoryIDs == null || categoryIDs.length < 1
                 || locationIDs == null || locationIDs.length < 1) {
@@ -388,8 +389,8 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public List<Account> getAllData(int[] categoryIDs, int[] locationIDs,
-            int[] accountIDs, boolean byDates) throws IllegalArgumentException,
+    public List<Account> getAllData(Integer[] categoryIDs, Integer[] locationIDs,
+            Integer[] accountIDs, boolean byDates) throws IllegalArgumentException,
             SQLException {
 
         if (categoryIDs == null || categoryIDs.length < 1
@@ -403,8 +404,8 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Deprecated
-    public List<Account> getAllDataWithDates(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs)
+    public List<Account> getAllDataWithDates(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs)
             throws IllegalArgumentException, SQLException {
 
         if (categoryIDs == null || categoryIDs.length < 1
@@ -553,8 +554,8 @@ public class DBgui extends DBConnection implements DBIgui {
         return ret;
     }
 
-    private Statement createBasicStatement(int[] categoryIDs,
-            int[] locationIDs, int[] accountIDs) throws SQLException {
+    private Statement createBasicStatement(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs) throws SQLException {
 
         Statement stmt = c.createStatement();
 
@@ -587,6 +588,12 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         return stmt;
+    }
+
+    @Override
+    public HashMap<String, Integer> getAllRetweetsPerLocation() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

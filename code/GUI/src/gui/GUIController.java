@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import mysql.AccessData;
@@ -38,11 +39,11 @@ public class GUIController extends Application implements Initializable {
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
 	private DBgui db;
-	private ArrayList<Category> categories = new ArrayList<Category>();
-	private ArrayList<Location> locations = new ArrayList<Location>();
-	private ArrayList<Account> accounts = new ArrayList<Account>();
+	private List<Category> categories = new ArrayList<Category>();
+	private List<Location> locations = new ArrayList<Location>();
+	private List<Account> accounts = new ArrayList<Account>();
 	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
-	private ArrayList<Account> dataByAccount = new ArrayList<Account>();
+	private List<Account> dataByAccount = new ArrayList<Account>();
 	
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
 	private HashSet<Integer> selectedLocations = new HashSet<Integer>();
@@ -125,10 +126,10 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
-		Integer[] selectedCategoriesArray = selectedLocations.toArray(new Integer[selectedCategories.size()]);
-		Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
-		Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
-		boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
+		final Integer[] selectedCategoriesArray = selectedLocations.toArray(new Integer[selectedCategories.size()]);
+		final Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
+		final Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
+		final boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
 		boolean success = true;
 		Thread t1 = new Thread(new Runnable() {
 			@Override

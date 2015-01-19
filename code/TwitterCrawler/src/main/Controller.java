@@ -36,6 +36,8 @@ public class Controller extends Thread {
     private AccessData accessData;
 
     private ConcurrentLinkedQueue<Status> statusQueue;
+    private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
+    private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
     private boolean run = true;
     private Logger logger;
     private StreamListener streamListener;
@@ -75,6 +77,8 @@ public class Controller extends Thread {
         dateForDB = cal.getTime();
 
         statusQueue = new ConcurrentLinkedQueue<Status>();
+        locateAccountQueue = new ConcurrentLinkedQueue<StatusAccount>();
+        locateRetweetQueue = new ConcurrentLinkedQueue<StatusRetweet>();
     }
 
     @Override
@@ -99,7 +103,8 @@ public class Controller extends Thread {
         // the db
         for (int i = 0; i < threadNum; ++i) {
             try {
-                statusProcessor[i] = new StatusProcessor(statusQueue, hashSet,
+                statusProcessor[i] = new StatusProcessor(statusQueue,
+                        locateAccountQueue, locateRetweetQueue, hashSet,
                         logger, accessData);
                 thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
                 thrdStatusProcessor[i].start();
@@ -258,6 +263,9 @@ public class Controller extends Thread {
         }
         return " STATE OF THE CRAWLER: " + "\n"
                 + " Number of status-objects in queue: " + getQueueSize()
+                + "\n" + " Number of Accounts to locate: "
+                + locateAccountQueue.size() + "\n"
+                + " Number of Retweets to locate: " + locateRetweetQueue.size()
                 + "\n" + " Status of the Streamlistener: "
                 + streamListener.toString() + "\n"
                 + " Status of the Accountupdater: "
@@ -290,12 +298,9 @@ public class Controller extends Thread {
                 }
             }
 
-            if (statusQueue.size() > MAX_SIZE) {
-
-                for (int i = 0; i < MAX_SIZE / 2; i++) {
-                    statusQueue.poll();
-                }
-            }
+            limitQueue(statusQueue);
+            limitQueue(locateAccountQueue);
+            limitQueue(locateRetweetQueue);
 
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
@@ -304,6 +309,16 @@ public class Controller extends Thread {
                         + e.getMessage());
             }
             count += INTERVAL;
+        }
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void limitQueue(ConcurrentLinkedQueue queue) {
+        if (queue.size() > MAX_SIZE) {
+
+            for (int i = 0; i < MAX_SIZE / 2; i++) {
+                queue.poll();
+            }
         }
     }
 }

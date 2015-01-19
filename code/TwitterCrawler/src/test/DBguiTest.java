@@ -113,7 +113,8 @@ public class DBguiTest {
     @Test(expected = IllegalArgumentException.class)
     public void test1GetSumOfData() {
         try {
-            dbg.getSumOfData(new int[0], new int[0], new int[0], false);
+            dbg.getSumOfData(new Integer[0], new Integer[0], new Integer[0],
+                    false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -123,8 +124,8 @@ public class DBguiTest {
     public void test2GetSumOfData() {
         TweetsAndRetweets test = new TweetsAndRetweets();
         try {
-            test = dbg.getSumOfData(new int[] {1 }, new int[] {1 }, new int[0],
-                    false);
+            test = dbg.getSumOfData(new Integer[] {1 }, new Integer[] {1 },
+                    new Integer[0], false);
         } catch (IllegalArgumentException | SQLException e) {
             e.printStackTrace();
         }
@@ -138,8 +139,8 @@ public class DBguiTest {
     public void test2GetSumOfDataWithDates() {
         TweetsAndRetweets test = new TweetsAndRetweets();
         try {
-            test = dbg.getSumOfData(new int[] {1 }, new int[] {1 }, new int[0],
-                    true);
+            test = dbg.getSumOfData(new Integer[] {1 }, new Integer[] {1 },
+                    new Integer[0], true);
         } catch (IllegalArgumentException | SQLException e) {
             e.printStackTrace();
         }
@@ -154,7 +155,8 @@ public class DBguiTest {
     @Test(expected = IllegalArgumentException.class)
     public void test1GetSumOfDataWithDates() {
         try {
-            dbg.getSumOfData(new int[0], new int[0], new int[0], true);
+            dbg.getSumOfData(new Integer[0], new Integer[0], new Integer[0],
+                    true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -163,7 +165,7 @@ public class DBguiTest {
     @Test(expected = IllegalArgumentException.class)
     public void test1GetAllDataWithDates() {
         try {
-            dbg.getAllData(new int[0], new int[0], new int[0], true);
+            dbg.getAllData(new Integer[0], new Integer[0], new Integer[0], true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -173,8 +175,8 @@ public class DBguiTest {
     public void test2GetAllDataWithDates() {
         List<Account> res = null;
         try {
-            res = dbg.getAllData(new int[] {1 }, new int[] {1 }, new int[0],
-                    true);
+            res = dbg.getAllData(new Integer[] {1 }, new Integer[] {1 },
+                    new Integer[0], true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -188,7 +190,8 @@ public class DBguiTest {
     @Test(expected = IllegalArgumentException.class)
     public void test1GetAllData() {
         try {
-            dbg.getAllData(new int[0], new int[0], new int[0], false);
+            dbg.getAllData(new Integer[0], new Integer[0], new Integer[0],
+                    false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -198,8 +201,8 @@ public class DBguiTest {
     public void test2GetAllData() {
         List<Account> res = null;
         try {
-            res = dbg.getAllData(new int[] {1 }, new int[] {1 }, new int[0],
-                    false);
+            res = dbg.getAllData(new Integer[] {1 }, new Integer[] {1 },
+                    new Integer[0], false);
         } catch (SQLException e) {
             e.printStackTrace();
         }
