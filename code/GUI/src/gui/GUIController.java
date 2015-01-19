@@ -2,16 +2,23 @@ package gui;
 	
 import gui.GUIElement.UpdateType;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.ResourceBundle;
 
+import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -19,7 +26,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
-public class GUIController extends Application {
+public class GUIController extends Application implements Initializable {
 	@FXML
 	private Pane paSelectionOfQuery;
 	@FXML
@@ -34,12 +41,13 @@ public class GUIController extends Application {
 	private ArrayList<Category> categories = new ArrayList<Category>();
 	private ArrayList<Location> locations = new ArrayList<Location>();
 	private ArrayList<Account> accounts = new ArrayList<Account>();
-	private ArrayList<TweetsAndRetweets> summedData = new ArrayList<TweetsAndRetweets>();
+	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
+	private ArrayList<Account> dataByAccount = new ArrayList<Account>();
 	
-	private ArrayList<Integer> selectedCategories = new ArrayList<Integer>();
-	private ArrayList<Integer> selectedLocations = new ArrayList<Integer>();
-	private ArrayList<Integer> selectedAccounts = new ArrayList<Integer>();
-	
+	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
+	private HashSet<Integer> selectedLocations = new HashSet<Integer>();
+	private HashSet<Integer> selectedAccounts = new HashSet<Integer>();
+	private Date selectedStartDate, selectedEndDate;
 	public static GUIController getInstance() {
 		if (instance == null) {
 			launch("");
@@ -51,7 +59,6 @@ public class GUIController extends Application {
 	public void start(Stage primaryStage) {
 		if (instance == null) {
 			instance = this;
-			initDBConnection();
 			try {
 				Parent parent = FXMLLoader.load(GUIController.class.getResource("GUIView.fxml"));
 				Scene scene = new Scene(parent, 800, 600);
@@ -71,8 +78,19 @@ public class GUIController extends Application {
 	}
 	
 	private void initDBConnection() {
-//		db = new DBgui(null, null);
-		// TODO: connect to db
+		boolean success = true;
+		lblInfo.setText("Verbindung mit DB wird aufgebaut...");
+		try {
+			db = new DBgui(new AccessData("hostName", "port", "dbName", "userName", "password"), null);
+			// TODO: connect to db
+		} catch (InstantiationException | IllegalAccessException
+				| ClassNotFoundException e) {
+			setInfo("Fehler, " + e.getLocalizedMessage());
+			success = false;
+		}
+		if (success) {
+			setInfo("Erfolreich mit DB verbunden.");
+		}
 	}
 	private void reloadLocation() {
 //		locations = db.getLocations();
@@ -106,10 +124,41 @@ public class GUIController extends Application {
 		update(UpdateType.CATEGORY);
 	}
 	
-	private void reloadSummedData() {
-//		summedData = db.getSumOfData(selectedCategories, selectedLocations);
-		// TODO: which data type should be used?
-		update(UpdateType.TWEET);
+	private void reloadData() {
+		Integer[] selectedCategoriesArray = selectedLocations.toArray(new Integer[selectedCategories.size()]);
+		Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
+		Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
+		boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
+		boolean success = true;
+		Thread t1 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);				
+			}
+		});
+		Thread t2 = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);				
+			}
+		});
+		t1.start();
+		t2.start();
+		try {
+			t1.join();
+		} catch (InterruptedException e) {
+			success = false;
+			setInfo(e.getLocalizedMessage());
+		}
+		try {
+			t2.join();
+		} catch (InterruptedException e) {
+			success = false;
+			setInfo(e.getLocalizedMessage());
+		}
+		if (success) {
+			update(UpdateType.TWEET);
+		}
 	}
 	
 	private void reloadAll() {
@@ -120,16 +169,24 @@ public class GUIController extends Application {
 	
 	private void setInfo(String text) {
 		if (lblInfo != null) {
-			lblInfo.setText(text);
-			new Thread(new Runnable() {
+			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					lblInfo.setText("");
-					try {
-						wait(1500);
-					} catch (InterruptedException e) {}
+					lblInfo.setText(text);
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								Thread.sleep(2000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							lblInfo.setText("");
+						}
+					});
 				}
-			}).start();
+			});
 		}
 	}
 	
@@ -157,7 +214,7 @@ public class GUIController extends Application {
 	}
 	
 	/**
-	 * Get lost of all locations
+	 * Get list of all locations.
 	 * @return list of locations
 	 */
 	public ArrayList<Location> getLocations() {
@@ -179,24 +236,38 @@ public class GUIController extends Application {
 		return filteredLocations;
 	}
 	
+	/**
+	 * Set if a category is selected.
+	 * @param id of category
+	 * @param selected is true if category should be selected, false otherwise
+	 */
 	public void setCategory(int id, boolean selected) {
 		if (selected) {
 			selectedCategories.add(id);
 		} else {
 			selectedCategories.remove(id);
 		}
-		reloadSummedData();
+		reloadData();
 	}
 	
+	/**
+	 * Set if a location is selected.
+	 * @param id of location
+	 * @param selected is true if location should be selected, false otherwise
+	 */
 	public void setLocation(int id, boolean selected) {
 		if (selected) {
 			selectedCategories.add(id);
 		} else {
 			selectedCategories.remove(id);
 		}
-		reloadSummedData();
+		reloadData();
 	}
 	
+	/**
+	 * Get list of all accounts.
+	 * @return a list of all accounts
+	 */
 	public ArrayList<String> getSelectedAccounts() {
 		// TODO: add correct code
 		ArrayList<String> a = new ArrayList<String>();
@@ -204,6 +275,10 @@ public class GUIController extends Application {
 		return a;
 	}
 	
+	/**
+	 * Get list of selected categories.
+	 * @return selected categories
+	 */
 	public ArrayList<String> getSelectedCategories() {
 		// TODO: add correct code
 		ArrayList<String> a = new ArrayList<String>();
@@ -211,6 +286,10 @@ public class GUIController extends Application {
 		a.add("Schornsteinfeger");
 		return a;
 	}
+	/**
+	 * Get list of selected locations.
+	 * @return selected locations
+	 */
 	public ArrayList<String> getSelectedLocations() {
 		// TODO: add correct code
 		ArrayList<String> a = new ArrayList<String>();
@@ -220,13 +299,55 @@ public class GUIController extends Application {
 		return a;
 	}
 	
+	/**
+	 * Set of an account is selected.
+	 * @param id of account
+	 * @param selected is true if account should be selected, false otherwise
+	 */
 	public void setAccount(int id, boolean selected) {
 		if (selected) {
 			selectedAccounts.add(id);
 		} else {
 			selectedAccounts.remove(id);
 		}
-		reloadSummedData();
+		reloadData();
+	}
+	
+	/**
+	 * Get data grouped by account.
+	 * @return
+	 */
+	public ArrayList<Account> getDataByAccount() {
+		return dataByAccount;
+	}
+	
+	/**
+	 * Get data grouped by location.
+	 * @return
+	 */
+	public TweetsAndRetweets getDataByLocation() {
+		return dataByLocation;
+	}
+	/**
+	 * Select start and end or one day if start and end date are the same.
+	 * Earlier date will automatically be taken as start date.
+	 * If one date is null selected date range will be removed.
+	 * @param startDate of the date range
+	 * @param endDate of the date range
+	 */
+	public void setDateRange(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			selectedStartDate = null;
+			selectedEndDate = null;
+		} else {
+			if(startDate.before(endDate)) {
+				selectedStartDate = startDate;
+				selectedEndDate = endDate;
+			} else {
+				selectedStartDate = endDate;
+				selectedEndDate = startDate;
+			}
+		}
 	}
 	
 	private void update(UpdateType type) {
@@ -235,8 +356,17 @@ public class GUIController extends Application {
 		}
 	}
 	
+	/**
+	 * Add a GUIElement as subscriber
+	 * @param element which will later be notified on update.
+	 */
 	public void subscribe(GUIElement element) {
 		guiElements.add(element);
+	}
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		initDBConnection();
 	}
 	
 	// TODO: many functions are missing
