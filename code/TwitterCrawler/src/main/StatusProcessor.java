@@ -31,6 +31,7 @@ public class StatusProcessor implements Runnable {
     // use ConcurrentHashMap<Long,Object> as HashSet<Long>
     private ConcurrentHashMap<Long, Object> nonVerAccounts;
     private Locator locate;
+    private int count;
 
     private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
     private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
@@ -72,6 +73,7 @@ public class StatusProcessor implements Runnable {
             throw new InstantiationException(
                     "Not able to instantiate Databaseconnection.");
         }
+        count = 0;
     }
 
     /**
@@ -128,8 +130,11 @@ public class StatusProcessor implements Runnable {
      */
     private void statusToDB(Status status) {
 
+        boolean added = false;
+
         if (checkUser(status.getUser())) {
             accountToDB(status, true);
+            added = true;
         }
 
         if (status.isRetweet()) {
@@ -141,6 +146,7 @@ public class StatusProcessor implements Runnable {
                 if (checkUser(tweet.getUser())) {
                     // addAccount
                     accountToDB(tweet, false);
+                    added = true;
                 }
                 retweet = tweet;
                 tweet = tweet.getRetweetedStatus();
@@ -154,7 +160,11 @@ public class StatusProcessor implements Runnable {
                 retweetToDB(tweet.getUser().getId(), retweet.getGeoLocation(),
                         retweet.getUser().getLocation(), retweet.getPlace(),
                         retweet.getCreatedAt(), retweet.getUser().getTimeZone());
+                added = true;
             }
+        }
+        if (added) {
+            count++;
         }
     }
 
@@ -232,4 +242,20 @@ public class StatusProcessor implements Runnable {
         dbc.addRetweet(id, loc, date);
 
     }
+
+    /**
+     * returns the numbers for statistic
+     * 
+     * @return the numbers for statistic as int[]
+     */
+    public int[] getCounter() {
+        int[] temp = locate.getStatistic();
+        int[] ret = new int[11];
+        for (int i = 0; i < temp.length; i++) {
+            ret[i] = temp[i];
+        }
+        ret[10] = count;
+        return ret;
+    }
+
 }

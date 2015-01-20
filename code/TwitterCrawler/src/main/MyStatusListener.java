@@ -19,6 +19,7 @@ public class MyStatusListener implements StatusListener {
 
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
+    private int sumOverAll;
 
     /**
      * initialize a new listener to listen to the twitter streaming api
@@ -32,6 +33,7 @@ public class MyStatusListener implements StatusListener {
     public MyStatusListener(ConcurrentLinkedQueue<Status> queue, Logger logger) {
         this.queue = queue;
         this.logger = logger;
+        sumOverAll = 0;
     }
 
     @Override
@@ -58,6 +60,7 @@ public class MyStatusListener implements StatusListener {
 
     @Override
     public void onStatus(Status status) {
+        sumOverAll++;
         if (status.isRetweet() || status.getUser().isVerified()) {
             queue.add(status);
         }
@@ -69,4 +72,12 @@ public class MyStatusListener implements StatusListener {
         // sends number of transmitted statusobjects
     }
 
+    /**
+     * returns the sum over all status objects received from twitter
+     * 
+     * @return the sum over all status objects received from twitter as int
+     */
+    public int getCounter() {
+        return sumOverAll;
+    }
 }

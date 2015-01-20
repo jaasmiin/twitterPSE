@@ -95,4 +95,13 @@ public class StreamListener implements RunnableListener {
         twitterStream.cleanUp();
         twitterStream.shutdown();
     }
+
+    /**
+     * returns the sum over all status objects received from twitter
+     * 
+     * @return the sum over all status objects received from twitter as int
+     */
+    public int getCounter() {
+        return listener.getCounter();
+    }
 }
