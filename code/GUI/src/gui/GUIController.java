@@ -3,6 +3,7 @@ package gui;
 import gui.GUIElement.UpdateType;
 
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -134,13 +135,23 @@ public class GUIController extends Application implements Initializable {
 		Thread t1 = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);				
+				try {
+					dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+				} catch (IllegalArgumentException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
 			}
 		});
 		Thread t2 = new Thread(new Runnable() {
 			@Override
 			public void run() {
-				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);				
+				try {
+					dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+				} catch (IllegalArgumentException | SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}				
 			}
 		});
 		t1.start();
@@ -170,10 +181,10 @@ public class GUIController extends Application implements Initializable {
 	
 	private void setInfo(String text) {
 		if (lblInfo != null) {
+			lblInfo.setText(text);
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					lblInfo.setText(text);
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -195,7 +206,7 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of all categories
 	 * @return list of categories
 	 */
-	public ArrayList<Category> getCategories() {
+	public List<Category> getCategories() {
 		return categories;
 	}
 	
@@ -218,7 +229,7 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of all locations.
 	 * @return list of locations
 	 */
-	public ArrayList<Location> getLocations() {
+	public List<Location> getLocations() {
 		return locations;
 	}
 	
@@ -318,7 +329,7 @@ public class GUIController extends Application implements Initializable {
 	 * Get data grouped by account.
 	 * @return
 	 */
-	public ArrayList<Account> getDataByAccount() {
+	public List<Account> getDataByAccount() {
 		return dataByAccount;
 	}
 	
