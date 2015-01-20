@@ -66,7 +66,7 @@ public class Location extends Result {
      */
     @Override
     public String toString() {
-        return name;
+        return name.isEmpty() || name.equals("null") ? locCode : name;
     }
 
     /**
