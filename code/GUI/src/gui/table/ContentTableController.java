@@ -65,7 +65,7 @@ public class ContentTableController extends OutputElement implements Initializab
 		TableColumn retweetColumn = new TableColumn("Retweets");		
 		
 		// exchange getCountries
-		List<String> countries = getCountries();		
+		List<String> countries = getCountries();	
 		for (String country : countries) {
 			retweetColumn.getColumns().add(new TableColumn(country));
 			// add CellValueFactory

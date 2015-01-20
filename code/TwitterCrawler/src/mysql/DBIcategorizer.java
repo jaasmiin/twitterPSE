@@ -3,7 +3,6 @@ package mysql;
 import java.util.List;
 
 import mysql.result.Account;
-import mysql.result.Category;
 
 /**
  * interface to the database for the categorizer
@@ -38,10 +37,10 @@ public interface DBIcategorizer {
      * 
      * @param accountId
      *            the id of the account to categorize as int
-     * @param category
-     *            the category to set as Category
+     * @param categoryId
+     *            the category-id to set as int
      * @return the result of the sql-query as boolean
      */
-    public boolean addCategoryToAccount(int accountId, Category category);
+    public boolean addCategoryToAccount(int accountId, int categoryId);
 
 }

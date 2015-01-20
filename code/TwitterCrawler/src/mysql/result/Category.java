@@ -1,17 +1,21 @@
 package mysql.result;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * store the categories of an account
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class Category extends Result {
 
     private final static int MAX_LENGTH = 50;
-    private Category parent;
+    private List<Category> childs;
     private String category;
+    private int parent;
 
     /**
      * store the categories of an account
@@ -21,13 +25,13 @@ public class Category extends Result {
      * 
      * @param name
      *            the name of the category as String
-     * @param parent
-     *            the parent-category if available as ResultCategory otherwise
-     *            null
+     * @param the
+     *            parentId of this category as int (0 if root)
      */
-    public Category(int id, String name, Category parent) {
+    public Category(int id, String name, int parentId) {
         super(id);
-        this.parent = parent;
+        childs = new ArrayList<Category>();
+        this.parent = parentId;
         if (name.length() > MAX_LENGTH) {
             name = name.substring(0, MAX_LENGTH - 1);
         }
@@ -39,8 +43,8 @@ public class Category extends Result {
      * 
      * @return the parent-category as ResultCategory
      */
-    public Category getParent() {
-        return parent;
+    public List<Category> getChilds() {
+        return childs;
     }
 
     /**
@@ -64,12 +68,21 @@ public class Category extends Result {
     }
 
     /**
-     * set the parent category of this category
+     * adds a new child category of this category
      * 
-     * @param parentCategory
-     *            the parent category as Category
+     * @param childCategory
+     *            the child category to add as Category
      */
-    public void setParent(Category parentCategory) {
-        parent = parentCategory;
+    public void addChild(Category childCategory) {
+        childs.add(childCategory);
+    }
+
+    /**
+     * returns the parentId of this category
+     * 
+     * @return the parentId of this category as int
+     */
+    public int getParentId() {
+        return parent;
     }
 }

@@ -39,7 +39,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	}
 	
 	private void updateCategory(ArrayList<Category> categories) {
-		TreeItem<Category> rootItem = new TreeItem<Category>(new Category(1, "Alles", null));
+		TreeItem<Category> rootItem = new TreeItem<Category>(new Category(1, "Alles", 0));
 		rootItem.setExpanded(true);		
 		for (Category category : categories) {
 			rootItem.getChildren().add(new TreeItem<Category>(category));

@@ -22,9 +22,9 @@ public interface DBIgui {
     /**
      * Get all categories from db.
      * 
-     * @return a list of all categories.
+     * @return all categories, null if an error occurred.
      */
-    public List<Category> getCategories();
+    public Category getCategories();
 
     /**
      * Get all locations from db.

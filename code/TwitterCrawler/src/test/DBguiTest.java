@@ -61,9 +61,10 @@ public class DBguiTest {
 
     @Test
     public void testGetCategories() {
-        List<Category> c = dbg.getCategories();
+        Category c = dbg.getCategories();
         // check parent
-        assertTrue(8 <= c.size());
+        assertEquals("ROOT", c.toString());
+        assertEquals(1, c.getChilds().size());
     }
 
     @Test

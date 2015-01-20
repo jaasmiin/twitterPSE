@@ -42,7 +42,7 @@ public class AccountUpdate implements RunnableListener {
         this.logger = logger;
         myAccounts = new HashSet<Long>();
         try {
-            reader = new DBcrawler(accessData, null, logger);
+            reader = new DBcrawler(accessData, logger);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException e) {
             this.logger.warning(e.getMessage() + "\n");

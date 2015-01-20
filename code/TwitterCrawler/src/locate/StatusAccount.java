@@ -1,4 +1,4 @@
-package main;
+package locate;
 
 import twitter4j.Status;
 

@@ -11,9 +11,6 @@ import java.util.Stack;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
-import locate.Locator;
-import twitter4j.GeoLocation;
-import twitter4j.Place;
 import twitter4j.User;
 
 /**
@@ -29,7 +26,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     private static final String DEFAULT_LOCATION = "0";
     private HashSet<String> locationHash;
     private HashSet<Long> accountHash;
-    private Locator locator;
 
     /**
      * configure the connection to the database
@@ -47,11 +43,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
      * @throws SQLException
      *             thrown if a database-connection couldn't be established now
      */
-    public DBcrawler(AccessData accessData, Locator locator, Logger logger)
+    public DBcrawler(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, SQLException {
         super(accessData, logger);
-        this.locator = locator;
         connect();
         locationHash = getCountryCodes();
         accountHash = getAccounts();
@@ -59,8 +54,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     }
 
     @Override
-    public boolean[] addAccount(User user, Place place, GeoLocation geotag,
-            Date date, boolean tweet) {
+    public boolean[] addAccount(User user, String location, Date date,
+            boolean tweet) {
 
         if (user == null || date == null) {
             return new boolean[] {false, false, false };
@@ -82,8 +77,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             // add account
 
             // locate account
-            String location = locator.locate(place, geotag, user.getLocation(),
-                    user.getTimeZone());
+            // String location = locator.locate(place, geotag,
+            // user.getLocation(),
+            // user.getTimeZone());
+            location = checkString(location, 3, DEFAULT_LOCATION);
 
             name = checkString(name, 30, null);
 
@@ -428,6 +425,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             }
             return ret;
         }
+    }
+
+    @Override
+    public boolean containsAccount(long id) {
+        return accountHash.contains(id);
     }
 
 }

@@ -7,6 +7,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import locate.Locator;
+import locate.StatusAccount;
+import locate.StatusRetweet;
 import mysql.AccessData;
 import mysql.DBcrawler;
 import twitter4j.GeoLocation;
@@ -22,9 +24,9 @@ import twitter4j.User;
  * @version 1.0
  * 
  */
-public class StatusProcessor implements Runnable {
+public class StatusProcessor implements RunnableListener {
 
-    protected boolean run = true;
+    private boolean run = true;
     private DBcrawler dbc;
     private ConcurrentLinkedQueue<Status> queue;
     private Logger logger;
@@ -66,7 +68,7 @@ public class StatusProcessor implements Runnable {
         this.nonVerAccounts = accountsToTrack;
         locate = new Locator(this.logger);
         try {
-            dbc = new DBcrawler(accessData, locate, logger);
+            dbc = new DBcrawler(accessData, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
             dbc = null;
             logger.severe(e.getMessage() + "\n");
@@ -196,15 +198,18 @@ public class StatusProcessor implements Runnable {
      */
     private void accountToDB(Status tweet, boolean isTweet) {
 
-        // if (locate.locate(place, geotag, location, timeZone)) {
+        if (!dbc.containsAccount(tweet.getUser().getId())) {
+            String loc = locate.locate(tweet.getPlace(),
+                    tweet.getGeoLocation(), tweet.getUser().getLocation());
+            if (loc != "0") {
+                dbc.addAccount(tweet.getUser(), loc, tweet.getCreatedAt(),
+                        isTweet);
+            } else {
+                locateAccountQueue.add(new StatusAccount(tweet, isTweet));
+            }
+        }
         // dbc.addAccount(tweet.getUser(), tweet.getPlace(),
         // tweet.getGeoLocation(), tweet.getCreatedAt(), isTweet);
-        // } else {
-        // locateAccountQueue.add(new StatusAccount(tweet, isTweet));
-        // }
-
-        dbc.addAccount(tweet.getUser(), tweet.getPlace(),
-                tweet.getGeoLocation(), tweet.getCreatedAt(), isTweet);
 
     }
 
@@ -230,16 +235,17 @@ public class StatusProcessor implements Runnable {
     private void retweetToDB(long id, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
-        // if (locate.locate(place, geotag, location, timeZone)) {
+        String loc = locate.locate(place, geotag, location);
+        if (loc != "0") {
+            dbc.addRetweet(id, loc, date);
+        } else {
+            locateRetweetQueue.add(new StatusRetweet(id, date, location,
+                    timeZone));
+        }
+
+        // String loc = locate.locate(place, geotag, location, timeZone);
+        //
         // dbc.addRetweet(id, loc, date);
-        // } else {
-        // locateRetweetQueue.add(new StatusRetweet(id, date, location,
-        // timeZone));
-        // }
-
-        String loc = locate.locate(place, geotag, location, timeZone);
-
-        dbc.addRetweet(id, loc, date);
 
     }
 
@@ -256,6 +262,11 @@ public class StatusProcessor implements Runnable {
         }
         ret[10] = count;
         return ret;
+    }
+
+    @Override
+    public void exit() {
+        run = false;
     }
 
 }

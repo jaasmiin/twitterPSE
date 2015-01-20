@@ -14,7 +14,6 @@ import java.util.logging.SimpleFormatter;
 import mysql.AccessData;
 import mysql.DBcategorizer;
 import mysql.result.Account;
-import mysql.result.Category;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,7 +58,7 @@ public class DBcategorizerTest {
      */
     @Test
     public void test1AddCategoryToAccount() {
-        assertFalse(dbc.addCategoryToAccount(0, null));
+        assertFalse(dbc.addCategoryToAccount(0, 0));
     }
 
     /**
@@ -67,8 +66,7 @@ public class DBcategorizerTest {
      */
     @Test
     public void test2AddCategoryToAccount() {
-        boolean res = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                null));
+        boolean res = dbc.addCategoryToAccount(1, 1);
         List<Account> list = dbc.getNonCategorized();
         try {
             DBtest t = new DBtest(access, log);
@@ -89,12 +87,9 @@ public class DBcategorizerTest {
     @Test
     public void test3AddCategoryToAccount() {
         // try to execute 3-times the same query
-        boolean res1 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                null));
-        boolean res2 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                null));
-        boolean res3 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                null));
+        boolean res1 = dbc.addCategoryToAccount(1, 3);
+        boolean res2 = dbc.addCategoryToAccount(1, 3);
+        boolean res3 = dbc.addCategoryToAccount(1, 3);
         List<Account> list = dbc.getNonCategorized();
         try {
             DBtest t = new DBtest(access, log);
@@ -116,8 +111,7 @@ public class DBcategorizerTest {
      */
     @Test
     public void test4AddCategoryToAccount() {
-        boolean res = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                new Category(0, "parent", null)));
+        boolean res = dbc.addCategoryToAccount(1, 8);
         List<Account> list = dbc.getNonCategorized();
         try {
             DBtest t = new DBtest(access, log);
@@ -139,12 +133,9 @@ public class DBcategorizerTest {
      */
     @Test
     public void test5AddCategoryToAccount() {
-        boolean res1 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                new Category(0, "parent", null)));
-        boolean res2 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                new Category(0, "parent", null)));
-        boolean res3 = dbc.addCategoryToAccount(1, new Category(-1, "testCP",
-                new Category(0, "parent", null)));
+        boolean res1 = dbc.addCategoryToAccount(1, 8);
+        boolean res2 = dbc.addCategoryToAccount(1, 8);
+        boolean res3 = dbc.addCategoryToAccount(1, 8);
         List<Account> list = dbc.getNonCategorized();
         try {
             DBtest t = new DBtest(access, log);

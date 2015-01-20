@@ -44,7 +44,7 @@ public class Locator {
     public HashMap<String, String> map;
     private Logger logger;
     private int countMod = 0;
- 
+
     private int numberOfReq = 0;
     private int numberOfLocReq = 0;
     private int numberOfPlaceLoc = 0;
@@ -55,11 +55,12 @@ public class Locator {
     private int reqWithPlace = 0;
     private int reqWithGeoTag = 0;
     private int reqWithLocation = 0;
- 
-    
+
     /**
      * Initiates a new instance of 'Locator'
-     * @param log Logger to log all remarkable events
+     * 
+     * @param log
+     *            Logger to log all remarkable events
      */
     public Locator(Logger log) {
         this.logger = log;
@@ -71,7 +72,7 @@ public class Locator {
     private void writeToFile(File file) {
         Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         try {
-            Writer writer = new FileWriter(file.getPath(),false);
+            Writer writer = new FileWriter(file.getPath(), false);
             while (it.hasNext()) {
                 Map.Entry<String, String> pairs = it.next();
                 writer.write(pairs.getKey() + "#" + pairs.getValue());
@@ -99,16 +100,16 @@ public class Locator {
                 String[] tmp = input.split("#");
                 if (tmp.length < 2) {
                     logger.info("Wrong content in file, input does not fit pattern 'key#value'");
-                }
-                else {
-                	if (tmp[0] != null && tmp[1]!= null) {
-                		key = tmp[0].toLowerCase();
-                		value = tmp[1];
-                		// only insert in hashMap if hashMap does not already contain that key
-                		if(!map.containsKey(key)) {
-                			map.put(key, value);
-                		}
-                	}
+                } else {
+                    if (tmp[0] != null && tmp[1] != null) {
+                        key = tmp[0].toLowerCase();
+                        value = tmp[1];
+                        // only insert in hashMap if hashMap does not already
+                        // contain that key
+                        if (!map.containsKey(key)) {
+                            map.put(key, value);
+                        }
+                    }
                 }
                 input = b.readLine();
             }
@@ -132,7 +133,7 @@ public class Locator {
      * @throws IOException
      */
     public String getLocation(GeoLocation geotag) {
- 
+
         String res = "0";
         WebService.setGeoNamesServerFailover(null);
         WebService.setUserName("KIT_PSE");
@@ -149,18 +150,22 @@ public class Locator {
         }
         return res;
     }
+
     /**
-     * Method that actually calls webservice, does not check input strings for forbidden characters 
-     * e.g. '&','@' etc.
-     * @param location location attribute
-     * @param timezone timezone attribue
+     * Method that actually calls webservice, does not check input strings for
+     * forbidden characters e.g. '&','@' etc.
+     * 
+     * @param location
+     *            location attribute
+     * @param timezone
+     *            timezone attribue
      * @return countrycode in case of success, '0' otherwise
      */
 
     private String callWebservice(String location, String timezone) {
-    	String result = "0";
-    	try {
-        	
+        String result = "0";
+        try {
+
             URL u = new URL(webServiceURL + "userlocation=" + location
                     + "&timezone=" + timezone);
             // nur zu Testzwecken
@@ -203,13 +208,14 @@ public class Locator {
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
         if (result.equals("0")) {
-        	
+
             return "0";
         }
 
         result = result.trim();
         return result;
     }
+
     /**
      * tries to determine the country/location of a given name or word
      * 
@@ -224,12 +230,12 @@ public class Locator {
      *         String
      */
     private String getLocation(String location, String timezone) {
-        
+
         String result = "0";
 
         // format given parameter
 
-        if (location == null  || location.equals("")) {
+        if (location == null || location.equals("")) {
             return "0";
         }
 
@@ -239,8 +245,8 @@ public class Locator {
             location = location.replaceAll(",", "+");
             location = location.replaceAll("[.!#$%&'()*,/:;=?@\\[\\]]", "");
 
-        } 
-        
+        }
+
         if (timezone != null) {
             timezone = timezone.replace(' ', '+');
             timezone = timezone.replaceAll(",", "+");
@@ -250,119 +256,119 @@ public class Locator {
         }
         // build URL
         try {
-			location = URLEncoder.encode(location.trim(), "UTF-8");
-			timezone = URLEncoder.encode(timezone.trim(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			logger.info("unsupported URL Encodign Exceptin" + e.getMessage());	
-		}
+            location = URLEncoder.encode(location.trim(), "UTF-8");
+            timezone = URLEncoder.encode(timezone.trim(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            logger.info("unsupported URL Encodign Exceptin" + e.getMessage());
+        }
         //
 
         // lookup in Hashtable to avoid calling the webservice
 
         if (location != null && map.containsKey(location.toLowerCase())) {
             // **** just for statistics
-             numberOfHashMapLoc++;
+            numberOfHashMapLoc++;
             return map.get(location.toLowerCase()) + "  from hashtable";
         }
 
         // connection to Webservice
-        result = callWebservice(location,timezone);
+        result = callWebservice(location, timezone);
 
         // add positive result to Hashtable and save results periodically
         if (!result.equals("0") && result != null && !result.equals("")) {
-        	numberOfWebserviceLoc++;
-        	countMod++;
+            numberOfWebserviceLoc++;
+            countMod++;
 
             map.put(location.toLowerCase(), result);
             if (countMod >= 5) {
-            	readFromFile(new File("HashNeu"));
+                readFromFile(new File("HashNeu"));
                 writeToFile(new File("HashNeu"));
 
                 countMod = 0;
             }
         }
-        
+
         return result;
     }
+
     /**
-     * Tries to locate a 'tweet', specified by the given parameters 
-     * @param place Twitter-Place-Object
-     * @param geotag Twitter-Geotag-Object
-     * @param location String containing information about the location of a 'tweet'
-     * @param timeZone String containing information about the timezone of a 'tweet'
+     * Tries to locate a 'tweet', specified by the given parameters
+     * 
+     * @param place
+     *            Twitter-Place-Object
+     * @param geotag
+     *            Twitter-Geotag-Object
+     * @param location
+     *            String containing information about the location of a 'tweet'
+     * @param timeZone
+     *            String containing information about the timezone of a 'tweet'
      * @return countrycode if 'Tweet' could be located, "0" otherwise
      */
-    // presumption: whenever  place != null the request for location is positive!
-    public String locate(Place place, GeoLocation geotag, String location,
-            String timeZone) {
-    	String result = "0";
-    	
-    	//statistics
-    	numberOfReq++;
-    	if (place != null) {
-    		reqWithPlace++;
-    	}
-    	if (geotag != null) {
-    		 reqWithGeoTag++;
-    	}
-    	if (location != null && !location.equals("")) {
-    		reqWithLocation++;
-    	}
-       
-        
-        
-        
-        
+    // presumption: whenever place != null the request for location is positive!
+    public String locate(Place place, GeoLocation geotag, String location) {
+        // ,String timeZone) {
+        String result = "0";
+
+        // statistics
+        numberOfReq++;
         if (place != null) {
-        	
-        	
-        	
-            result =  place.getCountryCode(); 
+            reqWithPlace++;
+        }
+        if (geotag != null) {
+            reqWithGeoTag++;
+        }
+        if (location != null && !location.equals("")) {
+            reqWithLocation++;
+        }
+
+        if (place != null) {
+
+            result = place.getCountryCode();
             if (!result.equals("0")) {
-        		numberOfPlaceLoc++;
-        	}
-        
-        } else if (geotag != null) {
-        	
-        	result = getLocation(geotag);
-        	if (!result.equals("0")) {
-        		numberOfGeoTagLoc++;
-        	}
-            
-        } else if (location != null && location != "") {
-        	
-        	result = getLocation(location, timeZone);
-            if (!result.equals("0")) {
-            	numberOfLocationTagLoc++;
+                numberOfPlaceLoc++;
             }
+
+        } else if (geotag != null) {
+
+            result = getLocation(geotag);
+            if (!result.equals("0")) {
+                numberOfGeoTagLoc++;
+            }
+
+            // } else if (location != null && location != "") {
+            //
+            // result = getLocation(location, timeZone);
+            // if (!result.equals("0")) {
+            // numberOfLocationTagLoc++;
+            // }
         }
         if (!result.equals("0")) {
-        	numberOfLocReq++;
+            numberOfLocReq++;
         }
         return result;
     }
-   
+
     /**
      * Returns the statistics for this instance of the 'Locator'
-     * @return Content of the single values in the result array:
-     * 0: number of requests
-     * 1: number of successfully located requests (a countrycode could be returned)
-     * 2: number of requests located via place-attribute
-     * 3: number of requests located via geotag
-     * 4: number of requests located via location and timezone (webservice+hashmap, actually redundant information :))
-     * 5: number of requests located via webservice 
-     * 6: number of requests located via hashmap
-     * 7: number of requests containing place-attribute
-     * 8: number of requests containing geotag
-     * 9: number of request containing location information
+     * 
+     * @return Content of the single values in the result array: 0: number of
+     *         requests 1: number of successfully located requests (a
+     *         countrycode could be returned) 2: number of requests located via
+     *         place-attribute 3: number of requests located via geotag 4:
+     *         number of requests located via location and timezone
+     *         (webservice+hashmap, actually redundant information :)) 5: number
+     *         of requests located via webservice 6: number of requests located
+     *         via hashmap 7: number of requests containing place-attribute 8:
+     *         number of requests containing geotag 9: number of request
+     *         containing location information
      */
     public int[] getStatistic() {
-    	int [] statistics = {numberOfReq, numberOfLocReq, numberOfPlaceLoc, numberOfGeoTagLoc, 
-    						numberOfLocationTagLoc, numberOfWebserviceLoc, numberOfHashMapLoc,
-    						reqWithPlace, reqWithGeoTag, reqWithLocation};
-    	return statistics;
-    
-    	
+        int[] statistics = {numberOfReq, numberOfLocReq, numberOfPlaceLoc,
+                numberOfGeoTagLoc, numberOfLocationTagLoc,
+                numberOfWebserviceLoc, numberOfHashMapLoc, reqWithPlace,
+                reqWithGeoTag, reqWithLocation };
+        return statistics;
+
     }
 
 }

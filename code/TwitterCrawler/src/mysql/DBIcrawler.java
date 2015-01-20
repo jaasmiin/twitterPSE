@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.concurrent.ConcurrentHashMap;
 
-import twitter4j.GeoLocation;
-import twitter4j.Place;
 import twitter4j.User;
 
 /**
@@ -32,15 +30,18 @@ public interface DBIcrawler {
     // * @param url
     // * the url of the verified user as String
 
+    // * @param place
+    // * if set the place of the user, else null as Place
+    // * @param geotag
+    // * the geolocation of the tweet from this account as GeoLocation
+
     /**
      * insert an account into the database
      * 
      * @param user
      *            the user to add as User
-     * @param place
-     *            if set the place of the user, else null as Place
-     * @param geotag
-     *            the geolocation of the tweet from this account as GeoLocation
+     * @param location
+     *            the location of the account as String
      * @param date
      *            the date of the tweet as Date
      * @param tweet
@@ -51,8 +52,8 @@ public interface DBIcrawler {
      *         the account and third is for adding the tweet.
      * 
      */
-    public boolean[] addAccount(User user, Place place, GeoLocation geotag,
-            Date date, boolean tweet);
+    public boolean[] addAccount(User user, String location, Date date,
+            boolean tweet);
 
     /**
      * inserts a retweet into the database, if it's still in the database the
@@ -117,7 +118,7 @@ public interface DBIcrawler {
      *         error occurred
      */
     public HashSet<Long> getAccounts();
-    
+
     /**
      * returns a threadsafe hashmap that maps words from the database to
      * location-codes
@@ -138,5 +139,14 @@ public interface DBIcrawler {
      * @return true if data has been insert into the database, else false
      */
     public boolean addLocationString(String code, String word);
+
+    /**
+     * returns if an account with this id is even in the database
+     * 
+     * @param id
+     *            the id to check as long
+     * @return true if an account with this id is in the database, else false
+     */
+    public boolean containsAccount(long id);
 
 }

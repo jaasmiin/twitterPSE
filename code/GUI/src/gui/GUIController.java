@@ -120,9 +120,9 @@ public class GUIController extends Application implements Initializable {
 //		categories = db.getCategories();
 //		TODO: remove test code:
 		categories.clear();
-		categories.add(new Category(31, "Musiker", null));
-		categories.add(new Category(22, "Schriftsteller", null));
-		categories.add(new Category(13, "Politiker", null));
+		categories.add(new Category(31, "Musiker", 0));
+		categories.add(new Category(22, "Schriftsteller", 0));
+		categories.add(new Category(13, "Politiker", 0));
 		update(UpdateType.CATEGORY);
 	}
 	

@@ -50,8 +50,9 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public List<Category> getCategories() {
-        String sqlCommand = "SELECT Id, Name, ParentId  FROM category;";
+    public Category getCategories() {
+        // get used categories
+        String sqlCommand = "SELECT category.Id, Name, ParentId FROM accountCategory JOIN category ON accountCategory.categoryId=category.Id GROUP BY categoryId;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -60,32 +61,83 @@ public class DBgui extends DBConnection implements DBIgui {
             res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            return new ArrayList<Category>();
+            return null;
         }
 
-        List<Category> ret = new ArrayList<Category>();
+        HashMap<Integer, Category> all = new HashMap<Integer, Category>();
+        List<Integer> ids = new ArrayList<Integer>();
+        List<Category> parents = new ArrayList<Category>();
         try {
             while (res.next()) {
-                ret.add(new Category(res.getInt("Id"), res.getString("Name"),
-                        new Category(res.getInt("ParentId"), "", null)));
+                int parent = res.getInt("ParentId");
+                int id = res.getInt("Id");
+                Category c = new Category(id, res.getString("Name"), parent);
+                ids.add(parent);
+                parents.add(c);
+                all.put(id, c);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new ArrayList<Category>();
+            return null;
         } finally {
             closeResultAndStatement(stmt, res);
         }
 
-        for (Category c : ret) {
-            // parent relationship
-            for (Category p : ret) {
-                if (c.getParent().getId() == p.getId()) {
-                    c.setParent(p);
-                    break;
+        List<Category> childs;
+        while (parents.size() > 1) {
+            childs = parents;
+
+            // get parent categories
+            Iterator<Integer> it = ids.iterator();
+            sqlCommand = "SELECT Id, Name, ParentId FROM category WHERE Id="
+                    + it.next();
+            while (it.hasNext()) {
+                sqlCommand += " OR Id=" + it.next();
+            }
+            sqlCommand += ";";
+
+            res = null;
+            stmt = null;
+            try {
+                stmt = c.createStatement();
+                res = stmt.executeQuery(sqlCommand);
+            } catch (SQLException e) {
+                sqlExceptionLog(e, stmt);
+                return null;
+            }
+
+            ids = new ArrayList<Integer>();
+            parents = new ArrayList<Category>();
+            try {
+                while (res.next()) {
+                    int parent = res.getInt("ParentId");
+                    int id = res.getInt("Id");
+                    Category c = new Category(id, res.getString("Name"), parent);
+                    if (all.containsKey(parent)) {
+                        all.get(parent).addChild(c);
+                    } else {
+                        ids.add(parent);
+                        parents.add(c);
+                        all.put(id, c);
+                    }
+                }
+            } catch (SQLException e) {
+                sqlExceptionResultLog(e);
+                return null;
+            } finally {
+                closeResultAndStatement(stmt, res);
+            }
+
+            for (Category parent : parents) {
+                for (Category child : childs) {
+                    if (parent.getId() == child.getId()) {
+                        parent.addChild(child);
+                    }
                 }
             }
         }
-        return ret;
+
+        return parents.get(0);
     }
 
     @Override
@@ -106,8 +158,8 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 ret.add(new Location(res.getInt("Id"), res.getString("Name"),
-                        res.getString("Code"), new Location(res
-                                .getInt("ParentId"), null, null, null)));
+                        res.getString("Code"), null));
+                // new Location(res.getInt("ParentId"), null, null, null)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -116,15 +168,15 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
-        for (Location l : ret) {
-            // parent relationship
-            for (Location p : ret) {
-                if (l.getParent().getId() == p.getId()) {
-                    l.setParent(p);
-                    break;
-                }
-            }
-        }
+        // for (Location l : ret) {
+        // // parent relationship
+        // for (Location p : ret) {
+        // if (l.getParent().getId() == p.getId()) {
+        // l.setParent(p);
+        // break;
+        // }
+        // }
+        // }
         return ret;
     }
 
@@ -287,9 +339,9 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public TweetsAndRetweets getSumOfData(Integer[] categoryIDs, Integer[] locationIDs,
-            Integer[] accountIDs, boolean byDates) throws IllegalArgumentException,
-            SQLException {
+    public TweetsAndRetweets getSumOfData(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
+            throws IllegalArgumentException, SQLException {
 
         if (categoryIDs == null || categoryIDs.length < 1
                 || locationIDs == null || locationIDs.length < 1) {
@@ -389,9 +441,9 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public List<Account> getAllData(Integer[] categoryIDs, Integer[] locationIDs,
-            Integer[] accountIDs, boolean byDates) throws IllegalArgumentException,
-            SQLException {
+    public List<Account> getAllData(Integer[] categoryIDs,
+            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
+            throws IllegalArgumentException, SQLException {
 
         if (categoryIDs == null || categoryIDs.length < 1
                 || locationIDs == null || locationIDs.length < 1) {
@@ -592,8 +644,31 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public HashMap<String, Integer> getAllRetweetsPerLocation() {
-        // TODO Auto-generated method stub
-        return null;
+
+        String sqlCommand = "SELECT COUNT(*), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
+
+        ResultSet res = null;
+        Statement stmt = null;
+        try {
+            stmt = c.createStatement();
+            res = stmt.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+            return new HashMap<String, Integer>();
+        }
+
+        HashMap<String, Integer> ret = new HashMap<String, Integer>();
+        try {
+            while (res.next()) {
+                ret.put(res.getString("Code"), res.getInt(1));
+            }
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            return new HashMap<String, Integer>();
+        } finally {
+            closeResultAndStatement(stmt, res);
+        }
+        return ret;
     }
 
 }

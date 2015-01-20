@@ -130,14 +130,15 @@ INSERT INTO location (Name, Code, ParentId) VALUES ("test4","T4",NULL);
 INSERT INTO location (Name, Code, ParentId) VALUES ("test5","T5",NULL);
 INSERT INTO location (Name, Code, ParentId) VALUES ("testParent","TP",2);
 
-INSERT INTO category (Name, ParentId) VALUES ("TestCategory", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC0", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC1", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC2", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC3", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC4", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testC5", NULL);
-INSERT INTO `category`(`Name`, `ParentId`) VALUES ("testCP", 2);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (1, "ROOT", NULL);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (2, "testC0", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (3, "testC1", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (4, "testC2", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (5, "testC3", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (6, "testC4", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (7, "testC5", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (8, "testC6", 1);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (9, "testC6", 2);
 
 INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (0,"Tester0",1,0,8,"url",0);
 INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (1,"Tester1",1,1,1,"url",0);

@@ -4,15 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Stack;
 import java.util.logging.Logger;
 
 import mysql.result.Account;
-import mysql.result.Category;
 
 /**
  * class to address a database with the categorizer
@@ -22,8 +18,6 @@ import mysql.result.Category;
  * 
  */
 public class DBcategorizer extends DBConnection implements DBIcategorizer {
-
-    private HashSet<String> categories;
 
     /**
      * configure the connection to the database
@@ -43,7 +37,6 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException {
         super(accessData, logger);
-        categories = new HashSet<String>();
     }
 
     @Override
@@ -78,86 +71,37 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     }
 
     @Override
-    public boolean addCategoryToAccount(int accountId, Category category) {
-
-        // add categories with hashtable lookup
-        boolean result1 = false;
-        Category temp = category;
-
-        // add categories in reverse order to working-stack
-        Stack<Category> stack = new Stack<Category>();
-        while (temp != null) {
-            stack.push(temp);
-            temp = temp.getParent();
-        }
-
-        while (stack.size() > 0) {
-
-            temp = stack.pop();
-
-            // hashtable lookup
-            if (categories.contains(temp.toString())) {
-                result1 = true;
-            } else {
-
-                // prevent SQL-injection
-                PreparedStatement stmt = null;
-                try {
-
-                    if (temp.getParent() == null) {
-                        stmt = c.prepareStatement("INSERT IGNORE INTO category (Name, ParentId) VALUES "
-                                + "(?, ?);");
-                        stmt.setNull(2, Types.INTEGER);
-                    } else {
-                        // set parent
-                        stmt = c.prepareStatement("INSERT IGNORE INTO category (Name, ParentId) SELECT "
-                                + "?, Id FROM category WHERE Name = ?;");
-                        stmt.setString(2, temp.getParent().toString());
-                    }
-                    stmt.setString(1, temp.toString());
-                } catch (SQLException e) {
-                    sqlExceptionLog(e, stmt);
-                }
-                result1 = executeStatementUpdate(stmt, false);
-
-                // on success
-                if (result1) {
-                    categories.add(temp.toString());
-                }
-            }
-        }
+    public boolean addCategoryToAccount(int accountId, int categoryId) {
 
         // add category to account
-        boolean result2 = false;
-        if (result1) {
-            // prevent SQL-injection
-            PreparedStatement stmt = null;
-            try {
-                stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, (SELECT Id FROM category WHERE Name = ? LIMIT 1));");
-                stmt.setInt(1, accountId);
-                stmt.setString(2, category.toString());
-            } catch (SQLException e) {
-                sqlExceptionLog(e, stmt);
-            }
-            result2 = executeStatementUpdate(stmt, false);
+        boolean result1 = false;
+        // prevent SQL-injection
+        PreparedStatement stmt = null;
+        try {
+            stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
+            stmt.setInt(1, accountId);
+            stmt.setInt(2, categoryId);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
         }
+        result1 = executeStatementUpdate(stmt, false);
 
         // set categorized = true
         String sqlCommand = "UPDATE accounts SET categorized = 1 WHERE Id = "
                 + accountId + ";";
 
-        boolean result3 = false;
-        if (result2) {
-            Statement stmt = null;
+        boolean result2 = false;
+        if (result1) {
+            Statement stmt2 = null;
             try {
-                stmt = c.createStatement();
-                result3 = stmt.executeUpdate(sqlCommand) >= 0 ? true : false;
+                stmt2 = c.createStatement();
+                result2 = stmt2.executeUpdate(sqlCommand) >= 0 ? true : false;
             } catch (SQLException e) {
-                sqlExceptionLog(e, stmt);
+                sqlExceptionLog(e, stmt2);
             } finally {
-                if (stmt != null) {
+                if (stmt2 != null) {
                     try {
-                        stmt.close();
+                        stmt2.close();
                     } catch (SQLException e) {
                         sqlExceptionLog(e);
                     }
@@ -165,7 +109,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             }
         }
 
-        return result1 && result2 && result3;
+        return result1 && result2;
     }
 
     @Override
