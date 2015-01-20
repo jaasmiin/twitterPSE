@@ -2,6 +2,8 @@ package gui;
 	
 import gui.GUIElement.UpdateType;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +11,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import mysql.AccessData;
 import mysql.DBgui;
@@ -18,10 +23,12 @@ import mysql.result.Location;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -36,10 +43,16 @@ public class GUIController extends Application implements Initializable {
 	@FXML
 	private Label lblInfo;
 	
+	private final static String HOST;
+	private final static String PORT;
+	private final static String DATABASE;
+	private final static String USER;
+	private final static String PASSWORD;
+	
 	private static GUIController instance = null;
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
-	private DBgui db;
+	private static DBgui db;
 	private List<Category> categories = new ArrayList<Category>();
 	private List<Location> locations = new ArrayList<Location>();
 	private List<Account> accounts = new ArrayList<Account>();
@@ -50,17 +63,22 @@ public class GUIController extends Application implements Initializable {
 	private HashSet<Integer> selectedLocations = new HashSet<Integer>();
 	private HashSet<Integer> selectedAccounts = new HashSet<Integer>();
 	private Date selectedStartDate, selectedEndDate;
+	
 	public static GUIController getInstance() {
 		if (instance == null) {
-			launch("");
+			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
 		}
 		return instance;
 	}
 	
+	public GUIController() {
+		super();
+		instance = this; // TODO: JavaFX creates two instances of GUIController?
+		System.out.println("public GUIController()");
+	}
+	
 	@Override
-	public void start(Stage primaryStage) {
-		if (instance == null) {
-			instance = this;
+	public void start(final Stage primaryStage) {
 			try {
 				Parent parent = FXMLLoader.load(GUIController.class.getResource("GUIView.fxml"));
 				Scene scene = new Scene(parent, 800, 600);
@@ -68,56 +86,90 @@ public class GUIController extends Application implements Initializable {
 				primaryStage.setTitle("PSE-Twitter");
 				primaryStage.setScene(scene);
 				primaryStage.show();
+				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
+					@Override
+					public void handle(WindowEvent event) {
+						System.out.println("Verbindung mit Datenbank wird geschlossen...");
+						db.disconnect();
+						System.out.println("Verbindung geschlossen.");
+					}
+				});
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
-			reloadAll();
-		}
 	}
 	
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
-	private void initDBConnection() {
-		boolean success = true;
-		lblInfo.setText("Verbindung mit DB wird aufgebaut...");
-		try {
-			db = new DBgui(new AccessData("hostName", "port", "dbName", "userName", "password"), null);
-			// TODO: connect to db
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException e) {
-			setInfo("Fehler, " + e.getLocalizedMessage());
-			success = false;
-		}
-		if (success) {
-			setInfo("Erfolreich mit DB verbunden.");
-		}
-	}
-	private void reloadLocation() {
-//		locations = db.getLocations();
-		// TODO: remove test code:
-		locations.clear();
-		locations.add(new Location(21, "Deutschland", "1234", null));
-		locations.add(new Location(82, "Frankreich", "1234", null));
-		locations.add(new Location(43, "Finnland", "1234", null));
-		locations.add(new Location(14, "Ungarn", "1234", null));
+	private Runnable rnbInitDBConnection = new Runnable() {
 		
+		@Override
+		public void run() {
+			boolean success = true;
+			lblInfo.setText("Verbindung mit DB wird aufgebaut...");
+			try {
+				db = new DBgui(new AccessData(HOST, PORT, DATABASE, USER, PASSWORD), getLogger() );
+			} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
+					| ClassNotFoundException e) {
+//				e.printStackTrace();
+				success = false;
+			}
+			if (success) {
+				try {
+					db.connect();
+				} catch (SQLException e) {
+//					e.printStackTrace();
+					success = false;
+				}
+			}
+			if (success) {
+				setInfo("Erfolreich mit DB verbunden.");
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						reloadAll();
+					}
+				});
+			} else {
+				setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.");
+			}
+		}
+	};
+    
+	private Logger getLogger() throws SecurityException, IOException {
+        Logger l = Logger.getLogger("logger");
+        new File("LogFile.log").createNewFile();
+        FileHandler fh = new FileHandler("LogFile.log", true);
+        SimpleFormatter formatter = new SimpleFormatter();
+        fh.setFormatter(formatter);
+        l.addHandler(fh);
+        // true: print output on console and into file
+        // false: only store output in logFile
+        l.setUseParentHandlers(false);
+        return l;
+    }
+	
+	private void reloadLocation() {
+		locations = db.getLocations();	
+		System.out.println("Location size: " + locations.size());
 		update(UpdateType.LOCATION);
 	}
 	
 	private void reloadAccounts() {
-//		accounts = db.getAccounts();
+		accounts = db.getAccounts("Abc");
 //		TODO: remove test code:
-		accounts.clear();
-		accounts.add(new Account(1, 243, "Max Mustermann", true, null, 1, 0, null, null, null));
-		accounts.add(new Account(2, 122, "Max Mustermann", true, null, 2, 0, null, null, null));
-		accounts.add(new Account(5, 432, "Max Mustermann", true, null, 3, 0, null, null, null));
+//		accounts.clear();
+//		accounts.add(new Account(1, 243, "Max Mustermann", true, null, 1, 0, null, null, null));
+//		accounts.add(new Account(2, 122, "Max Mustermann", true, null, 2, 0, null, null, null));
+//		accounts.add(new Account(5, 432, "Max Mustermann", true, null, 3, 0, null, null, null));
 		update(UpdateType.ACCOUNT);
 	}
 	
 	private void reloadCategories() {
 //		categories = db.getCategories();
+//		System.out.println("Größe: " + categories.size());
 //		TODO: remove test code:
 		categories.clear();
 		categories.add(new Category(31, "Musiker", 0));
@@ -127,7 +179,7 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
-		final Integer[] selectedCategoriesArray = selectedLocations.toArray(new Integer[selectedCategories.size()]);
+		final Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
 		final Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
 		final Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
 		final boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
@@ -180,26 +232,7 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void setInfo(String text) {
-		if (lblInfo != null) {
-			lblInfo.setText(text);
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							try {
-								Thread.sleep(2000);
-							} catch (InterruptedException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							lblInfo.setText("");
-						}
-					});
-				}
-			});
-		}
+		Platform.runLater(new InfoRunnable(lblInfo, text));
 	}
 	
 	/**
@@ -269,9 +302,9 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setLocation(int id, boolean selected) {
 		if (selected) {
-			selectedCategories.add(id);
+			selectedLocations.add(id);
 		} else {
-			selectedCategories.remove(id);
+			selectedLocations.remove(id);
 		}
 		reloadData();
 	}
@@ -307,7 +340,7 @@ public class GUIController extends Application implements Initializable {
 		ArrayList<String> a = new ArrayList<String>();
 		a.add("Deutschland");
 		a.add("Frankreich");
-		a.add("ï¿½sterreich");
+		a.add("Österreich");
 		return a;
 	}
 	
@@ -363,9 +396,14 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void update(UpdateType type) {
-		for (GUIElement element : guiElements) {
-			element.update(type);
-		}
+		Platform.runLater(new RunnableParameter<UpdateType>(type) {
+			@Override
+			public void run() {
+				for (GUIElement element : guiElements) {
+					element.update(parameter);
+				}
+			}
+		});
 	}
 	
 	/**
@@ -378,8 +416,7 @@ public class GUIController extends Application implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		initDBConnection();
+		new Thread(rnbInitDBConnection).start();
 	}
 	
-	// TODO: many functions are missing
 }
