@@ -62,6 +62,7 @@ public class GUIController extends Application implements Initializable {
 	private List<Account> dataByAccount = new ArrayList<Account>();
 	
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
+	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText;
 	
@@ -236,7 +237,20 @@ public class GUIController extends Application implements Initializable {
 		categoryRoot.getChilds().get(1).addChild(new Category(4, "Handball", 2));
 		
 //		categoryRoot = db.getCategories();
+		
+		reloadCategoryHashMap();
 		update(UpdateType.CATEGORY);
+	}
+	
+	private void reloadCategoryHashMap() {
+		categories.clear();
+		reloadCategoryHashMap(categoryRoot);
+	}
+	private void reloadCategoryHashMap(Category category) {
+		for (Category child : category.getChilds()) {
+			reloadCategoryHashMap(child);	
+		}
+		categories.put(category.getId(), category);
 	}
 	
 	private void reloadData() {
@@ -333,7 +347,7 @@ public class GUIController extends Application implements Initializable {
 			for (Category child : category.getChilds()) {
 				toVisit.push(child);
 			}
-			if (category.toString().toLowerCase().contains(text.toLowerCase())) {
+			if (category.toString().toLowerCase().trim().contains(text.toLowerCase().trim())) {
 				foundCategories.add(category.getId());
 			}
 		}
@@ -383,7 +397,7 @@ public class GUIController extends Application implements Initializable {
 	public List<Location> getLocations(String text) {
 		ArrayList<Location> filteredLocations = new ArrayList<Location>();
 		for (Location location : locations) {
-			if (location.toString().toLowerCase().contains(text.toLowerCase())) {
+			if (location.toString().toLowerCase().trim().contains(text.toLowerCase().trim())) {
 				filteredLocations.add(location);
 			}
 		}
@@ -426,12 +440,12 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of selected categories.
 	 * @return selected categories
 	 */
-	public List<String> getSelectedCategories() {
-		// TODO: add correct code
-		ArrayList<String> a = new ArrayList<String>();
-		a.add("Musiker");
-		a.add("Schornsteinfeger");
-		return a;
+	public List<Category> getSelectedCategories() {
+		List<Category> selectedCategoriesList = new ArrayList<Category>();
+		for (Integer categoryID : selectedCategories) { // TODO: faster?
+			selectedCategoriesList.add(categories.get(categoryID));
+		}
+		return selectedCategoriesList;
 	}
 	/**
 	 * Get list of selected locations.

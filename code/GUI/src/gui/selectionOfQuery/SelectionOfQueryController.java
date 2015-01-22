@@ -37,18 +37,16 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	private ListView<String> lstSelectedAccounts;
 	
-	private void updateSelected(ListView<String> lstView, List<String> list) {
+	private void updateSelectedCategory(List<Category> list) {
 		// TODO: add code
 	}
 	
 	private void updateSelectedAccount(List<Account> selectedAccounts) {
-		// TODO Auto-generated method stub
-		
+		// TODO: add code
 	}
 	
 	private void updateSelectedLocation(List<Location> selectedLocations) {
-		// TODO Auto-generated method stub
-		
+		// TODO: add code
 	}
 	
 	private void updateCategory(Category rootCategory) {
@@ -83,7 +81,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		if (type == UpdateType.TWEET) {
 			// TODO: load data and update elements
 			updateSelectedAccount(superController.getSelectedAccounts());
-			updateSelected(lstSelectedCategories, superController.getSelectedCategories());
+			updateSelectedCategory(superController.getSelectedCategories());
 			updateSelectedLocation(superController.getSelectedLocations());
 		} else if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
