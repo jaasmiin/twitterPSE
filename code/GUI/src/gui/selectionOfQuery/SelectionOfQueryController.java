@@ -2,6 +2,7 @@ package gui.selectionOfQuery;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import mysql.result.Category;
@@ -38,22 +39,28 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		// TODO: add code
 	}
 	
-	private void updateCategory(ArrayList<Category> categories) {
-		TreeItem<Category> rootItem = new TreeItem<Category>(new Category(1, "Alles", 0));
-		rootItem.setExpanded(true);		
-		for (Category category : categories) {
-			rootItem.getChildren().add(new TreeItem<Category>(category));
-			// TODO: add categories in hierarchy
-		}
+	private void updateCategory(Category rootCategory) {
+		TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
+		rootItem.setExpanded(true);
+		updateCategoryRec(rootCategory, rootItem);
+		// TODO: implement
 		trvCategory.setRoot(rootItem);
 	}
 	
-	private void updateLocation(ArrayList<Location> locations) {
+	private void updateCategoryRec(Category category, TreeItem<Category> item) {
+		for (Category childCategory : category.getChilds()) {
+			TreeItem<Category> child = new TreeItem<Category>(childCategory);
+			child.setExpanded(true);
+			updateCategoryRec(childCategory, child);
+			item.getChildren().add(child);
+		}
+	}
+	
+	private void updateLocation(List<Location> list) {
 		TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0, "Welt", "0000", null));
 		rootItem.setExpanded(true);		
-		for (Location location : locations) {
+		for (Location location : list) {
 			rootItem.getChildren().add(new TreeItem<Location>(location));
-			// TODO: add locations in hierarchy
 		}
 		trvLocation.setRoot(rootItem);
 	}
@@ -69,7 +76,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		} else if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
-			updateCategory(superController.getCategories(txtFilterSearch.getText()));
+			updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
 		} 
 	}
 	
@@ -86,7 +93,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			System.out.println("Eingabe: " + txtFilterSearch.getText());
 			if (tipCategory.isExpanded()) {
-				updateCategory(superController.getCategories(txtFilterSearch.getText()));
+				updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
 			} else if (tipAccount.isExpanded()) {
 				// TODO: reload list
 			} else if (tipLocation.isExpanded()) {

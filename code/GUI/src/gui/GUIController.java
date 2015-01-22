@@ -5,24 +5,23 @@ import gui.GUIElement.UpdateType;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Stack;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
-
-import com.sun.javafx.scene.traversal.WeightedClosestCorner;
 
 import mysql.AccessData;
 import mysql.DBgui;
@@ -56,7 +55,7 @@ public class GUIController extends Application implements Initializable {
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
 	private static DBgui db;
-	private Category categories;
+	private Category categoryRoot;
 	private List<Location> locations = new ArrayList<Location>();
 	private List<Account> accounts = new ArrayList<Account>();
 	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
@@ -66,6 +65,7 @@ public class GUIController extends Application implements Initializable {
 	private HashSet<Integer> selectedLocations = new HashSet<Integer>();
 	private HashSet<Integer> selectedAccounts = new HashSet<Integer>();
 	private Date selectedStartDate, selectedEndDate;
+	private String accountSearchText;
 	
 	public static GUIController getInstance() {
 		if (instance == null) {
@@ -109,7 +109,6 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private Runnable rnbInitDBConnection = new Runnable() {
-		
 		@Override
 		public void run() {
 			boolean success = true;
@@ -218,76 +217,75 @@ public class GUIController extends Application implements Initializable {
 	
 	private void reloadLocation() {
 		locations = db.getLocations();	
-		System.out.println("Location size: " + locations.size());
 		update(UpdateType.LOCATION);
 	}
 	
 	private void reloadAccounts() {
-		accounts = db.getAccounts("Abc");
-//		TODO: remove test code:
-//		accounts.clear();
-//		accounts.add(new Account(1, 243, "Max Mustermann", true, null, 1, 0, null, null, null));
-//		accounts.add(new Account(2, 122, "Max Mustermann", true, null, 2, 0, null, null, null));
-//		accounts.add(new Account(5, 432, "Max Mustermann", true, null, 3, 0, null, null, null));
+		accounts = db.getAccounts(accountSearchText);
+//		TODO: implement
 		update(UpdateType.ACCOUNT);
 	}
 	
 	private void reloadCategories() {
-//		categories = db.getCategories();
-		categories = new Category(1, "test", 0);
-//		System.out.println("Größe: " + categories.size());
-//		TODO: remove test code:
-//		categories.clear();
-//		categories.add(new Category(31, "Musiker", 0));
-//		categories.add(new Category(22, "Schriftsteller", 0));
-//		categories.add(new Category(13, "Politiker", 0));
+		categoryRoot = new Category(0, "Alle Kategorien", 0);
+		categoryRoot.addChild(new Category(1, "Politik", 0));
+		categoryRoot.addChild(new Category(2, "Sport", 0));
+		categoryRoot.getChilds().get(0).addChild(new Category(8, "CDU-Politiker", 1));
+		categoryRoot.getChilds().get(0).addChild(new Category(9, "SPD-Politiker", 1));
+		categoryRoot.getChilds().get(0).addChild(new Category(10, "FDP-Politiker", 1));
+		categoryRoot.getChilds().get(1).addChild(new Category(3, "Fußball", 2));
+		categoryRoot.getChilds().get(1).addChild(new Category(4, "Handball", 2));
+		
+//		categoryRoot = db.getCategories();
 		update(UpdateType.CATEGORY);
 	}
 	
 	private void reloadData() {
-		final Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
-		final Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
-		final Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
-		final boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
-		boolean success = true;
-		Thread t1 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-				} catch (IllegalArgumentException | SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				
+		if (!(selectedCategories.isEmpty() && selectedAccounts.isEmpty() && selectedLocations.isEmpty())) {
+			final Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
+			final Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
+			final Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
+			final boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
+			boolean success = true;
+			Thread t1 = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+					} catch (IllegalArgumentException | SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}				
+				}
+			});
+			Thread t2 = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+					} catch (IllegalArgumentException | SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}				
+				}
+			});
+			t1.start();
+			t2.start();
+			try {
+				t1.join();
+			} catch (InterruptedException e) {
+				success = false;
+				setInfo(e.getLocalizedMessage());
 			}
-		});
-		Thread t2 = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				try {
-					dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-				} catch (IllegalArgumentException | SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}				
+			try {
+				t2.join();
+			} catch (InterruptedException e) {
+				success = false;
+				setInfo(e.getLocalizedMessage());
 			}
-		});
-		t1.start();
-		t2.start();
-		try {
-			t1.join();
-		} catch (InterruptedException e) {
-			success = false;
-			setInfo(e.getLocalizedMessage());
-		}
-		try {
-			t2.join();
-		} catch (InterruptedException e) {
-			success = false;
-			setInfo(e.getLocalizedMessage());
-		}
-		if (success) {
-			update(UpdateType.TWEET);
+			if (success) {
+				update(UpdateType.TWEET);
+			}
 		}
 	}
 	
@@ -305,8 +303,8 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of all categories
 	 * @return list of categories
 	 */
-	public Category getCategories() {
-		return categories;
+	public Category getCategoryRoot() {
+		return categoryRoot;
 	}
 	
 	/**
@@ -314,15 +312,51 @@ public class GUIController extends Application implements Initializable {
 	 * @param text which categories should contain
 	 * @return list of categories containing text
 	 */
-	public ArrayList<Category> getCategories(String text) {
-		ArrayList<Category> filteredCategories = new ArrayList<Category>();
-//		for (Category category : categories) {
-//			if (category.toString().contains(text)) {
-//				filteredCategories.add(category);
-//			}
-//		}
-		// TODO: implement
-		return filteredCategories;
+	public Category getCategoryRoot(String text) {
+		HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
+		Stack<Category> toVisit = new Stack<Category>();
+		Category newRoot = new Category(categoryRoot.getId(), categoryRoot.toString(), categoryRoot.getParentId());
+		HashSet<Integer> foundCategories = new HashSet<Integer>();
+		
+		categories.put(categoryRoot.getId(), categoryRoot);
+		for (Category category : categoryRoot.getChilds()) {
+			toVisit.push(category);
+		}
+		
+		while (!toVisit.isEmpty()) {
+			Category category = toVisit.pop();
+			categories.put(category.getId(), new Category(category.getId(), category.toString(), category.getParentId()));
+			for (Category child : category.getChilds()) {
+				toVisit.push(child);
+			}
+			if (category.toString().toLowerCase().contains(text.toLowerCase())) {
+				foundCategories.add(category.getId());
+			}
+		}
+		Iterator<Integer> iterator = foundCategories.iterator();
+		while (iterator.hasNext()) {
+			int categoryID = iterator.next();
+			Stack<Integer> pathToRoot = new Stack<Integer>();
+			pathToRoot.push(categoryID);
+			while (pathToRoot.peek() != newRoot.getId()) {
+				pathToRoot.push(categories.get(pathToRoot.peek()).getParentId());
+			}
+			pathToRoot.pop(); // remove root
+			Category nodeToAdd = newRoot;
+			while(!pathToRoot.isEmpty()) {
+				Category category = categories.get(pathToRoot.pop());
+				if (!nodeToAdd.getChilds().contains(category)) {
+					nodeToAdd.addChild(category);
+				}
+				for (Category child : nodeToAdd.getChilds()) {
+					if (child.equals(category)) {
+						nodeToAdd = child;
+						break;
+					}
+				}
+			}
+		}
+		return newRoot;
 	}
 	
 	/**
@@ -338,10 +372,10 @@ public class GUIController extends Application implements Initializable {
 	 * @param text which locations should contain
 	 * @return list of locations containing text
 	 */
-	public ArrayList<Location> getLocations(String text) {
+	public List<Location> getLocations(String text) {
 		ArrayList<Location> filteredLocations = new ArrayList<Location>();
 		for (Location location : locations) {
-			if (location.toString().contains(text)) {
+			if (location.toString().toLowerCase().contains(text.toLowerCase())) {
 				filteredLocations.add(location);
 			}
 		}
