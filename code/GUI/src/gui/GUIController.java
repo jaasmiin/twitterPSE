@@ -2,7 +2,10 @@ package gui;
 	
 import gui.GUIElement.UpdateType;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -43,11 +46,7 @@ public class GUIController extends Application implements Initializable {
 	@FXML
 	private Label lblInfo;
 	
-	private final static String HOST;
-	private final static String PORT;
-	private final static String DATABASE;
-	private final static String USER;
-	private final static String PASSWORD;
+	private static String HOST, PORT, DATABASE, USER, PASSWORD;
 	
 	private static GUIController instance = null;
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
@@ -109,8 +108,9 @@ public class GUIController extends Application implements Initializable {
 		public void run() {
 			boolean success = true;
 			lblInfo.setText("Verbindung mit DB wird aufgebaut...");
+			
 			try {
-				db = new DBgui(new AccessData(HOST, PORT, DATABASE, USER, PASSWORD), getLogger() );
+				db = new DBgui(getDBAccessData(), getLogger() );
 			} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
 					| ClassNotFoundException e) {
 //				e.printStackTrace();
@@ -138,6 +138,18 @@ public class GUIController extends Application implements Initializable {
 		}
 	};
     
+	private AccessData getDBAccessData() throws IOException {
+		String path = System.getenv("APPDATA") + "\\KIT\\twitterPSE\\dblogin.txt";
+		BufferedReader in = new BufferedReader(new FileReader(path));;
+		String host = in.readLine();
+		String port = in.readLine();
+		String dbName = in.readLine();
+		String userName = in.readLine();
+		String password = in.readLine();
+		in.close();
+		return new AccessData(host, port, dbName, userName, password);
+	}
+	
 	private Logger getLogger() throws SecurityException, IOException {
         Logger l = Logger.getLogger("logger");
         new File("LogFile.log").createNewFile();
