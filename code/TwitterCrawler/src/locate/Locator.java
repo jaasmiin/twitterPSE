@@ -5,26 +5,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 import org.geonames.GeoNamesException;
 import org.geonames.WebService;
 
@@ -38,8 +26,6 @@ import twitter4j.Place;
  * 
  */
 public class Locator {
-
-    private String webServiceURL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
 
     public HashMap<String, String> map;
     private Logger logger;
@@ -64,6 +50,8 @@ public class Locator {
      */
     public Locator(Logger log) {
         this.logger = log;
+        // TODO get hashmap by constructor or get DBcrawler instance or get
+        // AccessData by constructor
         map = new HashMap<String, String>();
         readFromFile(new File("HashNeu"));
 
@@ -152,71 +140,6 @@ public class Locator {
     }
 
     /**
-     * Method that actually calls webservice, does not check input strings for
-     * forbidden characters e.g. '&','@' etc.
-     * 
-     * @param location
-     *            location attribute
-     * @param timezone
-     *            timezone attribue
-     * @return countrycode in case of success, '0' otherwise
-     */
-
-    private String callWebservice(String location, String timezone) {
-        String result = "0";
-        try {
-
-            URL u = new URL(webServiceURL + "userlocation=" + location
-                    + "&timezone=" + timezone);
-            // nur zu Testzwecken
-            if (u == null) {
-                logger.severe("URI is null  Location = " + location
-                        + "  timezone = " + timezone);
-            }
-            InputStream stream = u.openStream();
-            Scanner scanner = new Scanner(stream);
-            result = scanner.useDelimiter("//Z").next();
-            stream.close();
-            scanner.close();
-        } catch (MalformedURLException e1) {
-            logger.info("URL nicht korrekt: " + e1.getMessage()
-                    + "   location= " + location + " timezone=" + timezone);
-            return "0";
-        } catch (IOException e2) {
-            logger.info("Webservice meldet Fehler: " + e2.getMessage()
-                    + "   location= " + location + " timezone=" + timezone);
-            return "0";
-        }
-        // parsing received String to XML-Doc and get content from created
-        // XML-Doc
-        try {
-            DocumentBuilderFactory fctr = DocumentBuilderFactory.newInstance();
-            DocumentBuilder bldr = fctr.newDocumentBuilder();
-            InputSource insrc = new InputSource(new StringReader(result));
-
-            Document doc = bldr.parse(insrc);
-            result = doc.getFirstChild().getTextContent();
-        } catch (ParserConfigurationException | IOException e1) {
-            logger.info("XML or IO error!");
-            return "0";
-        } catch (SAXException e2) {
-
-            logger.info("Fehlerhafter EingabeString" + e2.getMessage());
-            return "0";
-        }
-
-        // string formatting (deleting '"' etc)
-        result = result.substring(1, result.length() - 1);
-        if (result.equals("0")) {
-
-            return "0";
-        }
-
-        result = result.trim();
-        return result;
-    }
-
-    /**
      * tries to determine the country/location of a given name or word
      * 
      * @param location
@@ -272,7 +195,7 @@ public class Locator {
         }
 
         // connection to Webservice
-        result = callWebservice(location, timezone);
+        // result = callWebservice(location, timezone);
 
         // add positive result to Hashtable and save results periodically
         if (!result.equals("0") && result != null && !result.equals("")) {

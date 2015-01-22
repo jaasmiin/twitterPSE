@@ -217,12 +217,12 @@ public class StatusProcessor implements RunnableListener {
      * insert a retweet into the database
      * 
      * @param id
-     *            the id of the account where the tweet was from
+     *            the id of the account where the tweet was from as long
      * @param geotag
      *            the Geolocation of the retweet as GeoLocation (null if not
      *            available)
      * @param location
-     *            the location of the account,wherefrom the retweet was as
+     *            the location of the account, wherefrom the retweet was as
      *            String
      * @param place
      *            if available the place where the retweet has been created as
