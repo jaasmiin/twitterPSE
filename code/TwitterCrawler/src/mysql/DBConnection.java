@@ -23,6 +23,7 @@ public abstract class DBConnection {
     protected Connection c;
     protected DateFormat dateFormat;
     protected Logger logger;
+    private boolean connected;
 
     /**
      * configure the connection to the database
@@ -47,6 +48,7 @@ public abstract class DBConnection {
 
         this.accessData = accessData;
         this.logger = logger;
+        this.connected = false;
 
         // create date format for the database
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -59,9 +61,11 @@ public abstract class DBConnection {
      *             thrown if there is no connection to the database possible
      */
     public void connect() throws SQLException {
+        connected = false;
         // connect to database
         c = DriverManager.getConnection(accessData.getConnectionString(),
                 accessData.getUser(), accessData.getPassword());
+        connected = true;
         // logger.info("Connected to database " + accessData.getName()
         // + " with user " + accessData.getUser());
     }
@@ -77,7 +81,20 @@ public abstract class DBConnection {
         } catch (SQLException e) {
             logger.warning("SQL-Status: " + e.getSQLState() + "\nMessage: "
                     + e.getMessage() + "\n");
+        } finally {
+            connected = false;
         }
+    }
+
+    /**
+     * returns true if a database-connection is established, false if there's no
+     * database-connection
+     * 
+     * @return true if a database-connection is established, false if there's no
+     *         database-connection
+     */
+    public boolean isConnected() {
+        return connected;
     }
 
     /**
