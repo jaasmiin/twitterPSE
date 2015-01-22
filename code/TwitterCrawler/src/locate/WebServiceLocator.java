@@ -133,14 +133,7 @@ public class WebServiceLocator implements RunnableListener {
         dbc.disconnect();
 
     }
-    private synchronized void incrementCountQuery() {
-    	  countQuery++;
-    }
-    
-    private synchronized void incrementCountLocatedQuery() {
-    	countLocatedQuery++;
-    }
-    
+
     
 
     private void locateRetweet(StatusRetweet retweet) {
@@ -150,12 +143,12 @@ public class WebServiceLocator implements RunnableListener {
         String countryCode = "0";
         
         // update counter
-        incrementCountQuery();
+        countQuery++;
         
         countryCode = callWebservice(location, timezone);
         if (!countryCode.equals("0")) {
-            dbc.addLocationString(countryCode, location);
-            incrementCountLocatedQuery();
+            dbc.addLocationString(countryCode, (location+timezone));
+            countLocatedQuery++;
         }
 
         dbc.addRetweet(retweet.getId(), countryCode, retweet.getDate());
@@ -169,14 +162,14 @@ public class WebServiceLocator implements RunnableListener {
         String location = formatter.formatString(user.getLocation());
         
         //update counter
-        incrementCountQuery();
+        countQuery++;
 
        
         
         countryCode = callWebservice(location, timezone);
         if (!countryCode.equals("0")) {
-            dbc.addLocationString(location, timezone);
-            incrementCountLocatedQuery();
+            dbc.addLocationString(countryCode, (location+"#"+timezone));
+            countLocatedQuery++;
         }
 
         dbc.addAccount(user, countryCode, account.getStatus().getCreatedAt(),
@@ -200,11 +193,7 @@ public class WebServiceLocator implements RunnableListener {
 
             URL u = new URL(WEB_SERVICE_URL + "userlocation=" + location
                     + "&timezone=" + timezone);
-            // nur zu Testzwecken
-            if (u == null) {
-                logger.severe("URI is null  Location = " + location
-                        + "  timezone = " + timezone);
-            }
+            
             InputStream stream = u.openStream();
             Scanner scanner = new Scanner(stream);
             result = scanner.useDelimiter("//Z").next();
@@ -260,7 +249,7 @@ public class WebServiceLocator implements RunnableListener {
      * 1: number of queries,
      * 2: number of located queries
      */
-    public long[] getStatistics() {
+    public long[] getStatistic() {
     	long[] statistics = {countQuery, countLocatedQuery};
     	return statistics;
     }
