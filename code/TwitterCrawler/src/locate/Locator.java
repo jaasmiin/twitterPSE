@@ -35,8 +35,6 @@ public class Locator {
     private int numberOfLocReq = 0;
     private int numberOfPlaceLoc = 0;
     private int numberOfGeoTagLoc = 0;
-    private int numberOfLocationTagLoc = 0;
-    private int numberOfWebserviceLoc = 0;
     private int numberOfHashMapLoc = 0;
     private int reqWithPlace = 0;
     private int reqWithGeoTag = 0;
@@ -174,7 +172,7 @@ public class Locator {
           result = getLocation(location);
              if (!result.equals("0")) {
             	 
-            	 numberOfLocationTagLoc++;
+            	 numberOfHashMapLoc++;
              }
         }
         
@@ -191,18 +189,14 @@ public class Locator {
      * @return Content of the single values in the result array: 0: number of
      *         requests 1: number of successfully located requests (a
      *         countrycode could be returned) 2: number of requests located via
-     *         place-attribute 3: number of requests located via geotag 4:
-     *         number of requests located via location and timezone
-     *         (webservice+hashmap, actually redundant information :)) 5: number
-     *         of requests located via webservice 6: number of requests located
-     *         via hashmap 7: number of requests containing place-attribute 8:
-     *         number of requests containing geotag 9: number of request
+     *         place-attribute 3: number of requests located via geotag 4: number of requests located
+     *         via hashmap 5: number of requests containing place-attribute 6:
+     *         number of requests containing geotag 7: number of request
      *         containing location information
      */
     public int[] getStatistic() {
         int[] statistics = {numberOfReq, numberOfLocReq, numberOfPlaceLoc,
-                numberOfGeoTagLoc, numberOfLocationTagLoc,
-                numberOfWebserviceLoc, numberOfHashMapLoc, reqWithPlace,
+                numberOfGeoTagLoc, numberOfHashMapLoc, reqWithPlace,
                 reqWithGeoTag, reqWithLocation };
         return statistics;
 

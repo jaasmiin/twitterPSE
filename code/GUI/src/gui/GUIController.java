@@ -3,20 +3,26 @@ package gui;
 import gui.GUIElement.UpdateType;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
+
+import com.sun.javafx.scene.traversal.WeightedClosestCorner;
 
 import mysql.AccessData;
 import mysql.DBgui;
@@ -46,13 +52,11 @@ public class GUIController extends Application implements Initializable {
 	@FXML
 	private Label lblInfo;
 	
-	private static String HOST, PORT, DATABASE, USER, PASSWORD;
-	
 	private static GUIController instance = null;
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
 	private static DBgui db;
-	private List<Category> categories = new ArrayList<Category>();
+	private Category categories;
 	private List<Location> locations = new ArrayList<Location>();
 	private List<Account> accounts = new ArrayList<Account>();
 	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
@@ -88,9 +92,11 @@ public class GUIController extends Application implements Initializable {
 				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 					@Override
 					public void handle(WindowEvent event) {
-						System.out.println("Verbindung mit Datenbank wird geschlossen...");
-						db.disconnect();
-						System.out.println("Verbindung geschlossen.");
+						if (db != null && db.isConnected()) {
+							System.out.println("Verbindung mit Datenbank wird geschlossen...");
+							db.disconnect();
+							System.out.println("Verbindung geschlossen.");
+						}
 					}
 				});
 			} catch(Exception e) {
@@ -108,21 +114,31 @@ public class GUIController extends Application implements Initializable {
 		public void run() {
 			boolean success = true;
 			lblInfo.setText("Verbindung mit DB wird aufgebaut...");
-			
+			AccessData accessData = null;
 			try {
-				db = new DBgui(getDBAccessData(), getLogger() );
-			} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
-					| ClassNotFoundException e) {
-//				e.printStackTrace();
+				accessData = getDBAccessData();
+			} catch (IOException e1) {
 				success = false;
 			}
 			if (success) {
 				try {
-					db.connect();
-				} catch (SQLException e) {
-//					e.printStackTrace();
+					db = new DBgui(accessData, getLogger() );
+				} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
+						| ClassNotFoundException e) {
 					success = false;
 				}
+				if (success) {
+					try {
+						db.connect();
+					} catch (SQLException e) {
+	//					e.printStackTrace();
+						success = false;
+					}
+				} else {
+					setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.");
+				}
+			} else {
+				setInfo("Fehler, es konnten konnten keine Login Daten geladen werden.");
 			}
 			if (success) {
 				setInfo("Erfolreich mit DB verbunden.");
@@ -132,14 +148,47 @@ public class GUIController extends Application implements Initializable {
 						reloadAll();
 					}
 				});
-			} else {
-				setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.");
 			}
 		}
 	};
     
 	private AccessData getDBAccessData() throws IOException {
 		String path = System.getenv("APPDATA") + "\\KIT\\twitterPSE\\dblogin.txt";
+		if (!(new File(path)).isFile()) {
+			path = System.getenv("APPDATA") + "\\KIT";
+			File file = new File(path);
+			if (!file.isDirectory()) {
+				if (!file.mkdir()) {
+					throw new IOException();
+				}
+			}
+			path += "\\twitterPSE";
+			file = new File(path);
+			if (!file.isDirectory()) {
+				if (!file.mkdir()) {
+					throw new IOException();
+				}
+			}
+			path += "\\dblogin.txt";
+			file = new File(path);
+			if (!file.isFile()) {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+				Scanner in = new Scanner(System.in);
+				System.out.print("Host: ");
+				writer.write(in.nextLine() + "\n");
+				System.out.print("Port: ");
+				writer.write(in.nextLine() + "\n");
+				System.out.print("Database: ");
+				writer.write(in.nextLine() + "\n");
+				System.out.print("Username: ");
+				writer.write(in.nextLine() + "\n");
+				System.out.print("Password: ");
+				writer.write(in.nextLine() + "\n");
+				in.close();
+				writer.close();
+			}
+			
+		}
 		BufferedReader in = new BufferedReader(new FileReader(path));;
 		String host = in.readLine();
 		String port = in.readLine();
@@ -151,9 +200,13 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private Logger getLogger() throws SecurityException, IOException {
+		File directory = new File("logs");
+		if (!directory.isDirectory()) {
+			directory.mkdir();
+		}
         Logger l = Logger.getLogger("logger");
-        new File("LogFile.log").createNewFile();
-        FileHandler fh = new FileHandler("LogFile.log", true);
+        new File(directory.getPath() + "\\LogFile.log").createNewFile();
+        FileHandler fh = new FileHandler(directory.getPath() + "\\LogFile.log", true);
         SimpleFormatter formatter = new SimpleFormatter();
         fh.setFormatter(formatter);
         l.addHandler(fh);
@@ -181,12 +234,13 @@ public class GUIController extends Application implements Initializable {
 	
 	private void reloadCategories() {
 //		categories = db.getCategories();
+		categories = new Category(1, "test", 0);
 //		System.out.println("Größe: " + categories.size());
 //		TODO: remove test code:
-		categories.clear();
-		categories.add(new Category(31, "Musiker", 0));
-		categories.add(new Category(22, "Schriftsteller", 0));
-		categories.add(new Category(13, "Politiker", 0));
+//		categories.clear();
+//		categories.add(new Category(31, "Musiker", 0));
+//		categories.add(new Category(22, "Schriftsteller", 0));
+//		categories.add(new Category(13, "Politiker", 0));
 		update(UpdateType.CATEGORY);
 	}
 	
@@ -251,7 +305,7 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of all categories
 	 * @return list of categories
 	 */
-	public List<Category> getCategories() {
+	public Category getCategories() {
 		return categories;
 	}
 	
@@ -262,11 +316,12 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public ArrayList<Category> getCategories(String text) {
 		ArrayList<Category> filteredCategories = new ArrayList<Category>();
-		for (Category category : categories) {
-			if (category.toString().contains(text)) {
-				filteredCategories.add(category);
-			}
-		}
+//		for (Category category : categories) {
+//			if (category.toString().contains(text)) {
+//				filteredCategories.add(category);
+//			}
+//		}
+		// TODO: implement
 		return filteredCategories;
 	}
 	
