@@ -1,16 +1,8 @@
 package locate;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-
-import mysql.AccessData;
-import mysql.DBIcrawler;
-import mysql.DBcrawler;
 
 import org.geonames.GeoNamesException;
 import org.geonames.WebService;
@@ -26,10 +18,10 @@ import twitter4j.Place;
  */
 public class Locator {
 
+    private final static String DEFAULT_LOCATION = "0";
     private HashMap<String, String> map;
     private Logger logger;
     private Formatter formatter;
-    private DBIcrawler dbc;
     private int numberOfReq = 0;
     private int numberOfLocReq = 0;
     private int numberOfPlaceLoc = 0;
@@ -70,7 +62,7 @@ public class Locator {
      */
     private String getLocation(GeoLocation geotag) {
 
-        String res = "0";
+        String res = DEFAULT_LOCATION;
         WebService.setGeoNamesServerFailover(null);
         WebService.setUserName("KIT_PSE");
         WebService.setConnectTimeOut(1000);
@@ -79,10 +71,10 @@ public class Locator {
                     geotag.getLongitude());
         } catch (GeoNamesException e1) {
             logger.info("Geotag localiser: Geonames Excep: " + e1.getMessage());
-            return "0";
+            return DEFAULT_LOCATION;
         } catch (IOException e2) {
             logger.info("Geotag localiser: IO exeption: " + e2.getMessage());
-            return "0";
+            return DEFAULT_LOCATION;
         }
         return res;
     }
@@ -98,7 +90,7 @@ public class Locator {
      *         String
      */
     private String getLocation(String location, String timezone) {
-    	String result = "0";
+    	String result = DEFAULT_LOCATION;
     	location = formatter.formatString(location);
     	timezone = formatter.formatString(timezone);
     	String query = location + "#" + timezone;
@@ -124,7 +116,7 @@ public class Locator {
      */
     public String locate(Place place, GeoLocation geotag, String location, String timezone) {
    
-        String result = "0";
+        String result = DEFAULT_LOCATION;
 
         // statistics
         numberOfReq++;
@@ -141,7 +133,7 @@ public class Locator {
         if (place != null) {
 
             result = place.getCountryCode();
-            if (!result.equals("0")) {
+            if (!result.equals(DEFAULT_LOCATION)) {
             	
                 numberOfPlaceLoc++;
             }
@@ -149,7 +141,7 @@ public class Locator {
         } else if (geotag != null) {
 
             result = getLocation(geotag);
-            if (!result.equals("0")) {
+            if (!result.equals(DEFAULT_LOCATION)) {
             	
                 numberOfGeoTagLoc++;
             }
@@ -157,13 +149,13 @@ public class Locator {
         } else if (location != null) {
             
           result = getLocation(location,timezone);
-             if (!result.equals("0")) {
+             if (!result.equals(DEFAULT_LOCATION)) {
             	 
             	 numberOfHashMapLoc++;
              }
         }
         
-        if (!result.equals("0")) {
+        if (!result.equals(DEFAULT_LOCATION)) {
         	
             numberOfLocReq++;
         }

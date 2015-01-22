@@ -72,7 +72,8 @@ public class DBgui extends DBConnection implements DBIgui {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
                 Category c = new Category(id, res.getString("Name"), parent);
-                ids.add(parent);
+                if (parent != 0)
+                    ids.add(parent);
                 parents.add(c);
                 all.put(id, c);
             }
@@ -84,7 +85,7 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         List<Category> childs;
-        while (parents.size() > 1) {
+        while (ids.size() > 0) {
             childs = parents;
 
             // get parent categories
@@ -97,7 +98,6 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlCommand += ";";
 
             res = null;
-            stmt = null;
             try {
                 stmt = c.createStatement();
                 res = stmt.executeQuery(sqlCommand);
@@ -113,10 +113,11 @@ public class DBgui extends DBConnection implements DBIgui {
                     int parent = res.getInt("ParentId");
                     int id = res.getInt("Id");
                     Category c = new Category(id, res.getString("Name"), parent);
-                    if (all.containsKey(parent)) {
+                    if (all.containsKey(parent) && parent != 0) {
                         all.get(parent).addChild(c);
                     } else {
-                        ids.add(parent);
+                        if (parent != 0)
+                            ids.add(parent);
                         parents.add(c);
                         all.put(id, c);
                     }
@@ -130,12 +131,14 @@ public class DBgui extends DBConnection implements DBIgui {
 
             for (Category parent : parents) {
                 for (Category child : childs) {
-                    if (parent.getId() == child.getId()) {
+                    if (parent.getId() == child.getParentId()) {
                         parent.addChild(child);
                     }
                 }
             }
         }
+
+        // TODO
 
         return parents.get(0);
     }

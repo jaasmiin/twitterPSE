@@ -3,10 +3,8 @@ package locate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -34,8 +32,9 @@ import mysql.DBcrawler;
 public class WebServiceLocator implements RunnableListener {
 
     // TODO noch keine statistic-Funktion implementiert
-    
+
     private final static String WEB_SERVICE_URL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+    private final static String DEFAULT_LOCATION = "0";
     private Logger logger;
     private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
     private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
@@ -134,20 +133,18 @@ public class WebServiceLocator implements RunnableListener {
 
     }
 
-    
-
     private void locateRetweet(StatusRetweet retweet) {
 
         String location = formatter.formatString(retweet.getLocation());
         String timezone = formatter.formatString(retweet.getTimeZone());
         String countryCode = "0";
-        
+
         // update counter
         countQuery++;
-        
+
         countryCode = callWebservice(location, timezone);
-        if (!countryCode.equals("0")) {
-            dbc.addLocationString(countryCode, (location+timezone));
+        if (!countryCode.equals(DEFAULT_LOCATION)) {
+            dbc.addLocationString(countryCode, location, timezone);
             countLocatedQuery++;
         }
 
@@ -156,19 +153,17 @@ public class WebServiceLocator implements RunnableListener {
 
     private void locateAccount(StatusAccount account) {
 
-        String countryCode = "0";
+        String countryCode = DEFAULT_LOCATION;
         User user = account.getStatus().getUser();
         String timezone = formatter.formatString(user.getTimeZone());
         String location = formatter.formatString(user.getLocation());
-        
-        //update counter
+
+        // update counter
         countQuery++;
 
-       
-        
         countryCode = callWebservice(location, timezone);
-        if (!countryCode.equals("0")) {
-            dbc.addLocationString(countryCode, (location+"#"+timezone));
+        if (!countryCode.equals(DEFAULT_LOCATION)) {
+            dbc.addLocationString(countryCode, location, timezone);
             countLocatedQuery++;
         }
 
@@ -188,70 +183,70 @@ public class WebServiceLocator implements RunnableListener {
      * @return countrycode in case of success, '0' otherwise
      */
     private String callWebservice(String location, String timezone) {
-        String result = "0";
+        String result = DEFAULT_LOCATION;
         try {
 
             URL u = new URL(WEB_SERVICE_URL + "userlocation=" + location
                     + "&timezone=" + timezone);
-            
+
             InputStream stream = u.openStream();
             Scanner scanner = new Scanner(stream);
             result = scanner.useDelimiter("//Z").next();
             stream.close();
             scanner.close();
-            
+
         } catch (MalformedURLException e1) {
             logger.info("URL nicht korrekt: " + e1.getMessage()
                     + "   location= " + location + " timezone=" + timezone);
-            return "0";
-            
+            return DEFAULT_LOCATION;
+
         } catch (IOException e2) {
             logger.info("Webservice meldet Fehler: " + e2.getMessage()
                     + "   location= " + location + " timezone=" + timezone);
-            return "0";
+            return DEFAULT_LOCATION;
         }
-        
+
         // parsing received String to XML-Doc and get content from created
         // XML-Doc
         try {
-        	
+
             DocumentBuilderFactory fctr = DocumentBuilderFactory.newInstance();
             DocumentBuilder bldr = fctr.newDocumentBuilder();
             InputSource insrc = new InputSource(new StringReader(result));
 
             Document doc = bldr.parse(insrc);
             result = doc.getFirstChild().getTextContent();
-            
+
         } catch (ParserConfigurationException | IOException e1) {
             logger.info("XML or IO error!");
-            return "0";
-            
+            return DEFAULT_LOCATION;
+
         } catch (SAXException e2) {
 
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
-            return "0";
+            return DEFAULT_LOCATION;
         }
 
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
-        
-        if (result.equals("0")) {
-            return "0";
+
+        if (result.equals(DEFAULT_LOCATION)) {
+            return DEFAULT_LOCATION;
         }
 
         result = result.trim();
         return result;
     }
-    
+
     /**
      * Returns number of queries and located queries
-     * @return Entryno. in return array:
-     * 1: number of queries,
-     * 2: number of located queries
+     * 
+     * @return Entryno. in return array: 1: number of queries, 2: number of
+     *         located queries
      */
     public long[] getStatistic() {
-    	long[] statistics = {countQuery, countLocatedQuery};
-    	return statistics;
+        long[] statistics = {countQuery, countLocatedQuery };
+        return statistics;
     }
 
     @Override
