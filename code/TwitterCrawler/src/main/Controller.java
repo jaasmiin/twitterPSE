@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.FileHandler;
@@ -41,6 +43,7 @@ public class Controller extends Thread {
     private ConcurrentLinkedQueue<Status> statusQueue;
     private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
     private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
+    private HashMap<String, String> locationHash;
     private boolean run = true;
     private Logger logger;
     private StreamListener streamListener;
@@ -90,6 +93,7 @@ public class Controller extends Thread {
         statusQueue = new ConcurrentLinkedQueue<Status>();
         locateAccountQueue = new ConcurrentLinkedQueue<StatusAccount>();
         locateRetweetQueue = new ConcurrentLinkedQueue<StatusRetweet>();
+        locationHash = new HashMap<String, String>();
     }
 
     @Override
@@ -110,13 +114,29 @@ public class Controller extends Thread {
         thrdAccountUpdate = new Thread(accountUpdate);
         thrdAccountUpdate.start();
 
+        try {
+            this.dbc = new DBcrawler(accessData, logger);
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException | SQLException e) {
+            logger.warning("No dates will be insert into the database because of: "
+                    + e.getMessage());
+        }
+
+        try {
+            dbc.connect();
+            locationHash = dbc.getLocationStrings();
+            dbc.disconnect();
+        } catch (SQLException e) {
+
+        }
+
         // create threads that extract informations of status and store them in
         // the db
         for (int i = 0; i < threadNum; i++) {
             try {
                 statusProcessor[i] = new StatusProcessor(statusQueue,
                         locateAccountQueue, locateRetweetQueue, hashSet,
-                        logger, accessData);
+                        locationHash, logger, accessData);
                 thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
                 thrdStatusProcessor[i].start();
             } catch (InstantiationException e) {
@@ -155,13 +175,6 @@ public class Controller extends Thread {
             }, runtime * 1000);
         }
 
-        try {
-            this.dbc = new DBcrawler(accessData, logger);
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException | SQLException e) {
-            logger.warning("No dates will be insert into the database because of: "
-                    + e.getMessage());
-        }
         limitQueue();
 
     }
@@ -350,30 +363,27 @@ public class Controller extends Thread {
         int count = 0;
         while (run) {
 
-            if (m >= 2) {
+            if (m >= 4) {
                 m = 0;
                 writeStatistic();
             }
             m += INTERVAL;
+
+            if (count / 40000 == 1 || count / 40000 == 2) {
+                try {
+                    updateLocationHash();
+                } catch (SQLException e) {
+                    logger.warning("Database-connection failed! "
+                            + e.getMessage());
+                }
+            }
 
             // one reconnect to twitter per day
             if (count >= 86400) {// one day = 86400 seconds
                 count = 0;
 
                 // add a new date to the database
-                try {
-                    dbc.connect();
-                    GregorianCalendar cal = new GregorianCalendar();
-                    cal.setTime(dateForDB);
-                    if (dbc.addDay(dateForDB)) {
-                        cal.add(Calendar.DATE, 1);
-                        dateForDB = cal.getTime();
-                    }
-                    dbc.disconnect();
-                } catch (SQLException e) {
-                    logger.info("A date couldn't be insert into the database: "
-                            + e.getMessage());
-                }
+                addDate();
             }
 
             limitQueue(statusQueue);
@@ -387,6 +397,35 @@ public class Controller extends Thread {
                         + e.getMessage());
             }
             count += INTERVAL;
+        }
+    }
+
+    private void updateLocationHash() throws SQLException {
+        dbc.connect();
+        HashMap<String, String> temp = dbc.getLocationStrings();
+        dbc.disconnect();
+        Set<String> keys = temp.keySet();
+        for (String k : keys) {
+            if (!locationHash.containsKey(k)) {
+                locationHash.put(k, temp.get(k));
+            }
+        }
+
+    }
+
+    private void addDate() {
+        try {
+            dbc.connect();
+            GregorianCalendar cal = new GregorianCalendar();
+            cal.setTime(dateForDB);
+            if (dbc.addDay(dateForDB)) {
+                cal.add(Calendar.DATE, 1);
+                dateForDB = cal.getTime();
+            }
+            dbc.disconnect();
+        } catch (SQLException e) {
+            logger.info("A date couldn't be insert into the database: "
+                    + e.getMessage());
         }
     }
 
@@ -423,7 +462,7 @@ public class Controller extends Thread {
         msg += "davon über geotag lokalisiert: " + sum[3] + "\n";
         msg += "davon über String und Zeitzone lokalisiert: " + sum[4] + "\n";
         msg += "über Webservice lokalisiert: " + sum[5] + "\n";
-        msg += "über HashMap lokalisiert" + sum[6] + "\n";
+        msg += "über HashMap lokalisiert: " + sum[6] + "\n";
         msg += "Summe vorhandener Places: " + sum[7] + "\n";
         msg += "Summe vorhandener Geotags: " + sum[8] + "\n";
         msg += "Summe vorhandener location-Information: " + sum[9] + "\n";

@@ -1,16 +1,8 @@
 package locate;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
-
-import mysql.AccessData;
-import mysql.DBIcrawler;
-import mysql.DBcrawler;
 
 import org.geonames.GeoNamesException;
 import org.geonames.WebService;
@@ -26,11 +18,10 @@ import twitter4j.Place;
  */
 public class Locator {
 
-    private ConcurrentHashMap<String, String> map;
-    private boolean updateHashMap = false;
+    private final static String DEFAULT_LOCATION = "0";
+    private HashMap<String, String> map;
     private Logger logger;
     private Formatter formatter;
-    private DBIcrawler dbc;
     private int numberOfReq = 0;
     private int numberOfLocReq = 0;
     private int numberOfPlaceLoc = 0;
@@ -40,33 +31,23 @@ public class Locator {
     private int reqWithGeoTag = 0;
     private int reqWithLocation = 0;
 
-    /**
+   /**
+    * 
      * Initiates a new instance of 'Locator'
-     * 
-     * @param log
-     *            Logger to log all remarkable events
-     */
-    public Locator(AccessData accessData, Logger logger) throws InstantiationException {
+
+    * @param map Reference to global HashMap to lookup already located locations
+    * @param logger Logger to log all remarkable events
+    * @throws IllegalArgumentException Is thrown if map == null.
+    */
+    public Locator(HashMap<String,String> map, Logger logger) throws IllegalArgumentException {
     	
         this.logger = logger;
         formatter = new Formatter(logger);
-        
-        try {
-        	
-            this.dbc = new DBcrawler(accessData, logger);
-         
-        } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
-            dbc = null;
-            logger.severe(e.getMessage() + "\n");
-            throw new InstantiationException(
-                    "Not able to instantiate Databaseconnection.");
+        if(map == null) {
+        	logger.severe("HashMap reference is null");
+        	throw new IllegalArgumentException("HashMap reference is null");
         }
-       
-        map = getHashMap();
-    }
-    
-    private ConcurrentHashMap<String,String> getHashMap() {
-    	return dbc.getLocationStrings();
+        this.map = map;
     }
     
     /**
@@ -81,7 +62,7 @@ public class Locator {
      */
     private String getLocation(GeoLocation geotag) {
 
-        String res = "0";
+        String res = DEFAULT_LOCATION;
         WebService.setGeoNamesServerFailover(null);
         WebService.setUserName("KIT_PSE");
         WebService.setConnectTimeOut(1000);
@@ -90,10 +71,10 @@ public class Locator {
                     geotag.getLongitude());
         } catch (GeoNamesException e1) {
             logger.info("Geotag localiser: Geonames Excep: " + e1.getMessage());
-            return "0";
+            return DEFAULT_LOCATION;
         } catch (IOException e2) {
             logger.info("Geotag localiser: IO exeption: " + e2.getMessage());
-            return "0";
+            return DEFAULT_LOCATION;
         }
         return res;
     }
@@ -108,12 +89,13 @@ public class Locator {
      * @return the code of the country/location on success and "0" otherwise as
      *         String
      */
-    private String getLocation(String location) {
-    	String result = "0";
+    private String getLocation(String location, String timezone) {
+    	String result = DEFAULT_LOCATION;
     	location = formatter.formatString(location);
-    	
-    	if(map.containsKey(location)) {
-    		result = map.get(location);
+    	timezone = formatter.formatString(timezone);
+    	String query = location + "#" + timezone;
+    	if(map.containsKey(query)) {
+    		result = map.get(query);
     	}
     	return result;
     	
@@ -132,12 +114,9 @@ public class Locator {
      *            String containing information about the timezone of a 'tweet'
      * @return countrycode if 'Tweet' could be located, "0" otherwise
      */
-    // presumption: whenever place != null the request for location is positive!
-    public String locate(Place place, GeoLocation geotag, String location) {
-        if (updateHashMap) {
-        	map = getHashMap();
-        }
-        String result = "0";
+    public String locate(Place place, GeoLocation geotag, String location, String timezone) {
+   
+        String result = DEFAULT_LOCATION;
 
         // statistics
         numberOfReq++;
@@ -154,7 +133,7 @@ public class Locator {
         if (place != null) {
 
             result = place.getCountryCode();
-            if (!result.equals("0")) {
+            if (!result.equals(DEFAULT_LOCATION)) {
             	
                 numberOfPlaceLoc++;
             }
@@ -162,21 +141,21 @@ public class Locator {
         } else if (geotag != null) {
 
             result = getLocation(geotag);
-            if (!result.equals("0")) {
+            if (!result.equals(DEFAULT_LOCATION)) {
             	
                 numberOfGeoTagLoc++;
             }
 
         } else if (location != null) {
             
-          result = getLocation(location);
-             if (!result.equals("0")) {
+          result = getLocation(location,timezone);
+             if (!result.equals(DEFAULT_LOCATION)) {
             	 
             	 numberOfHashMapLoc++;
              }
         }
         
-        if (!result.equals("0")) {
+        if (!result.equals(DEFAULT_LOCATION)) {
         	
             numberOfLocReq++;
         }
@@ -203,57 +182,3 @@ public class Locator {
     }
 
 }
-/*
-private void writeToFile(File file) {
-    Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
-    try {
-        Writer writer = new FileWriter(file.getPath(), false);
-        while (it.hasNext()) {
-            Map.Entry<String, String> pairs = it.next();
-            writer.write(pairs.getKey() + "#" + pairs.getValue());
-            // System.out.println(pairs.getKey()+"#"+pairs.getValue());
-            writer.append(System.getProperty("line.separator"));
-        }
-        writer.close();
-    } catch (IOException e) {
-        logger.warning("Cannot write HashMap to file" + e.getMessage());
-    }
-}
-
-private void readFromFile(File file) {
-    String value = null;
-    String key = null;
-    String input = null;
-
-    try {
-        BufferedReader b = new BufferedReader(
-                new FileReader(file.getPath()));
-        // System.out.println(file.getAbsolutePath());
-        input = b.readLine();
-        while (input != null) {
-            // System.out.println(input);
-            String[] tmp = input.split("#");
-            if (tmp.length < 2) {
-                logger.info("Wrong content in file, input does not fit pattern 'key#value'");
-            } else {
-                if (tmp[0] != null && tmp[1] != null) {
-                    key = tmp[0].toLowerCase();
-                    value = tmp[1];
-                    // only insert in hashMap if hashMap does not already
-                    // contain that key
-                    if (!map.containsKey(key)) {
-                        map.put(key, value);
-                    }
-                }
-            }
-            input = b.readLine();
-        }
-
-        b.close();
-
-    } catch (IOException e) {
-        logger.warning("Cannot read from file to HashMap " + e.getMessage());
-    }
-
-}
-*/

@@ -2,8 +2,8 @@ package mysql;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.concurrent.ConcurrentHashMap;
 
 import twitter4j.User;
 
@@ -124,9 +124,9 @@ public interface DBIcrawler {
      * location-codes
      * 
      * @return a threadsafe hashmap that maps words from the database to
-     *         location-codes as ConcurrentHashMap<String, String>
+     *         location-codes as HashMap<String, String>
      */
-    public ConcurrentHashMap<String, String> getLocationStrings();
+    public HashMap<String, String> getLocationStrings();
 
     /**
      * inserts a location-code - word combination to the database
@@ -136,9 +136,11 @@ public interface DBIcrawler {
      * @param word
      *            the word to connect with the location-code as String (max.
      *            length 250)
+     * @param timeZone
+     *            the timezone of the location as String (max. length 200)
      * @return true if data has been insert into the database, else false
      */
-    public boolean addLocationString(String code, String word);
+    public boolean addLocationString(String code, String word, String timeZone);
 
     /**
      * returns if an account with this id is even in the database

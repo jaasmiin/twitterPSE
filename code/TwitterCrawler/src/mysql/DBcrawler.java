@@ -6,9 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Stack;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 import twitter4j.User;
@@ -76,10 +76,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         } else {
             // add account
 
-            // locate account
-            // String location = locator.locate(place, geotag,
-            // user.getLocation(),
-            // user.getTimeZone());
             location = checkString(location, 3, DEFAULT_LOCATION);
 
             name = checkString(name, 30, null);
@@ -232,13 +228,15 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         PreparedStatement stmt = null;
         try {
             if (parent == null) {
-                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) VALUES (\"null\", ?, ?);");
+                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) VALUES (?, ?, ?);");
                 stmt.setString(1, code);
-                stmt.setNull(2, Types.INTEGER);
+                stmt.setString(2, code);
+                stmt.setNull(3, Types.INTEGER);
             } else {
-                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) SELECT \"null\", ?, Id FROM location WHERE Code = ?;");
+                stmt = c.prepareStatement("INSERT IGNORE INTO location (Name, Code, ParentId) SELECT ?, ?, Id FROM location WHERE Code = ?;");
                 stmt.setString(1, code);
-                stmt.setString(2, parent);
+                stmt.setString(2, code);
+                stmt.setString(3, parent);
             }
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
@@ -360,9 +358,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     }
 
     @Override
-    public ConcurrentHashMap<String, String> getLocationStrings() {
+    public HashMap<String, String> getLocationStrings() {
 
-        String sqlCommand = "SELECT Word, Code FROM wordLocation JOIN location ON wordLocation.LocationId=location.Id LIMIT 1000000;";
+        String sqlCommand = "SELECT Word, TimeZone, Location FROM wordLocation LIMIT 2000000;";
         Statement stmt = null;
         ResultSet res = null;
         try {
@@ -370,18 +368,18 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            return new ConcurrentHashMap<String, String>();
+            return new HashMap<String, String>();
         }
 
-        ConcurrentHashMap<String, String> ret = new ConcurrentHashMap<String, String>(
-                100000);
+        HashMap<String, String> ret = new HashMap<String, String>(100000);
         try {
             while (res.next()) {
-                ret.put(res.getString("Word"), res.getString("Code"));
+                ret.put(res.getString("Word") + "#" + res.getString("TimeZone"),
+                        res.getString("Location"));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new ConcurrentHashMap<String, String>();
+            return new HashMap<String, String>();
         } finally {
             closeResultAndStatement(stmt, res);
         }
@@ -390,8 +388,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     }
 
     @Override
-    public boolean addLocationString(String code, String word) {
+    public boolean addLocationString(String code, String word, String timeZone) {
 
+        timeZone = checkString(timeZone, 200, "");
         code = checkString(code, 3, null);
         word = checkString(word, 250, null);
         if (word == null || code == null)
@@ -403,9 +402,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
-            stmt = c.prepareStatement("INSERT IGNORE INTO wordLocation (Word, LocationId) VALUES (?,?);");
+            stmt = c.prepareStatement("INSERT IGNORE INTO wordLocation (Word, TimeZone, Location) VALUES (?,?,?);");
             stmt.setString(1, word);
-            stmt.setString(2, code);
+            stmt.setString(2, timeZone);
+            stmt.setString(3, code);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         }

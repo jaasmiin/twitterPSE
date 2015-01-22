@@ -2,6 +2,7 @@ package main;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
@@ -26,6 +27,7 @@ import twitter4j.User;
  */
 public class StatusProcessor implements RunnableListener {
 
+    private final static String DEFAULT_LOCATION = "0";
     private boolean run = true;
     private DBcrawler dbc;
     private ConcurrentLinkedQueue<Status> queue;
@@ -49,6 +51,7 @@ public class StatusProcessor implements RunnableListener {
      * @param accountsToTrack
      *            the twitter-account-id's of the non verified accounts that
      *            should be tracked as ConcurrentMap<Long, Object>
+     * @param locationHash
      * @param logger
      *            a global logger for the whole program as Logger
      * @param accessData
@@ -59,14 +62,15 @@ public class StatusProcessor implements RunnableListener {
     public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
             ConcurrentLinkedQueue<StatusAccount> locateAccountQueue,
             ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue,
-            ConcurrentHashMap<Long, Object> accountsToTrack, Logger logger,
+            ConcurrentHashMap<Long, Object> accountsToTrack,
+            HashMap<String, String> locationHash, Logger logger,
             AccessData accessData) throws InstantiationException {
         this.queue = queue;
         this.locateAccountQueue = locateAccountQueue;
         this.locateRetweetQueue = locateRetweetQueue;
         this.logger = logger;
         this.nonVerAccounts = accountsToTrack;
-        locate = new Locator(this.logger);
+        locate = new Locator(locationHash, this.logger);
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
@@ -75,6 +79,7 @@ public class StatusProcessor implements RunnableListener {
             throw new InstantiationException(
                     "Not able to instantiate Databaseconnection.");
         }
+
         count = 0;
     }
 
@@ -200,16 +205,15 @@ public class StatusProcessor implements RunnableListener {
 
         if (!dbc.containsAccount(tweet.getUser().getId())) {
             String loc = locate.locate(tweet.getPlace(),
-                    tweet.getGeoLocation(), tweet.getUser().getLocation());
-            if (loc != "0") {
+                    tweet.getGeoLocation(), tweet.getUser().getLocation(),
+                    tweet.getUser().getTimeZone());
+            if (loc.equals(DEFAULT_LOCATION)) {
                 dbc.addAccount(tweet.getUser(), loc, tweet.getCreatedAt(),
                         isTweet);
             } else {
                 locateAccountQueue.add(new StatusAccount(tweet, isTweet));
             }
         }
-        // dbc.addAccount(tweet.getUser(), tweet.getPlace(),
-        // tweet.getGeoLocation(), tweet.getCreatedAt(), isTweet);
 
     }
 
@@ -235,17 +239,13 @@ public class StatusProcessor implements RunnableListener {
     private void retweetToDB(long id, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
-        String loc = locate.locate(place, geotag, location);
-        if (loc != "0") {
+        String loc = locate.locate(place, geotag, location, timeZone);
+        if (loc.equals(DEFAULT_LOCATION)) {
             dbc.addRetweet(id, loc, date);
         } else {
             locateRetweetQueue.add(new StatusRetweet(id, date, location,
                     timeZone));
         }
-
-        // String loc = locate.locate(place, geotag, location, timeZone);
-        //
-        // dbc.addRetweet(id, loc, date);
 
     }
 
