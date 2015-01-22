@@ -374,7 +374,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         ConcurrentHashMap<String, String> ret = new ConcurrentHashMap<String, String>(
-                50000);
+                100000);
         try {
             while (res.next()) {
                 ret.put(res.getString("Word"), res.getString("Code"));

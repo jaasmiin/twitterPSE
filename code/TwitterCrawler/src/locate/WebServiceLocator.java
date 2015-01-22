@@ -3,8 +3,10 @@ package locate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -38,8 +40,11 @@ public class WebServiceLocator implements RunnableListener {
     private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
     private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
     private DBcrawler dbc;
+    private Formatter formatter;
     private boolean run;
     private boolean locateAccounts;
+    private long countQuery = 0;
+    private long countLocatedQuery = 0;
 
     /**
      * 
@@ -59,6 +64,7 @@ public class WebServiceLocator implements RunnableListener {
         this.locateAccountQueue = locateAccountQueue;
         this.locateRetweetQueue = locateRetweetQueue;
         this.locateAccounts = locateAccounts;
+        formatter = new Formatter(logger);
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
@@ -127,38 +133,59 @@ public class WebServiceLocator implements RunnableListener {
         dbc.disconnect();
 
     }
+    private synchronized void incrementCountQuery() {
+    	  countQuery++;
+    }
+    
+    private synchronized void incrementCountLocatedQuery() {
+    	countLocatedQuery++;
+    }
+    
+    
 
     private void locateRetweet(StatusRetweet retweet) {
 
-        String location = "0";
-
-        // TODO Zähler aktualisieren
-        location = callWebservice(retweet.getLocation(), retweet.getTimeZone());
-        if (location != "0") {
-            dbc.addLocationString(location, retweet.getLocation());
+        String location = formatter.formatString(retweet.getLocation());
+        String timezone = formatter.formatString(retweet.getTimeZone());
+        String countryCode = "0";
+        
+        // update counter
+        incrementCountQuery();
+        
+        countryCode = callWebservice(location, timezone);
+        if (!countryCode.equals("0")) {
+            dbc.addLocationString(countryCode, location);
+            incrementCountLocatedQuery();
         }
 
-        dbc.addRetweet(retweet.getId(), location, retweet.getDate());
+        dbc.addRetweet(retweet.getId(), countryCode, retweet.getDate());
     }
 
     private void locateAccount(StatusAccount account) {
 
-        String location = "0";
-
-        // TODO Zähler aktualisieren
+        String countryCode = "0";
         User user = account.getStatus().getUser();
-        location = callWebservice(user.getLocation(), user.getTimeZone());
-        if (location != "0") {
-            dbc.addLocationString(location, user.getLocation());
+        String timezone = formatter.formatString(user.getTimeZone());
+        String location = formatter.formatString(user.getLocation());
+        
+        //update counter
+        incrementCountQuery();
+
+       
+        
+        countryCode = callWebservice(location, timezone);
+        if (!countryCode.equals("0")) {
+            dbc.addLocationString(location, timezone);
+            incrementCountLocatedQuery();
         }
 
-        dbc.addAccount(user, location, account.getStatus().getCreatedAt(),
+        dbc.addAccount(user, countryCode, account.getStatus().getCreatedAt(),
                 account.isTweet());
 
     }
 
     /**
-     * Method that actually calls webservice, does not check input strings for
+     * Method that actually calls WEBSERVICE does not check input strings for
      * forbidden characters e.g. '&','@' etc.
      * 
      * @param location
@@ -167,7 +194,6 @@ public class WebServiceLocator implements RunnableListener {
      *            timezone attribue
      * @return countrycode in case of success, '0' otherwise
      */
-
     private String callWebservice(String location, String timezone) {
         String result = "0";
         try {
@@ -184,27 +210,33 @@ public class WebServiceLocator implements RunnableListener {
             result = scanner.useDelimiter("//Z").next();
             stream.close();
             scanner.close();
+            
         } catch (MalformedURLException e1) {
             logger.info("URL nicht korrekt: " + e1.getMessage()
                     + "   location= " + location + " timezone=" + timezone);
             return "0";
+            
         } catch (IOException e2) {
             logger.info("Webservice meldet Fehler: " + e2.getMessage()
                     + "   location= " + location + " timezone=" + timezone);
             return "0";
         }
+        
         // parsing received String to XML-Doc and get content from created
         // XML-Doc
         try {
+        	
             DocumentBuilderFactory fctr = DocumentBuilderFactory.newInstance();
             DocumentBuilder bldr = fctr.newDocumentBuilder();
             InputSource insrc = new InputSource(new StringReader(result));
 
             Document doc = bldr.parse(insrc);
             result = doc.getFirstChild().getTextContent();
+            
         } catch (ParserConfigurationException | IOException e1) {
             logger.info("XML or IO error!");
             return "0";
+            
         } catch (SAXException e2) {
 
             logger.info("Fehlerhafter EingabeString" + e2.getMessage());
@@ -213,13 +245,24 @@ public class WebServiceLocator implements RunnableListener {
 
         // string formatting (deleting '"' etc)
         result = result.substring(1, result.length() - 1);
+        
         if (result.equals("0")) {
-
             return "0";
         }
 
         result = result.trim();
         return result;
+    }
+    
+    /**
+     * Returns number of queries and located queries
+     * @return Entryno. in return array:
+     * 1: number of queries,
+     * 2: number of located queries
+     */
+    public long[] getStatistics() {
+    	long[] statistics = {countQuery, countLocatedQuery};
+    	return statistics;
     }
 
     @Override
