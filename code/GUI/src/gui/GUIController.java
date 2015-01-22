@@ -56,14 +56,12 @@ public class GUIController extends Application implements Initializable {
 	
 	private static DBgui db;
 	private Category categoryRoot;
-	private List<Location> locations = new ArrayList<Location>();
-	private List<Account> accounts = new ArrayList<Account>();
+	private SelectionHashList<Location> locations = new SelectionHashList<Location>();
+	private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
 	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
 	private List<Account> dataByAccount = new ArrayList<Account>();
 	
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
-	private HashSet<Integer> selectedLocations = new HashSet<Integer>();
-	private HashSet<Integer> selectedAccounts = new HashSet<Integer>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText;
 	
@@ -216,13 +214,14 @@ public class GUIController extends Application implements Initializable {
     }
 	
 	private void reloadLocation() {
-		locations = db.getLocations();	
+		locations.clear();
+		locations.addAll(db.getLocations());
 		update(UpdateType.LOCATION);
 	}
 	
 	private void reloadAccounts() {
-		accounts = db.getAccounts(accountSearchText);
-//		TODO: implement
+		accounts.clear();
+		accounts.addAll(db.getAccounts(accountSearchText));
 		update(UpdateType.ACCOUNT);
 	}
 	
@@ -241,52 +240,57 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
-		if (!(selectedCategories.isEmpty() && selectedAccounts.isEmpty() && selectedLocations.isEmpty())) {
-			final Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
-			final Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
-			final Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
-			final boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
-			boolean success = true;
-			Thread t1 = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-					} catch (IllegalArgumentException | SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}				
-				}
-			});
-			Thread t2 = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-					} catch (IllegalArgumentException | SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}				
-				}
-			});
-			t1.start();
-			t2.start();
-			try {
-				t1.join();
-			} catch (InterruptedException e) {
-				success = false;
-				setInfo(e.getLocalizedMessage());
-			}
-			try {
-				t2.join();
-			} catch (InterruptedException e) {
-				success = false;
-				setInfo(e.getLocalizedMessage());
-			}
-			if (success) {
-				update(UpdateType.TWEET);
-			}
-		}
+		
+		List<Location> selectedLocations = locations.getSelected();
+		List<Account> selectedAccounts = accounts.getSelected();
+		
+//		if (!(selectedCategories.isEmpty() && selectedAccounts.isEmpty() && selectedLocations.isEmpty())) {
+//			Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
+//			Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
+//			Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
+//			Boolean[] dateSelected = {selectedStartDate != null && selectedEndDate != null, false};
+//			Object[][] data = {selectedAccountsArray, selectedCategoriesArray, selectedLocationsArray, dateSelected};
+//			boolean success = true;
+//			Thread t1 = new Thread(new RunnableParameter<Object[][]>(data) {
+//				@Override
+//				public void run() {
+//					try {
+//						dataByLocation = db.getSumOfData((Integer[]) parameter[0], (Integer[]) parameter[1], (Integer[]) parameter[2], (Boolean) parameter[3][0]);
+//					} catch (IllegalArgumentException | SQLException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}				
+//				}
+//			});
+//			Thread t2 = new Thread(new RunnableParameter<Object[][]>(data) {
+//				@Override
+//				public void run() {
+//					try {
+//						dataByAccount = db.getAllData((Integer[]) parameter[0], (Integer[]) parameter[1], (Integer[]) parameter[2], (Boolean) parameter[3][0]);
+//					} catch (IllegalArgumentException | SQLException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}				
+//				}
+//			});
+//			t1.start();
+//			t2.start();
+//			try {
+//				t1.join();
+//			} catch (InterruptedException e) {
+//				success = false;
+//				setInfo(e.getLocalizedMessage());
+//			}
+//			try {
+//				t2.join();
+//			} catch (InterruptedException e) {
+//				success = false;
+//				setInfo(e.getLocalizedMessage());
+//			}
+//			if (success) {
+//				update(UpdateType.TWEET);
+//			}
+//		}
 	}
 	
 	private void reloadAll() {
@@ -364,7 +368,11 @@ public class GUIController extends Application implements Initializable {
 	 * @return list of locations
 	 */
 	public List<Location> getLocations() {
-		return locations;
+		List<Location> list = new ArrayList<Location>(); // TODO: fix
+		for (Location l : locations) {
+			list.add(l);
+		}
+		return list;
 	}
 	
 	/**
@@ -402,11 +410,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param selected is true if location should be selected, false otherwise
 	 */
 	public void setLocation(int id, boolean selected) {
-		if (selected) {
-			selectedLocations.add(id);
-		} else {
-			selectedLocations.remove(id);
-		}
+		locations.setSelected(id, selected);
 		reloadData();
 	}
 	
@@ -414,18 +418,15 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of all accounts.
 	 * @return a list of all accounts
 	 */
-	public ArrayList<String> getSelectedAccounts() {
-		// TODO: add correct code
-		ArrayList<String> a = new ArrayList<String>();
-		a.add("ZDF");
-		return a;
+	public List<Account> getSelectedAccounts() {
+		return accounts.getSelected();
 	}
 	
 	/**
 	 * Get list of selected categories.
 	 * @return selected categories
 	 */
-	public ArrayList<String> getSelectedCategories() {
+	public List<String> getSelectedCategories() {
 		// TODO: add correct code
 		ArrayList<String> a = new ArrayList<String>();
 		a.add("Musiker");
@@ -436,13 +437,8 @@ public class GUIController extends Application implements Initializable {
 	 * Get list of selected locations.
 	 * @return selected locations
 	 */
-	public ArrayList<String> getSelectedLocations() {
-		// TODO: add correct code
-		ArrayList<String> a = new ArrayList<String>();
-		a.add("Deutschland");
-		a.add("Frankreich");
-		a.add("Österreich");
-		return a;
+	public List<Location> getSelectedLocations() {
+		return locations.getSelected();
 	}
 	
 	/**
@@ -451,11 +447,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param selected is true if account should be selected, false otherwise
 	 */
 	public void setAccount(int id, boolean selected) {
-		if (selected) {
-			selectedAccounts.add(id);
-		} else {
-			selectedAccounts.remove(id);
-		}
+		accounts.setSelected(id, selected);
 		reloadData();
 	}
 	

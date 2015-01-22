@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.Result;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,8 +37,18 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	private ListView<String> lstSelectedAccounts;
 	
-	private void updateSelected(ListView<String> lstView, ArrayList<String> selected) {
+	private void updateSelected(ListView<String> lstView, List<String> list) {
 		// TODO: add code
+	}
+	
+	private void updateSelectedAccount(List<Account> selectedAccounts) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	private void updateSelectedLocation(List<Location> selectedLocations) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	private void updateCategory(Category rootCategory) {
@@ -70,16 +82,17 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		System.out.println("SelectionOfQuerryController.update()");
 		if (type == UpdateType.TWEET) {
 			// TODO: load data and update elements
-			updateSelected(lstSelectedAccounts, superController.getSelectedAccounts());
+			updateSelectedAccount(superController.getSelectedAccounts());
 			updateSelected(lstSelectedCategories, superController.getSelectedCategories());
-			updateSelected(lstSelectedLocations, superController.getSelectedLocations());
+			updateSelectedLocation(superController.getSelectedLocations());
 		} else if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
 			updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
 		} 
 	}
-	
+
+
 	@Override
 	public void handle(Event e) {
 		if (e.getSource().equals(trvCategory)) {

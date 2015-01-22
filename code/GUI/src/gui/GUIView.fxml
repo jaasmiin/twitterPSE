@@ -52,11 +52,11 @@
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
           </Tab>
-          <Tab closable="false" text="Tabelle">
+          <!-- <Tab closable="false" text="Tabelle">
             <content>
-              <fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
+            	<fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
             </content>
-          </Tab>
+          </Tab>-->
           <Tab closable="false" text="Karte (Differenz)">
             <content>
               <fx:include source="../../src/gui/diffMap/DiffMapView.fxml" fx:id="diffMap"/>
