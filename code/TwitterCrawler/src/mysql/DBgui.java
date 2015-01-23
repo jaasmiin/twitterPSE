@@ -52,8 +52,10 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public Category getCategories() {
         // get used categories
-        String sqlCommand = "SELECT category.Id, Name, ParentId FROM accountCategory JOIN category ON accountCategory.categoryId=category.Id GROUP BY categoryId;";
-
+        String sqlCommand = "SELECT category.Id, Name, ParentId "
+        				  + "FROM accountCategory "
+        				  	+ "INNER JOIN category ON accountCategory.categoryId=category.Id "
+        				  + "GROUP BY categoryId;";
         ResultSet res = null;
         Statement stmt = null;
         try {
@@ -145,7 +147,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public List<Location> getLocations() {
-        String sqlCommand = "SELECT Id, Name, Code, ParentId FROM location;";
+        String sqlCommand = "SELECT Id, Name, Code, ParentId FROM location ORDER by Name, Code;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -260,7 +262,7 @@ public class DBgui extends DBConnection implements DBIgui {
         PreparedStatement stmt = null;
         ResultSet res = null;
         try {
-            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, LocationId FROM accounts WHERE AccountName LIKE ? LIMIT 50;");
+            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, LocationId FROM accounts WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 50;");
             stmt.setString(1, "%" + search + "%");
             res = stmt.executeQuery();
         } catch (SQLException e) {

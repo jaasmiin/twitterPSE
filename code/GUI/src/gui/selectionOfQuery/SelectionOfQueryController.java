@@ -1,19 +1,12 @@
 package gui.selectionOfQuery;
 
 import java.net.URL;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.ResourceBundle;
 
-import sun.rmi.transport.LiveRef;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import javafx.beans.InvalidationListener;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,7 +18,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import gui.InputElement;
 
 public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
@@ -97,7 +89,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	
 	@Override
 	public void update(UpdateType type) {
-		System.out.println("SelectionOfQuerryController.update()");
 		if (type == UpdateType.TWEET) {
 			// TODO: load data and update elements
 			updateSelectedAccount(superController.getSelectedAccounts());
@@ -109,6 +100,8 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
 		} else if (type == UpdateType.ACCOUNT) {
 			updateAccounts(superController.getAccounts(txtFilterSearch.getText()));
+		} else if (type == UpdateType.ERROR) {
+			
 		}
 	}
 
@@ -116,17 +109,23 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@Override
 	public void handle(Event e) {
 		if (e.getSource().equals(trvCategory)) {
-			System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
-					" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-			superController.setSelectedCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
+			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
+				System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
+						" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
+				superController.setSelectedCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
+			}
 		} else if (e.getSource().equals(trvLocation)) {
-			System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
-					" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-			superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
+			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
+				System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
+						" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
+				superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
+			}
 		} else if(e.getSource().equals(lstAccount)) {
-			System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
-					" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
-			superController.setSelectedAccount(lstAccount.getSelectionModel().getSelectedItem().getId(), true);
+			if (lstAccount.getSelectionModel().getSelectedItem() != null) {
+				System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
+						" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
+				superController.setSelectedAccount(lstAccount.getSelectionModel().getSelectedItem().getId(), true);
+			}
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			if (e instanceof KeyEvent) {
 				KeyEvent k = (KeyEvent) e;
