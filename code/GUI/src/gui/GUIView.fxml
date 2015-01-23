@@ -32,11 +32,12 @@
               <MenuItem mnemonicParsing="false" text="Benutzer hinzufügen" />
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Hilfe">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Über" />
-              </items>
-            </Menu>
+           <fx:include source="../../src/gui/databaseOptions/DatabaseOptView.fxml" fx:id="databaseMenu"/>
+          <Menu mnemonicParsing="false" text="Hilfe">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Über" />
+            </items>
+          </Menu>
         </menus>
          <GridPane.margin>
             <Insets />
