@@ -8,7 +8,7 @@
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GUIController">
   <columnConstraints>
     <ColumnConstraints hgrow="NEVER" />
-    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
   </columnConstraints>
   <rowConstraints>
@@ -42,7 +42,7 @@
             <Insets />
          </GridPane.margin>
       </MenuBar>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="2">
+      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="2" GridPane.rowIndex="3" GridPane.rowSpan="2">
       <GridPane.margin>
             <Insets left="5.0" />
          </GridPane.margin>
@@ -59,20 +59,20 @@
           </Tab>-->
           <Tab closable="false" text="Karte (Differenz)">
             <content>
-              <fx:include source="../../src/gui/diffMap/DiffMapView.fxml" fx:id="diffMap"/>
+              <fx:include fx:id="diffMap" source="../../src/gui/diffMap/DiffMapView.fxml" />
             </content>
           </Tab>
           <Tab closable="false" text="Karte (TimeSlider)">
             <content>
-              <fx:include source="../../src/gui/timeSliderMap/TimeSliderMapView.fxml" fx:id="timeSliderMap"/>
+              <fx:include fx:id="timeSliderMap" source="../../src/gui/timeSliderMap/TimeSliderMapView.fxml" />
             </content>
           </Tab>
         </tabs>
       </TabPane>
-      <fx:include source="../../src/gui/search/SearchView.fxml" fx:id="search" GridPane.columnIndex="2"/>
-      <fx:include source="../../src/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
+      <fx:include fx:id="search" source="../../src/gui/search/SearchView.fxml" GridPane.columnIndex="2" />
+      <fx:include fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" source="../../src/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" GridPane.columnSpan="2147483647" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.vgrow="NEVER" />
       <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" />
-      <fx:include source="../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.rowSpan="2" GridPane.vgrow="ALWAYS" />
+      <fx:include source="../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery"/>
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

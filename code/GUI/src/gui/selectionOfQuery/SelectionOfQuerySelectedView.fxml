@@ -15,12 +15,12 @@
           <ColumnConstraints hgrow="ALWAYS" />
         </columnConstraints>
          <children>
-            <ListView fx:id="lstSelectedCategories" focusTraversable="false" maxWidth="1.7976931348623157E308" orientation="HORIZONTAL" GridPane.columnIndex="1">
+            <ListView fx:id="lstSelectedCategories" focusTraversable="false" maxWidth="1.7976931348623157E308" onMouseClicked="#handle" orientation="HORIZONTAL" GridPane.columnIndex="1">
                <GridPane.margin>
                   <Insets top="5.0" />
                </GridPane.margin></ListView>
-            <ListView fx:id="lstSelectedLocations" focusTraversable="false" maxWidth="1.7976931348623157E308" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <ListView fx:id="lstSelectedAccounts" focusTraversable="false" maxWidth="1.7976931348623157E308" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ListView fx:id="lstSelectedLocations" focusTraversable="false" maxWidth="1.7976931348623157E308" onMouseClicked="#handle" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ListView fx:id="lstSelectedAccounts" focusTraversable="false" maxWidth="1.7976931348623157E308" onMouseClicked="#handle" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="Kategorien:">
                <GridPane.margin>
                   <Insets right="5.0" />

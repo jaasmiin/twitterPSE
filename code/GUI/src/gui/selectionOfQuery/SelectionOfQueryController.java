@@ -1,14 +1,12 @@
 package gui.selectionOfQuery;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.Result;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,6 +16,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import gui.InputElement;
 
 public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
@@ -29,7 +30,11 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	private TreeView<Location> trvLocation;
 	@FXML
-	private TitledPane tipLocation, tipAccount, tipCategory;	
+	private TitledPane tipLocation;
+	@FXML
+	private TitledPane tipAccount;
+	@FXML
+	private TitledPane tipCategory;	
 	@FXML
 	private ListView<String> lstSelectedCategories;
 	@FXML
@@ -90,7 +95,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		} 
 	}
 
-
+	@FXML
 	@Override
 	public void handle(Event e) {
 		if (e.getSource().equals(trvCategory)) {
@@ -102,16 +107,18 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 					" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
 			superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
 		} else if (e.getSource().equals(txtFilterSearch)) {
-			System.out.println("Eingabe: " + txtFilterSearch.getText());
-			if (tipCategory.isExpanded()) {
-				updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
-			} else if (tipAccount.isExpanded()) {
-				// TODO: reload list
-			} else if (tipLocation.isExpanded()) {
-				updateLocation(superController.getLocations(txtFilterSearch.getText()));
+			if (e instanceof KeyEvent) {
+				KeyEvent k = (KeyEvent) e;
+				if (!k.getText().isEmpty() || k.getCode().equals(KeyCode.DELETE) || k.getCode().equals(KeyCode.BACK_SPACE)) {
+					if (tipCategory.isExpanded()) {
+						updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
+					} else if (tipAccount.isExpanded()) {
+						// TODO: add code
+					} else if (tipLocation.isExpanded()) {
+						updateLocation(superController.getLocations(txtFilterSearch.getText()));
+					}
+				}
 			}
-		} else if (e.getSource().equals(null)) {
-
 		} else {
 			System.out.println("Something else.");
 			// TODO: update selection list & map
@@ -123,15 +130,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		if (trvCategory != null) { // SelectionOfQueryView
 			super.initialize(location, resources);
 			superController.subscribe(this);
-		
-			trvCategory.setOnMouseClicked(this);
-			trvLocation.setOnMouseClicked(this);
-			txtFilterSearch.setOnKeyReleased(this);
 		} else { // SelectionOfQuerySelectedView
-			lstSelectedAccounts.setOnMouseClicked(this);
-			lstSelectedCategories.setOnMouseClicked(this);
-			lstSelectedLocations.setOnMouseClicked(this);
-			
 			// TODO: remove following lines
 			lstSelectedAccounts.getItems().add("KIT");
 			lstSelectedCategories.getItems().add("Musiker");
