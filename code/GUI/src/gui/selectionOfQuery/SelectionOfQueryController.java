@@ -96,11 +96,11 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		if (e.getSource().equals(trvCategory)) {
 			System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
 					" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-			superController.setCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
+			superController.setSelectedCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
 		} else if (e.getSource().equals(trvLocation)) {
 			System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
 					" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-			superController.setLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
+			superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			System.out.println("Eingabe: " + txtFilterSearch.getText());
 			if (tipCategory.isExpanded()) {

@@ -254,14 +254,23 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
+
 		
+		Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
 		List<Location> selectedLocations = locations.getSelected();
+		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
+		int i = 0;
+		for (Location l : selectedLocations) {
+			selectedLocationsArray[i++] = l.getId();
+		}
 		List<Account> selectedAccounts = accounts.getSelected();
-		
-//		if (!(selectedCategories.isEmpty() && selectedAccounts.isEmpty() && selectedLocations.isEmpty())) {
-//			Integer[] selectedAccountsArray = selectedAccounts.toArray(new Integer[selectedAccounts.size()]);
-//			Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
-//			Integer[] selectedLocationsArray = selectedLocations.toArray(new Integer[selectedLocations.size()]);
+		Integer[] selectedAccountsArray = new Integer[selectedAccounts.size()];
+		i = 0;
+		for (Account a : selectedAccounts) {
+			selectedAccountsArray[i++] = a.getId();
+		}
+		if (selectedCategoriesArray.length + selectedLocationsArray.length + selectedAccountsArray.length >= 1) {
+
 //			Boolean[] dateSelected = {selectedStartDate != null && selectedEndDate != null, false};
 //			Object[][] data = {selectedAccountsArray, selectedCategoriesArray, selectedLocationsArray, dateSelected};
 //			boolean success = true;
@@ -304,7 +313,7 @@ public class GUIController extends Application implements Initializable {
 //			if (success) {
 //				update(UpdateType.TWEET);
 //			}
-//		}
+		}
 	}
 	
 	private void reloadAll() {
@@ -382,11 +391,7 @@ public class GUIController extends Application implements Initializable {
 	 * @return list of locations
 	 */
 	public List<Location> getLocations() {
-		List<Location> list = new ArrayList<Location>(); // TODO: fix
-		for (Location l : locations) {
-			list.add(l);
-		}
-		return list;
+		return locations.get();
 	}
 	
 	/**
@@ -396,7 +401,7 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public List<Location> getLocations(String text) {
 		ArrayList<Location> filteredLocations = new ArrayList<Location>();
-		for (Location location : locations) {
+		for (Location location : locations.get()) {
 			if (location.toString().toLowerCase().trim().contains(text.toLowerCase().trim())) {
 				filteredLocations.add(location);
 			}
@@ -409,7 +414,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param id of category
 	 * @param selected is true if category should be selected, false otherwise
 	 */
-	public void setCategory(int id, boolean selected) {
+	public void setSelectedCategory(int id, boolean selected) {
 		if (selected) {
 			selectedCategories.add(id);
 		} else {
@@ -423,7 +428,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param id of location
 	 * @param selected is true if location should be selected, false otherwise
 	 */
-	public void setLocation(int id, boolean selected) {
+	public void setSelectedLocation(int id, boolean selected) {
 		locations.setSelected(id, selected);
 		reloadData();
 	}
@@ -460,7 +465,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param id of account
 	 * @param selected is true if account should be selected, false otherwise
 	 */
-	public void setAccount(int id, boolean selected) {
+	public void setSelectedAccount(int id, boolean selected) {
 		accounts.setSelected(id, selected);
 		reloadData();
 	}
@@ -500,6 +505,30 @@ public class GUIController extends Application implements Initializable {
 				selectedEndDate = startDate;
 			}
 		}
+	}
+	
+	/**
+	 * Adds user who's tweets the crawler will be listening.
+	 * @param twitterID of user
+	 */
+	public void addUserToWatch(int twitterID) {
+		// TODO: add code
+	}
+	/**
+	 * Add a category to an user.
+	 * @param accountID of user
+	 * @param categoryID of category
+	 */
+	public void setCategory(int accountID, int categoryID) {
+		// TODO: add code
+	}
+	/**
+	 * Add a location to an user.
+	 * @param accountID of user
+	 * @param locationID of location
+	 */
+	public void setLocation(int accountID, int locationID) {
+		// TODO: add code
 	}
 	
 	private void update(UpdateType type) {

@@ -1,17 +1,323 @@
 package gui;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
-public class SelectionHashList<T> implements Iterable<T> {
+public class SelectionHashList<T> {
 	private HashMap<Integer, SelectionHashListEntry> hashMap;
 	private SelectionHashListEntry first, last;
 	private SelectionHashListEntry firstSelected, lastSelected;
-	public static void main(String[] args) {
-		
-	}
+	private int selectedCounter;
+	private List<T> list = new List<T>() {
+		@Override
+		public int size() {
+			return hashMap.size();
+		}
+		@Override
+		public boolean isEmpty() {
+			return hashMap.isEmpty();
+		}
+		@Override
+		public boolean contains(Object o) {
+			return hashMap.containsValue(o);
+		}
+
+		@Override
+		public Iterator<T> iterator() {
+			return new Iterator<T>() {
+				private SelectionHashListEntry current = first;
+				
+				@Override
+				public boolean hasNext() {
+					return current != null && current.getNext() != null;
+				}
+
+				@Override
+				public T next() {
+					T next = null;
+					if (hasNext()) {
+						next = current.getNext().getValue();
+						current = current.getNext();
+					}
+					return next;
+				}
+			};
+		}
+
+		@Override
+		public Object[] toArray() {
+			Object[] array = new Object[list.size()];
+			int i = 0;
+			for (T t : list) {
+				array[i++] = t;
+			}
+			return array;
+		}
+
+		@Override
+		public <F> F[] toArray(F[] a) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public boolean add(T e) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends T> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends T> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public void clear() {
+			System.err.println("Nicht implementiert.");
+		}
+
+		@Override
+		public T get(int index) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public T set(int index, T element) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public void add(int index, T element) {
+			System.err.println("Nicht implementiert.");
+		}
+
+		@Override
+		public T remove(int index) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public int indexOf(Object o) {
+			System.err.println("Nicht implementiert.");
+			return 0;
+		}
+
+		@Override
+		public int lastIndexOf(Object o) {
+			System.err.println("Nicht implementiert.");
+			return 0;
+		}
+
+		@Override
+		public ListIterator<T> listIterator() {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public ListIterator<T> listIterator(int index) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public List<T> subList(int fromIndex, int toIndex) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+	};
+	private List<T> selected = new List<T>() {
+		@Override
+		public int size() {
+			return selectedCounter;
+		}
+		@Override
+		public boolean isEmpty() {
+			return selectedCounter == 0;
+		}
+		@Override
+		public boolean contains(Object o) {
+			boolean contains = false;
+			if (first != null) {
+				if (o != null && o.getClass().equals(first.getValue().getClass())) {
+					contains = hashMap.get(o.hashCode()).isSelected();
+				}
+			}
+			return contains;
+		}
+
+		@Override
+		public Iterator<T> iterator() {
+			return  new Iterator<T>() {
+				private SelectionHashListEntry current = firstSelected;
+				
+				@Override
+				public boolean hasNext() {
+					return current != null;
+				}
+
+				@Override
+				public T next() {
+					T next = current.getValue();
+					current = current.getNextSelected();
+					return next;
+				}
+			};
+		}
+
+		@Override
+		public Object[] toArray() {
+			Object[] array = new Object[selectedCounter];
+			int i = 0;
+			for (T t : selected) {
+				array[i++] = t;
+			}
+			return array;
+		}
+
+		@Override
+		public <F> F[] toArray(F[] array) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public boolean add(T e) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean remove(Object o) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean containsAll(Collection<?> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean addAll(Collection<? extends T> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean addAll(int index, Collection<? extends T> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean removeAll(Collection<?> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public boolean retainAll(Collection<?> c) {
+			System.err.println("Nicht implementiert.");
+			return false;
+		}
+
+		@Override
+		public void clear() {
+			System.err.println("Nicht implementiert.");
+		}
+
+		@Override
+		public T get(int index) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public T set(int index, T element) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public void add(int index, T element) {
+			System.err.println("Nicht implementiert.");
+		}
+
+		@Override
+		public T remove(int index) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public int indexOf(Object o) {
+			System.err.println("Nicht implementiert.");
+			return 0;
+		}
+
+		@Override
+		public int lastIndexOf(Object o) {
+			System.err.println("Nicht implementiert.");
+			return 0;
+		}
+
+		@Override
+		public ListIterator<T> listIterator() {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public ListIterator<T> listIterator(int index) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+
+		@Override
+		public List<T> subList(int fromIndex, int toIndex) {
+			System.err.println("Nicht implementiert.");
+			return null;
+		}
+	};
 	
 	public SelectionHashList() {
 		hashMap = new HashMap<Integer, SelectionHashListEntry>();
@@ -19,11 +325,12 @@ public class SelectionHashList<T> implements Iterable<T> {
 		last = null;
 		firstSelected = null;
 		lastSelected = null;
+		selectedCounter = 0;
 	}
 	
 	public void insert(T t) {
 		SelectionHashListEntry e = new SelectionHashListEntry(t, null, null);
-		if(first == null) {
+		if (first == null) {
 			first = e;
 			last = e;
 		} else {
@@ -47,6 +354,7 @@ public class SelectionHashList<T> implements Iterable<T> {
 		firstSelected = null;
 		lastSelected = null;
 	}
+	
 	public void remove(T t) {
 		if (hashMap.containsKey(t.hashCode())) {
 			SelectionHashListEntry e = hashMap.get(t.hashCode());
@@ -79,22 +387,26 @@ public class SelectionHashList<T> implements Iterable<T> {
 			hashMap.remove(t.hashCode());
 		}
 	}
+	
 	public void setSelected(T t, boolean selected) {
 		setSelected(t.hashCode(), selected);
 	}
-	public void setSelected(int hashCode, boolean selected) {
-		if (hashMap.containsKey(hashCode())) {
-			SelectionHashListEntry e = hashMap.get(hashCode);
+	
+	public void setSelected(Integer id, boolean selected) {
+		if (hashMap.containsKey(id.hashCode())) {
+			SelectionHashListEntry e = hashMap.get(id.hashCode());
 			if (selected && !e.isSelected()) {
-				if(firstSelected == null) {
+				selectedCounter++;
+				if (firstSelected == null) {
 					firstSelected = e;
 					lastSelected = e;
 				} else {
-					lastSelected.setNext(e);
+					lastSelected.setNextSelected(e);
 					e.setPrevSelected(lastSelected);
 					lastSelected = e;
 				}
-			} else if (e.isSelected()) {
+			} else if (!selected && e.isSelected()) {
+				selectedCounter--;
 				if (lastSelected.equals(e)) {
 					lastSelected = e.getPrevSelected();
 				}
@@ -111,45 +423,13 @@ public class SelectionHashList<T> implements Iterable<T> {
 		}
 	}
 	
-	public List<T> getAll() { // TODO: faster
-		List<T> list = new ArrayList<T>();
-		for (T t : this) {
-			list.add(t);
-		}
+	public List<T> get() {
 		return list;
 	}
 	
-	public List<T> getSelected() { // TODO: faster
-		List<T> list = new ArrayList<T>();
-		
-		Iterator<T> iterator = getSelctedIterator();
-		while (iterator.hasNext()) {
-			list.add(iterator.next());
-		}
-		return list;
+	public List<T> getSelected() {
+		return selected;
 	}
-	
-	private Iterator<T> getSelctedIterator() {
-		return new Iterator<T>() {
-			private SelectionHashListEntry current = first;
-			
-			@Override
-			public boolean hasNext() {
-				return current.getNext() != null;
-			}
-
-			@Override
-			public T next() {
-				T next = null;
-				if (hasNext()) {
-					next = current.getNext().getValue();
-					current = current.getNext();
-				}
-				return next;
-			}
-		};
-	}
-
 	
 	private class SelectionHashListEntry {
 		private T value;
@@ -173,7 +453,7 @@ public class SelectionHashList<T> implements Iterable<T> {
 			return prevSelected;
 		}
 		public boolean isSelected() {
-			return firstSelected == this || prevSelected != null || nextSelected == null; 
+			return firstSelected == this || prevSelected != null || nextSelected != null; 
 		}
 		public T getValue() {
 			return value;
@@ -200,27 +480,5 @@ public class SelectionHashList<T> implements Iterable<T> {
 		public boolean equals(Object o) {
 			return value.equals(o);
 		}
-	}
-
-	@Override
-	public Iterator<T> iterator() {
-		return new Iterator<T>() {
-			private SelectionHashListEntry current = first;
-			
-			@Override
-			public boolean hasNext() {
-				return current.getNext() != null;
-			}
-
-			@Override
-			public T next() {
-				T next = null;
-				if (hasNext()) {
-					next = current.getNext().getValue();
-					current = current.getNext();
-				}
-				return next;
-			}
-		};
 	}
 }

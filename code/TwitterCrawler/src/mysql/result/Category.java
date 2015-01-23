@@ -87,18 +87,4 @@ public class Category extends Result {
     public int getParentId() {
         return parent;
     }
-    
-    @Override
-    public int hashCode() {
-    	return getId();
-    }
-    
-    @Override
-    public boolean equals(Object o) {
-    	boolean equal = false;
-		if (o != null && o.getClass() == this.getClass()) {
-			equal = ((Category) o).getId() == getId();
-		} 
-    	return equal;
-    }
 }
