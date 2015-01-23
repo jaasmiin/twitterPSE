@@ -64,7 +64,7 @@ public class GUIController extends Application implements Initializable {
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
-	private String accountSearchText;
+	private String accountSearchText = "";
 	
 	public static GUIController getInstance() {
 		if (instance == null) {
@@ -256,8 +256,6 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
-
-		
 		Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
 		List<Location> selectedLocations = locations.getSelected();
 		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
@@ -316,6 +314,7 @@ public class GUIController extends Application implements Initializable {
 //				update(UpdateType.TWEET);
 //			}
 		}
+		update(UpdateType.TWEET);
 	}
 	
 	private void reloadAll() {
@@ -386,6 +385,14 @@ public class GUIController extends Application implements Initializable {
 			}
 		}
 		return newRoot;
+	}
+	
+	public List<Account> getAccounts(String text) {
+		if (!accountSearchText.equals(text)) {
+			accountSearchText = text;
+			reloadAccounts();
+		}
+		return accounts.get();
 	}
 	
 	/**

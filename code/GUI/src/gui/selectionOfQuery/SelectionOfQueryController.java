@@ -1,12 +1,19 @@
 package gui.selectionOfQuery;
 
 import java.net.URL;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.ResourceBundle;
 
+import sun.rmi.transport.LiveRef;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import javafx.beans.InvalidationListener;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -30,11 +37,13 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	private TreeView<Location> trvLocation;
 	@FXML
+	private ListView<Account> lstAccount;
+	@FXML
 	private TitledPane tipLocation;
 	@FXML
 	private TitledPane tipAccount;
 	@FXML
-	private TitledPane tipCategory;	
+	private TitledPane tipCategory;
 	@FXML
 	private ListView<String> lstSelectedCategories;
 	@FXML
@@ -54,11 +63,17 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		// TODO: add code
 	}
 	
+	private void updateAccounts(List<Account> accounts) {
+		lstAccount.getItems().clear();
+		for (Account a : accounts) {
+			lstAccount.getItems().add(a);
+		}
+	}
+	
 	private void updateCategory(Category rootCategory) {
 		TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
 		rootItem.setExpanded(true);
 		updateCategoryRec(rootCategory, rootItem);
-		// TODO: implement
 		trvCategory.setRoot(rootItem);
 	}
 	
@@ -92,7 +107,9 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
 			updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
-		} 
+		} else if (type == UpdateType.ACCOUNT) {
+			updateAccounts(superController.getAccounts(txtFilterSearch.getText()));
+		}
 	}
 
 	@FXML
@@ -106,6 +123,10 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
 					" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
 			superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
+		} else if(e.getSource().equals(lstAccount)) {
+			System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
+					" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
+			superController.setSelectedAccount(lstAccount.getSelectionModel().getSelectedItem().getId(), true);
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			if (e instanceof KeyEvent) {
 				KeyEvent k = (KeyEvent) e;
@@ -113,29 +134,20 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 					if (tipCategory.isExpanded()) {
 						updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
 					} else if (tipAccount.isExpanded()) {
-						// TODO: add code
+						updateAccounts(superController.getAccounts(txtFilterSearch.getText()));
 					} else if (tipLocation.isExpanded()) {
 						updateLocation(superController.getLocations(txtFilterSearch.getText()));
 					}
 				}
 			}
-		} else {
-			System.out.println("Something else.");
-			// TODO: update selection list & map
 		}
 	}
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		if (trvCategory != null) { // SelectionOfQueryView
+		if (trvCategory != null) { // only one time in SelectionOfQueryView
 			super.initialize(location, resources);
 			superController.subscribe(this);
-		} else { // SelectionOfQuerySelectedView
-			// TODO: remove following lines
-			lstSelectedAccounts.getItems().add("KIT");
-			lstSelectedCategories.getItems().add("Musiker");
-			lstSelectedLocations.getItems().add("Deutschland");
-			lstSelectedLocations.getItems().add("Frankreich");
 		}
 	}
 

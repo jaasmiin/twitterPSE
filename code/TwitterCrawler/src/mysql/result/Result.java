@@ -38,7 +38,7 @@ public abstract class Result {
     public boolean equals(Object o) {
     	boolean equal = false;
 		if (o != null && o.getClass() == this.getClass()) {
-			equal = ((Category) o).getId() == getId();
+			equal = ((Result) o).getId() == getId();
 		} 
     	return equal;
     }
