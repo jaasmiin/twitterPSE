@@ -262,16 +262,8 @@ public class Account extends Result {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof Account) {
-            Account a = (Account) obj;
-            return getId() == a.getId();
-        } else if (obj instanceof Integer) {
-            int a = (int) obj;
-            return getId() == a;
-
-        }
-        return false;
+    public String toString() {
+    	return getName();
     }
 
 }
