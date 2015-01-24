@@ -1,22 +1,17 @@
 package test.gui;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import gui.GUIController;
-import mysql.AccessData;
-import mysql.DBgui;
+import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.TweetsAndRetweets;
 
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -25,60 +20,131 @@ public class GUIControllerTest {
 	private static GUIController guiController;
 	
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-//		guiController = GUIController.getInstance();
+	public static void setUpBeforeClass() throws InterruptedException {
+	    // Initialise Java FX
+	    System.out.printf("About to launch FX App\n");
+	    Thread t = new Thread("JavaFX Init Thread") {
+	        public void run() {
+	            GUIController.main(null);
+	        }
+	    };
+	    t.setDaemon(true);
+	    t.start();
+	    System.out.printf("FX App thread started\n");
+	    Thread.sleep(1000);
+	    guiController = GUIController.getInstance();
+	    while (!guiController.isReady()) {
+			Thread.sleep(1000);
+		}
 	}
 
 	@AfterClass
 	public static void tearDownAfterClass() throws Exception {
-
+		guiController.close();
 	}
-
+	
+	@Before
+	public void setUpBefore() {
+		List<Account> aList = guiController.getSelectedAccounts();
+		List<Category> cList = guiController.getSelectedCategories();
+		List<Location> lList = guiController.getSelectedLocations();
+		for (Account a : aList) {
+			guiController.setSelectedAccount(a.getId(), false);
+		}
+		for (Category c : cList) {
+			guiController.setSelectedCategory(c.getId(), false);
+		}
+		for (Location l : lList) {
+			guiController.setSelectedLocation(l.getId(), false);
+		}
+	}
+	
 	@Test
 	public void testGetCategories() {
-//		List<Category> list;
-//		list = guiController.getCategories();
-//		assertTrue(list.size() > 1);
-		DBgui db;
-		try {
-			db = new DBgui(new AccessData("172.22.214.133", "3306", "twitter", "root", "182cc4"), getLogger() );
-			db.connect();
-			db.getCategories();
-		} catch (InstantiationException | IllegalAccessException
-				| ClassNotFoundException | SecurityException | IOException | SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Category c = guiController.getCategoryRoot("Politics");
+		while (!c.getChilds().isEmpty()) {
+			c = c.getChilds().get(0);
 		}
-		
+		assert(c.toString().contains("Plotitics"));
 	}
 	
-	private Logger getLogger() throws SecurityException, IOException {
-        Logger l = Logger.getLogger("logger");
-        new File("LogFile.log").createNewFile();
-        FileHandler fh = new FileHandler("LogFile.log", true);
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        l.addHandler(fh);
-        // true: print output on console and into file
-        // false: only store output in logFile
-        l.setUseParentHandlers(false);
-        return l;
-    }
-	
 	@Test
-	public void testGetCategoriesString() {
-		fail("Not yet implemented");
+	public void testGetAccounts() {
+		List<Account> list = guiController.getAccounts("Barack");
+		assert(list.get(0).toString().equals("Barach Obama"));
 	}
 
 	@Test
 	public void testGetLocations() {
-//		List<Location> list;
-//		list = guiController.getLocations();
-//		assertTrue(list.size() > 1);
+		List<Location> list = guiController.getLocations();
+		assert(list.size() > 0);
+	}
+	
+	@Test
+	public void testSelectCategory() {
+		Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
+		guiController.setSelectedCategory(c.getId(), true);
+		assert(guiController.getSelectedCategories().contains(c));
+	}
+	
+	@Test
+	public void testDeselectCategory() {
+		Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
+		guiController.setSelectedCategory(c.getId(), true);
+		guiController.setSelectedCategory(c.getId(), false);
+		assert(!guiController.getSelectedCategories().contains(c));
+	}
+	
+	@Test
+	public void testSelectLocation() {
+		List<Location> list = guiController.getLocations();
+		guiController.setSelectedLocation(list.get(list.size() - 1).getId(), true);
+		assert(guiController.getSelectedLocations().contains(list.get(list.size() - 1)));
+	}
+	
+	@Test
+	public void testDeselectLocation() {
+		List<Location> list = guiController.getLocations();
+		guiController.setSelectedLocation(list.get(list.size() - 1).getId(), true);
+		guiController.setSelectedLocation(list.get(list.size() - 1).getId(), false);
+		assert(!guiController.getSelectedLocations().contains(list.get(list.size() - 1)));
+	}
+	@Test
+	public void testSelectAccount() {
+		List<Account> list = guiController.getAccounts("Barack");
+		Account a = list.get(0);
+		guiController.setSelectedAccount(a.getId(), true);
+		assert(guiController.getSelectedAccounts().contains(a));
+	}
+	
+	@Test
+	public void testDeselectAccount() {
+		Account a = guiController.getAccounts("Obama").get(0);
+		guiController.setSelectedAccount(a.getId(), true);
+		guiController.setSelectedAccount(a.getId(), false);
+		assert(guiController.getSelectedAccounts().contains(a));
+	}
+	
+	@Test
+	public void testGetDataByLocation() {
+		Account a = guiController.getAccounts("Obama").get(0);
+		guiController.setSelectedAccount(a.getId(), true);
+		TweetsAndRetweets tar = guiController.getDataByLocation();
+		assert(tar.retweets.size() > 1);
 	}
 
 	@Test
-	public void testGetLocationsString() {
+	public void testGetErrorMessage() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testSetDateRange() {
+		fail("Not yet implemented");
+	}
+
+	@Test
+	public void testAddAccountToWatch() {
 		fail("Not yet implemented");
 	}
 
@@ -93,43 +159,9 @@ public class GUIControllerTest {
 	}
 
 	@Test
-	public void testGetSelectedAccounts() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetSelectedCategories() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetSelectedLocations() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetAccount() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetDataByAccount() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetDataByLocation() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testSetDateRange() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testSubscribe() {
 		fail("Not yet implemented");
 	}
 
+	
 }

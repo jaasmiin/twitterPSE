@@ -15,6 +15,7 @@ public class InfoRunnable implements Runnable {
 		super();
 		this.label = label;
 		this.text = text;
+		delay = 2000;
 	}
 	@Override
 	public void run() {
@@ -23,7 +24,7 @@ public class InfoRunnable implements Runnable {
 			@Override
 			public void run() {
 				try {
-					Thread.sleep(2000);
+					Thread.sleep(delay);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

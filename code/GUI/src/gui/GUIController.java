@@ -23,12 +23,8 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import mysql.AccessData;
-import mysql.DBgui;
-import mysql.result.Account;
-import mysql.result.Category;
-import mysql.result.Location;
-import mysql.result.TweetsAndRetweets;
+import mysql.*;
+import mysql.result.*;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -66,6 +62,7 @@ public class GUIController extends Application implements Initializable {
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = "";
 	private String errorMessage = "";
+	private boolean ready = false; 
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
@@ -93,18 +90,28 @@ public class GUIController extends Application implements Initializable {
 				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 					@Override
 					public void handle(WindowEvent event) {
-						if (db != null && db.isConnected()) {
-							System.out.println("Verbindung mit Datenbank wird geschlossen...");
-							db.disconnect();
-							System.out.println("Verbindung geschlossen.");
-						}
+						close();
 					}
 				});
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
 	}
+	public void close() {
+		if (db != null && db.isConnected()) {
+			System.out.println("Verbindung mit Datenbank wird geschlossen...");
+			db.disconnect();
+			System.out.println("Verbindung geschlossen.");
+		}
+		Platform.exit();
+	}
 	
+	public boolean isConnected() {
+		return db != null && db.isConnected();
+	}
+	public boolean isReady() {
+		return ready;
+	}
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -228,16 +235,7 @@ public class GUIController extends Application implements Initializable {
 		update(UpdateType.ACCOUNT);
 	}
 	
-	private void reloadCategories() {
-//		categoryRoot = new Category(0, "Alle Kategorien", 0);
-//		categoryRoot.addChild(new Category(1, "Politik", 0));
-//		categoryRoot.addChild(new Category(2, "Sport", 0));
-//		categoryRoot.getChilds().get(0).addChild(new Category(8, "CDU-Politiker", 1));
-//		categoryRoot.getChilds().get(0).addChild(new Category(9, "SPD-Politiker", 1));
-//		categoryRoot.getChilds().get(0).addChild(new Category(10, "FDP-Politiker", 1));
-//		categoryRoot.getChilds().get(1).addChild(new Category(3, "Fußball", 2));
-//		categoryRoot.getChilds().get(1).addChild(new Category(4, "Handball", 2));
-		
+	private void reloadCategories() {		
 		categoryRoot = db.getCategories();
 		if (categoryRoot != null) {
 			reloadCategoryHashMap();
@@ -277,56 +275,26 @@ public class GUIController extends Application implements Initializable {
 		}
 		if (selectedCategoriesArray.length + selectedLocationsArray.length + selectedAccountsArray.length >= 1) {
 
-//			Boolean[] dateSelected = {selectedStartDate != null && selectedEndDate != null, false};
-//			Object[][] data = {selectedAccountsArray, selectedCategoriesArray, selectedLocationsArray, dateSelected};
-//			boolean success = true;
-//			Thread t1 = new Thread(new RunnableParameter<Object[][]>(data) {
-//				@Override
-//				public void run() {
-//					try {
-//						dataByLocation = db.getSumOfData((Integer[]) parameter[0], (Integer[]) parameter[1], (Integer[]) parameter[2], (Boolean) parameter[3][0]);
-//					} catch (IllegalArgumentException | SQLException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}				
-//				}
-//			});
-//			Thread t2 = new Thread(new RunnableParameter<Object[][]>(data) {
-//				@Override
-//				public void run() {
-//					try {
-//						dataByAccount = db.getAllData((Integer[]) parameter[0], (Integer[]) parameter[1], (Integer[]) parameter[2], (Boolean) parameter[3][0]);
-//					} catch (IllegalArgumentException | SQLException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}				
-//				}
-//			});
-//			t1.start();
-//			t2.start();
-//			try {
-//				t1.join();
-//			} catch (InterruptedException e) {
-//				success = false;
-//				setInfo(e.getLocalizedMessage());
-//			}
-//			try {
-//				t2.join();
-//			} catch (InterruptedException e) {
-//				success = false;
-//				setInfo(e.getLocalizedMessage());
-//			}
-//			if (success) {
-//				update(UpdateType.TWEET);
-//			}
+			boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
+			boolean success = true;
+			try {
+				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+			} catch (IllegalArgumentException | SQLException e) {
+				success = false;
+				setInfo(e.getMessage());
+			}
+			if (success) {
+				update(UpdateType.TWEET);
+			}
 		}
-		update(UpdateType.TWEET);
 	}
 	
 	private void reloadAll() {
 		reloadAccounts();
 		reloadCategories();
 		reloadLocation();
+		ready = true;
 	}
 	
 	private void setInfo(String text) {
@@ -533,7 +501,7 @@ public class GUIController extends Application implements Initializable {
 	 * Adds user who's tweets the crawler will be listening.
 	 * @param twitterID of user
 	 */
-	public void addUserToWatch(int twitterID) {
+	public void addAccountToWatch(int twitterID) {
 		// TODO: add code
 	}
 	

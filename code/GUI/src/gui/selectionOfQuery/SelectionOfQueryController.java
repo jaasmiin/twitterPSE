@@ -72,7 +72,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	private void updateCategoryRec(Category category, TreeItem<Category> item) {
 		for (Category childCategory : category.getChilds()) {
 			TreeItem<Category> child = new TreeItem<Category>(childCategory);
-			child.setExpanded(true);
 			updateCategoryRec(childCategory, child);
 			item.getChildren().add(child);
 		}

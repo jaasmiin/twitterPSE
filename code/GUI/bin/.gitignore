@@ -1,4 +1,4 @@
-/gui
 /countries.geo.json
-/test
-/unfolding
+/gui/
+/test/
+/unfolding/
