@@ -63,7 +63,7 @@ public class ContentTableController extends OutputElement implements Initializab
 	 */
 	private void addRetweetsColumn() {
 		TableColumn retweetColumn = new TableColumn("Retweets");		
-		
+	
 		// exchange getCountries
 		List<String> countries = getCountries();	
 		for (String country : countries) {

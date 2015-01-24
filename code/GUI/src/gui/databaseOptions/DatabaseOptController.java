@@ -2,10 +2,12 @@ package gui.databaseOptions;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import mysql.result.Account;
 import mysql.result.Category;
+import mysql.result.Location;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -53,6 +55,16 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private ListView<Account> listAccount;
 	@FXML 
 	private Label lbInfo;
+	@FXML
+	private TreeView<Location> trvLocation;
+	@FXML
+	private TextField txtLocSearch;
+	@FXML
+	private Button bWeiterLocation;
+	@FXML 
+	private Button bFertigLocation;
+	@FXML
+	private Button bZurueckLocation;
 	
 	private Account account;
 	private Stage dialogStage;
@@ -68,11 +80,11 @@ public class DatabaseOptController extends InputElement implements Initializable
 		super.initialize(location, resources);
 		if(addCat != null) {
 			addCat.setOnAction(new MyActionEventHandler());
-			//TODO addLoc
+			addLoc.setOnAction(new MyActionEventHandler());
 			//TODO addAcount
 		}
-		//popUp select account
-		if(txtAccountSearch != null) {
+		//popUp select account category
+		if(bWeiter != null) {
 			txtAccountSearch.setOnKeyPressed(new MyEventHandler());
 			listAccount.setOnMouseClicked(new MyEventHandler());
 			bWeiter.setOnMouseClicked(new MyEventHandler());
@@ -86,6 +98,19 @@ public class DatabaseOptController extends InputElement implements Initializable
 			bFertig.setOnMouseClicked(new MyEventHandler());
 			bZurueck.setOnMouseClicked(new MyEventHandler());
 		}
+		//popUp select account change location
+		if(bWeiterLocation != null) {
+			bWeiterLocation.setOnMouseClicked(new MyEventHandler());
+			txtAccountSearch.setOnKeyPressed(new MyEventHandler());
+			listAccount.setOnMouseClicked(new MyEventHandler());
+		}
+		//popUp change location
+		if(txtLocSearch != null) {
+			txtLocSearch.setOnKeyPressed(new MyEventHandler());
+			trvLocation.setOnMouseClicked(new MyEventHandler());
+			bFertigLocation.setOnMouseClicked(new MyEventHandler());
+			bZurueckLocation.setOnMouseClicked(new MyEventHandler());
+		}
 		
 	}
 	/**
@@ -96,7 +121,6 @@ public class DatabaseOptController extends InputElement implements Initializable
 		TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
 		rootItem.setExpanded(true);
 		updateCategoryRec(rootCategory, rootItem);
-		// TODO: implement
 		trvCat.setRoot(rootItem);
 	}
 	private void updateCategoryRec(Category category, TreeItem<Category> item) {
@@ -105,6 +129,46 @@ public class DatabaseOptController extends InputElement implements Initializable
 			child.setExpanded(true);
 			updateCategoryRec(childCategory, child);
 			item.getChildren().add(child);
+		}
+	}
+	private void updateLocation(List<Location> list) {
+		TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0, "Welt", "0000", null));
+		rootItem.setExpanded(true);		
+		for (Location location : list) {
+			rootItem.getChildren().add(new TreeItem<Location>(location));
+		}
+		trvLocation.setRoot(rootItem);
+	}
+	/**
+	 * creates a new popUp loading the fxml-file under the given path
+	 * @param path path of the fxml file to load
+	 * @param title shown title of the popUp
+	 * @param selectedAccount Account that is selected, can also be null;
+	 */
+	private void createPopUp(String path, String title, Account selectedAccount) {
+		// Load the fxml file and create a new stage for the popup
+	    FXMLLoader loader = new FXMLLoader(DatabaseOptController.class.getResource(path));
+	    
+	    AnchorPane page;
+	    
+		try {
+			System.out.println(DatabaseOptController.this);
+			page = (AnchorPane) loader.load();
+	        dialogStage = new Stage();
+	        
+	        // give the controller in the newly created thread a reference to the current stage;
+	        ((DatabaseOptController)loader.getController()).setCurrentStage(dialogStage);
+	        ((DatabaseOptController)loader.getController()).setAccount(selectedAccount);
+	        dialogStage.setTitle(title);
+		    dialogStage.initModality(Modality.WINDOW_MODAL);
+		    //dialogStage.initOwner(primaryStage);
+		    Scene scene = new Scene(page);
+		    dialogStage.setScene(scene);
+		    dialogStage.show();
+		} catch (IOException e1) {
+			
+			System.out.println("Unable to construct popUp");
+			e1.printStackTrace();
 		}
 	}
 	/**
@@ -130,31 +194,12 @@ public class DatabaseOptController extends InputElement implements Initializable
 			// select right handling for event
 			if (event.getSource().equals(addCat)) {
 				// popUp for InputDialog
-				// Load the fxml file and create a new stage for the popup
-			    FXMLLoader loader = new FXMLLoader(DatabaseOptController.class.getResource("AccountSelect.fxml"));
+				createPopUp("AccountSelect.fxml", "Account auswählen",null);
 			    
-			    AnchorPane page;
-			    
-				try {
-					System.out.println(DatabaseOptController.this);
-					page = (AnchorPane) loader.load();
-			        dialogStage = new Stage();
-			        
-			        // give the controller in the newly created thread a reference to the current stage;
-			        ((DatabaseOptController)loader.getController()).setCurrentStage(dialogStage);
-				    
-			        dialogStage.setTitle("Account auswählen");
-				    dialogStage.initModality(Modality.WINDOW_MODAL);
-				    //dialogStage.initOwner(primaryStage);
-				    Scene scene = new Scene(page);
-				    dialogStage.setScene(scene);
-				    dialogStage.show();
-				} catch (IOException e1) {
-					
-					System.out.println("Unable to construct popUp");
-					e1.printStackTrace();
-				}
-			    
+			}
+			if (event.getSource().equals(addLoc)) {
+				//popUp for InputDialog
+				createPopUp("AccountSelectLocation.fxml","Account auswählen", null);
 			}
 		}	
 	}
@@ -170,7 +215,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 			System.out.println("kontroller:" + event.getSource());
 		
 	    //######################################################	
-		//#PopUp Select Account
+		//#PopUp Select Account both versions
 		//########################################################
 			if(event.getSource().equals(txtAccountSearch)) {
 				// update ListView of accounts
@@ -180,6 +225,21 @@ public class DatabaseOptController extends InputElement implements Initializable
 				for(Account a : superController.getAccounts(input)) {
 					listAccount.getItems().add(a);
 				}
+			}
+			if(event.getSource().equals(bWeiterLocation)) {
+				// save selected account, close select-account-popUp
+				
+				Account selectedAccount = listAccount.getSelectionModel().getSelectedItem();
+				if (selectedAccount == null) {
+					lbInfo.setText("Kein Account ausgewählt");
+					return;
+				}
+				System.out.println(selectedAccount.getName());
+				dialogStage.close();
+				// popUp for InputDialog
+				// Load the fxml file and create a new stage for the popup
+				createPopUp("LocationSelect.fxml","Location auswählen",selectedAccount);
+				
 			}
 			if(event.getSource().equals(bWeiter)) {
 				// save selected account, close select-account-popUp
@@ -194,61 +254,10 @@ public class DatabaseOptController extends InputElement implements Initializable
 				
 				// popUp for InputDialog
 				// Load the fxml file and create a new stage for the popup
-			    FXMLLoader loader = new FXMLLoader(DatabaseOptController.class.getResource("CatSelect.fxml"));
-			    
-			    AnchorPane page;
-			    
-				try {
-					System.out.println(DatabaseOptController.this);
-					page = (AnchorPane) loader.load();
-			        dialogStage = new Stage();
-			        
-			        // give the controller in the newly created thread a reference to the current stage and the 
-			        // selected account
-			        ((DatabaseOptController)loader.getController()).setCurrentStage(dialogStage);
-			        ((DatabaseOptController)loader.getController()).setAccount(selectedAccount);
-			        
-			        dialogStage.setTitle("Kategorie auswählen");
-				    dialogStage.initModality(Modality.WINDOW_MODAL);
-				    //dialogStage.initOwner(primaryStage);
-				    Scene scene = new Scene(page);
-				    dialogStage.setScene(scene);
-				    dialogStage.show();
-				} catch (IOException e1) {
-					
-					System.out.println("Unable to construct popUp");
-					e1.printStackTrace();
-				}    
+				createPopUp("CatSelect.fxml","Kategorie auswählen", selectedAccount);
+			 
 			}
-			if(event.getSource().equals(bZurueck)) {
-				//close select-category-popUp and open select-account-popUp again
-				dialogStage.close();
-				
-				FXMLLoader loader = new FXMLLoader(DatabaseOptController.class.getResource("AccountSelect.fxml"));
-			    
-			    AnchorPane page;
-			    
-				try {
-					System.out.println(DatabaseOptController.this);
-					page = (AnchorPane) loader.load();
-			        dialogStage = new Stage();
-			        
-			        // give the controller in the newly created thread a reference to the current stage
-			        ((DatabaseOptController)loader.getController()).setCurrentStage(dialogStage);
-			        
-			        dialogStage.setTitle("Account auswählen");
-				    dialogStage.initModality(Modality.WINDOW_MODAL);
-				    //dialogStage.initOwner(primaryStage);
-				    Scene scene = new Scene(page);
-				    dialogStage.setScene(scene);
-				    dialogStage.show();
-				} catch (IOException e1) {
-					
-					System.out.println("Unable to construct popUp");
-					e1.printStackTrace();
-				}    
-				
-			}
+			
 			
 		//####################################################	
 		//#PopUp select category
@@ -286,7 +295,45 @@ public class DatabaseOptController extends InputElement implements Initializable
 				//System.out.println(DatabaseOptController.this);
 				dialogStage.close();
 			}
+			if(event.getSource().equals(bZurueck)) {
+				//close select-category-popUp and open select-account-popUp again
+				dialogStage.close();
+				createPopUp("AccountSelect.fxml","Account auswählen", null);
+				
+			}
 			
+			//####################################################	
+			//#PopUp select location
+			//####################################################
+			if(event.getSource().equals(bZurueckLocation)) {
+				//close select-location-popUp and open select-account-(location)-popUp again
+				dialogStage.close();
+				createPopUp("AccountSelectLocation.fxml","Account auswählen", null);
+			}
+			if(event.getSource().equals(txtLocSearch)) {
+				// update TreeView of locations
+				String input = txtLocSearch.getText();
+				System.out.println(input);
+				updateLocation(superController.getLocations(input));
+			}
+			if(event.getSource().equals(bFertigLocation)) {
+				// add selected location to database
+				
+				TreeItem<Location> selectedItem = trvLocation.getSelectionModel().getSelectedItem();
+				if (selectedItem == null) {
+					// no item selected;
+					return;
+				}
+				if (account == null) {
+					System.out.println("an error occured!");
+					return;
+				}
+				
+				superController.setLocation(account.getId(), selectedItem.getValue().getId());
+				dialogStage.close();
+				
+				
+			}
 		}
 		
 	}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="catSelect" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="411.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+   <children>
+      <TextField fx:id="txtLocSearch" layoutX="14.0" layoutY="14.0" />
+      <TreeView fx:id="trvLocation" layoutX="235.0" layoutY="14.0" prefHeight="355.0" prefWidth="351.0" />
+      <Button fx:id="bFertigLocation" layoutX="513.0" layoutY="371.0" mnemonicParsing="false" text="Fertig" />
+      <Button fx:id="bZurueckLocation" layoutX="448.0" layoutY="371.0" mnemonicParsing="false" text="Zurück" />
+   </children>
+</AnchorPane>
