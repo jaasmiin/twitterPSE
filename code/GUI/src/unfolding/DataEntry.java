@@ -10,7 +10,7 @@ package unfolding;
 public class DataEntry {
 
     private String countryName;
-    private int countryId;
+    private String countryId;
     private float value;
     
     public DataEntry() {
@@ -25,11 +25,11 @@ public class DataEntry {
         this.countryName = countryName;
     }
 
-    public int getCountryId() {
+    public String getCountryId() {
         return countryId;
     }
 
-    public void setCountryId(int countryId) {
+    public void setCountryId(String countryId) {
         this.countryId = countryId;
     }
 
