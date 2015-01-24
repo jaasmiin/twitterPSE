@@ -65,7 +65,7 @@ public class GUIController extends Application implements Initializable {
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = "";
-	
+	private String errorMessage = "";
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
@@ -229,19 +229,25 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadCategories() {
-		categoryRoot = new Category(0, "Alle Kategorien", 0);
-		categoryRoot.addChild(new Category(1, "Politik", 0));
-		categoryRoot.addChild(new Category(2, "Sport", 0));
-		categoryRoot.getChilds().get(0).addChild(new Category(8, "CDU-Politiker", 1));
-		categoryRoot.getChilds().get(0).addChild(new Category(9, "SPD-Politiker", 1));
-		categoryRoot.getChilds().get(0).addChild(new Category(10, "FDP-Politiker", 1));
-		categoryRoot.getChilds().get(1).addChild(new Category(3, "Fuﬂball", 2));
-		categoryRoot.getChilds().get(1).addChild(new Category(4, "Handball", 2));
+//		categoryRoot = new Category(0, "Alle Kategorien", 0);
+//		categoryRoot.addChild(new Category(1, "Politik", 0));
+//		categoryRoot.addChild(new Category(2, "Sport", 0));
+//		categoryRoot.getChilds().get(0).addChild(new Category(8, "CDU-Politiker", 1));
+//		categoryRoot.getChilds().get(0).addChild(new Category(9, "SPD-Politiker", 1));
+//		categoryRoot.getChilds().get(0).addChild(new Category(10, "FDP-Politiker", 1));
+//		categoryRoot.getChilds().get(1).addChild(new Category(3, "Fuﬂball", 2));
+//		categoryRoot.getChilds().get(1).addChild(new Category(4, "Handball", 2));
 		
-//		categoryRoot = db.getCategories();
-		
-		reloadCategoryHashMap();
-		update(UpdateType.CATEGORY);
+		categoryRoot = db.getCategories();
+		if (categoryRoot != null) {
+			reloadCategoryHashMap();
+			update(UpdateType.CATEGORY);
+		} else {
+			categoryRoot = new Category(0, "Fehler", 0);
+			errorMessage = "Fehler bei der Kommunikation mir der Datenbank.";
+			update(UpdateType.ERROR);
+			setInfo(errorMessage);
+		}
 	}
 	
 	private void reloadCategoryHashMap() {
@@ -494,6 +500,13 @@ public class GUIController extends Application implements Initializable {
 	public TweetsAndRetweets getDataByLocation() {
 		return dataByLocation;
 	}
+	
+	public String getErrorMessage() {
+		String message = errorMessage;
+		errorMessage = "";
+		return message;
+	}
+	
 	/**
 	 * Select start and end or one day if start and end date are the same.
 	 * Earlier date will automatically be taken as start date.
@@ -523,21 +536,23 @@ public class GUIController extends Application implements Initializable {
 	public void addUserToWatch(int twitterID) {
 		// TODO: add code
 	}
+	
 	/**
 	 * Add a category to an user.
 	 * @param accountID of user
 	 * @param categoryID of category
 	 */
 	public void setCategory(int accountID, int categoryID) {
-		// TODO: add code
+		db.setCategory(accountID, categoryID);
 	}
+	
 	/**
 	 * Add a location to an user.
 	 * @param accountID of user
 	 * @param locationID of location
 	 */
 	public void setLocation(int accountID, int locationID) {
-		// TODO: add code
+		db.setLocation(accountID, locationID, true);
 	}
 	
 	private void update(UpdateType type) {

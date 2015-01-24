@@ -56,8 +56,6 @@ public class DBgui extends DBConnection implements DBIgui {
 
         String sqlCommand = "SELECT Id, Name, ParentId FROM category";
 
-        double a = System.currentTimeMillis();
-
         ResultSet res = null;
         Statement stmt = null;
         try {
@@ -67,8 +65,6 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
             return null;
         }
-
-        System.out.println(System.currentTimeMillis() - a);
 
         List<Category> parents = new ArrayList<Category>();
         List<Category> childs = new ArrayList<Category>();
@@ -87,7 +83,6 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
-        System.out.println(System.currentTimeMillis() - a);
 
         Category ret = null;
 
@@ -104,8 +99,6 @@ public class DBgui extends DBConnection implements DBIgui {
                 }
             }
         }
-
-        System.out.println(System.currentTimeMillis() - a);
 
         return ret;
     }

@@ -32,16 +32,13 @@ public class SelectionHashList<T> {
 				
 				@Override
 				public boolean hasNext() {
-					return current != null && current.getNext() != null;
+					return current != null;
 				}
 
 				@Override
 				public T next() {
-					T next = null;
-					if (hasNext()) {
-						next = current.getNext().getValue();
-						current = current.getNext();
-					}
+					T next = current.getValue();
+					current = current.getNext();
 					return next;
 				}
 			};

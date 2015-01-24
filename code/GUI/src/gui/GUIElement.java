@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 
 public abstract class GUIElement implements Initializable {
 	protected GUIController superController;
-	public static enum UpdateType {TWEET, CATEGORY, LOCATION, ACCOUNT};
+	public static enum UpdateType {TWEET, CATEGORY, LOCATION, ACCOUNT, ERROR};
 	public abstract void update(UpdateType type);
 	
 	@Override

@@ -70,7 +70,7 @@ public class ContentTableController extends OutputElement implements Initializab
 			retweetColumn.getColumns().add(new TableColumn(country));
 			// add CellValueFactory
 			// figure out which way to get retweets per country
-		}		
+		}	
 		table.getColumns().add(retweetColumn);
 	}
 
