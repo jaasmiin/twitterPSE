@@ -3,8 +3,6 @@ package mysql.result;
 import java.util.ArrayList;
 import java.util.List;
 
-import twitter4j.HashtagEntity;
-
 /**
  * store the categories of an account
  * 

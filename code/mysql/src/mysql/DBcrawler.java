@@ -107,7 +107,10 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         // set Tweet count
-        boolean result3 = insertTweet(id, tweet, date);
+        boolean result3 = false;
+        if (result2) {
+            result3 = insertTweet(id, tweet, date);
+        }
 
         return new boolean[] {result1, result2, result3 };
     }
@@ -115,7 +118,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     private boolean insertAccount(long id, String name, boolean isVer,
             int follower, String location, String url) {
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ( ? , ?, "
@@ -140,7 +142,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
     private boolean updateAccount(long id, int follower) {
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("UPDATE accounts SET Follower = ? WHERE TwitterAccountId = ? ;");
@@ -155,7 +156,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
     private boolean insertTweet(long id, boolean tweet, Date date) {
 
-        // prevent SQL-injection
+        if (date == null)
+            return false;
+
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), "
@@ -174,9 +177,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean[] addRetweet(long id, String location, Date date) {
 
-        if (date == null) {
+        if (date == null)
             return new boolean[] {false, false };
-        }
 
         location = checkString(location, 3, DEFAULT_LOCATION);
 
@@ -186,7 +188,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             result1 = false;
         }
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES "
@@ -224,7 +225,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             }
         }
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             if (parent == null) {
@@ -253,7 +253,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean addDay(Date date) {
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO day (Day) VALUES (?);");
@@ -399,7 +398,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         if (!addLocation(code, null))
             return false;
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO wordLocation (Word, TimeZone, Location) VALUES (?,?,?);");

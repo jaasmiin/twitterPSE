@@ -119,6 +119,7 @@ public abstract class DBConnection {
                 ret = stmt.executeUpdate() >= 0 ? true : false;
             }
         } catch (SQLException e) {
+            //e.printStackTrace();
             sqlExceptionLog(e, stmt);
         } finally {
             if (stmt != null) {
