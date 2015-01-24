@@ -6,6 +6,11 @@ package unfolding;
 
 import gui.GUIController;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +19,6 @@ import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.providers.Google;
-import de.fhpotsdam.unfolding.providers.MapBox;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import processing.core.PApplet;
 
@@ -24,19 +28,17 @@ import processing.core.PApplet;
  */
 public class MyUnfoldingMap extends PApplet {
     
-    private GUIController guiController;
     private UnfoldingMap map1;
     private UnfoldingMap map2;
     private UnfoldingMap currentMap;
-    private HashMap<Integer, DataEntry> dataEntriesMap;
+    private HashMap<String, DataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
+    private List<String> setValues;
 
     
     public void setup() {  //check size of map 
         size(900, 600);
         
-        dataEntriesMap = new HashMap<Integer, DataEntry>();
-        guiController = guiController; //check if necessary
         map1 = new UnfoldingMap(this);
         map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
         
@@ -48,6 +50,9 @@ public class MyUnfoldingMap extends PApplet {
         
         List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);
+        
+        dataEntriesMap = loadCountriesFromCSV("countries.csv");
+        setValues = new ArrayList<String>();
         
     }
     
@@ -83,15 +88,25 @@ public class MyUnfoldingMap extends PApplet {
      * @param changedEntries String array containing country id an new value of it
      */
     public void update(String[][] changedEntries) {
-        dataEntriesMap.clear();
+        //Reset all entries to '-1' 
+        if(!setValues.isEmpty()) {
+            for(String id: setValues) {
+                DataEntry edit = dataEntriesMap.get(id);
+                edit.setValue(-1);
+                dataEntriesMap.put(id, edit);
+            }
+            setValues.clear();
+        }
+        
         for(int i = 0; i < changedEntries.length; i++) {
-            int id = Integer.parseInt(changedEntries[i][0]);
+            String id = changedEntries[i][0];
             float newValue = Float.parseFloat(changedEntries[i][1]);
-            DataEntry newEntry = new DataEntry();
-            newEntry.setCountryId(id);
+            DataEntry newEntry = dataEntriesMap.get(id);
             newEntry.setValue(newValue);
             dataEntriesMap.put(id, newEntry);
+            setValues.add(id);
         }
+        shadeCountries();
     }
     
     /**
@@ -106,4 +121,24 @@ public class MyUnfoldingMap extends PApplet {
             currentMap = map2;
         }
     }
+    
+    private HashMap<String, DataEntry> loadCountriesFromCSV(String file) {
+        HashMap<String, DataEntry> dataEntriesMap = new HashMap<String, DataEntry>();
+
+        String[] rows = loadStrings(file);
+        for (String row : rows) {
+            // Reads country name and countryID from CSV row
+            String[] column = row.split(";");
+            if (column.length >= 3) {
+                DataEntry dataEntry = new DataEntry();
+                dataEntry.setCountryName(column[0]);
+                dataEntry.setCountryId(column[1]);
+                dataEntry.setValue(-1);
+                dataEntriesMap.put(column[1], dataEntry);
+            }
+        }
+
+        return dataEntriesMap;
+    }
+    
 }
