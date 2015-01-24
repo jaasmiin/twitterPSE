@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
@@ -25,23 +26,19 @@ import mysql.DBcrawler;
 
 /**
  * 
- * @author
- * @version 1.0
+ * @author Matthias Schimek, Holger Ebhart
+ * @version 1.1
  * 
  */
 public class WebServiceLocator implements RunnableListener {
 
-    // TODO noch keine statistic-Funktion implementiert
-
     private final static String WEB_SERVICE_URL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
     private final static String DEFAULT_LOCATION = "0";
     private Logger logger;
-    private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
-    private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
+    private ConcurrentLinkedQueue<LocateStatus> locateQueue;
     private DBcrawler dbc;
     private Formatter formatter;
     private boolean run;
-    private boolean locateAccounts;
     private long countQuery = 0;
     private long countLocatedQuery = 0;
 
@@ -49,20 +46,16 @@ public class WebServiceLocator implements RunnableListener {
      * 
      * @param accessData
      * @param logger
-     * @param locateAccountQueue
-     * @param locateRetweetQueue
-     * @param locateAccounts
+     * @param locateQueue
      * @throws InstantiationException
      */
     public WebServiceLocator(AccessData accessData, Logger logger,
-            ConcurrentLinkedQueue<StatusAccount> locateAccountQueue,
-            ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue,
-            boolean locateAccounts) throws InstantiationException {
+
+    ConcurrentLinkedQueue<LocateStatus> locateQueue)
+            throws InstantiationException {
         run = true;
         this.logger = logger;
-        this.locateAccountQueue = locateAccountQueue;
-        this.locateRetweetQueue = locateRetweetQueue;
-        this.locateAccounts = locateAccounts;
+        this.locateQueue = locateQueue;
         formatter = new Formatter(logger);
         try {
             dbc = new DBcrawler(accessData, logger);
@@ -94,37 +87,20 @@ public class WebServiceLocator implements RunnableListener {
             try {
                 Thread.sleep(50); // sleep for 0.05s
             } catch (InterruptedException e) {
-                // logger.info("StatusProcessor interrupted\n" +
+                // logger.info("WebServiceLocator interrupted\n" +
                 // e.getMessage());
             }
+            while (!locateQueue.isEmpty()) {
 
-            if (locateAccounts) {
-                while (!locateAccountQueue.isEmpty()) {
-
-                    StatusAccount account = null;
-                    try {
-                        account = locateAccountQueue.poll();
-                    } catch (Exception e) {
-                        account = null;
-                    }
-
-                    if (account != null) {
-                        locateAccount(account);
-                    }
+                LocateStatus status = null;
+                try {
+                    status = locateQueue.poll();
+                } catch (Exception e) {
+                    status = null;
                 }
-            } else {
-                while (!locateRetweetQueue.isEmpty()) {
 
-                    StatusRetweet retweet = null;
-                    try {
-                        retweet = locateRetweetQueue.poll();
-                    } catch (Exception e) {
-                        retweet = null;
-                    }
-
-                    if (retweet != null) {
-                        locateRetweet(retweet);
-                    }
+                if (status != null) {
+                    locate(status);
                 }
             }
         }
@@ -133,11 +109,11 @@ public class WebServiceLocator implements RunnableListener {
 
     }
 
-    private void locateRetweet(StatusRetweet retweet) {
+    private void locateRetweet(LocateStatus retweet) {
 
         String location = formatter.formatString(retweet.getLocation());
         String timezone = formatter.formatString(retweet.getTimeZone());
-        String countryCode = "0";
+        String countryCode = DEFAULT_LOCATION;
 
         // update counter
         countQuery++;
@@ -151,10 +127,26 @@ public class WebServiceLocator implements RunnableListener {
         dbc.addRetweet(retweet.getId(), countryCode, retweet.getDate());
     }
 
-    private void locateAccount(StatusAccount account) {
+    private void locate(LocateStatus status) {
+
+        if (status.getId() == -1) {
+            // add account
+            locateAccount(status.getStatus().getUser(), status.getStatus()
+                    .getCreatedAt(), status.isTweet());
+        } else {
+            // add account and retweet
+            if (!status.isAccountLocated()) {
+                // locate and add account
+                locateAccount(status.getStatus().getUser(), status.getStatus()
+                        .getCreatedAt(), status.isTweet());
+            }
+            locateRetweet(status);
+        }
+    }
+
+    private void locateAccount(User user, Date createdAt, boolean tweet) {
 
         String countryCode = DEFAULT_LOCATION;
-        User user = account.getStatus().getUser();
         String timezone = formatter.formatString(user.getTimeZone());
         String location = formatter.formatString(user.getLocation());
 
@@ -167,8 +159,7 @@ public class WebServiceLocator implements RunnableListener {
             countLocatedQuery++;
         }
 
-        dbc.addAccount(user, countryCode, account.getStatus().getCreatedAt(),
-                account.isTweet());
+        dbc.addAccount(user, countryCode, createdAt, tweet);
 
     }
 

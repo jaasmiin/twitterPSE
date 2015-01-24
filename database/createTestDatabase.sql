@@ -99,7 +99,6 @@ ALTER TABLE retweets ADD CONSTRAINT FOREIGN KEY (DayId) REFERENCES day (Id);
 ALTER TABLE accountCategory ADD CONSTRAINT FOREIGN KEY (AccountId) REFERENCES accounts (Id);
 ALTER TABLE accountCategory ADD CONSTRAINT FOREIGN KEY (CategoryId) REFERENCES category (Id);
 ALTER TABLE page ADD CONSTRAINT FOREIGN KEY (CategoryId) REFERENCES category (Id);
-ALTER TABLE wordLocation ADD CONSTRAINT FOREIGN KEY (LocationId) REFERENCES location (Id);
 /* Unikate erzwingen */
 ALTER TABLE accounts ADD CONSTRAINT uc_twitteraccountid UNIQUE (TwitterAccountId);
 ALTER TABLE retweets ADD CONSTRAINT uc_retweet UNIQUE (AccountId, DayId, LocationId);
@@ -119,7 +118,6 @@ CREATE INDEX idxAccounts ON accounts(AccountName);
 CREATE INDEX idxTweets2 ON tweets(DayId);
 CREATE INDEX idxRetweets2 ON retweets(DayId);
 CREATE INDEX idxRetweets3 ON retweets(LocationId);
-CREATE INDEX idxWordLocation ON wordLocation(LocationId);
 
 /* add required entrys for testing */
 INSERT INTO location (Name, Code, ParentId) VALUES ("defaultLocation","0",NULL);

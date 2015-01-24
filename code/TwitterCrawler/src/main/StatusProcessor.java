@@ -8,8 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import locate.Locator;
-import locate.StatusAccount;
-import locate.StatusRetweet;
+import locate.LocateStatus;
 import mysql.AccessData;
 import mysql.DBcrawler;
 import twitter4j.GeoLocation;
@@ -22,7 +21,7 @@ import twitter4j.User;
  * database
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class StatusProcessor implements RunnableListener {
@@ -31,14 +30,12 @@ public class StatusProcessor implements RunnableListener {
     private boolean run = true;
     private DBcrawler dbc;
     private ConcurrentLinkedQueue<Status> queue;
+    private ConcurrentLinkedQueue<LocateStatus> locateQueue;
     private Logger logger;
     // use ConcurrentHashMap<Long,Object> as HashSet<Long>
     private ConcurrentHashMap<Long, Object> nonVerAccounts;
     private Locator locate;
     private int count;
-
-    private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
-    private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
 
     /**
      * initialize class to handle status object from the twitter stream api
@@ -60,14 +57,13 @@ public class StatusProcessor implements RunnableListener {
      *             thrown if it is not possible to connect to the database
      */
     public StatusProcessor(ConcurrentLinkedQueue<Status> queue,
-            ConcurrentLinkedQueue<StatusAccount> locateAccountQueue,
-            ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue,
+
+    ConcurrentLinkedQueue<LocateStatus> locateQueue,
             ConcurrentHashMap<Long, Object> accountsToTrack,
             HashMap<String, String> locationHash, Logger logger,
             AccessData accessData) throws InstantiationException {
         this.queue = queue;
-        this.locateAccountQueue = locateAccountQueue;
-        this.locateRetweetQueue = locateRetweetQueue;
+        this.locateQueue = locateQueue;
         this.logger = logger;
         this.nonVerAccounts = accountsToTrack;
         locate = new Locator(locationHash, this.logger);
@@ -161,11 +157,11 @@ public class StatusProcessor implements RunnableListener {
 
             if (checkUser(tweet.getUser())) {
                 // add Account
-                accountToDB(tweet, false);
+                // accountToDB(tweet, false);
 
-                // addRetweet
-                retweetToDB(tweet.getUser().getId(), retweet.getGeoLocation(),
-                        retweet.getUser().getLocation(), retweet.getPlace(),
+                // addRetweet and Account
+                retweetToDB(tweet, retweet.getGeoLocation(), retweet.getUser()
+                        .getLocation(), retweet.getPlace(),
                         retweet.getCreatedAt(), retweet.getUser().getTimeZone());
                 added = true;
             }
@@ -207,11 +203,12 @@ public class StatusProcessor implements RunnableListener {
             String loc = locate.locate(tweet.getPlace(),
                     tweet.getGeoLocation(), tweet.getUser().getLocation(),
                     tweet.getUser().getTimeZone());
-            if (loc.equals(DEFAULT_LOCATION)) {
+            if (!loc.equals(DEFAULT_LOCATION)) {
                 dbc.addAccount(tweet.getUser(), loc, tweet.getCreatedAt(),
                         isTweet);
             } else {
-                locateAccountQueue.add(new StatusAccount(tweet, isTweet));
+                locateQueue.add(new LocateStatus(-1, null, null, null, tweet,
+                        isTweet, false));
             }
         }
 
@@ -220,8 +217,8 @@ public class StatusProcessor implements RunnableListener {
     /**
      * insert a retweet into the database
      * 
-     * @param id
-     *            the id of the account where the tweet was from as long
+     * @param tweet
+     *            the status-object of the tweet
      * @param geotag
      *            the Geolocation of the retweet as GeoLocation (null if not
      *            available)
@@ -236,15 +233,31 @@ public class StatusProcessor implements RunnableListener {
      * @param timeZone
      *            the timeZone of the user who created the retweet as String
      */
-    private void retweetToDB(long id, GeoLocation geotag, String location,
+    private void retweetToDB(Status tweet, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
         String loc = locate.locate(place, geotag, location, timeZone);
-        if (loc.equals(DEFAULT_LOCATION)) {
-            dbc.addRetweet(id, loc, date);
+        if (!loc.equals(DEFAULT_LOCATION)) {
+            dbc.addRetweet(tweet.getUser().getId(), loc, date);
         } else {
-            locateRetweetQueue.add(new StatusRetweet(id, date, location,
-                    timeZone));
+            // try to locate account
+
+            boolean isLocated = false;
+            if (dbc.containsAccount(tweet.getUser().getId())) {
+                isLocated = true;
+            } else {
+                String temp = locate.locate(tweet.getPlace(),
+                        tweet.getGeoLocation(), tweet.getUser().getLocation(),
+                        tweet.getUser().getTimeZone());
+                if (!temp.equals(DEFAULT_LOCATION)) {
+                    dbc.addAccount(tweet.getUser(), loc, tweet.getCreatedAt(),
+                            false);
+                    isLocated = true;
+                }
+            }
+
+            locateQueue.add(new LocateStatus(tweet.getUser().getId(), date,
+                    location, timeZone, tweet, false, isLocated));
         }
 
     }
@@ -256,11 +269,11 @@ public class StatusProcessor implements RunnableListener {
      */
     public int[] getCounter() {
         int[] temp = locate.getStatistic();
-        int[] ret = new int[11];
+        int[] ret = new int[temp.length + 1];
         for (int i = 0; i < temp.length; i++) {
             ret[i] = temp[i];
         }
-        ret[10] = count;
+        ret[temp.length] = count;
         return ret;
     }
 

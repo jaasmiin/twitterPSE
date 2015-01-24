@@ -51,11 +51,11 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public Category getCategories() {
-        // get used categories
-        String sqlCommand = "SELECT category.Id, Name, ParentId "
-        				  + "FROM accountCategory "
-        				  	+ "INNER JOIN category ON accountCategory.categoryId=category.Id "
-        				  + "GROUP BY categoryId;";
+
+        // how to set used (do in query with extra column)
+
+        String sqlCommand = "SELECT Id, Name, ParentId FROM category";
+
         ResultSet res = null;
         Statement stmt = null;
         try {
@@ -66,18 +66,15 @@ public class DBgui extends DBConnection implements DBIgui {
             return null;
         }
 
-        HashMap<Integer, Category> all = new HashMap<Integer, Category>();
-        List<Integer> ids = new ArrayList<Integer>();
         List<Category> parents = new ArrayList<Category>();
+        List<Category> childs = new ArrayList<Category>();
         try {
             while (res.next()) {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
                 Category c = new Category(id, res.getString("Name"), parent);
-                if (parent != 0)
-                    ids.add(parent);
                 parents.add(c);
-                all.put(id, c);
+                childs.add(c);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -86,68 +83,29 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
-        List<Category> childs;
-        while (ids.size() > 0) {
-            childs = parents;
 
-            // get parent categories
-            Iterator<Integer> it = ids.iterator();
-            sqlCommand = "SELECT Id, Name, ParentId FROM category WHERE Id="
-                    + it.next();
+        Category ret = null;
+
+        for (Category parent : parents) {
+            if (parent.getParentId() == 0)
+                ret = parent;
+            Iterator<Category> it = childs.iterator();
+            Category child;
             while (it.hasNext()) {
-                sqlCommand += " OR Id=" + it.next();
-            }
-            sqlCommand += ";";
-
-            res = null;
-            try {
-                stmt = c.createStatement();
-                res = stmt.executeQuery(sqlCommand);
-            } catch (SQLException e) {
-                sqlExceptionLog(e, stmt);
-                return null;
-            }
-
-            ids = new ArrayList<Integer>();
-            parents = new ArrayList<Category>();
-            try {
-                while (res.next()) {
-                    int parent = res.getInt("ParentId");
-                    int id = res.getInt("Id");
-                    Category c = new Category(id, res.getString("Name"), parent);
-                    if (all.containsKey(parent) && parent != 0) {
-                        all.get(parent).addChild(c);
-                    } else {
-                        if (parent != 0)
-                            ids.add(parent);
-                        parents.add(c);
-                        all.put(id, c);
-                    }
-                }
-            } catch (SQLException e) {
-                sqlExceptionResultLog(e);
-                return null;
-            } finally {
-                closeResultAndStatement(stmt, res);
-            }
-
-            for (Category parent : parents) {
-                for (Category child : childs) {
-                    if (parent.getId() == child.getParentId()) {
-                        parent.addChild(child);
-                    }
+                child = it.next();
+                if (parent.getId() == child.getParentId()) {
+                    parent.addChild(child);
+                    it.remove();
                 }
             }
         }
 
-        // TODO
-
-        return parents.get(0);
+        return ret;
     }
 
     @Override
     public List<Location> getLocations() {
-        String sqlCommand = "SELECT Id, Name, Code, ParentId FROM location ORDER by Name, Code;";
+        String sqlCommand = "SELECT Id, Name, Code, ParentId FROM location ORDER BY Name, Code;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -262,14 +220,13 @@ public class DBgui extends DBConnection implements DBIgui {
         PreparedStatement stmt = null;
         ResultSet res = null;
         try {
-            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, LocationId "
-            						+ "FROM accounts WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 50;");
+            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, LocationId FROM accounts WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
             stmt.setString(1, "%" + search + "%");
             res = stmt.executeQuery();
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         }
-        
+
         if (res == null)
             return new ArrayList<Account>();
 
@@ -295,7 +252,6 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public boolean setCategory(int accountId, int categoryId) {
 
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
@@ -305,7 +261,17 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
         }
 
-        return executeStatementUpdate(stmt, false);
+        if (executeStatementUpdate(stmt, false)) {
+            try {
+                stmt = c.prepareStatement("UPDATE accounts SET Categorized=1 WHERE Id=?;");
+                stmt.setInt(1, accountId);
+            } catch (SQLException e) {
+                sqlExceptionLog(e, stmt);
+            }
+            return executeStatementUpdate(stmt, false);
+        }
+
+        return false;
     }
 
     @Override
@@ -330,7 +296,7 @@ public class DBgui extends DBConnection implements DBIgui {
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES (?, ?, "
-                    + (user.isVerified() ? "1" : "0") + ", ?, ?, ?, 0);");
+                    + (user.isVerified() ? "1" : "0") + ", ?, ?, ?, 1);");
             stmt.setLong(1, user.getId());
             stmt.setString(2, user.getScreenName());
             stmt.setInt(3, user.getFollowersCount());
@@ -349,10 +315,6 @@ public class DBgui extends DBConnection implements DBIgui {
             Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException {
 
-        if (categoryIDs == null || categoryIDs.length < 1
-                || locationIDs == null || locationIDs.length < 1) {
-            throw new IllegalArgumentException();
-        }
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
@@ -363,10 +325,7 @@ public class DBgui extends DBConnection implements DBIgui {
     public TweetsAndRetweets getSumOfDataWithDates(Integer[] categoryIDs,
             Integer[] locationIDs, Integer[] accountIDs)
             throws IllegalArgumentException, SQLException {
-        if (categoryIDs == null || categoryIDs.length < 1
-                || locationIDs == null || locationIDs.length < 1) {
-            throw new IllegalArgumentException();
-        }
+
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
@@ -451,10 +410,6 @@ public class DBgui extends DBConnection implements DBIgui {
             Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException {
 
-        if (categoryIDs == null || categoryIDs.length < 1
-                || locationIDs == null || locationIDs.length < 1) {
-            throw new IllegalArgumentException();
-        }
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
@@ -466,10 +421,6 @@ public class DBgui extends DBConnection implements DBIgui {
             Integer[] locationIDs, Integer[] accountIDs)
             throws IllegalArgumentException, SQLException {
 
-        if (categoryIDs == null || categoryIDs.length < 1
-                || locationIDs == null || locationIDs.length < 1) {
-            throw new IllegalArgumentException();
-        }
         Statement stmt = createBasicStatement(categoryIDs, locationIDs,
                 accountIDs);
 
@@ -615,25 +566,45 @@ public class DBgui extends DBConnection implements DBIgui {
     private Statement createBasicStatement(Integer[] categoryIDs,
             Integer[] locationIDs, Integer[] accountIDs) throws SQLException {
 
+        boolean categoryIsSet = categoryIDs != null && categoryIDs.length > 0;
+        boolean locationIsSet = locationIDs != null && locationIDs.length > 0;
+        boolean accountIsSet = accountIDs != null && accountIDs.length > 0;
+        if (!categoryIsSet && !locationIsSet && !accountIsSet) {
+            throw new IllegalArgumentException();
+        }
+
         Statement stmt = c.createStatement();
 
         stmt.addBatch("CREATE TEMPORARY TABLE IF NOT EXISTS final (val int PRIMARY KEY);");
 
-        String c = " INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE (CategoryId="
-                + categoryIDs[0];
+        if (categoryIsSet || locationIsSet) {
+            String c = " INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE (";
 
-        for (int i = 1; i < categoryIDs.length; i++) {
-            c += " OR CategoryId=" + categoryIDs[i];
+            if (categoryIsSet) {
+                c += "(CategoryId=" + categoryIDs[0];
+
+                for (int i = 1; i < categoryIDs.length; i++) {
+                    c += " OR CategoryId=" + categoryIDs[i];
+                }
+            }
+
+            if (categoryIsSet && locationIsSet) {
+                c += ") AND ";
+            }
+
+            if (locationIsSet) {
+                c += "(LocationId=" + locationIDs[0];
+
+                for (int i = 1; i < locationIDs.length; i++) {
+                    c += " OR LocationId=" + locationIDs[i];
+                }
+            }
+
+            c += ");";
+            stmt.addBatch(c);
         }
-        c += ") AND (LocationId=" + locationIDs[0];
 
-        for (int i = 1; i < locationIDs.length; i++) {
-            c += " OR LocationId=" + locationIDs[i];
-        }
-        c += ");";
-        stmt.addBatch(c);
-
-        if (accountIDs.length > 0) {
+        if (accountIsSet) {
             // add accounts
             String ca = "INSERT IGNORE INTO final (val) VALUES ("
                     + accountIDs[0] + ")";

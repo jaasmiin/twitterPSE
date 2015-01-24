@@ -14,8 +14,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import locate.StatusAccount;
-import locate.StatusRetweet;
+import locate.LocateStatus;
 import locate.WebServiceLocator;
 import mysql.AccessData;
 import mysql.DBcrawler;
@@ -26,7 +25,7 @@ import twitter4j.Status;
  * worker-threads, restarts also the crawler if it has been shut down
  * 
  * @author Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public class Controller extends Thread {
@@ -36,13 +35,13 @@ public class Controller extends Thread {
     // interval to wait in seconds
     private final static int INTERVAL = 30;
 
-    private final int threadNum;
+    private final int workerThreadNum;
+    private final int locatorThreadNum;
     private final int runtime;
     private AccessData accessData;
 
     private ConcurrentLinkedQueue<Status> statusQueue;
-    private ConcurrentLinkedQueue<StatusAccount> locateAccountQueue;
-    private ConcurrentLinkedQueue<StatusRetweet> locateRetweetQueue;
+    private ConcurrentLinkedQueue<LocateStatus> locateQueue;
     private HashMap<String, String> locationHash;
     private boolean run = true;
     private Logger logger;
@@ -70,12 +69,15 @@ public class Controller extends Thread {
      */
     public Controller(int timeout, AccessData accessData, int numberOfThreads)
             throws IOException {
-        threadNum = numberOfThreads;
-        thrdStatusProcessor = new Thread[threadNum];
-        statusProcessor = new StatusProcessor[threadNum];
+        workerThreadNum = numberOfThreads;
+        // set number of locators relative to number of worker
+        locatorThreadNum = workerThreadNum;
 
-        thrdLocator = new Thread[threadNum / 2];
-        locator = new WebServiceLocator[threadNum / 2];
+        thrdStatusProcessor = new Thread[workerThreadNum];
+        statusProcessor = new StatusProcessor[workerThreadNum];
+
+        thrdLocator = new Thread[locatorThreadNum];
+        locator = new WebServiceLocator[locatorThreadNum];
 
         statisticLogger = getStatisticLogger();
 
@@ -91,8 +93,7 @@ public class Controller extends Thread {
         dateForDB = cal.getTime();
 
         statusQueue = new ConcurrentLinkedQueue<Status>();
-        locateAccountQueue = new ConcurrentLinkedQueue<StatusAccount>();
-        locateRetweetQueue = new ConcurrentLinkedQueue<StatusRetweet>();
+        locateQueue = new ConcurrentLinkedQueue<LocateStatus>();
         locationHash = new HashMap<String, String>();
     }
 
@@ -132,11 +133,10 @@ public class Controller extends Thread {
 
         // create threads that extract informations of status and store them in
         // the db
-        for (int i = 0; i < threadNum; i++) {
+        for (int i = 0; i < workerThreadNum; i++) {
             try {
                 statusProcessor[i] = new StatusProcessor(statusQueue,
-                        locateAccountQueue, locateRetweetQueue, hashSet,
-                        locationHash, logger, accessData);
+                        locateQueue, hashSet, locationHash, logger, accessData);
                 thrdStatusProcessor[i] = new Thread(statusProcessor[i]);
                 thrdStatusProcessor[i].start();
             } catch (InstantiationException e) {
@@ -148,11 +148,10 @@ public class Controller extends Thread {
         }
         logger.info("StatusProcessors started");
 
-        for (int i = 0; i < threadNum / 2; i++) {
+        for (int i = 0; i < locatorThreadNum; i++) {
             try {
                 locator[i] = new WebServiceLocator(accessData, logger,
-                        locateAccountQueue, locateRetweetQueue, i < 2 ? true
-                                : false);
+                        locateQueue);
                 thrdLocator[i] = new Thread(locator[i]);
                 thrdLocator[i].start();
             } catch (InstantiationException e) {
@@ -192,7 +191,7 @@ public class Controller extends Thread {
         // exit and interrupt AccountUpdate
         accountUpdate.exit();
         thrdAccountUpdate.interrupt();
-        for (int i = 0; i < threadNum; i++) {
+        for (int i = 0; i < workerThreadNum; i++) {
             if (statusProcessor[i] != null) {
                 statusProcessor[i].exit();
             }
@@ -200,7 +199,7 @@ public class Controller extends Thread {
                 thrdStatusProcessor[i].interrupt();
             }
         }
-        for (int i = 0; i < threadNum / 2; i++) {
+        for (int i = 0; i < locatorThreadNum; i++) {
             if (locator[i] != null) {
                 locator[i].exit();
             }
@@ -244,8 +243,7 @@ public class Controller extends Thread {
 
         if (kill) {
             statusQueue.clear();
-            locateAccountQueue.clear();
-            locateRetweetQueue.clear();
+            locateQueue.clear();
         } else {
             // waiting for empty queue
             while (getQueueSize() > 0) {
@@ -265,7 +263,7 @@ public class Controller extends Thread {
 
         if (success) {
             // join status processors
-            for (int i = 0; i < threadNum; ++i) {
+            for (int i = 0; i < workerThreadNum; ++i) {
                 try {
                     if (thrdStatusProcessor[i] != null) {
                         thrdStatusProcessor[i].join();
@@ -278,7 +276,7 @@ public class Controller extends Thread {
                 }
             }
             // join locators
-            for (int i = 0; i < threadNum / 2; ++i) {
+            for (int i = 0; i < locatorThreadNum; ++i) {
                 try {
                     if (thrdLocator[i] != null) {
                         thrdLocator[i].join();
@@ -312,9 +310,7 @@ public class Controller extends Thread {
     }
 
     public int getQueueSize() {
-        return Math.max(
-                Math.max(locateAccountQueue.size(), locateRetweetQueue.size()),
-                statusQueue.size());
+        return Math.max(locateQueue.size(), statusQueue.size());
     }
 
     @Override
@@ -334,28 +330,15 @@ public class Controller extends Thread {
         }
 
         return " STATE OF THE CRAWLER: " + "\n"
-                + " Number of status-objects in queue: "
-                + getQueueSize()
-                + "\n"
-                + " Number of Accounts to locate: "
-                + locateAccountQueue.size()
-                + "\n"
-                + " Number of Retweets to locate: "
-                + locateRetweetQueue.size()
-                + "\n"
-                + " Status of the Streamlistener: "
-                + streamListener.toString()
-                + "\n"
+                + " Number of status-objects in queue: " + statusQueue.size()
+                + "\n" + " Number of status-objects to locate: "
+                + locateQueue.size() + "\n" + " Status of the Streamlistener: "
+                + streamListener.toString() + "\n"
                 + " Status of the Accountupdater: "
-                + (thrdAccountUpdate.isAlive() ? "running" : "crashed")
-                + "\n"
-                + " Number of running workers: "
-                + threadsAlive
-                + "/"
-                + threadNum
-                + "\n"
-                + " Number of running locators: "
-                + threadsLocatorAlive + "/" + (threadNum / 2);
+                + (thrdAccountUpdate.isAlive() ? "running" : "crashed") + "\n"
+                + " Number of running workers: " + threadsAlive + "/"
+                + workerThreadNum + "\n" + " Number of running locators: "
+                + threadsLocatorAlive + "/" + locatorThreadNum;
     }
 
     private void limitQueue() {
@@ -387,8 +370,7 @@ public class Controller extends Thread {
             }
 
             limitQueue(statusQueue);
-            limitQueue(locateAccountQueue);
-            limitQueue(locateRetweetQueue);
+            limitQueue(locateQueue);
 
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
@@ -444,7 +426,7 @@ public class Controller extends Thread {
         String msg = "";
         msg += "Summe aller empfangener Status-Objekte: "
                 + streamListener.getCounter() + "\n";
-        int[] sum = new int[11];
+        int[] sum = new int[9];
         for (int j = 0; j < sum.length; j++) {
             sum[j] = 0;
         }
@@ -454,18 +436,23 @@ public class Controller extends Thread {
                 sum[i] += temp[i];
             }
         }
-        msg += "Summe aller interessanten Status-Objekte: " + sum[10] + "\n";
+        int[] locate = new int[] {0, 0 };
+        for (WebServiceLocator l : locator) {
+            locate[0] += l.getStatistic()[0];
+            locate[1] += l.getStatistic()[1];
+        }
+        msg += "Summe aller interessanten Status-Objekte: " + sum[8] + "\n";
         msg += "LOKALISIERUNG\n";
-        msg += "Summe Anfragen: " + sum[0] + "\n";
-        msg += "Erfolgreicher Locationen: " + sum[1] + "\n";
+        msg += "Summe Anfragen WebService: " + locate[0] + "\n";
+        msg += "Erfolgreiche Locationen WebService: " + locate[1] + "\n";
+        msg += "Summe Anfragen Locator: " + sum[0] + "\n";
+        msg += "Erfolgreiche Locationen Locator: " + sum[1] + "\n";
         msg += "davon über place lokalisiert: " + sum[2] + "\n";
         msg += "davon über geotag lokalisiert: " + sum[3] + "\n";
-        msg += "davon über String und Zeitzone lokalisiert: " + sum[4] + "\n";
-        msg += "über Webservice lokalisiert: " + sum[5] + "\n";
-        msg += "über HashMap lokalisiert: " + sum[6] + "\n";
-        msg += "Summe vorhandener Places: " + sum[7] + "\n";
-        msg += "Summe vorhandener Geotags: " + sum[8] + "\n";
-        msg += "Summe vorhandener location-Information: " + sum[9] + "\n";
+        msg += "davon über HashMap lokalisiert: " + sum[4] + "\n";
+        msg += "Summe vorhandener Places: " + sum[5] + "\n";
+        msg += "Summe vorhandener Geotags: " + sum[6] + "\n";
+        msg += "Summe vorhandener location-Information: " + sum[7] + "\n";
 
         statisticLogger.info(msg);
     }

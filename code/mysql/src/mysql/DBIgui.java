@@ -151,7 +151,7 @@ public interface DBIgui {
      * 
      * @param user
      *            the twitter-user to add as User
-     * @param locationID
+     * @param locationId
      *            the locationID of the TwitterUser as int (has to reference a
      *            guilty location in the database)
      * @return true if successful
