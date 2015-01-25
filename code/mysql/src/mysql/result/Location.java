@@ -78,4 +78,13 @@ public class Location extends Result {
     public void setParent(Location parentLocation) {
         parent = parentLocation;
     }
+    
+    @Override
+    public boolean equals(Object o) {
+    	boolean equal = false;
+		if (o != null && o.getClass() == this.getClass()) {
+			equal = ((Result) o).getId() == getId();
+		} 
+    	return equal;
+    }
 }

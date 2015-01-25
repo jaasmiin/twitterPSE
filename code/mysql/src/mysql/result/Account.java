@@ -266,4 +266,12 @@ public class Account extends Result {
     	return getName();
     }
 
+    @Override
+    public boolean equals(Object o) {
+    	boolean equal = false;
+		if (o != null && o.getClass() == this.getClass()) {
+			equal = ((Result) o).getId() == getId();
+		} 
+    	return equal;
+    }
 }

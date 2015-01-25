@@ -105,7 +105,9 @@ public class GUIControllerTest {
 	@Test
 	public void testDeselectLocation() {
 		List<Location> list = guiController.getLocations();
+		System.out.println(list.size());
 		guiController.setSelectedLocation(list.get(list.size() - 1).getId(), true);
+		assert(guiController.getSelectedLocations().contains(list.get(list.size() - 1)));
 		guiController.setSelectedLocation(list.get(list.size() - 1).getId(), false);
 		assert(!guiController.getSelectedLocations().contains(list.get(list.size() - 1)));
 	}
@@ -161,7 +163,5 @@ public class GUIControllerTest {
 	@Test
 	public void testSubscribe() {
 		fail("Not yet implemented");
-	}
-
-	
+	}	
 }

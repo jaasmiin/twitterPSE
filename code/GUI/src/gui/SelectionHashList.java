@@ -108,9 +108,20 @@ public class SelectionHashList<T> {
 		}
 
 		@Override
-		public T get(int index) {
-			System.err.println("Nicht implementiert.");
-			return null;
+		public T get(int index) throws IndexOutOfBoundsException {
+			int i = 0;
+			T elementToReturn = null;
+			if (list.size() > index) {
+				for (T t : list) {
+					if (i++ == index) {
+						elementToReturn = t;
+						break;
+					}
+				}
+			} else {
+				throw new IndexOutOfBoundsException();
+			}
+			return elementToReturn;
 		}
 
 		@Override
@@ -264,8 +275,19 @@ public class SelectionHashList<T> {
 
 		@Override
 		public T get(int index) {
-			System.err.println("Nicht implementiert.");
-			return null;
+			int i = 0;
+			T elementToReturn = null;
+			if (selected.size() > index) {
+				for (T t : selected) {
+					if (i++ == index) {
+						elementToReturn = t;
+						break;
+					}
+				}
+			} else {
+				throw new IndexOutOfBoundsException();
+			}
+			return elementToReturn;
 		}
 
 		@Override
@@ -355,10 +377,10 @@ public class SelectionHashList<T> {
 	public void remove(T t) {
 		if (hashMap.containsKey(t.hashCode())) {
 			SelectionHashListEntry e = hashMap.get(t.hashCode());
-			if (last.equals(e)) {
+			if (last.getValue().equals(e.getValue())) {
 				last = e.getPrev();
 			}
-			if (first.equals(e)) {
+			if (first.getValue().equals(e.getValue())) {
 				first = e.getNext();
 			}
 			if (e.getPrev() != null) {
@@ -368,10 +390,10 @@ public class SelectionHashList<T> {
 				e.getNext().setNext(e.getPrev());
 			}
 			if (e.isSelected()) {
-				if (lastSelected.equals(e)) {
+				if (lastSelected.getValue().equals(e.getValue())) {
 					lastSelected = e.getPrevSelected();
 				}
-				if (firstSelected.equals(e)) {
+				if (firstSelected.getValue().equals(e.getValue())) {
 					firstSelected = e.getNextSelected();
 				}
 				if (e.getPrevSelected() != null) {
@@ -404,10 +426,10 @@ public class SelectionHashList<T> {
 				}
 			} else if (!selected && e.isSelected()) {
 				selectedCounter--;
-				if (lastSelected.equals(e)) {
+				if (lastSelected.getValue().equals(e.getValue())) {
 					lastSelected = e.getPrevSelected();
 				}
-				if (firstSelected.equals(e)) {
+				if (firstSelected.getValue().equals(e.getValue())) {
 					firstSelected = e.getNextSelected();
 				}
 				if (e.getPrevSelected() != null) {
@@ -471,11 +493,6 @@ public class SelectionHashList<T> {
 		@Override
 		public int hashCode() {
 			return value.hashCode();
-		}
-		
-		@Override
-		public boolean equals(Object o) {
-			return value.equals(o);
 		}
 	}
 }
