@@ -43,16 +43,25 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	private ListView<String> lstSelectedAccounts;
 	
-	private void updateSelectedCategory(List<Category> list) {
-		// TODO: add code
+	private void updateSelectedCategory(List<Category> selectedCategories) {
+		lstSelectedCategories.getItems().clear();
+		for (Category c : selectedCategories) {
+			lstSelectedCategories.getItems().add(c.toString());
+		}
 	}
 	
 	private void updateSelectedAccount(List<Account> selectedAccounts) {
-		// TODO: add code
+		lstSelectedAccounts.getItems().clear();
+		for (Account a : selectedAccounts) {
+			lstSelectedAccounts.getItems().add(a.getName());
+		}
 	}
 	
 	private void updateSelectedLocation(List<Location> selectedLocations) {
-		// TODO: add code
+		lstSelectedLocations.getItems().clear();
+		for (Location l : selectedLocations) {
+			lstSelectedLocations.getItems().add(l.toString());
+		}
 	}
 	
 	private void updateAccounts(List<Account> accounts) {
