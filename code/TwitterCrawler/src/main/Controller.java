@@ -18,6 +18,7 @@ import locate.LocateStatus;
 import locate.WebServiceLocator;
 import mysql.AccessData;
 import mysql.DBcrawler;
+import util.LoggerUtil;
 import twitter4j.Status;
 
 /**
@@ -30,7 +31,8 @@ import twitter4j.Status;
  */
 public class Controller extends Thread {
 
-    // max. size of the buffer between streamListener and statusProcessors
+    // max. size of the buffer between streamListener, statusProcessors and
+    // locator
     private final static int MAX_SIZE = 100000;
     // interval to wait in seconds
     private final static int INTERVAL = 30;
@@ -38,24 +40,30 @@ public class Controller extends Thread {
     private final int workerThreadNum;
     private final int locatorThreadNum;
     private final int runtime;
+
     private AccessData accessData;
+    private DBcrawler dbc;
+    private Date dateForDB;
 
     private ConcurrentLinkedQueue<Status> statusQueue;
     private ConcurrentLinkedQueue<LocateStatus> locateQueue;
+
     private HashMap<String, String> locationHash;
     private boolean run = true;
     private Logger logger;
+
     private StreamListener streamListener;
     private Thread thrdStreamListener;
+
+    private StatusProcessor[] statusProcessor;
     private Thread[] thrdStatusProcessor;
+
+    private WebServiceLocator[] locator;
     private Thread[] thrdLocator;
+
     private AccountUpdate accountUpdate;
     private Thread thrdAccountUpdate;
-    private StatusProcessor[] statusProcessor;
-    private WebServiceLocator[] locator;
-    // note: no Locator is set
-    private DBcrawler dbc;
-    private Date dateForDB;
+
     private Logger statisticLogger;
 
     /**
@@ -69,20 +77,30 @@ public class Controller extends Thread {
      */
     public Controller(int timeout, AccessData accessData, int numberOfThreads)
             throws IOException {
+
         workerThreadNum = numberOfThreads;
         // set number of locators relative to number of worker
         locatorThreadNum = workerThreadNum;
 
-        thrdStatusProcessor = new Thread[workerThreadNum];
         statusProcessor = new StatusProcessor[workerThreadNum];
+        thrdStatusProcessor = new Thread[workerThreadNum];
 
-        thrdLocator = new Thread[locatorThreadNum];
         locator = new WebServiceLocator[locatorThreadNum];
+        thrdLocator = new Thread[locatorThreadNum];
 
         statisticLogger = getStatisticLogger();
+        logger = LoggerUtil.getLogger();
 
-        logger = getLogger();
-        logger.info("Controller started");
+        this.dbc = null;
+        try {
+            this.dbc = new DBcrawler(accessData, logger);
+        } catch (InstantiationException | IllegalAccessException
+                | ClassNotFoundException | SQLException e) {
+            logger.warning("No dates will be insert into the database because of: "
+                    + e.getMessage());
+            this.dbc = null;
+        }
+
         this.accessData = accessData;
         runtime = timeout;
         dateForDB = new Date();
@@ -95,6 +113,8 @@ public class Controller extends Thread {
         statusQueue = new ConcurrentLinkedQueue<Status>();
         locateQueue = new ConcurrentLinkedQueue<LocateStatus>();
         locationHash = new HashMap<String, String>();
+
+        logger.info("Controller started");
     }
 
     @Override
@@ -115,20 +135,14 @@ public class Controller extends Thread {
         thrdAccountUpdate = new Thread(accountUpdate);
         thrdAccountUpdate.start();
 
-        try {
-            this.dbc = new DBcrawler(accessData, logger);
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException | SQLException e) {
-            logger.warning("No dates will be insert into the database because of: "
-                    + e.getMessage());
-        }
-
-        try {
-            dbc.connect();
-            locationHash = dbc.getLocationStrings();
-            dbc.disconnect();
-        } catch (SQLException e) {
-
+        if (dbc != null) {
+            try {
+                dbc.connect();
+                locationHash = dbc.getLocationStrings();
+                dbc.disconnect();
+            } catch (SQLException e) {
+                logger.warning("Database-connection failure! " + e.getMessage());
+            }
         }
 
         // create threads that extract informations of status and store them in
@@ -189,7 +203,8 @@ public class Controller extends Thread {
         run = false;
         streamListener.exit();
         // exit and interrupt AccountUpdate
-        accountUpdate.exit();
+        if (accountUpdate != null)
+            accountUpdate.exit();
         thrdAccountUpdate.interrupt();
         for (int i = 0; i < workerThreadNum; i++) {
             if (statusProcessor[i] != null) {
@@ -294,19 +309,6 @@ public class Controller extends Thread {
         }
 
         logger.info("Program terminated by user");
-    }
-
-    private Logger getLogger() throws SecurityException, IOException {
-        Logger l = Logger.getLogger("logger");
-        new File("LogFile.log").createNewFile();
-        FileHandler fh = new FileHandler("LogFile.log", true);
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        l.addHandler(fh);
-        // true: print output on console and into file
-        // false: only store output in logFile
-        l.setUseParentHandlers(false);
-        return l;
     }
 
     public int getQueueSize() {

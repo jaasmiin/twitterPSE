@@ -43,10 +43,16 @@ public class WebServiceLocator implements RunnableListener {
     private long countLocatedQuery = 0;
 
     /**
+     * creates a new WebServiceLocator to locate Strings via a webservice
      * 
      * @param accessData
+     *            the access data for the root user of the database as String
      * @param logger
+     *            a global logger for the whole program as Logger
      * @param locateQueue
+     *            the queue where status-objects who have to be located via the
+     *            webservice where buffered as
+     *            ConcurrentLinkedQueue<LocateStatus>
      * @throws InstantiationException
      */
     public WebServiceLocator(AccessData accessData, Logger logger,
@@ -109,6 +115,28 @@ public class WebServiceLocator implements RunnableListener {
 
     }
 
+    private void locate(LocateStatus status) {
+
+        if (status.getId() == -1) {
+            // add account
+            locateAccount(status.getStatus().getUser(), status.getStatus()
+                    .getCreatedAt(), status.isTweet());
+        } else {
+            // add account and retweet
+            if (!status.isAccountLocated()) {
+                // locate and add account
+                locateAccount(status.getStatus().getUser(), status.getStatus()
+                        .getCreatedAt(), status.isTweet());
+            }
+            if (status.isRetweetLocated()) {
+                dbc.addRetweet(status.getId(), status.getLocation(),
+                        status.getDate());
+            } else {
+                locateRetweet(status);
+            }
+        }
+    }
+
     private void locateRetweet(LocateStatus retweet) {
 
         String location = formatter.formatString(retweet.getLocation());
@@ -125,23 +153,6 @@ public class WebServiceLocator implements RunnableListener {
         }
 
         dbc.addRetweet(retweet.getId(), countryCode, retweet.getDate());
-    }
-
-    private void locate(LocateStatus status) {
-
-        if (status.getId() == -1) {
-            // add account
-            locateAccount(status.getStatus().getUser(), status.getStatus()
-                    .getCreatedAt(), status.isTweet());
-        } else {
-            // add account and retweet
-            if (!status.isAccountLocated()) {
-                // locate and add account
-                locateAccount(status.getStatus().getUser(), status.getStatus()
-                        .getCreatedAt(), status.isTweet());
-            }
-            locateRetweet(status);
-        }
     }
 
     private void locateAccount(User user, Date createdAt, boolean tweet) {

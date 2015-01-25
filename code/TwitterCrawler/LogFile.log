@@ -1,24 +1,24 @@
-Jan 24, 2015 2:40:03 PM main.Controller <init>
+Jan 25, 2015 4:23:36 PM main.Controller <init>
 Information: Controller started
-Jan 24, 2015 2:40:03 PM main.Controller run
+Jan 25, 2015 4:23:36 PM main.Controller run
 Information: Crawler started
-Jan 24, 2015 2:40:04 PM main.Controller run
+Jan 25, 2015 4:23:37 PM main.Controller run
 Information: StatusProcessors started
-Jan 24, 2015 2:40:04 PM main.Controller run
+Jan 25, 2015 4:23:37 PM main.Controller run
 Information: WebServiceLocators started
-Jan 24, 2015 2:40:47 PM mysql.DBConnection sqlExceptionLog
-Warnung: Couldn't execute sql query! SQL-Status: 23000
- Message: Column 'AccountId' cannot be null
- SQL-Query: com.mysql.jdbc.JDBC4PreparedStatement@74fa44bf: INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = 380808030 LIMIT 1), (SELECT Id FROM location WHERE Code = 'ES' LIMIT 1), 1, (SELECT Id FROM day WHERE Day = '2015-01-24' LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + 1;
-
-Jan 24, 2015 2:40:57 PM main.MyStatusListener onException
-Warnung: Stream closed.
-
-Jan 24, 2015 2:40:57 PM main.MyStatusListener onException
-Warnung: Stream closed.
-
-Jan 24, 2015 2:41:00 PM main.Controller limitQueue
+Jan 25, 2015 4:24:03 PM main.Controller limitQueue
 Information: Controller has been interrupted: 
 sleep interrupted
-Jan 24, 2015 2:41:06 PM main.Controller shutdown
+Jan 25, 2015 4:24:41 PM main.Controller shutdown
 Information: Program terminated by user
+Jan 25, 2015 4:33:33 PM main.Controller <init>
+Information: Controller started
+Jan 25, 2015 4:33:33 PM main.Controller run
+Information: Crawler started
+Jan 25, 2015 4:33:34 PM main.Controller run
+Information: StatusProcessors started
+Jan 25, 2015 4:33:35 PM main.Controller run
+Information: WebServiceLocators started
+Jan 25, 2015 4:41:18 PM main.Controller limitQueue
+Information: Controller has been interrupted: 
+sleep interrupted

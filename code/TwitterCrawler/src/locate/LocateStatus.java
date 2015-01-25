@@ -20,6 +20,7 @@ public class LocateStatus {
     private Status status;
     private boolean tweet;
     private boolean accountLocated;
+    private boolean retweetLocated;
 
     /**
      * creates a new storage-object to add an account/retweet to the database
@@ -39,9 +40,11 @@ public class LocateStatus {
      *            false if this account was extracted from a
      *            retweet-status-object, else true
      * @param accountLocated
+     * @param accountLocated
      **/
     public LocateStatus(long id, Date date, String location, String timeZone,
-            Status status, boolean tweet, boolean accountLocated) {
+            Status status, boolean tweet, boolean accountLocated,
+            boolean retweetLocated) {
         super();
         this.id = id;
         this.date = date;
@@ -50,6 +53,7 @@ public class LocateStatus {
         this.status = status;
         this.tweet = tweet;
         this.accountLocated = accountLocated;
+        this.retweetLocated = retweetLocated;
     }
 
     /**
@@ -115,6 +119,15 @@ public class LocateStatus {
      */
     public boolean isAccountLocated() {
         return accountLocated;
+    }
+
+    /**
+     * returns weather the retweet is located or not
+     * 
+     * @return true if the retweet has been located yet
+     */
+    public boolean isRetweetLocated() {
+        return retweetLocated;
     }
 
 }

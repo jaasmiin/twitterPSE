@@ -1,6 +1,5 @@
 .settings
-*.lck
 LogFile.log
 TestLog.log
-TestLog.log.*
 Statistic.log
+*.lck
