@@ -8,21 +8,29 @@ import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
 import processing.core.PApplet;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
+import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
 import unfolding.MyUnfoldingMap;
 import mysql.result.TweetsAndRetweets;
 import gui.OutputElement;
+import gui.RunnableParameter;
 
 public class StandardMapController extends OutputElement implements Initializable {
     
     @FXML
     private SwingNode mapSwingNode;
-
+    @FXML
+    private StackPane pane;
+    
     TweetsAndRetweets uneditedData;
     MyUnfoldingMap map;  
     
@@ -30,52 +38,47 @@ public class StandardMapController extends OutputElement implements Initializabl
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         superController.subscribe(this);
-        
-        addMapToPane();
-    }
-    
-    private void addMapToPane() {
-        mapSwingNode = new SwingNode();
-        mapSwingNode.minHeight(300);
-        mapSwingNode.maxHeight(300);
-        mapSwingNode.minWidth(300);
-        map = new MyUnfoldingMap();
-        
-        JFrame jf = new JFrame();
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		jf.setBounds(100, 100, 450, 300);
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		jf.setContentPane(contentPane);
-		PApplet map = new MyUnfoldingMap();
-		jf.getContentPane().add(map);
-		map.init();
-		
-//        jf.setLayout(new FlowLayout());
-//        PApplet map = new MyUnfoldingMap();
-//        jf.add(map);
-//        jf.setPreferredSize(new Dimension(200, 200));
-//        System.out.println("abc");
-//        jf.getRootPane().setSize(200, 200);
-//        map.init();
-//        mapJFrame.getRootPane().setSize(300, 300);
-        
-        mapSwingNode.setContent(jf.getRootPane());
-        
-        
-    }
-    
-    class MyFrame extends JFrame{
-        public MyFrame(){
-            super("Embedded UnfoldingMap");
-            setLayout(new BorderLayout());
-            PApplet map = new MyUnfoldingMap();
-            add(map, BorderLayout.CENTER);
-            setPreferredSize(new Dimension(200, 200));
-            map.init();
-        }
-    }
+    	new Thread(new Runnable() {
+			@Override
+			public void run() {
+		        Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						JFrame jf = new JFrame();
+				        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						jf.setBounds(100, 100, 450, 300);
+						
+						PApplet map = new MyUnfoldingMap();
+						map.init();
+				        
+						try {
+							Thread.sleep(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+						JPanel contentPane = new JPanel();
+						contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+						contentPane.setLayout(new BorderLayout(0, 0));
+						
+						jf.setContentPane(contentPane);
+						
+						mapSwingNode.setContent(contentPane);
+
+				        StackPane pane = new StackPane();
+				        pane.getChildren().add(mapSwingNode);
+				        
+				        mapSwingNode.resize(100, 200);
+				        
+				        jf.getContentPane().add(map);
+				        
+					}
+				});
+		       
+			}
+		}).start();
+    } 
     
 	@Override
 	public void update(UpdateType type) {
