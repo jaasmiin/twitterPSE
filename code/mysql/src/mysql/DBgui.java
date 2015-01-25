@@ -54,7 +54,10 @@ public class DBgui extends DBConnection implements DBIgui {
 
         // how to set used (do in query with extra column)
 
-        String sqlCommand = "SELECT Id, Name, ParentId FROM category";
+        String sqlCommand = "SELECT c.Id, Name, ParentId,  AccountId "
+        				  + "FROM category c "
+        				  + "LEFT JOIN accountCategory ac ON c.Id=ac.CategoryId "
+        				  + "ORDER By Name";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -72,7 +75,8 @@ public class DBgui extends DBConnection implements DBIgui {
             while (res.next()) {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
-                Category c = new Category(id, res.getString("Name"), parent);
+                boolean used = res.getInt("AccountId") == 0;
+                Category c = new Category(id, res.getString("Name"), parent, used);
                 parents.add(c);
                 childs.add(c);
             }

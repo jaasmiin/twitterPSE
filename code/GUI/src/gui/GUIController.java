@@ -23,8 +23,12 @@ import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import mysql.*;
-import mysql.result.*;
+import mysql.AccessData;
+import mysql.DBgui;
+import mysql.result.Account;
+import mysql.result.Category;
+import mysql.result.Location;
+import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -241,7 +245,7 @@ public class GUIController extends Application implements Initializable {
 			reloadCategoryHashMap();
 			update(UpdateType.CATEGORY);
 		} else {
-			categoryRoot = new Category(0, "Fehler", 0);
+			categoryRoot = new Category(0, "Fehler", 0, false);
 			errorMessage = "Fehler bei der Kommunikation mir der Datenbank.";
 			update(UpdateType.ERROR);
 			setInfo(errorMessage);
@@ -317,7 +321,7 @@ public class GUIController extends Application implements Initializable {
 	public Category getCategoryRoot(String text) {
 		HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 		Stack<Category> toVisit = new Stack<Category>();
-		Category newRoot = new Category(categoryRoot.getId(), categoryRoot.toString(), categoryRoot.getParentId());
+		Category newRoot = new Category(categoryRoot.getId(), categoryRoot.toString(), categoryRoot.getParentId(), categoryRoot.isUsed());
 		HashSet<Integer> foundCategories = new HashSet<Integer>();
 		
 		categories.put(categoryRoot.getId(), categoryRoot);
@@ -327,7 +331,7 @@ public class GUIController extends Application implements Initializable {
 		
 		while (!toVisit.isEmpty()) {
 			Category category = toVisit.pop();
-			categories.put(category.getId(), new Category(category.getId(), category.toString(), category.getParentId()));
+			categories.put(category.getId(), new Category(category.getId(), category.toString(), category.getParentId(), category.isUsed()));
 			for (Category child : category.getChilds()) {
 				toVisit.push(child);
 			}

@@ -16,6 +16,7 @@ public class Category extends Result {
     private List<Category> childs;
     private String category;
     private int parent;
+    private boolean used;
 
     /**
      * store the categories of an account
@@ -28,7 +29,7 @@ public class Category extends Result {
      * @param the
      *            parentId of this category as int (0 if root)
      */
-    public Category(int id, String name, int parentId) {
+    public Category(int id, String name, int parentId, boolean used) {
         super(id);
         childs = new ArrayList<Category>();
         this.parent = parentId;
@@ -36,6 +37,7 @@ public class Category extends Result {
             name = name.substring(0, MAX_LENGTH - 1);
         }
         this.category = name;
+        this.used = used;
     }
 
     /**
@@ -84,6 +86,15 @@ public class Category extends Result {
      */
     public int getParentId() {
         return parent;
+    }
+    
+    /**
+     * True if a account is associated with this category,
+     * false otherwise.
+     * @return true or false.
+     */
+    public boolean isUsed() {
+    	return used;
     }
     
     @Override
