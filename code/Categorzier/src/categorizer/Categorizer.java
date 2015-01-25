@@ -51,7 +51,7 @@ public class Categorizer {
             for (Integer category : categories) {
                 db.addCategoryToAccount(account.getId(), category);
             }
-            System.out.println("Categorized " + account.getName());
+            System.out.println("Categorized " + account.getUrl());
         }
     }
 }
