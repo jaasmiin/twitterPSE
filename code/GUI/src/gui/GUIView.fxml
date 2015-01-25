@@ -46,11 +46,11 @@
         	<Insets left="5.0" />
         </GridPane.margin>
         <tabs>
-          <Tab closable="false" text="Karte">
+          <!-- <Tab closable="false" text="Karte">
             <content>
               <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" />
             </content>
-          </Tab>
+          </Tab>-->
           <!-- <Tab closable="false" text="Tabelle">
             <content>
             	<fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
