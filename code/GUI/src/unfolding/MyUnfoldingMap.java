@@ -3,13 +3,7 @@ package unfolding;
  * 
  */
 
-
-import gui.GUIController;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,7 +47,8 @@ public class MyUnfoldingMap extends PApplet {
         
         dataEntriesMap = loadCountriesFromCSV("countries.csv");
         setValues = new ArrayList<String>();
-        
+
+        noLoop();   //Möglicherweise löschen!!!
     }
     
     public void draw() {
