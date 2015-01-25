@@ -528,7 +528,7 @@ public class GUIController extends Application implements Initializable {
 	public void setLocation(int accountID, int locationID) {
 		db.setLocation(accountID, locationID, true);
 	}
-	
+
 	private void update(UpdateType type) {
 		Platform.runLater(new RunnableParameter<UpdateType>(type) {
 			@Override

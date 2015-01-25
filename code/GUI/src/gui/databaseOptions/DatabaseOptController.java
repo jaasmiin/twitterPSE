@@ -2,12 +2,15 @@ package gui.databaseOptions;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.Tweets;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -66,6 +69,18 @@ public class DatabaseOptController extends InputElement implements Initializable
 	@FXML
 	private Button bZurueckLocation;
 	
+	//AccountADD
+	@FXML
+	private TextField txtAccountAdd;
+	@FXML
+	private Button bSearchAccount;
+	@FXML
+	private ListView<Account> listAccountAdd;
+	@FXML
+	private Button bAccountAdd;
+	@FXML 
+	private Button bAddAccountClose;
+	
 	private Account account;
 	private Stage dialogStage;
 	
@@ -81,7 +96,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 		if(addCat != null) {
 			addCat.setOnAction(new MyActionEventHandler());
 			addLoc.setOnAction(new MyActionEventHandler());
-			//TODO addAcount
+			addAcount.setOnAction(new MyActionEventHandler());
 		}
 		//popUp select account category
 		if(bWeiter != null) {
@@ -110,6 +125,12 @@ public class DatabaseOptController extends InputElement implements Initializable
 			trvLocation.setOnMouseClicked(new MyEventHandler());
 			bFertigLocation.setOnMouseClicked(new MyEventHandler());
 			bZurueckLocation.setOnMouseClicked(new MyEventHandler());
+		}
+		//popUp add account
+		if(txtAccountAdd != null) {
+			bSearchAccount.setOnMouseClicked(new MyEventHandler());
+			bAccountAdd.setOnMouseClicked(new MyEventHandler());
+			bAddAccountClose.setOnMouseClicked(new MyEventHandler());
 		}
 		
 	}
@@ -193,13 +214,17 @@ public class DatabaseOptController extends InputElement implements Initializable
 			// TODO Auto-generated method stub
 			// select right handling for event
 			if (event.getSource().equals(addCat)) {
-				// popUp for InputDialog
+				// popUp for input-dialog add category
 				createPopUp("AccountSelect.fxml", "Account auswählen",null);
 			    
 			}
 			if (event.getSource().equals(addLoc)) {
-				//popUp for InputDialog
+				//popUp for input-dialog change/add location
 				createPopUp("AccountSelectLocation.fxml","Account auswählen", null);
+			}
+			if (event.getSource().equals(addAcount)) {
+				//popUp for input dialog add account
+				createPopUp("AccountAdd.fxml","Account hinzufügen",null);
 			}
 		}	
 	}
@@ -209,6 +234,8 @@ public class DatabaseOptController extends InputElement implements Initializable
 	 *
 	 */
 	private class MyEventHandler implements EventHandler<Event>{
+
+		
 
 		@Override
 		public void handle(Event event) {
@@ -333,6 +360,40 @@ public class DatabaseOptController extends InputElement implements Initializable
 				dialogStage.close();
 				
 				
+			}
+			
+			//####################################################	
+			//#PopUp add account
+			//####################################################
+			
+			if(event.getSource().equals(bSearchAccount)) {
+				// search for account matching the query
+				
+				String input = txtAccountAdd.getText();
+				if (input == null || input.equals("")) {
+					return;
+				}
+				// clear old list
+				listAccountAdd.getItems().clear();
+				List<User> list = TwitterAccess.getUser(input);
+					
+				// fill found users/accounts in listView
+				Iterator<User> it = list.iterator();
+				while(it.hasNext()) {
+					Account account = new Account(0, it.next().getName(), null);
+					listAccountAdd.getItems().add(account);
+				}
+				
+			}
+			if(event.getSource().equals(bAccountAdd)) {
+				// add account/user to database
+				listAccountAdd.getSelectionModel().getSelectedItem();
+				//Account account = new Account()
+				// TODO add superController.addAccount();
+				
+			}
+			if(event.getSource().equals(bAddAccountClose)) {
+				dialogStage.close();
 			}
 		}
 		
