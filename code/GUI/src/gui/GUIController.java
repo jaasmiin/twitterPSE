@@ -550,7 +550,8 @@ public class GUIController extends Application implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
-		new Thread(rnbInitDBConnection).start();
+//		new Thread(rnbInitDBConnection).start();
+		// TODO: remove comment
 	}
 	
 }
