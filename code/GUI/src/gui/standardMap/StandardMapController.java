@@ -43,13 +43,22 @@ public class StandardMapController extends OutputElement implements Initializabl
         mapSwingNode.minWidth(300);
         map = new MyUnfoldingMap();
         
-        final JPanel mapJPanel = new JPanel();
-        mapJPanel.setLayout(new BorderLayout());
-        mapJPanel.add(map, BorderLayout.CENTER);
+        final JFrame mapJFrame = new MyFrame();
     
-        mapSwingNode.setContent(mapJPanel);
+        mapSwingNode.setContent(mapJFrame.getRootPane());
         
         
+    }
+    
+    class MyFrame extends JFrame{
+        public MyFrame(){
+            super("Embedded UnfoldingMap");
+            setLayout(new BorderLayout());
+            PApplet map = new MyUnfoldingMap();
+            add(map, BorderLayout.CENTER);
+            setPreferredSize(new Dimension(200, 200));
+            map.init();
+        }
     }
     
 	@Override
