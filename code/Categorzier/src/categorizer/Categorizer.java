@@ -47,6 +47,8 @@ public class Categorizer {
             System.out.println("Categorize " + account.getUrl());
             String url = normalizeUrl(account.getUrl());
             
+            if (url == null) continue;
+            
             List<Integer> categories = db.getCategoriesForAccount(url);
             for (Integer category : categories) {
                 System.out.println("   " + category);
