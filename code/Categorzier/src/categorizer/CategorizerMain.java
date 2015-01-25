@@ -24,15 +24,16 @@ public class CategorizerMain {
             System.out.println("Could not instantiate a logger! Aborting");
             return;
         }
-        
+
         try {
             db = new DBcategorizer(accData, logger);
-        } catch(ClassNotFoundException | IllegalAccessException | InstantiationException a) {
-            logger.warning("Could not establish a mysql connection.");
+        } catch(ClassNotFoundException | IllegalAccessException | InstantiationException e) {
+            logger.warning("Could not establish a mysql connection: " + e.getMessage());
             return;
         }
-        
+
         //instantiate the categorizer
+        System.out.println("Starting categorizer:");
         Categorizer categorizer = new Categorizer(db);
         categorizer.start();
     }

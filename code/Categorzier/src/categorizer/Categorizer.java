@@ -1,5 +1,6 @@
 package categorizer;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import mysql.DBcategorizer;
@@ -17,6 +18,7 @@ public class Categorizer {
     
     /**
      * initializes the categorizer by storing the database connection
+     * and opening the mysql connection
      * 
      * @param db the database connection, must not be null
      */
@@ -26,6 +28,12 @@ public class Categorizer {
         }
         
         this.db = db;
+        
+        try {
+            this.db.connect();
+        } catch(SQLException e) {
+            System.out.println("Could not open a mysql connection: " + e.getMessage());
+        }
     }
     
     /**
