@@ -8,5 +8,25 @@
 	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/core.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="../../code/mysql/bin" sourcepath="/mysql/src"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/core.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt-natives-linux-armv6hf.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt-natives-linux-i586.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt-natives-macosx-universal.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/gluegen-rt-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all-natives-linux-amd64.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all-natives-linux-armv6hf.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all-natives-linux-i586.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all-natives-macosx-universal.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all-natives-windows-amd64.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/jogl-all-natives-windows-i586.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/json4processing.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/libTUIO.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/sqlite-jdbc-3.7.2.jar"/>
+	<classpathentry kind="lib" path="../../libs/unfolding_app_template_with_examples_0.9.6/lib/unfolding.0.9.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
