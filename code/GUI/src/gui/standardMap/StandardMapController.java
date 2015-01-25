@@ -1,12 +1,17 @@
 package gui.standardMap;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import processing.core.PApplet;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.BorderPane;
@@ -19,7 +24,7 @@ import gui.OutputElement;
 public class StandardMapController extends OutputElement implements Initializable {
     
     @FXML
-    private StackPane pane;
+    private SwingNode mapSwingNode;
 
     TweetsAndRetweets uneditedData;
     MyUnfoldingMap map;  
@@ -29,22 +34,22 @@ public class StandardMapController extends OutputElement implements Initializabl
         super.initialize(location, resources);
         superController.subscribe(this);
         
+        addMapToPane();
+    }
+    
+    private void addMapToPane() {
+        mapSwingNode = new SwingNode();
+        mapSwingNode.maxHeight(300);
+        mapSwingNode.minWidth(300);
         map = new MyUnfoldingMap();
         
-        final JPanel mapJPanel = new JPanel(new BorderLayout());
-        mapJPanel.add(map);
+        final JPanel mapJPanel = new JPanel();
+        mapJPanel.setLayout(new BorderLayout());
+        mapJPanel.add(map, BorderLayout.CENTER);
+    
+        mapSwingNode.setContent(mapJPanel);
         
-        final SwingNode mapSwingNode = new SwingNode();
         
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                mapSwingNode.setContent(mapJPanel);
-            }
-        });
-        
-        pane = new StackPane();
-        pane.getChildren().add(mapSwingNode);
     }
     
 	@Override
@@ -55,5 +60,4 @@ public class StandardMapController extends OutputElement implements Initializabl
 		    //map.update();  insert new data
 		}
 	}
-
 }
