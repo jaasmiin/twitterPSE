@@ -45,13 +45,14 @@ public class Categorizer {
         List<Account> accounts = db.getNonCategorized();
         System.out.println("Number of uncategorized accounts: " + accounts.size());
         for (Account account : accounts) {
+            System.out.println("Categorize " + account.getUrl());
             String url = account.getUrl();
             List<Integer> categories = db.getCategoriesForAccount(url);
             
             for (Integer category : categories) {
+                System.out.println("   " + category);
                 db.addCategoryToAccount(account.getId(), category);
             }
-            System.out.println("Categorized " + account.getUrl());
         }
     }
 }

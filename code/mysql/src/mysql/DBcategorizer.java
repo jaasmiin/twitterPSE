@@ -42,7 +42,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     @Override
     public List<Account> getNonCategorized() {
 
-        String sqlCommand = "SELECT Id, URL FROM accounts WHERE Categorized = 0 LIMIT 100;";
+        String sqlCommand = "SELECT Id, URL FROM accounts WHERE Categorized = 0;";
 
         ResultSet result = null;
         Statement stmt = null;
