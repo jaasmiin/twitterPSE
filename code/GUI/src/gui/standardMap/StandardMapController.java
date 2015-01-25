@@ -44,34 +44,17 @@ public class StandardMapController extends OutputElement implements Initializabl
 		        Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						JFrame jf = new JFrame();
-				        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-						jf.setBounds(100, 100, 450, 300);
-						
-						PApplet map = new MyUnfoldingMap();
+						map = new MyUnfoldingMap();
 						map.init();
-				        
-						try {
-							Thread.sleep(5000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 						
 						JPanel contentPane = new JPanel();
 						contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 						contentPane.setLayout(new BorderLayout(0, 0));
 						
-						jf.setContentPane(contentPane);
-						
-						mapSwingNode.setContent(contentPane);
-
-				        StackPane pane = new StackPane();
-				        pane.getChildren().add(mapSwingNode);
-				        
+						mapSwingNode.setContent(contentPane);				        
 				        mapSwingNode.resize(100, 200);
 				        
-				        jf.getContentPane().add(map);
+				        mapSwingNode.getContent().add(map);
 				        
 					}
 				});
