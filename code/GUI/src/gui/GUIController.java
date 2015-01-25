@@ -42,6 +42,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import twitter4j.User;
 
 public class GUIController extends Application implements Initializable {
 	@FXML
@@ -503,10 +504,11 @@ public class GUIController extends Application implements Initializable {
 	
 	/**
 	 * Adds user who's tweets the crawler will be listening.
-	 * @param twitterID of user
+	 * @param user the twitter user
+	 * @param locationID of location from user
 	 */
-	public void addAccountToWatch(int twitterID) {
-		// TODO: add code
+	public void addUserToWatch(User user, int locationID) {
+		db.addAccount(user, locationID);
 	}
 	
 	/**
