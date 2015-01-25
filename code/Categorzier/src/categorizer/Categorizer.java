@@ -43,16 +43,37 @@ public class Categorizer {
      */
     public void start() {
         List<Account> accounts = db.getNonCategorized();
-        System.out.println("Number of uncategorized accounts: " + accounts.size());
         for (Account account : accounts) {
             System.out.println("Categorize " + account.getUrl());
-            String url = account.getUrl();
-            List<Integer> categories = db.getCategoriesForAccount(url);
+            String url = normalizeUrl(account.getUrl());
             
+            List<Integer> categories = db.getCategoriesForAccount(url);
             for (Integer category : categories) {
                 System.out.println("   " + category);
                 db.addCategoryToAccount(account.getId(), category);
             }
         }
+    }
+    
+    private String normalizeUrl(String url) {
+        // / at the end
+        if (url.charAt(url.length() - 1) == '/') {
+            url = url.substring(0, url.length() - 1);
+        }
+        
+        //http or https
+        if (url.startsWith("http://")) {
+            url = url.substring(7);
+        }
+        if (url.startsWith("https://")) {
+            url = url.substring(8);
+        }
+        
+        //www
+        if (url.startsWith("www.")) {
+            url = url.substring(4);
+        }
+        
+        return url;
     }
 }

@@ -119,7 +119,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? LIMIT 100;");
-            stmt.setString(1, url);
+            stmt.setString(1, url + "%");
             result = stmt.executeQuery();
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
