@@ -110,7 +110,7 @@ public class Locator {
      *            Twitter-Geotag-Object
      * @param location
      *            String containing information about the location of a 'tweet'
-     * @param timeZone
+     * @param timezone
      *            String containing information about the timezone of a 'tweet'
      * @return countrycode if 'Tweet' could be located, "0" otherwise
      */

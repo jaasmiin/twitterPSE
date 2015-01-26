@@ -40,7 +40,11 @@ public class LocateStatus {
      *            false if this account was extracted from a
      *            retweet-status-object, else true
      * @param accountLocated
-     * @param accountLocated
+     *            true if the account has been located and wrote into the
+     *            database, else false
+     * @param retweetLocated
+     *            true if the retweet has been located and the location-code is
+     *            in the parameter location, else false
      **/
     public LocateStatus(long id, Date date, String location, String timeZone,
             Status status, boolean tweet, boolean accountLocated,

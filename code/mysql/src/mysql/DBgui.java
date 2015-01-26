@@ -52,12 +52,11 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public Category getCategories() {
 
-        // how to set used (do in query with extra column)
-
+        // get all categories from the database
         String sqlCommand = "SELECT c.Id, Name, ParentId,  AccountId "
-        				  + "FROM category c "
-        				  + "LEFT JOIN accountCategory ac ON c.Id=ac.CategoryId "
-        				  + "ORDER By Name";
+                + "FROM category c "
+                + "LEFT JOIN accountCategory ac ON c.Id=ac.CategoryId "
+                + "ORDER By Name";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -76,7 +75,8 @@ public class DBgui extends DBConnection implements DBIgui {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
                 boolean used = res.getInt("AccountId") == 0;
-                Category c = new Category(id, res.getString("Name"), parent, used);
+                Category c = new Category(id, res.getString("Name"), parent,
+                        used);
                 parents.add(c);
                 childs.add(c);
             }
@@ -84,20 +84,25 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionResultLog(e);
             return null;
         } finally {
+            // close mysql-statement
             closeResultAndStatement(stmt, res);
         }
-
 
         Category ret = null;
 
         for (Category parent : parents) {
-            if (parent.getParentId() == 0)
+            if (parent.getParentId() == 0) {
                 ret = parent;
+                ret.setUsed(true);
+            }
             Iterator<Category> it = childs.iterator();
             Category child;
             while (it.hasNext()) {
                 child = it.next();
                 if (parent.getId() == child.getParentId()) {
+                    if (child.isUsed()) {
+                        parent.setUsed(true);
+                    }
                     parent.addChild(child);
                     it.remove();
                 }
@@ -126,7 +131,6 @@ public class DBgui extends DBConnection implements DBIgui {
             while (res.next()) {
                 ret.add(new Location(res.getInt("Id"), res.getString("Name"),
                         res.getString("Code"), null));
-                // new Location(res.getInt("ParentId"), null, null, null)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -135,15 +139,6 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
-        // for (Location l : ret) {
-        // // parent relationship
-        // for (Location p : ret) {
-        // if (l.getParent().getId() == p.getId()) {
-        // l.setParent(p);
-        // break;
-        // }
-        // }
-        // }
         return ret;
     }
 
@@ -256,6 +251,7 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public boolean setCategory(int accountId, int categoryId) {
 
+        // add an account-category pair to the database
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
@@ -265,7 +261,9 @@ public class DBgui extends DBConnection implements DBIgui {
             sqlExceptionLog(e, stmt);
         }
 
+        // execute first query
         if (executeStatementUpdate(stmt, false)) {
+            // set account as categprized
             try {
                 stmt = c.prepareStatement("UPDATE accounts SET Categorized=1 WHERE Id=?;");
                 stmt.setInt(1, accountId);
@@ -279,7 +277,7 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public boolean setLocation(int accountId, int locationId, boolean active) {
+    public boolean setLocation(int accountId, int locationId) {
 
         // prevent SQL-injection
         PreparedStatement stmt = null;

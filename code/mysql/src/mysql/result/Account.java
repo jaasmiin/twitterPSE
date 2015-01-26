@@ -129,8 +129,8 @@ public class Account extends Result {
      *            the id of the account in the database as int
      * @param name
      *            the name of the account as String
-     * @param tweets
-     *            a sum of tweets of the account as Tweets
+     * @param retweets
+     *            a sum of retweets of the account as Retweets
      */
     public Account(int id, String name, Retweets retweets) {
         this(id, 0, name, false, null, 0, 0, new int[0],

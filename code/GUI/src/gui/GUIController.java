@@ -527,7 +527,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param locationID of location
 	 */
 	public void setLocation(int accountID, int locationID) {
-		db.setLocation(accountID, locationID, true);
+		db.setLocation(accountID, locationID);
 	}
 
 	private void update(UpdateType type) {
@@ -569,7 +569,7 @@ public class GUIController extends Application implements Initializable {
 	 * @return the hashmap mapping countries to the number quantifying the 
 	 * retweet activity in this country
 	 */
-	public HashMap<String, Double> getDisplayValuePerCountry(Object whatever, HashMap<String, Integer> retweetsPerLocation, ) {
+	public HashMap<String, Double> getDisplayValuePerCountry(Object whatever, HashMap<String, Integer> retweetsPerLocation ) {
 	    HashMap<String, Double> result = new HashMap<String, Double>();
 	    
 	    //return something none null
