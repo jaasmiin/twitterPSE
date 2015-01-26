@@ -23,6 +23,7 @@ public class UnfoldingTest extends JFrame {
 				try {
 					UnfoldingTest frame = new UnfoldingTest();
 					frame.setVisible(true);
+					frame.resize(200, 300);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -43,6 +44,7 @@ public class UnfoldingTest extends JFrame {
 		PApplet map = new MyUnfoldingMap();
 		contentPane.add(map);
 		map.init();
+		map.setSize(100, 120);
 	}
 
 }

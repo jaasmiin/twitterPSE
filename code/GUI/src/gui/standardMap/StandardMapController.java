@@ -1,12 +1,14 @@
 package gui.standardMap;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
@@ -45,17 +47,30 @@ public class StandardMapController extends OutputElement implements Initializabl
 					@Override
 					public void run() {
 						map = new MyUnfoldingMap();
-						map.init();
 						
-						JPanel contentPane = new JPanel();
-						contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-						contentPane.setLayout(new BorderLayout(0, 0));
 						
-						mapSwingNode.setContent(contentPane);				        
+						JLayeredPane contentPane = new JLayeredPane();
+//						contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+//						contentPane.setLayout(new BorderLayout(0, 0));
+						contentPane.setSize(100,200);
+										        
 				        mapSwingNode.resize(100, 200);
 				        
-				        mapSwingNode.getContent().add(map);
+				        //mapSwingNode.getContent().add(map, BorderLayout.CENTER);
+				        map.init();
+				        try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 				        
+				        contentPane.add(map);
+				        mapSwingNode.setContent(contentPane);
+				        map.resize(400, 400);
+
+				        contentPane.setSize(400, 400);
+				        //map.setSize(400, 400);
 					}
 				});
 		       

@@ -3,6 +3,10 @@ package unfolding;
  * 
  */
 
+import java.applet.Applet;
+import java.applet.AppletContext;
+import java.awt.Component;
+import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +18,7 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import processing.core.PApplet;
+import processing.core.PImage;
 
 /**
  * @author Lidia
@@ -22,24 +27,27 @@ import processing.core.PApplet;
 public class MyUnfoldingMap extends PApplet {
     
     private UnfoldingMap map1;
-    private UnfoldingMap map2;
+    //private UnfoldingMap map2;
     private UnfoldingMap currentMap;
     private HashMap<String, DataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
     private List<String> setValues;
 
-    
-    public void setup() {  //check size of map 
+    public MyUnfoldingMap() {
+    	super();
+    	this.setSize(900, 600);
+	}
+
+    public void setup() {  //check size of map
         size(900, 600);
-        
         map1 = new UnfoldingMap(this);
-        map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
+        //map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
         
         currentMap = map1;
         
         currentMap.zoomLevel(1);
         currentMap.setZoomRange(2, 4);
-        MapUtils.createDefaultEventDispatcher(this, map1, map2);
+        //MapUtils.createDefaultEventDispatcher(this, map1, map2);
         
         List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);
@@ -51,7 +59,7 @@ public class MyUnfoldingMap extends PApplet {
     }
     
     public void draw() {
-        switchProvider();
+        //switchProvider();
         currentMap.draw();
     }
 
@@ -103,18 +111,18 @@ public class MyUnfoldingMap extends PApplet {
         shadeCountries();
     }
     
-    /**
-     * Switches provider of the map
-     * By pressing '1' an '2'
-     */
-    public void switchProvider() {
-        if(key == '1') {
-            currentMap = map1;
-        }
-        else if (key == '2') {
-            currentMap = map2;
-        }
-    }
+//    /**
+//     * Switches provider of the map
+//     * By pressing '1' an '2'
+//     */
+//    public void switchProvider() {
+//        if(key == '1') {
+//            currentMap = map1;
+//        }
+//        else if (key == '2') {
+//            currentMap = map2;
+//        }
+//    }
     
     private HashMap<String, DataEntry> loadCountriesFromCSV(String file) {
         HashMap<String, DataEntry> dataEntriesMap = new HashMap<String, DataEntry>();
