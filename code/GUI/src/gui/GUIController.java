@@ -211,6 +211,7 @@ public class GUIController extends Application implements Initializable {
 		return new AccessData(host, port, dbName, userName, password);
 	}
 	
+	//TODO: use static Logger utility class
 	private Logger getLogger() throws SecurityException, IOException {
 		File directory = new File("logs");
 		if (!directory.isDirectory()) {
@@ -553,4 +554,27 @@ public class GUIController extends Application implements Initializable {
 		new Thread(rnbInitDBConnection).start();
 	}
 	
+	/**
+	 * calculates the displayed value per country
+	 * 
+	 * given: a category, country, accounts combination
+	 * calculates: 
+	 *  
+	 *   number of retweets for that combination in that country                      1
+	 *   -------------------------------------------------------  *  ------------------------------------
+	 *          number of retweets for that combination               number of retweets in that country
+	 * 
+	 * @param TODO: einfuegen
+	 * @param retweetsPerLocation the number of retweets per country
+	 * @return the hashmap mapping countries to the number quantifying the 
+	 * retweet activity in this country
+	 */
+	public HashMap<String, Double> getDisplayValuePerCountry(Object whatever, HashMap<String, Integer> retweetsPerLocation, ) {
+	    HashMap<String, Double> result = new HashMap<String, Double>();
+	    
+	    //return something none null
+	    result.put("US", 0.5);
+	    
+	    return result;
+	}
 }
