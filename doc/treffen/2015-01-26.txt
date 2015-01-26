@@ -1,0 +1,24 @@
+Fragen
+------
+
+- Kategorisierer: nur wenige Accounts kategorisierbar
+- GUI Sprache
+
+
+ToDo
+----
+
+GUIController:
+	- Gesamte Anzahl Retweets von DB laden (Maximilian)
+	- Methode zur Ermittlung von location und category von Benutzer (Maximilian)
+	- Berechnung der relativen Werte (Paul & Matthias)
+DBCategorizer:
+	- Methode um categorized zu setzten (Holger)
+DBGUI (Holger):
+	- public boolean setLocation(int accountId, int locationId, boolean active)
+		- active entfernen
+	- Statistik
+databaseOptions (Matthias):
+	- Ländernamen einfügen
+	- Umlaute korrigieren
+	- Bei Benutzer bestehende Location/Kategorie anzeigen
