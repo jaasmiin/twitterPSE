@@ -5,11 +5,19 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import mysql.result.Account;
+import mysql.result.Location;
+import mysql.result.Retweets;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Callback;
 import gui.OutputElement;
 
 /**
@@ -19,15 +27,14 @@ import gui.OutputElement;
  *
  */
 public class ContentTableController extends OutputElement implements Initializable {
-
-	//Add columns as fields for update method!!!
 	
 	@FXML
     private TableView<Account> table;
 	
 	@Override
 	public void update(UpdateType type) {
-		// TODO Auto-generated method stub
+		ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
+		table.setItems(accountList);
 	}
 	
 	@Override
@@ -50,27 +57,61 @@ public class ContentTableController extends OutputElement implements Initializab
 	}
 	
 	/**
-	 * Adds a column containing the number of tweets that account sent to the table.
+	 * Adds a column containing the number of tweets that an account sent to the table.
 	 */
 	private void addTweetsColumn() {
 		TableColumn<Account, Integer> tweetsColumn = new TableColumn<Account, Integer>("Tweets");		
-		tweetsColumn.setCellValueFactory(new PropertyValueFactory<Account, Integer>("tweets"));		
+		
+		tweetsColumn.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Account, Integer>, ObservableValue<Integer>>() {
+
+			@Override
+			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
+				int tweetNumber = 0;
+				if (account.getValue() != null) {
+					tweetNumber = account.getValue().getTweets().size();
+				} 				
+				return new SimpleIntegerProperty(tweetNumber).asObject();
+			}
+			
+		});		
+		
 		table.getColumns().add(tweetsColumn);
 	}
 	
 	/**
-	 * Adds columns containing the number of retweets per country to the table.
+	 * Adds columns containing the number of retweets per country
+	 * a certain account received to the table.
 	 */
 	private void addRetweetsColumn() {
-		TableColumn retweetColumn = new TableColumn("Retweets");		
-	/*
-		// exchange getCountries
-		List<String> countries = getCountries();	
-		for (String country : countries) {
-			retweetColumn.getColumns().add(new TableColumn(country));
-			// add CellValueFactory
-			// figure out which way to get retweets per country
-		}	 */
+		TableColumn<Account, Integer> retweetColumn = new TableColumn<>("Retweets");		
+		
+		// TODO: improve performance (have to iterate over retweetlist for every location)
+		
+		for (Location currentLocation : superController.getLocations()) {
+			final Location tempLocation = currentLocation;
+			TableColumn<Account, Integer> countryColumn = new TableColumn<>(tempLocation.toString());
+			countryColumn.setCellValueFactory(
+					new Callback<TableColumn.CellDataFeatures<Account, Integer>, ObservableValue<Integer>>() {
+
+						@Override
+						public ObservableValue<Integer> call(
+								CellDataFeatures<Account, Integer> account) {
+							int retweetsPerCountry = 0;
+							if (account.getValue() != null) {
+								for (Retweets r : account.getValue().getRetweets()) {
+									if (r.getLocation() == tempLocation.getId()) {
+										retweetsPerCountry++;
+									}
+								}
+							} 
+							return new SimpleIntegerProperty(retweetsPerCountry).asObject();
+						}
+						
+					});
+			retweetColumn.getColumns().add(countryColumn);
+		}
+		
 		table.getColumns().add(retweetColumn);
 	}
 
