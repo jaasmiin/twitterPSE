@@ -1,24 +1,13 @@
-Jan 25, 2015 4:23:36 PM main.Controller <init>
+Jan 25, 2015 5:33:33 PM main.Controller <init>
 Information: Controller started
-Jan 25, 2015 4:23:36 PM main.Controller run
+Jan 25, 2015 5:33:33 PM main.Controller run
 Information: Crawler started
-Jan 25, 2015 4:23:37 PM main.Controller run
+Jan 25, 2015 5:33:34 PM main.Controller run
 Information: StatusProcessors started
-Jan 25, 2015 4:23:37 PM main.Controller run
+Jan 25, 2015 5:33:34 PM main.Controller run
 Information: WebServiceLocators started
-Jan 25, 2015 4:24:03 PM main.Controller limitQueue
+Jan 25, 2015 5:33:41 PM main.Controller limitQueue
 Information: Controller has been interrupted: 
 sleep interrupted
-Jan 25, 2015 4:24:41 PM main.Controller shutdown
+Jan 25, 2015 5:34:00 PM main.Controller shutdown
 Information: Program terminated by user
-Jan 25, 2015 4:33:33 PM main.Controller <init>
-Information: Controller started
-Jan 25, 2015 4:33:33 PM main.Controller run
-Information: Crawler started
-Jan 25, 2015 4:33:34 PM main.Controller run
-Information: StatusProcessors started
-Jan 25, 2015 4:33:35 PM main.Controller run
-Information: WebServiceLocators started
-Jan 25, 2015 4:41:18 PM main.Controller limitQueue
-Information: Controller has been interrupted: 
-sleep interrupted

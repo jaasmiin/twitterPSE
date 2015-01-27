@@ -14,7 +14,7 @@ import mysql.result.TweetsAndRetweets;
  * interface for modifying some data from a database (with restrictions)
  * 
  * @author Maximilian Awiszus, Holger Ebhart
- * @version 1.0
+ * @version 1.1
  * 
  */
 public interface DBIgui {
@@ -42,6 +42,12 @@ public interface DBIgui {
      */
     public int getAccountId(String accountName);
 
+    /**
+     * returns the sum of all retweets for each location
+     * 
+     * @return the sum of all retweets for each location (the location as
+     *         locationCode in the hashmap as key) as HashMap<String,Integer>
+     */
     public HashMap<String, Integer> getAllRetweetsPerLocation();
 
     /**
@@ -151,7 +157,7 @@ public interface DBIgui {
      * 
      * @param user
      *            the twitter-user to add as User
-     * @param locationId
+     * @param locationID
      *            the locationID of the TwitterUser as int (has to reference a
      *            guilty location in the database)
      * @return true if successful
@@ -176,11 +182,8 @@ public interface DBIgui {
      *            of the account
      * @param locationId
      *            of the location
-     * @param active
-     *            if true add category to account, otherwise remove category
-     *            from account
      * @return true on success
      */
-    public boolean setLocation(int accountId, int locationId, boolean active);
+    public boolean setLocation(int accountId, int locationId);
 
 }

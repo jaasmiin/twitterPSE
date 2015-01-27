@@ -19,7 +19,7 @@ public class Retweets extends Tweets {
      *            the date of the retweets as Date
      * @param counter
      *            the number of localized retweets as int
-     * @param location
+     * @param locationId
      *            the id of the location of this retweets as int
      */
     public Retweets(Date date, int counter, int locationId) {

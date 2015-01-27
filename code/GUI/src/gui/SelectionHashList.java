@@ -450,6 +450,11 @@ public class SelectionHashList<T> {
 		return selected;
 	}
 	
+	public T getElement(Integer id) {
+		SelectionHashListEntry e = hashMap.get(id.hashCode());
+		return e == null ? null : e.getValue();
+	}
+	
 	private class SelectionHashListEntry {
 		private T value;
 		private SelectionHashListEntry next, prev;

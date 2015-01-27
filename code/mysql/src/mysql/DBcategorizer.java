@@ -44,6 +44,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
         String sqlCommand = "SELECT Id, URL FROM accounts WHERE Categorized = 0;";
 
+        // create and execute statement to get uncategorized accounts
         ResultSet result = null;
         Statement stmt = null;
         try {
@@ -54,16 +55,18 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             return new ArrayList<Account>();
         }
 
+        // create list of accounts to return
         List<Account> ret = new ArrayList<Account>();
         try {
+            // read mysql-result and add accounts into the return list
             while (result.next()) {
                 ret.add(new Account(result.getInt("Id"), result
                         .getString("URL")));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            ret.remove(ret.size() - 1);
         } finally {
+            // close mysql-statement
             closeResultAndStatement(stmt, result);
         }
 
@@ -73,9 +76,8 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     @Override
     public boolean addCategoryToAccount(int accountId, int categoryId) {
 
-        // add category to account
+        // create statement to add a category to an account
         boolean result1 = false;
-        // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accountCategory (AccountId, CategoryId) VALUES (?, ?);");
@@ -84,14 +86,18 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         }
+        // execute query and save result
         result1 = executeStatementUpdate(stmt, false);
 
-        // set categorized = true
+        // prepare statement to set categorized = true
         String sqlCommand = "UPDATE accounts SET categorized = 1 WHERE Id = "
                 + accountId + ";";
 
         boolean result2 = false;
+        // set categorized = true if the account-category pair was successfully
+        // set
         if (result1) {
+            // create and execute statement to set categorized = true
             Statement stmt2 = null;
             try {
                 stmt2 = c.createStatement();
@@ -99,6 +105,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             } catch (SQLException e) {
                 sqlExceptionLog(e, stmt2);
             } finally {
+                // close mysql-statement
                 if (stmt2 != null) {
                     try {
                         stmt2.close();
@@ -115,6 +122,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     @Override
     public List<Integer> getCategoriesForAccount(String url) {
 
+        // create the statement to look for url matches
         ResultSet result = null;
         PreparedStatement stmt = null;
         try {
@@ -126,8 +134,11 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             return new ArrayList<Integer>();
         }
 
+        // create list of category-Ids to return
         List<Integer> ret = new ArrayList<Integer>();
+        // read the mysql-result
         try {
+            // add each category-id to the return list
             while (result.next()) {
                 ret.add(result.getInt(1));
             }
@@ -135,9 +146,26 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             sqlExceptionResultLog(e);
             ret.remove(ret.size() - 1);
         } finally {
+            // close mysql statement
             closeResultAndStatement(stmt, result);
         }
 
         return ret;
+    }
+
+    @Override
+    public boolean setCategorized(int accountId) {
+
+        // create statment to set the categorized bit of the account to 1
+        PreparedStatement stmt = null;
+        try {
+            stmt = c.prepareStatement("UPDATE accounts SET Categorized=1 WHERE Id=?;");
+            stmt.setInt(1, accountId);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        }
+
+        // execute query
+        return executeStatementUpdate(stmt, false);
     }
 }

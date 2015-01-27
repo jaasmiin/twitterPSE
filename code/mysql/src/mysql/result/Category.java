@@ -26,8 +26,11 @@ public class Category extends Result {
      * 
      * @param name
      *            the name of the category as String
-     * @param the
-     *            parentId of this category as int (0 if root)
+     * @param parentId
+     *            the parentId of this category as int (0 if root)
+     * @param used
+     *            true if this category is mapped at minimum to one account,
+     *            else false
      */
     public Category(int id, String name, int parentId, boolean used) {
         super(id);
@@ -87,22 +90,33 @@ public class Category extends Result {
     public int getParentId() {
         return parent;
     }
-    
+
     /**
-     * True if a account is associated with this category,
-     * false otherwise.
-     * @return true or false.
+     * True if an account is associated with this category, false otherwise.
+     * 
+     * @return true if this category is mapped at minimum to one account, else
+     *         false
      */
     public boolean isUsed() {
-    	return used;
+        return used;
     }
-    
+
+    /**
+     * specified weather this category is used as account-category pair or not
+     * 
+     * @param used
+     *            true if the category is used, else false
+     */
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
     @Override
     public boolean equals(Object o) {
-    	boolean equal = false;
-		if (o != null && o.getClass() == this.getClass()) {
-			equal = ((Result) o).getId() == getId();
-		} 
-    	return equal;
+        boolean equal = false;
+        if (o != null && o.getClass() == this.getClass()) {
+            equal = ((Result) o).getId() == getId();
+        }
+        return equal;
     }
 }

@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
@@ -43,7 +39,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
-
+import util.LoggerUtil;
+/**
+ * Supercontroller which provides information from db
+ * and informs subcontroller on data changes.
+ * @author Maximilian Awiszus and Paul Jungeblut
+ *
+ */
 public class GUIController extends Application implements Initializable {
 	@FXML
 	private Pane paSelectionOfQuery;
@@ -66,7 +68,6 @@ public class GUIController extends Application implements Initializable {
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = "";
-	private String errorMessage = "";
 	private boolean ready = false; 
 	public static GUIController getInstance() {
 		if (instance == null) {
@@ -134,7 +135,7 @@ public class GUIController extends Application implements Initializable {
 			}
 			if (success) {
 				try {
-					db = new DBgui(accessData, getLogger() );
+					db = new DBgui(accessData, LoggerUtil.getLogger());
 				} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
 					success = false;
@@ -211,23 +212,6 @@ public class GUIController extends Application implements Initializable {
 		return new AccessData(host, port, dbName, userName, password);
 	}
 	
-	private Logger getLogger() throws SecurityException, IOException {
-		File directory = new File("logs");
-		if (!directory.isDirectory()) {
-			directory.mkdir();
-		}
-        Logger l = Logger.getLogger("logger");
-        new File(directory.getPath() + "\\LogFile.log").createNewFile();
-        FileHandler fh = new FileHandler(directory.getPath() + "\\LogFile.log", true);
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        l.addHandler(fh);
-        // true: print output on console and into file
-        // false: only store output in logFile
-        l.setUseParentHandlers(false);
-        return l;
-    }
-	
 	private void reloadLocation() {
 		locations.clear();
 		locations.addAll(db.getLocations());
@@ -247,9 +231,8 @@ public class GUIController extends Application implements Initializable {
 			update(UpdateType.CATEGORY);
 		} else {
 			categoryRoot = new Category(0, "Fehler", 0, false);
-			errorMessage = "Fehler bei der Kommunikation mir der Datenbank.";
 			update(UpdateType.ERROR);
-			setInfo(errorMessage);
+			setInfo("Fehler bei der Kommunikation mir der Datenbank.");
 		}
 	}
 	
@@ -460,7 +443,7 @@ public class GUIController extends Application implements Initializable {
 	
 	/**
 	 * Get data grouped by account.
-	 * @return
+	 * @return data grouped by account or null
 	 */
 	public List<Account> getDataByAccount() {
 		return dataByAccount;
@@ -468,16 +451,37 @@ public class GUIController extends Application implements Initializable {
 	
 	/**
 	 * Get data grouped by location.
-	 * @return
+	 * @return data grouped by location or null
 	 */
 	public TweetsAndRetweets getDataByLocation() {
 		return dataByLocation;
 	}
 	
-	public String getErrorMessage() {
-		String message = errorMessage;
-		errorMessage = "";
-		return message;
+	/**
+	 * Get the account by id
+	 * @param id of account
+	 * @return account or null if no account is found
+	 */
+	public Account getAccount(Integer id) {
+		return accounts.getElement(id);
+	}
+	
+	/**
+	 * Get the category by id
+	 * @param id of category
+	 * @return category or null if no category is found
+	 */
+	public Category getCategory(Integer id) {
+		return categories.get(id);
+	}
+	
+	/**
+	 * Get the location by id
+	 * @param id of location
+	 * @return location or null if no location is found
+	 */
+	public Location getLocation(Integer id) {
+		return locations.getElement(id);
 	}
 	
 	/**
@@ -526,7 +530,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param locationID of location
 	 */
 	public void setLocation(int accountID, int locationID) {
-		db.setLocation(accountID, locationID, true);
+		db.setLocation(accountID, locationID);
 	}
 
 	private void update(UpdateType type) {
@@ -553,4 +557,27 @@ public class GUIController extends Application implements Initializable {
 		new Thread(rnbInitDBConnection).start();
 	}
 	
+	/**
+	 * calculates the displayed value per country
+	 * 
+	 * given: a category, country, accounts combination
+	 * calculates: 
+	 *  
+	 *   number of retweets for that combination in that country                      1
+	 *   -------------------------------------------------------  *  ------------------------------------
+	 *          number of retweets for that combination               number of retweets in that country
+	 * 
+	 * @param TODO: einfuegen
+	 * @param retweetsPerLocation the number of retweets per country
+	 * @return the hashmap mapping countries to the number quantifying the 
+	 * retweet activity in this country
+	 */
+	public HashMap<String, Double> getDisplayValuePerCountry(Object whatever, HashMap<String, Integer> retweetsPerLocation ) {
+	    HashMap<String, Double> result = new HashMap<String, Double>();
+	    
+	    //return something none null
+	    result.put("US", 0.5);
+	    
+	    return result;
+	}
 }

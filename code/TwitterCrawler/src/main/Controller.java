@@ -1,6 +1,5 @@
 package main;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
@@ -10,9 +9,7 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import locate.LocateStatus;
 import locate.WebServiceLocator;
@@ -80,7 +77,7 @@ public class Controller extends Thread {
 
         workerThreadNum = numberOfThreads;
         // set number of locators relative to number of worker
-        locatorThreadNum = workerThreadNum;
+        locatorThreadNum = workerThreadNum * 2;
 
         statusProcessor = new StatusProcessor[workerThreadNum];
         thrdStatusProcessor = new Thread[workerThreadNum];
@@ -88,7 +85,7 @@ public class Controller extends Thread {
         locator = new WebServiceLocator[locatorThreadNum];
         thrdLocator = new Thread[locatorThreadNum];
 
-        statisticLogger = getStatisticLogger();
+        statisticLogger = LoggerUtil.getLogger("Statistic");
         logger = LoggerUtil.getLogger();
 
         this.dbc = null;
@@ -348,7 +345,7 @@ public class Controller extends Thread {
         int count = 0;
         while (run) {
 
-            if (m >= 4) {
+            if (m >= 3600) {// write statistic once an hour
                 m = 0;
                 writeStatistic();
             }
@@ -363,7 +360,6 @@ public class Controller extends Thread {
                 }
             }
 
-            // one reconnect to twitter per day
             if (count >= 86400) {// one day = 86400 seconds
                 count = 0;
 
@@ -457,23 +453,5 @@ public class Controller extends Thread {
         msg += "Summe vorhandener location-Information: " + sum[7] + "\n";
 
         statisticLogger.info(msg);
-    }
-
-    private Logger getStatisticLogger() {
-        Logger l = Logger.getLogger("statlog");
-        try {
-            new File("Statistic.log").createNewFile();
-            FileHandler fh = new FileHandler("Statistic.log", true);
-            SimpleFormatter formatter = new SimpleFormatter();
-            fh.setFormatter(formatter);
-            l.addHandler(fh);
-        } catch (IOException e) {
-            logger.severe("Couldn't instantiate statistic-logger: "
-                    + e.getMessage());
-        }
-
-        l.setUseParentHandlers(false);
-
-        return l;
     }
 }
