@@ -56,7 +56,8 @@ public class Categorizer {
             	continue;
             }
             if (url == null) url = "someStupidSequenceThatDoesNotOccur";
-            if (name == null) name = "someStupidSequenceThatDoesNotOccur";
+            //second condition should lower the number of false positives with to may matches
+            if (name == null || name.length() < 8) name = "someStupidSequenceThatDoesNotOccur";
             url = normalizeUrl(url);
             name = normalizeName(name);
             
