@@ -52,10 +52,12 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	}
 	
 	private void updateCategoryRec(Category category, TreeItem<Category> item) {
-		for (Category childCategory : category.getChilds()) {
-			TreeItem<Category> child = new TreeItem<Category>(childCategory);
-			updateCategoryRec(childCategory, child);
-			item.getChildren().add(child);
+		if (category.isUsed()) {
+			for (Category childCategory : category.getChilds()) {
+				TreeItem<Category> child = new TreeItem<Category>(childCategory);
+				updateCategoryRec(childCategory, child);
+				item.getChildren().add(child);
+			}
 		}
 	}
 	
@@ -122,10 +124,8 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		if (trvCategory != null) { // only one time in SelectionOfQueryView
-			super.initialize(location, resources);
-			superController.subscribe(this);
-		}
+		super.initialize(location, resources);
+		superController.subscribe(this);
 	}
 
 }
