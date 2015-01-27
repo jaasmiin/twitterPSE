@@ -55,8 +55,8 @@ public class Categorizer {
             	db.setCategorized(account.getId());
             	continue;
             }
-            if (url == null) url = "";
-            if (name == null) name = "";
+            if (url == null) url = "someStupidSequenceThatDoesNotOccur";
+            if (name == null) name = "someStupidSequenceThatDoesNotOccur";
             url = normalizeUrl(url);
             name = normalizeName(name);
             
