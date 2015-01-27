@@ -71,7 +71,7 @@ public class Categorizer {
     
     private String normalizeUrl(String url) {
         //remove / at the end
-        if (url.charAt(url.length() - 1) == '/') {
+        if (url.length() != 0 && url.charAt(url.length() - 1) == '/') {
             url = url.substring(0, url.length() - 1);
         }
         
