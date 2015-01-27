@@ -43,6 +43,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
+import util.LoggerUtil;
 
 public class GUIController extends Application implements Initializable {
 	@FXML
@@ -134,7 +135,7 @@ public class GUIController extends Application implements Initializable {
 			}
 			if (success) {
 				try {
-					db = new DBgui(accessData, getLogger() );
+					db = new DBgui(accessData, LoggerUtil.getLogger());
 				} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
 					success = false;
@@ -210,24 +211,6 @@ public class GUIController extends Application implements Initializable {
 		in.close();
 		return new AccessData(host, port, dbName, userName, password);
 	}
-	
-	//TODO: use static Logger utility class
-	private Logger getLogger() throws SecurityException, IOException {
-		File directory = new File("logs");
-		if (!directory.isDirectory()) {
-			directory.mkdir();
-		}
-        Logger l = Logger.getLogger("logger");
-        new File(directory.getPath() + "\\LogFile.log").createNewFile();
-        FileHandler fh = new FileHandler(directory.getPath() + "\\LogFile.log", true);
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        l.addHandler(fh);
-        // true: print output on console and into file
-        // false: only store output in logFile
-        l.setUseParentHandlers(false);
-        return l;
-    }
 	
 	private void reloadLocation() {
 		locations.clear();
@@ -473,6 +456,15 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public TweetsAndRetweets getDataByLocation() {
 		return dataByLocation;
+	}
+	
+	/**
+	 * Get the account by id
+	 * @param id of account
+	 * @return account or null if no account is found
+	 */
+	public Account getAccountInfo(Integer id) {
+		return accounts.getElement(id);
 	}
 	
 	public String getErrorMessage() {
