@@ -36,33 +36,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	private TitledPane tipAccount;
 	@FXML
 	private TitledPane tipCategory;
-	@FXML
-	private ListView<String> lstSelectedCategories;
-	@FXML
-	private ListView<String> lstSelectedLocations;
-	@FXML
-	private ListView<String> lstSelectedAccounts;
-	
-	private void updateSelectedCategory(List<Category> selectedCategories) {
-		lstSelectedCategories.getItems().clear();
-		for (Category c : selectedCategories) {
-			lstSelectedCategories.getItems().add(c.toString());
-		}
-	}
-	
-	private void updateSelectedAccount(List<Account> selectedAccounts) {
-		lstSelectedAccounts.getItems().clear();
-		for (Account a : selectedAccounts) {
-			lstSelectedAccounts.getItems().add(a.getName());
-		}
-	}
-	
-	private void updateSelectedLocation(List<Location> selectedLocations) {
-		lstSelectedLocations.getItems().clear();
-		for (Location l : selectedLocations) {
-			lstSelectedLocations.getItems().add(l.toString());
-		}
-	}
 	
 	private void updateAccounts(List<Account> accounts) {
 		lstAccount.getItems().clear();
@@ -99,9 +72,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	public void update(UpdateType type) {
 		if (type == UpdateType.TWEET) {
 			// TODO: load data and update elements
-			updateSelectedAccount(superController.getSelectedAccounts());
-			updateSelectedCategory(superController.getSelectedCategories());
-			updateSelectedLocation(superController.getSelectedLocations());
 		} else if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
