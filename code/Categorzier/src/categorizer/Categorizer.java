@@ -46,18 +46,24 @@ public class Categorizer {
     public void start() {
         List<Account> accounts = db.getNonCategorized();
         for (Account account : accounts) {
-        	//get the url
+        	System.out.println("Account: " + account.getName());
+        	
+        	//get the name and url
             String url = account.getUrl();
-            if (url == null) continue;
-            url = normalizeUrl(url);
-            
-            //get the name
             String name = account.getName();
-            if (name == null) continue;
+            if (url == null && name == null) {
+            	db.setCategorized(account.getId());
+            	continue;
+            }
+            if (url == null) url = "";
+            if (name == null) name = "";
+            url = normalizeUrl(url);
             name = normalizeName(name);
             
+            //find and insert each category
             List<Integer> categories = db.getCategoriesForAccount(url, name);
             for (Integer category : categories) {
+            	System.out.println("     Category: " + category);
                 db.addCategoryToAccount(account.getId(), category.intValue());
             }
         }
