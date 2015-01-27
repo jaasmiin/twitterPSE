@@ -143,11 +143,13 @@ public class Account extends Result {
      * 
      * @param id
      *            the id of the account in the database as int
+     * @param name
+     * 			  the name of the account
      * @param url
      *            the official url of the account as String
      */
-    public Account(int id, String url) {
-        this(id, 0, null, false, url, 0, -1);
+    public Account(int id, String name, String url) {
+        this(id, 0, name, false, url, 0, -1);
     }
 
     /**

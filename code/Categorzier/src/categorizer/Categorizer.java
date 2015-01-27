@@ -40,31 +40,36 @@ public class Categorizer {
      * does the actual categorization
      * gets a list of uncategorized accounts, looks for categories
      * and writes them into the db
+     * 
+     * categorization goes by account name and account url
      */
     public void start() {
         List<Account> accounts = db.getNonCategorized();
         for (Account account : accounts) {
-            System.out.println("Categorize " + account.getUrl());
+        	//get the url
             String url = account.getUrl();
-            
             if (url == null) continue;
             url = normalizeUrl(url);
             
-            List<Integer> categories = db.getCategoriesForAccount(url);
+            //get the name
+            String name = account.getName();
+            if (name == null) continue;
+            name = normalizeName(name);
+            
+            List<Integer> categories = db.getCategoriesForAccount(url, name);
             for (Integer category : categories) {
-                System.out.println("   " + category);
-                db.addCategoryToAccount(account.getId(), category);
+                db.addCategoryToAccount(account.getId(), category.intValue());
             }
         }
     }
     
     private String normalizeUrl(String url) {
-        // / at the end
+        //remove / at the end
         if (url.charAt(url.length() - 1) == '/') {
             url = url.substring(0, url.length() - 1);
         }
         
-        //http or https
+        //remove http:// or https://
         if (url.startsWith("http://")) {
             url = url.substring(7);
         }
@@ -72,11 +77,21 @@ public class Categorizer {
             url = url.substring(8);
         }
         
-        //www
+        //remove www.
         if (url.startsWith("www.")) {
             url = url.substring(4);
         }
         
         return url;
+    }
+    
+    private String normalizeName(String name) {
+    	//switch to lower case for case insensitive matching
+    	name = name.toLowerCase();
+    	
+    	//replace spaces with wildcrads (%)
+    	name = name.replace(' ', '%');
+    	
+    	return name;
     }
 }

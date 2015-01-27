@@ -42,7 +42,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     @Override
     public List<Account> getNonCategorized() {
 
-        String sqlCommand = "SELECT Id, URL FROM accounts WHERE Categorized = 0;";
+        String sqlCommand = "SELECT Id, AccountName, URL FROM accounts WHERE Categorized = 0;";
 
         // create and execute statement to get uncategorized accounts
         ResultSet result = null;
@@ -60,8 +60,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         try {
             // read mysql-result and add accounts into the return list
             while (result.next()) {
-                ret.add(new Account(result.getInt("Id"), result
-                        .getString("URL")));
+                ret.add(new Account(result.getInt("Id"), result.getString("AccountName"), result.getString("URL")));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -120,22 +119,23 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     }
 
     @Override
-    public List<Integer> getCategoriesForAccount(String url) {
-
-        // create the statement to look for url matches
+    public List<Integer> getCategoriesForAccount(String url, String name) {
+    	// create list of category-Ids to return
+        List<Integer> ret = new ArrayList<Integer>();
+        
+        // create the statement to look for url and name matches
         ResultSet result = null;
         PreparedStatement stmt = null;
         try {
-            stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? LIMIT 100;");
+            stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? OR Page LIKE ?;");
             stmt.setString(1, url + "%");
+            stmt.setString(2, "%" + name + "%");
             result = stmt.executeQuery();
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
             return new ArrayList<Integer>();
         }
 
-        // create list of category-Ids to return
-        List<Integer> ret = new ArrayList<Integer>();
         // read the mysql-result
         try {
             // add each category-id to the return list
