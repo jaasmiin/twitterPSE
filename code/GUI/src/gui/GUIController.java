@@ -19,10 +19,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.Stack;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
@@ -44,7 +40,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
 import util.LoggerUtil;
-
+/**
+ * Supercontroller which provides information from db
+ * and informs subcontroller on data changes.
+ * @author Maximilian Awiszus and Paul Jungeblut
+ *
+ */
 public class GUIController extends Application implements Initializable {
 	@FXML
 	private Pane paSelectionOfQuery;
@@ -67,7 +68,6 @@ public class GUIController extends Application implements Initializable {
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = "";
-	private String errorMessage = "";
 	private boolean ready = false; 
 	public static GUIController getInstance() {
 		if (instance == null) {
@@ -231,9 +231,8 @@ public class GUIController extends Application implements Initializable {
 			update(UpdateType.CATEGORY);
 		} else {
 			categoryRoot = new Category(0, "Fehler", 0, false);
-			errorMessage = "Fehler bei der Kommunikation mir der Datenbank.";
 			update(UpdateType.ERROR);
-			setInfo(errorMessage);
+			setInfo("Fehler bei der Kommunikation mir der Datenbank.");
 		}
 	}
 	
@@ -444,7 +443,7 @@ public class GUIController extends Application implements Initializable {
 	
 	/**
 	 * Get data grouped by account.
-	 * @return
+	 * @return data grouped by account or null
 	 */
 	public List<Account> getDataByAccount() {
 		return dataByAccount;
@@ -452,7 +451,7 @@ public class GUIController extends Application implements Initializable {
 	
 	/**
 	 * Get data grouped by location.
-	 * @return
+	 * @return data grouped by location or null
 	 */
 	public TweetsAndRetweets getDataByLocation() {
 		return dataByLocation;
@@ -463,14 +462,26 @@ public class GUIController extends Application implements Initializable {
 	 * @param id of account
 	 * @return account or null if no account is found
 	 */
-	public Account getAccountInfo(Integer id) {
+	public Account getAccount(Integer id) {
 		return accounts.getElement(id);
 	}
 	
-	public String getErrorMessage() {
-		String message = errorMessage;
-		errorMessage = "";
-		return message;
+	/**
+	 * Get the category by id
+	 * @param id of category
+	 * @return category or null if no category is found
+	 */
+	public Category getCategory(Integer id) {
+		return categories.get(id);
+	}
+	
+	/**
+	 * Get the location by id
+	 * @param id of location
+	 * @return location or null if no location is found
+	 */
+	public Location getLocation(Integer id) {
+		return locations.getElement(id);
 	}
 	
 	/**
