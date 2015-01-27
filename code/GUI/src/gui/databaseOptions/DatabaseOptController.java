@@ -380,7 +380,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 				// fill found users/accounts in listView
 				Iterator<User> it = list.iterator();
 				while(it.hasNext()) {
-					Account account = new Account(0, it.next().getName(), null);
+					Account account = new Account(0, it.next().getName(), "");
 					listAccountAdd.getItems().add(account);
 				}
 				
