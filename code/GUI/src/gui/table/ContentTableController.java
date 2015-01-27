@@ -1,7 +1,6 @@
 package gui.table;
 
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
 
 import mysql.result.Account;
@@ -101,7 +100,8 @@ public class ContentTableController extends OutputElement implements Initializab
 							if (account.getValue() != null) {
 								for (Retweets r : account.getValue().getRetweets()) {
 									if (r.getLocation() == tempLocation.getId()) {
-										retweetsPerCountry++;
+										retweetsPerCountry = r.getCounter();
+										break;
 									}
 								}
 							} 
