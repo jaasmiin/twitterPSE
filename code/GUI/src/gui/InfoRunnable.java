@@ -15,7 +15,7 @@ public class InfoRunnable implements Runnable {
 		super();
 		this.list = list;
 		this.text = text;
-		delay = 2000;
+		delay = 3000;
 	}
 	@Override
 	public void run() {

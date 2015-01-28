@@ -19,6 +19,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import gui.InputElement;
+import gui.RunnableParameter;
 
 public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
 	
@@ -64,6 +65,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	}
 	
 	private void updateLocation(List<Location> list) {
+		System.out.println("update location");
 		TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0, "Welt", "0000", null));
 		rootItem.setExpanded(true);		
 		for (Location location : list) {
@@ -75,9 +77,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	
 	@Override
 	public void update(UpdateType type) {
-		if (type == UpdateType.TWEET) {
-			// TODO: load data and update elements
-		} else if (type == UpdateType.LOCATION) {
+		if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
 			updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
@@ -107,7 +107,13 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			if (lstAccount.getSelectionModel().getSelectedItem() != null) {
 				System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
 						" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
-				superController.setSelectedAccount(lstAccount.getSelectionModel().getSelectedItem().getId(), true);
+				new Thread(new RunnableParameter<Integer>(lstAccount.getSelectionModel().getSelectedItem().getId()) {
+					@Override
+					public void run() {
+						superController.setSelectedAccount(parameter, true);
+					}
+				}).start();
+				
 			}
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			if (e instanceof KeyEvent) {

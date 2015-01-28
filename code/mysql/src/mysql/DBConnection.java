@@ -24,6 +24,7 @@ public abstract class DBConnection {
     protected DateFormat dateFormat;
     protected Logger logger;
     private boolean connected;
+    protected boolean runningRequest;
 
     /**
      * configure the connection to the database
@@ -49,6 +50,7 @@ public abstract class DBConnection {
         this.accessData = accessData;
         this.logger = logger;
         this.connected = false;
+        runningRequest = false;
 
         // create date format for the database
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -74,6 +76,14 @@ public abstract class DBConnection {
      * cuts the connection to the database off
      */
     public void disconnect() {
+
+        while (runningRequest) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+            }
+        }
+
         try {
             c.close();
             // logger.info("Disonnected from database " + accessData.getName()
@@ -111,6 +121,7 @@ public abstract class DBConnection {
             return false;
         }
 
+        runningRequest = true;
         boolean ret = false;
         try {
             if (resultNotNull) {
@@ -119,7 +130,7 @@ public abstract class DBConnection {
                 ret = stmt.executeUpdate() >= 0 ? true : false;
             }
         } catch (SQLException e) {
-            //e.printStackTrace();
+            // e.printStackTrace();
             sqlExceptionLog(e, stmt);
         } finally {
             if (stmt != null) {
@@ -129,6 +140,7 @@ public abstract class DBConnection {
                     sqlExceptionLog(e);
                 }
             }
+            runningRequest = false;
         }
         return ret;
     }
@@ -142,6 +154,17 @@ public abstract class DBConnection {
      *            the result to close as ResultSet
      */
     protected void closeResultAndStatement(Statement stmt, ResultSet result) {
+        closeResult(result);
+        closeStatement(stmt);
+    }
+
+    /**
+     * closes a result
+     * 
+     * @param result
+     *            the result to close as ResultSet
+     */
+    protected void closeResult(ResultSet result) {
         if (result != null) {
             try {
                 result.close();
@@ -149,6 +172,15 @@ public abstract class DBConnection {
                 sqlExceptionLog(e);
             }
         }
+    }
+
+    /**
+     * closes a Statement
+     * 
+     * @param stmt
+     *            the statement to close as Statement
+     */
+    protected void closeStatement(Statement stmt) {
         if (stmt != null) {
             try {
                 stmt.close();

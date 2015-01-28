@@ -86,14 +86,20 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 		superController.subscribe(this);		
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void update(UpdateType type) {
-		if (type == UpdateType.TWEET) {
-			updateSelectedAccount(superController.getSelectedAccounts());
-			updateSelectedCategory(superController.getSelectedCategories());
-			updateSelectedLocation(superController.getSelectedLocations());
+		switch (type) {
+			case ACCOUNT_SELECTION:
+				updateSelectedAccount(superController.getSelectedAccounts());
+				break;
+			case CATEGORY_SELECTION:
+				updateSelectedCategory(superController.getSelectedCategories());
+				break;
+			case LOCATION_SELECTION:
+				updateSelectedLocation(superController.getSelectedLocations());
+				break;
 		}
-		
 	}
 
 	@FXML

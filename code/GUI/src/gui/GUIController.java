@@ -231,51 +231,36 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadLocation() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String info = "Lade Orte...";
-				setInfo(info);
-				locations.clear();
-				locations.addAll(db.getLocations());
-				update(UpdateType.LOCATION);
-				setInfo("Orte geladen.", info);
-			}
-		}).start();
+		String info = "Lade Orte...";
+		setInfo(info);
+		locations.clear();
+		locations.addAll(db.getLocations());
+		update(UpdateType.LOCATION);
+		setInfo("Orte geladen.", info);
 	}
 	
 	private void reloadAccounts() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String info = "Lade Accounts...";
-				setInfo(info);
-				accounts.clear();
-				accounts.addAll(db.getAccounts(accountSearchText));
-				update(UpdateType.ACCOUNT);
-				setInfo("Accounts geladen.", info);
-			}
-		}).start();;
+		String info = "Lade Accounts...";
+		setInfo(info);
+		accounts.clear();
+		accounts.addAll(db.getAccounts(accountSearchText));
+		update(UpdateType.ACCOUNT);
+		setInfo("Accounts geladen.", info);
 	}
 	
 	private void reloadCategories() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String info = "Lade Kategorien...";
-				setInfo(info);
-				categoryRoot = db.getCategories();
-				if (categoryRoot != null) {
-					reloadCategoryHashMap();
-					update(UpdateType.CATEGORY);
-					setInfo("Kategorien geladen.", info);
-				} else {
-					categoryRoot = new Category(0, "Fehler", 0, false);
-					update(UpdateType.ERROR);
-					setInfo("Fehler bei der Kommunikation mir der Datenbank.", info);
-				}
-			}
-		}).start();
+		String info = "Lade Kategorien...";
+		setInfo(info);
+		categoryRoot = db.getCategories();
+		if (categoryRoot != null) {
+			reloadCategoryHashMap();
+			update(UpdateType.CATEGORY);
+			setInfo("Kategorien geladen.", info);
+		} else {
+			categoryRoot = new Category(0, "Fehler", 0, false);
+			update(UpdateType.ERROR);
+			setInfo("Fehler bei der Kommunikation mir der Datenbank.", info);
+		}
 	}
 	
 	private void reloadCategoryHashMap() {
@@ -322,23 +307,35 @@ public class GUIController extends Application implements Initializable {
 				update(UpdateType.TWEET);
 			}
 		} else {
-			setInfo("Fehler, bitte wählen Sie mindestens einen Filer.", info);
+			setInfo("Konnte keine Daten laden, bitte wählen Sie mindestens einen Filter.", info);
 		}
 	}
 	
 	private void reloadAll() {
-		reloadAccounts();
-		reloadCategories();
-		reloadLocation();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadAccounts();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadCategories();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadLocation();
+			}
+		}).start();
 	}
 	
 	private void setInfo(final String info) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-//				while (lstInfo.getItems().contains(info)) {
-//					lstInfo.getItems().remove(info);
-//				}
 				lstInfo.getItems().removeAll(info);
 				lstInfo.getItems().add(info);
 			}
@@ -454,6 +451,18 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Set of an account is selected.
+	 * @param id of account
+	 * @param selected is true if account should be selected, false otherwise
+	 */
+	public void setSelectedAccount(int id, boolean selected) {
+		System.out.println("setSelectedAccount(" + id + ", " + selected + ")");
+		accounts.setSelected(id, selected);
+		update(UpdateType.ACCOUNT_SELECTION);
+		reloadData();
+	}
+	
+	/**
 	 * Set if a category is selected.
 	 * @param id of category
 	 * @param selected is true if category should be selected, false otherwise
@@ -464,6 +473,7 @@ public class GUIController extends Application implements Initializable {
 		} else {
 			selectedCategories.remove(id);
 		}
+		update(UpdateType.CATEGORY_SELECTION);
 		reloadData();
 	}
 	
@@ -474,6 +484,7 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedLocation(int id, boolean selected) {
 		locations.setSelected(id, selected);
+		update(UpdateType.LOCATION_SELECTION);
 		reloadData();
 	}
 	
@@ -504,17 +515,7 @@ public class GUIController extends Application implements Initializable {
 	public List<Location> getSelectedLocations() {
 		return locations.getSelected();
 	}
-	
-	/**
-	 * Set of an account is selected.
-	 * @param id of account
-	 * @param selected is true if account should be selected, false otherwise
-	 */
-	public void setSelectedAccount(int id, boolean selected) {
-		accounts.setSelected(id, selected);
-		reloadData();
-	}
-	
+		
 	/**
 	 * Get data grouped by account.
 	 * @return data grouped by account or null

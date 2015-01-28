@@ -204,8 +204,17 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         return new boolean[] {result1, result2 };
     }
 
-    @Override
-    public boolean addLocation(String code, String parent) {
+    /**
+     * inserts a new location into the database
+     * 
+     * @param code
+     *            the country-code of the location as String (max. 3 characters)
+     * @param parent
+     *            the parent location-code of the current location as String
+     *            (could be null, but max. 3 characters)
+     * @return database-request result as Boolean
+     */
+    private boolean addLocation(String code, String parent) {
 
         code = checkString(code, 3, "0");
         parent = checkString(parent, 3, null);
@@ -298,8 +307,13 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         return ret;
     }
 
-    @Override
-    public HashSet<String> getCountryCodes() {
+    /**
+     * returns a hashSet of all the country-codes from the database
+     * 
+     * @return a hashSet of all the country-codes from the database as
+     *         HashSet<String>, empty if an error occurred
+     */
+    private HashSet<String> getCountryCodes() {
 
         String sqlCommand = "SELECT Code FROM location;";
         Statement stmt = null;
