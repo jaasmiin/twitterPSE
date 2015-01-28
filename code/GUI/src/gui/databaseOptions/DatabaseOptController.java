@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import twitter4j.Status;
 import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
@@ -105,7 +106,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 	@FXML
 	private TextField txtField_Acc_tab1;
 	@FXML
-	private ListView<Account> list_Acc_tab1;
+	private ListView<UserContainer> list_Acc_tab1;
 	@FXML 
 	private Button b_Acc_tab1_schliessen;
 	@FXML
@@ -116,6 +117,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 	
 	private Account account;
 	private Stage dialogStage;
+	private final int DEFAULT_LOCATION = 1;
 	
 	
 
@@ -137,10 +139,10 @@ public class DatabaseOptController extends InputElement implements Initializable
 		//popUp add new category
 		if(tabPane_Cat != null) {
 			tab_Cat_tab2.setDisable(true);
-			txtField_Cat_tab1.setOnKeyPressed(new MyCatEventHandler());
+			txtField_Cat_tab1.setOnKeyReleased(new MyCatEventHandler());
 			list_Cat_tab1.setOnMouseClicked(new MyCatEventHandler());
 			b_Cat_tab1.setOnMouseClicked(new MyCatEventHandler());
-			txtField_Cat_tab2.setOnKeyPressed(new MyCatEventHandler());
+			txtField_Cat_tab2.setOnKeyReleased(new MyCatEventHandler());
 			list_Cat_tab2.setOnMouseClicked(new MyCatEventHandler());
 			trv_Cat_tab2.setOnMouseClicked(new MyCatEventHandler());
 			b_Cat_tab2_fertig.setOnMouseClicked(new MyCatEventHandler());
@@ -151,14 +153,20 @@ public class DatabaseOptController extends InputElement implements Initializable
 		//popUp add/change location
 		if(tabPane_Loc != null) {
 			tab_Loc_tab2.setDisable(true);
-			txtField_Loc_tab1.setOnKeyPressed(new MyLocEventHandler());
+			txtField_Loc_tab1.setOnKeyReleased(new MyLocEventHandler());
 			list_Loc_tab1.setOnMouseClicked(new MyLocEventHandler());
 			b_Loc_tab1.setOnMouseClicked(new MyLocEventHandler());
-			txtField_Loc_tab2.setOnKeyPressed(new MyLocEventHandler());
+			txtField_Loc_tab2.setOnKeyReleased(new MyLocEventHandler());
 			trv_Loc_tab2.setOnMouseClicked(new MyLocEventHandler());
 			trv_Loc_tab2.setOnMouseClicked(new MyLocEventHandler());
 			b_Loc_tab2_fertig.setOnMouseClicked(new MyLocEventHandler());
 			b_Loc_tab2_zurueck.setOnMouseClicked(new MyLocEventHandler());	
+		}
+		// popUp add user
+		if (tabPane_Acc != null) {
+			b_Acc_tab1_suchen.setOnMousePressed(new MyAccEventHandler());
+			b_Acc_tab1_hinzufuegen.setOnMouseClicked(new MyAccEventHandler());
+			b_Acc_tab1_schliessen.setOnMouseClicked(new MyAccEventHandler());
 		}
 		
 
@@ -255,15 +263,19 @@ public class DatabaseOptController extends InputElement implements Initializable
 					
 					if(!k.getText().isEmpty() || k.getCode().equals(KeyCode.DELETE) || k.getCode().equals(KeyCode.BACK_SPACE)) {
 						 
-						String input = txtField_Loc_tab1.getText() + k.getText();
+						String input = txtField_Loc_tab1.getText();
 						
-						 // update list
+						    // update list
+							List<Account>  list = list_Loc_tab1.getItems();
+							
 							list_Loc_tab1.getItems().clear();
+							list = list_Loc_tab1.getItems();
+							
 							for(Account a : superController.getAccounts(input)) {
 								list_Loc_tab1.getItems().add(a);
-							}
+							} 
 						
-					}
+					} 
 				}
 			}
 			
@@ -294,7 +306,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 					
 					if(!k.getText().isEmpty() || k.getCode().equals(KeyCode.DELETE) || k.getCode().equals(KeyCode.BACK_SPACE)) {
 							 
-						String input = txtField_Loc_tab2.getText() + k.getText();
+						String input = txtField_Loc_tab2.getText();
 						System.out.println("zweites suchfeld: "+input);
 						updateLocation(superController.getLocations(input));
 					}
@@ -359,10 +371,12 @@ public class DatabaseOptController extends InputElement implements Initializable
 					
 					if(!k.getText().isEmpty() || k.getCode().equals(KeyCode.DELETE) || k.getCode().equals(KeyCode.BACK_SPACE)) {
 						 
-						String input = txtField_Cat_tab1.getText() + k.getText();
-						
+						String input = txtField_Cat_tab1.getText();
+							System.out.println(input);
 						 // update list
+							System.out.println(list_Cat_tab1.getItems().size());
 							list_Cat_tab1.getItems().clear();
+							System.out.println(list_Cat_tab1.getItems().size());
 							for(Account a : superController.getAccounts(input)) {
 								list_Cat_tab1.getItems().add(a);
 							}
@@ -398,7 +412,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 					
 					if(!k.getText().isEmpty() || k.getCode().equals(KeyCode.DELETE) || k.getCode().equals(KeyCode.BACK_SPACE)) {
 							 
-						String input = txtField_Cat_tab2.getText() + k.getText();
+						String input = txtField_Cat_tab2.getText();
 						System.out.println("zweites suchfeld: "+input);
 					    updateCategory(superController.getCategoryRoot(input));
 					}
@@ -473,7 +487,6 @@ public class DatabaseOptController extends InputElement implements Initializable
 	 *
 	 */
 	private class MyAccEventHandler implements EventHandler<Event> {
-
 		@Override
 		public void handle(Event event) {
 			if(event.getSource().equals(b_Acc_tab1_suchen)) {
@@ -488,20 +501,25 @@ public class DatabaseOptController extends InputElement implements Initializable
 					list_Acc_tab1.getItems().clear();
 				}
 				List<User> list = TwitterAccess.getUser(input);
-					
+				System.out.println("hello");
 				// fill found users/accounts in listView
 				Iterator<User> it = list.iterator();
 				while(it.hasNext()) {
-					Account account = new Account(0, it.next().getName(), "");
-					list_Acc_tab1.getItems().add(account);
+					UserContainer userW = new UserContainer(it.next());
+					list_Acc_tab1.getItems().add(userW);
+					
 				}
 				
 			}
 			if(event.getSource().equals(b_Acc_tab1_hinzufuegen)) {
 				// add account/user to database
-				list_Acc_tab1.getSelectionModel().getSelectedItem();
-				//Account account = new Account()
-				// TODO add superController.addAccount();
+				UserContainer userC = list_Acc_tab1.getSelectionModel().getSelectedItem();
+				System.out.println("hinzugefuegen:   " + userC.getUser().getURL());
+				
+				superController.addUserToWatch(userC.getUser(), DEFAULT_LOCATION);
+				System.out.println(userC.getUser().getName() + "    " + userC.getUser().getScreenName());
+				System.out.println("hinzugefuegt");
+				
 				
 			}
 			if(event.getSource().equals(b_Acc_tab1_schliessen)) {
@@ -698,7 +716,7 @@ if (tabPane_Acc != null) {
 }
 //popUp select account category
 if(bWeiter != null) {
-	txtAccountSearch.setOnKeyPressed(new MyEventHandler());
+	txtAccountSearch.setOnKeyReleased(new MyEventHandler());
 	listAccount.setOnMouseClicked(new MyEventHandler());
 	bWeiter.setOnMouseClicked(new MyEventHandler());
 }
