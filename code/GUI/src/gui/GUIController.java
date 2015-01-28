@@ -316,7 +316,17 @@ public class GUIController extends Application implements Initializable {
 			@Override
 			public void run() {
 				reloadAccounts();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
 				reloadCategories();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
 				reloadLocation();
 			}
 		}).start();
@@ -446,6 +456,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param selected is true if account should be selected, false otherwise
 	 */
 	public void setSelectedAccount(int id, boolean selected) {
+		System.out.println("setSelectedAccount(" + id + ", " + selected + ")");
 		accounts.setSelected(id, selected);
 		update(UpdateType.ACCOUNT_SELECTION);
 		reloadData();
