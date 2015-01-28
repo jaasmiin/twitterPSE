@@ -480,6 +480,8 @@ public class SelectionHashList<T> {
 				if (e.getNextSelected() != null) {
 					e.getNextSelected().setPrevSelected(e.getPrevSelected());
 				}
+				e.setNextSelected(null);
+				e.setPrevSelected(null);
 			}
 		}
 		return changed;

@@ -18,6 +18,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import gui.InputElement;
 import gui.RunnableParameter;
 
@@ -90,41 +91,43 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	@Override
 	public void handle(Event e) {
-		if (e.getSource().equals(trvCategory)) {
-			if (trvCategory.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
-						" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-				new Thread(new RunnableParameter<Integer>(trvCategory.getSelectionModel().getSelectedItem().getValue().getId()) {
-					@Override
-					public void run() {	
-						superController.setSelectedCategory(parameter, true);
-					}
-				}).start();
-			}
-		} else if (e.getSource().equals(trvLocation)) {
-			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
-						" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-				new Thread(new RunnableParameter<Integer>(trvLocation.getSelectionModel().getSelectedItem().getValue().getId()) {
-					@Override
-					public void run() {
-						superController.setSelectedLocation(parameter, true);
-					}
-				}).start();
-				
-			}
-		} else if(e.getSource().equals(lstAccount)) {
-			if (lstAccount.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
-						" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
-				new Thread(new RunnableParameter<Integer>(lstAccount.getSelectionModel().getSelectedItem().getId()) {
-					@Override
-					public void run() {
-						superController.setSelectedAccount(parameter, true);
-					}
-				}).start();
-				
-			}
+		if (e instanceof MouseEvent && ((MouseEvent) e).getClickCount() == 2) {
+			if (e.getSource().equals(trvCategory)) {
+				if (trvCategory.getSelectionModel().getSelectedItem() != null) {
+					System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
+							" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
+					new Thread(new RunnableParameter<Integer>(trvCategory.getSelectionModel().getSelectedItem().getValue().getId()) {
+						@Override
+						public void run() {	
+							superController.setSelectedCategory(parameter, true);
+						}
+					}).start();
+				}
+			} else if (e.getSource().equals(trvLocation)) {
+				if (trvLocation.getSelectionModel().getSelectedItem() != null) {
+					System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
+							" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
+					new Thread(new RunnableParameter<Integer>(trvLocation.getSelectionModel().getSelectedItem().getValue().getId()) {
+						@Override
+						public void run() {
+							superController.setSelectedLocation(parameter, true);
+						}
+					}).start();
+					
+				}
+			} else if(e.getSource().equals(lstAccount)) {
+				if (lstAccount.getSelectionModel().getSelectedItem() != null) {
+					System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
+							" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
+					new Thread(new RunnableParameter<Integer>(lstAccount.getSelectionModel().getSelectedItem().getId()) {
+						@Override
+						public void run() {
+							superController.setSelectedAccount(parameter, true);
+						}
+					}).start();
+					
+				}
+			} 
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			if (e instanceof KeyEvent) {
 				KeyEvent k = (KeyEvent) e;
