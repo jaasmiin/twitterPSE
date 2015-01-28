@@ -42,6 +42,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		for (Account a : accounts) {
 			lstAccount.getItems().add(a);
 		}
+		tipAccount.setDisable(false);
 	}
 	
 	private void updateCategory(Category rootCategory) {
@@ -49,13 +50,16 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		rootItem.setExpanded(true);
 		updateCategoryRec(rootCategory, rootItem);
 		trvCategory.setRoot(rootItem);
+		tipCategory.setDisable(false);
 	}
 	
 	private void updateCategoryRec(Category category, TreeItem<Category> item) {
-		for (Category childCategory : category.getChilds()) {
-			TreeItem<Category> child = new TreeItem<Category>(childCategory);
-			updateCategoryRec(childCategory, child);
-			item.getChildren().add(child);
+		if (category.isUsed()) {
+			for (Category childCategory : category.getChilds()) {
+				TreeItem<Category> child = new TreeItem<Category>(childCategory);
+				updateCategoryRec(childCategory, child);
+				item.getChildren().add(child);
+			}
 		}
 	}
 	
@@ -66,6 +70,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			rootItem.getChildren().add(new TreeItem<Location>(location));
 		}
 		trvLocation.setRoot(rootItem);
+		tipLocation.setDisable(false);
 	}
 	
 	@Override
@@ -122,10 +127,8 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		if (trvCategory != null) { // only one time in SelectionOfQueryView
-			super.initialize(location, resources);
-			superController.subscribe(this);
-		}
+		super.initialize(location, resources);
+		superController.subscribe(this);
 	}
 
 }
