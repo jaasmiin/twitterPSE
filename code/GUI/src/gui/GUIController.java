@@ -231,51 +231,36 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadLocation() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String info = "Lade Orte...";
-				setInfo(info);
-				locations.clear();
-				locations.addAll(db.getLocations());
-				update(UpdateType.LOCATION);
-				setInfo("Orte geladen.", info);
-			}
-		}).start();
+		String info = "Lade Orte...";
+		setInfo(info);
+		locations.clear();
+		locations.addAll(db.getLocations());
+		update(UpdateType.LOCATION);
+		setInfo("Orte geladen.", info);
 	}
 	
 	private void reloadAccounts() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String info = "Lade Accounts...";
-				setInfo(info);
-				accounts.clear();
-				accounts.addAll(db.getAccounts(accountSearchText));
-				update(UpdateType.ACCOUNT);
-				setInfo("Accounts geladen.", info);
-			}
-		}).start();;
+		String info = "Lade Accounts...";
+		setInfo(info);
+		accounts.clear();
+		accounts.addAll(db.getAccounts(accountSearchText));
+		update(UpdateType.ACCOUNT);
+		setInfo("Accounts geladen.", info);
 	}
 	
 	private void reloadCategories() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				String info = "Lade Kategorien...";
-				setInfo(info);
-				categoryRoot = db.getCategories();
-				if (categoryRoot != null) {
-					reloadCategoryHashMap();
-					update(UpdateType.CATEGORY);
-					setInfo("Kategorien geladen.", info);
-				} else {
-					categoryRoot = new Category(0, "Fehler", 0, false);
-					update(UpdateType.ERROR);
-					setInfo("Fehler bei der Kommunikation mir der Datenbank.", info);
-				}
-			}
-		}).start();
+		String info = "Lade Kategorien...";
+		setInfo(info);
+		categoryRoot = db.getCategories();
+		if (categoryRoot != null) {
+			reloadCategoryHashMap();
+			update(UpdateType.CATEGORY);
+			setInfo("Kategorien geladen.", info);
+		} else {
+			categoryRoot = new Category(0, "Fehler", 0, false);
+			update(UpdateType.ERROR);
+			setInfo("Fehler bei der Kommunikation mir der Datenbank.", info);
+		}
 	}
 	
 	private void reloadCategoryHashMap() {
@@ -322,23 +307,25 @@ public class GUIController extends Application implements Initializable {
 				update(UpdateType.TWEET);
 			}
 		} else {
-			setInfo("Fehler, bitte wählen Sie mindestens einen Filer.", info);
+			setInfo("Konnte keine Daten laden, bitte wählen Sie mindestens einen Filter.", info);
 		}
 	}
 	
 	private void reloadAll() {
-		reloadAccounts();
-		reloadCategories();
-		reloadLocation();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadAccounts();
+				reloadCategories();
+				reloadLocation();
+			}
+		}).start();
 	}
 	
 	private void setInfo(final String info) {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-//				while (lstInfo.getItems().contains(info)) {
-//					lstInfo.getItems().remove(info);
-//				}
 				lstInfo.getItems().removeAll(info);
 				lstInfo.getItems().add(info);
 			}
