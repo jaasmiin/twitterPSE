@@ -329,8 +329,8 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private List<Retweets> getRetweetSum(Statement stmt, boolean byDate) {
 
-        String a = "SELECT SUM(Counter), LocationId, LocationCode Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, DayId;";
-        String b = "SELECT SUM(Counter), LocationId, LocationCode FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
+        String a = "SELECT SUM(Counter), LocationId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, DayId;";
+        String b = "SELECT SUM(Counter), LocationId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -351,7 +351,7 @@ public class DBgui extends DBConnection implements DBIgui {
             while (res.next()) {
                 Retweets element = new Retweets((byDate ? res.getDate("Day")
                         : null), res.getInt(1), res.getInt("LocationId"));
-                element.setLocationCode(res.getString("LocationCode"));
+                element.setLocationCode(res.getString("Code"));
                 ret.add(element);
             }
         } catch (SQLException e) {
@@ -459,8 +459,8 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private List<Account> getRetweetSumPerAccount(Statement stmt, boolean byDate) {
 
-        String a = "SELECT Counter, retweets.LocationId, AccountId, LocationCode, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String b = "SELECT SUM(Counter),retweets.LocationId, AccountId, LocationCode FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, AccountId;";
+        String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id JOIN location ON retweets.LocationId=location.Id;";
+        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, AccountId;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -499,7 +499,7 @@ public class DBgui extends DBConnection implements DBIgui {
                     Retweets element = new Retweets(
                             (byDate ? res.getDate("Day") : null),
                             res.getInt(1), res.getInt(2));
-                    element.setLocationCode(res.getString(4));
+                    element.setLocationCode(res.getString("Code"));
                     temp.addRetweet(element);
                 }
 
