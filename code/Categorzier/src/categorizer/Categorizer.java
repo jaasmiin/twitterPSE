@@ -67,6 +67,11 @@ public class Categorizer {
             	System.out.println("     Category: " + category);
                 db.addCategoryToAccount(account.getId(), category.intValue());
             }
+            
+            //could not find a category
+            if (categories.size() == 0) {
+            	db.setCategorized(account.getId());
+            }
         }
     }
     
@@ -96,8 +101,9 @@ public class Categorizer {
     	//switch to lower case for case insensitive matching
     	name = name.toLowerCase();
     	
-    	//replace spaces with wildcrads (%)
+    	//replace spaces, underscores with wildcrads (%)
     	name = name.replace(' ', '%');
+    	name = name.replace('_',  '%');
     	
     	return name;
     }
