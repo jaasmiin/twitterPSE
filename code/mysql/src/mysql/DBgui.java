@@ -292,7 +292,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
-        String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=Day.Id GROUP BY DayId;";
+        String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
         String b = "SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;";
 
         ResultSet res = null;
@@ -329,7 +329,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private List<Retweets> getRetweetSum(Statement stmt, boolean byDate) {
 
-        String a = "SELECT SUM(Counter), LocationId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, DayId;";
+        String a = "SELECT SUM(Counter), LocationId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, DayId;";
         String b = "SELECT SUM(Counter), LocationId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
 
         ResultSet res = null;
@@ -377,7 +377,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {
 
-        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=Day.Id JOIN accounts ON final.val=accounts.Id;";
+        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
         String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
 
         ResultSet res = null;
@@ -459,7 +459,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private List<Account> getRetweetSumPerAccount(Statement stmt, boolean byDate) {
 
-        String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=Day.Id JOIN location ON retweets.LocationId=location.Id;";
+        String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
         String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, AccountId;";
 
         ResultSet res = null;
@@ -529,7 +529,7 @@ public class DBgui extends DBConnection implements DBIgui {
         stmt.addBatch("CREATE TEMPORARY TABLE IF NOT EXISTS final (val int PRIMARY KEY);");
 
         if (categoryIsSet || locationIsSet) {
-            String c = " INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE (";
+            String c = "INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
 
             if (categoryIsSet) {
                 c += "(CategoryId=" + categoryIDs[0];
