@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.Stack;
-
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
@@ -37,7 +36,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
@@ -54,7 +53,7 @@ public class GUIController extends Application implements Initializable {
 	@FXML
 	private TextField txtSearch;
 	@FXML
-	private Label lblInfo;
+	private ListView<String> lstInfo;
 	
 	private static GUIController instance = null;
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
@@ -70,7 +69,6 @@ public class GUIController extends Application implements Initializable {
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = ""; 
-	
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
@@ -151,7 +149,8 @@ public class GUIController extends Application implements Initializable {
 		@Override
 		public void run() {
 			boolean success = true;
-			lblInfo.setText("Verbindung mit DB wird aufgebaut...");
+			String info = "Baue Verbindung mit DB auf...";
+			setInfo(info);
 			AccessData accessData = null;
 			try {
 				accessData = getDBAccessData();
@@ -169,17 +168,16 @@ public class GUIController extends Application implements Initializable {
 					try {
 						db.connect();
 					} catch (SQLException e) {
-	//					e.printStackTrace();
 						success = false;
 					}
 				} else {
-					setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.");
+					setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.", info);
 				}
 			} else {
-				setInfo("Fehler, es konnten konnten keine Login Daten geladen werden.");
+				setInfo("Fehler, es konnten konnten keine Login Daten geladen werden.", info);
 			}
 			if (success) {
-				setInfo("Erfolreich mit DB verbunden.");
+				setInfo("Mit DB verbunden.", info);
 				reloadAll();
 			}
 		}
@@ -236,9 +234,12 @@ public class GUIController extends Application implements Initializable {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				String info = "Lade Orte...";
+				setInfo(info);
 				locations.clear();
 				locations.addAll(db.getLocations());
 				update(UpdateType.LOCATION);
+				setInfo("Orte geladen.", info);
 			}
 		}).start();
 	}
@@ -247,9 +248,12 @@ public class GUIController extends Application implements Initializable {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				String info = "Lade Accounts...";
+				setInfo(info);
 				accounts.clear();
 				accounts.addAll(db.getAccounts(accountSearchText));
 				update(UpdateType.ACCOUNT);
+				setInfo("Accounts geladen.", info);
 			}
 		}).start();;
 	}
@@ -258,14 +262,17 @@ public class GUIController extends Application implements Initializable {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
+				String info = "Lade Kategorien...";
+				setInfo(info);
 				categoryRoot = db.getCategories();
 				if (categoryRoot != null) {
 					reloadCategoryHashMap();
 					update(UpdateType.CATEGORY);
+					setInfo("Kategorien geladen.", info);
 				} else {
 					categoryRoot = new Category(0, "Fehler", 0, false);
 					update(UpdateType.ERROR);
-					setInfo("Fehler bei der Kommunikation mir der Datenbank.");
+					setInfo("Fehler bei der Kommunikation mir der Datenbank.", info);
 				}
 			}
 		}).start();
@@ -284,6 +291,8 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
+		String info = "Lade Daten...";
+		setInfo(info);
 		Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
 		List<Location> selectedLocations = locations.getSelected();
 		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
@@ -306,11 +315,14 @@ public class GUIController extends Application implements Initializable {
 				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
 			} catch (IllegalArgumentException | SQLException e) {
 				success = false;
-				setInfo(e.getMessage());
+				setInfo("Fehler bei der Kommunikation mit der DB.", info);
 			}
 			if (success) {
+				setInfo("Daten geladen.", info);
 				update(UpdateType.TWEET);
 			}
+		} else {
+			setInfo("Fehler, bitte wählen Sie mindestens einen Filer.", info);
 		}
 	}
 	
@@ -320,8 +332,29 @@ public class GUIController extends Application implements Initializable {
 		reloadLocation();
 	}
 	
-	private void setInfo(String text) {
-		Platform.runLater(new InfoRunnable(lblInfo, text));
+	private void setInfo(final String info) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+//				while (lstInfo.getItems().contains(info)) {
+//					lstInfo.getItems().remove(info);
+//				}
+				lstInfo.getItems().removeAll(info);
+				lstInfo.getItems().add(info);
+			}
+		});
+	}
+	
+	private void setInfo(final String info, final String oldInfo) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				lstInfo.getItems().remove(oldInfo);
+				lstInfo.getItems().removeAll(info);
+				lstInfo.getItems().add(info);
+				Platform.runLater(new InfoRunnable(lstInfo, info));
+			}
+		});
 	}
 	
 	/**

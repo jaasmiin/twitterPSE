@@ -2,13 +2,11 @@ package gui.selectionOfQuery;
 
 import java.net.URL;
 import java.util.List;
-import java.util.Random;
 import java.util.ResourceBundle;
 
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -44,6 +42,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		for (Account a : accounts) {
 			lstAccount.getItems().add(a);
 		}
+		tipAccount.setDisable(false);
 	}
 	
 	private void updateCategory(Category rootCategory) {
@@ -51,6 +50,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		rootItem.setExpanded(true);
 		updateCategoryRec(rootCategory, rootItem);
 		trvCategory.setRoot(rootItem);
+		tipCategory.setDisable(false);
 	}
 	
 	private void updateCategoryRec(Category category, TreeItem<Category> item) {
@@ -70,6 +70,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			rootItem.getChildren().add(new TreeItem<Location>(location));
 		}
 		trvLocation.setRoot(rootItem);
+		tipLocation.setDisable(false);
 	}
 	
 	@Override

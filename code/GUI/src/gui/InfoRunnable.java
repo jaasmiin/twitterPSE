@@ -1,26 +1,25 @@
 package gui;
 
 import javafx.application.Platform;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
 public class InfoRunnable implements Runnable {
 	private String text;
-	private Label label;
+	private ListView<String> list;
 	private Integer delay;
-	public InfoRunnable(Label label, String text, Integer delay) {
-		this(label, text);
+	public InfoRunnable(ListView<String> list, String text, Integer delay) {
+		this(list, text);
 		this.delay = delay;
 	}
-	public InfoRunnable(Label label, String text) {
+	public InfoRunnable(ListView<String> list, String text) {
 		super();
-		this.label = label;
+		this.list = list;
 		this.text = text;
 		delay = 2000;
 	}
 	@Override
 	public void run() {
-		label.setText(text);
-		new Thread(new Runnable() {
+		new Thread(new RunnableParameter<String>(text) {
 			@Override
 			public void run() {
 				try {
@@ -31,7 +30,7 @@ public class InfoRunnable implements Runnable {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						label.setText("");
+						list.getItems().remove(parameter);
 					}
 				});
 				
