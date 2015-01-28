@@ -19,11 +19,13 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.Stack;
+
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.Retweets;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -581,11 +583,22 @@ public class GUIController extends Application implements Initializable {
 	 * @return the hashmap mapping countries to the number quantifying the 
 	 * retweet activity in this country
 	 */
-	public HashMap<String, Double> getDisplayValuePerCountry(Object whatever, HashMap<String, Integer> retweetsPerLocation ) {
+	public HashMap<String, Double> getDisplayValuePerCountry(TweetsAndRetweets tar, HashMap<String, Integer> retweetsPerLocation ) {
 	    HashMap<String, Double> result = new HashMap<String, Double>();
 	    
-	    //return something none null
-	    result.put("US", 0.5);
+	    Iterator<Retweets> it = tar.retweets.iterator();
+	    int overallCounter = 0;
+	    while (it.hasNext()) {
+	    	overallCounter += it.next().getCounter();
+	    }
+	    
+	    it = tar.retweets.iterator();
+	    while (it.hasNext()) {
+	    	Retweets country = it.next();
+	    	
+	    	double relativeValue = country.getCounter() / (overallCounter * retweetsPerLocation.get(country.getLocationCode()));
+	    	result.put(country.getLocationCode(), relativeValue);
+	    }
 	    
 	    return result;
 	}
