@@ -67,8 +67,9 @@ public class GUIController extends Application implements Initializable {
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
-	private String accountSearchText = "";
-	private boolean ready = false; 
+	private String accountSearchText = ""; 
+
+	
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
@@ -96,6 +97,7 @@ public class GUIController extends Application implements Initializable {
 				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 					@Override
 					public void handle(WindowEvent event) {
+						event.consume();
 						close();
 					}
 				});
@@ -115,9 +117,7 @@ public class GUIController extends Application implements Initializable {
 	public boolean isConnected() {
 		return db != null && db.isConnected();
 	}
-	public boolean isReady() {
-		return ready;
-	}
+
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -155,12 +155,7 @@ public class GUIController extends Application implements Initializable {
 			}
 			if (success) {
 				setInfo("Erfolreich mit DB verbunden.");
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						reloadAll();
-					}
-				});
+				reloadAll();
 			}
 		}
 	};
@@ -213,27 +208,42 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadLocation() {
-		locations.clear();
-		locations.addAll(db.getLocations());
-		update(UpdateType.LOCATION);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				locations.clear();
+				locations.addAll(db.getLocations());
+				update(UpdateType.LOCATION);
+			}
+		}).start();;
 	}
 	
 	private void reloadAccounts() {
-		accounts.clear();
-		accounts.addAll(db.getAccounts(accountSearchText));
-		update(UpdateType.ACCOUNT);
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				accounts.clear();
+				accounts.addAll(db.getAccounts(accountSearchText));
+				update(UpdateType.ACCOUNT);
+			}
+		}).start();;
 	}
 	
-	private void reloadCategories() {		
-		categoryRoot = db.getCategories();
-		if (categoryRoot != null) {
-			reloadCategoryHashMap();
-			update(UpdateType.CATEGORY);
-		} else {
-			categoryRoot = new Category(0, "Fehler", 0, false);
-			update(UpdateType.ERROR);
-			setInfo("Fehler bei der Kommunikation mir der Datenbank.");
-		}
+	private void reloadCategories() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				categoryRoot = db.getCategories();
+				if (categoryRoot != null) {
+					reloadCategoryHashMap();
+					update(UpdateType.CATEGORY);
+				} else {
+					categoryRoot = new Category(0, "Fehler", 0, false);
+					update(UpdateType.ERROR);
+					setInfo("Fehler bei der Kommunikation mir der Datenbank.");
+				}
+			}
+		}).start();
 	}
 	
 	private void reloadCategoryHashMap() {
@@ -282,7 +292,6 @@ public class GUIController extends Application implements Initializable {
 		reloadAccounts();
 		reloadCategories();
 		reloadLocation();
-		ready = true;
 	}
 	
 	private void setInfo(String text) {
