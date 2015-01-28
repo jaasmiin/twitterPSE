@@ -5,7 +5,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
+/**
+ * Class for quickly selecting and iterating over elements.
+ * @author Maximilian Awiszus
+ *
+ * @param <T> Type of elements which will be in this data structure
+ */
 public class SelectionHashList<T> {
 	private HashMap<Integer, SelectionHashListEntry> hashMap;
 	private SelectionHashListEntry first, last;
@@ -338,6 +343,9 @@ public class SelectionHashList<T> {
 		}
 	};
 	
+	/**
+	 * Creates an empty SelectionHashList.
+	 */
 	public SelectionHashList() {
 		hashMap = new HashMap<Integer, SelectionHashListEntry>();
 		first = null;
@@ -347,6 +355,11 @@ public class SelectionHashList<T> {
 		selectedCounter = 0;
 	}
 	
+	/**
+	 * Insert an element into data structure.
+	 * The element is deselected by default.
+	 * @param t element which will be inserted
+	 */
 	public void insert(T t) {
 		SelectionHashListEntry e = new SelectionHashListEntry(t, null, null);
 		if (first == null) {
@@ -360,12 +373,20 @@ public class SelectionHashList<T> {
 		hashMap.put(e.hashCode(), e);
 	}
 	
+	/**
+	 * Add many elements to the data structure.
+	 * All elements are deselected by default.
+	 * @param l Element which will be inserted
+	 */
 	public void addAll(List<T> l) {
 		for (T t : l) {
 			insert(t);
 		}
 	}
 	
+	/**
+	 * Empty data structure / remove all elements
+	 */
 	public void clear() {
 		hashMap.clear();
 		first = null;
@@ -374,6 +395,10 @@ public class SelectionHashList<T> {
 		lastSelected = null;
 	}
 	
+	/**
+	 * Remove specific element.
+	 * @param t which will be removed.
+	 */
 	public void remove(T t) {
 		if (hashMap.containsKey(t.hashCode())) {
 			SelectionHashListEntry e = hashMap.get(t.hashCode());
@@ -403,14 +428,28 @@ public class SelectionHashList<T> {
 					e.getNextSelected().setNextSelected(e.getPrevSelected());
 				}
 			}
-			hashMap.remove(t.hashCode());
+			if (hashMap.remove(t.hashCode()) != null) {
+				selectedCounter--;
+			}
 		}
 	}
 	
-	public void setSelected(T t, boolean selected) {
-		setSelected(t.hashCode(), selected);
+	/**
+	 * Select or deselect an element if it exists in the data structure.
+	 * @param t Element which will be selected / deselected
+	 * @param selected is true if element should be selected, false otherwise
+	 * @return true if list has changed during operation, false otherwise
+	 */
+	public boolean setSelected(T t, boolean selected) {
+		return setSelected(t.hashCode(), selected);
 	}
 	
+	/**
+	 * Select or deselect an element if it exists in the data structure.
+	 * @param id of element which should be selected / deselected
+	 * @param selected is true if element should be selected, false otherwise
+	 * @return true if list has changed during operation, false otherwise
+	 */
 	public boolean setSelected(Integer id, boolean selected) {
 		boolean changed = false;
 		if (hashMap.containsKey(id.hashCode())) {
@@ -436,24 +475,37 @@ public class SelectionHashList<T> {
 					firstSelected = e.getNextSelected();
 				}
 				if (e.getPrevSelected() != null) {
-					e.getPrevSelected().setNextSelected((e.getNextSelected()));
+					e.getPrevSelected().setNextSelected(e.getNextSelected());
 				} 
 				if (e.getNextSelected() != null) {
-					e.getNextSelected().setNextSelected(e.getPrevSelected());
+					e.getNextSelected().setPrevSelected(e.getPrevSelected());
 				}
 			}
 		}
 		return changed;
 	}
 	
+	/**
+	 * Get list of all inserted elements.
+	 * @return list of insrted elements
+	 */
 	public List<T> get() {
 		return list;
 	}
 	
+	/**
+	 * Get list of all selected elements.
+	 * @return list of selected elements
+	 */
 	public List<T> getSelected() {
 		return selected;
 	}
 	
+	/**
+	 * Get element with specific id
+	 * @param id of element
+	 * @return element with id or null
+	 */
 	public T getElement(Integer id) {
 		SelectionHashListEntry e = hashMap.get(id.hashCode());
 		return e == null ? null : e.getValue();

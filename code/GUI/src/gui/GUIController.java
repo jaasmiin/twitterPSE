@@ -458,6 +458,7 @@ public class GUIController extends Application implements Initializable {
 	public void setSelectedAccount(int id, boolean selected) {
 		System.out.println("setSelectedAccount(" + id + ", " + selected + ")");
 		if (accounts.setSelected(id, selected)) {
+			System.out.println("update(UpdateType.ACCOUNT_SELECTION);");
 			update(UpdateType.ACCOUNT_SELECTION);
 			reloadData();
 		}
