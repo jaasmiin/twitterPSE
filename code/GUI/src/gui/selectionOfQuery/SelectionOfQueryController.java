@@ -2,11 +2,13 @@ package gui.selectionOfQuery;
 
 import java.net.URL;
 import java.util.List;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;

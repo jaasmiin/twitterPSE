@@ -70,7 +70,6 @@ public class GUIController extends Application implements Initializable {
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = ""; 
-
 	
 	public static GUIController getInstance() {
 		if (instance == null) {
@@ -78,7 +77,9 @@ public class GUIController extends Application implements Initializable {
 		}
 		return instance;
 	}
-	
+	/**
+	 * Create a GUIController and set the singelton instance.
+	 */
 	public GUIController() {
 		super();
 		instance = this; // TODO: JavaFX creates two instances of GUIController?
@@ -107,6 +108,10 @@ public class GUIController extends Application implements Initializable {
 				e.printStackTrace();
 			}
 	}
+	/**
+	 * Close the application and disconnect from db,
+	 * if there has been a connection.
+	 */
 	public void close() {
 		if (db != null && db.isConnected()) {
 			System.out.println("Verbindung mit Datenbank wird geschlossen...");
@@ -116,12 +121,30 @@ public class GUIController extends Application implements Initializable {
 		Platform.exit();
 	}
 	
+	/**
+	 * Get whether the GUIController is connected to
+	 * the database.
+	 * @return true if connected, false otherwise
+	 */
 	public boolean isConnected() {
 		return db != null && db.isConnected();
 	}
 
+	/**
+	 * Get if the application is ready meaning all locations,
+	 * categories and accounts are already loaded from db.
+	 * @return true if data is loaded, false otherwise
+	 */
+	public boolean isReady() {
+		return !locations.get().isEmpty() && !categories.isEmpty() && !accounts.get().isEmpty();
+	}
+	
+	/**
+	 * Start the application.
+	 * @param args this parameter is not used
+	 */
 	public static void main(String[] args) {
-		launch(args);
+		launch();
 	}
 	
 	private Runnable rnbInitDBConnection = new Runnable() {
@@ -217,7 +240,7 @@ public class GUIController extends Application implements Initializable {
 				locations.addAll(db.getLocations());
 				update(UpdateType.LOCATION);
 			}
-		}).start();;
+		}).start();
 	}
 	
 	private void reloadAccounts() {
@@ -252,6 +275,7 @@ public class GUIController extends Application implements Initializable {
 		categories.clear();
 		reloadCategoryHashMap(categoryRoot);
 	}
+	
 	private void reloadCategoryHashMap(Category category) {
 		for (Category child : category.getChilds()) {
 			reloadCategoryHashMap(child);	
@@ -360,6 +384,11 @@ public class GUIController extends Application implements Initializable {
 		return newRoot;
 	}
 	
+	/**
+	 * Get accounts containing the text.
+	 * @param text with which should be compared incase-sensitively. 
+	 * @return list of accounts containing text
+	 */
 	public List<Account> getAccounts(String text) {
 		if (!accountSearchText.equals(text)) {
 			accountSearchText = text;
@@ -434,6 +463,7 @@ public class GUIController extends Application implements Initializable {
 		}
 		return selectedCategoriesList;
 	}
+	
 	/**
 	 * Get list of selected locations.
 	 * @return selected locations
