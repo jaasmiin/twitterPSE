@@ -441,6 +441,17 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Set of an account is selected.
+	 * @param id of account
+	 * @param selected is true if account should be selected, false otherwise
+	 */
+	public void setSelectedAccount(int id, boolean selected) {
+		accounts.setSelected(id, selected);
+		update(UpdateType.ACCOUNT_SELECTION);
+		reloadData();
+	}
+	
+	/**
 	 * Set if a category is selected.
 	 * @param id of category
 	 * @param selected is true if category should be selected, false otherwise
@@ -451,6 +462,7 @@ public class GUIController extends Application implements Initializable {
 		} else {
 			selectedCategories.remove(id);
 		}
+		update(UpdateType.CATEGORY_SELECTION);
 		reloadData();
 	}
 	
@@ -461,6 +473,7 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedLocation(int id, boolean selected) {
 		locations.setSelected(id, selected);
+		update(UpdateType.LOCATION_SELECTION);
 		reloadData();
 	}
 	
@@ -491,17 +504,7 @@ public class GUIController extends Application implements Initializable {
 	public List<Location> getSelectedLocations() {
 		return locations.getSelected();
 	}
-	
-	/**
-	 * Set of an account is selected.
-	 * @param id of account
-	 * @param selected is true if account should be selected, false otherwise
-	 */
-	public void setSelectedAccount(int id, boolean selected) {
-		accounts.setSelected(id, selected);
-		reloadData();
-	}
-	
+		
 	/**
 	 * Get data grouped by account.
 	 * @return data grouped by account or null
