@@ -40,14 +40,15 @@ public class MyUnfoldingMap extends PApplet {
 
     public void setup() {  //check size of map
         size(900, 600);
-        map1 = new UnfoldingMap(this);
+        map1 = new UnfoldingMap(this, P2D);
         //map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
         
         currentMap = map1;
         
         currentMap.zoomLevel(1);
         currentMap.setZoomRange(2, 4);
-        //MapUtils.createDefaultEventDispatcher(this, map1, map2);
+      
+        MapUtils.createDefaultEventDispatcher(this, map1);
         
         List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);

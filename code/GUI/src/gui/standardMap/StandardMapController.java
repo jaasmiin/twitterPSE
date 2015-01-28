@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Window;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -35,49 +36,53 @@ public class StandardMapController extends OutputElement implements Initializabl
     
     TweetsAndRetweets uneditedData;
     MyUnfoldingMap map;  
+    MyUnfoldingMap map2 = new MyUnfoldingMap();
     
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         superController.subscribe(this);
-    	new Thread(new Runnable() {
-			@Override
-			public void run() {
-		        Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						map = new MyUnfoldingMap();
-						
-						
-						JLayeredPane contentPane = new JLayeredPane();
-//						contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-//						contentPane.setLayout(new BorderLayout(0, 0));
-						contentPane.setSize(100,200);
-										        
-				        mapSwingNode.resize(100, 200);
-				        
-				        //mapSwingNode.getContent().add(map, BorderLayout.CENTER);
-				        map.init();
-				        try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-				        
-				        contentPane.add(map);
-				        mapSwingNode.setContent(contentPane);
-				        map.resize(400, 400);
-
-				        contentPane.setSize(400, 400);
-				        //map.setSize(400, 400);
-					}
-				});
-		       
-			}
-		}).start();
+    	
+    	
+    	
+        createThread(mapSwingNode);
+        
     } 
     
+    private void createThread(final SwingNode s) {
+        s.resize(900, 600);
+        pane.setMinSize(400, 400);
+        map = new MyUnfoldingMap();
+        map.setSize(900, 600);
+        map.displayHeight = 600;
+        map.displayWidth = 900;
+        
+        map.init();
+       
+        System.out.println();
+        JLayeredPane contentPane = new JLayeredPane();
+
+        contentPane.setSize(900, 600);
+                  
+                       
+        try {
+             Thread.sleep(1500);
+        } catch (InterruptedException e) {
+             // TODO Auto-generated catch block
+             e.printStackTrace();
+        }
+                        
+        contentPane.add(map);
+        contentPane.moveToFront(map);
+        s.setContent(contentPane);
+
+        map.setVisible(true);
+        map.loop();        
+        map.redraw();
+}
+    
+        
+ 
 	@Override
 	public void update(UpdateType type) {
 		if(type.equals(UpdateType.TWEET)) {
