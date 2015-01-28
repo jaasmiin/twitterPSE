@@ -18,7 +18,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -26,12 +25,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-<<<<<<< HEAD
-=======
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
->>>>>>> fc4d2a86b220ec28045af1dc10f945c2a92ffa40
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import gui.InputElement;
