@@ -65,7 +65,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	}
 	
 	private void updateLocation(List<Location> list) {
-		System.out.println("update location");
 		TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0, "Welt", "0000", null));
 		rootItem.setExpanded(true);		
 		for (Location location : list) {
@@ -92,16 +91,27 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@Override
 	public void handle(Event e) {
 		if (e.getSource().equals(trvCategory)) {
-			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
+			if (trvCategory.getSelectionModel().getSelectedItem() != null) {
 				System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
 						" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-				superController.setSelectedCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
+				new Thread(new RunnableParameter<Integer>(trvCategory.getSelectionModel().getSelectedItem().getValue().getId()) {
+					@Override
+					public void run() {	
+						superController.setSelectedCategory(parameter, true);
+					}
+				}).start();
 			}
 		} else if (e.getSource().equals(trvLocation)) {
 			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
 				System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
 						" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-				superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
+				new Thread(new RunnableParameter<Integer>(trvLocation.getSelectionModel().getSelectedItem().getValue().getId()) {
+					@Override
+					public void run() {
+						superController.setSelectedLocation(parameter, true);
+					}
+				}).start();
+				
 			}
 		} else if(e.getSource().equals(lstAccount)) {
 			if (lstAccount.getSelectionModel().getSelectedItem() != null) {

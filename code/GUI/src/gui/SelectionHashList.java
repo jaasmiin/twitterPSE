@@ -411,10 +411,12 @@ public class SelectionHashList<T> {
 		setSelected(t.hashCode(), selected);
 	}
 	
-	public void setSelected(Integer id, boolean selected) {
+	public boolean setSelected(Integer id, boolean selected) {
+		boolean changed = false;
 		if (hashMap.containsKey(id.hashCode())) {
 			SelectionHashListEntry e = hashMap.get(id.hashCode());
 			if (selected && !e.isSelected()) {
+				changed = true;
 				selectedCounter++;
 				if (firstSelected == null) {
 					firstSelected = e;
@@ -425,6 +427,7 @@ public class SelectionHashList<T> {
 					lastSelected = e;
 				}
 			} else if (!selected && e.isSelected()) {
+				changed = true;
 				selectedCounter--;
 				if (lastSelected.getValue().equals(e.getValue())) {
 					lastSelected = e.getPrevSelected();
@@ -440,6 +443,7 @@ public class SelectionHashList<T> {
 				}
 			}
 		}
+		return changed;
 	}
 	
 	public List<T> get() {

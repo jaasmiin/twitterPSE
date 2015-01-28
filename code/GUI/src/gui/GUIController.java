@@ -457,9 +457,10 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedAccount(int id, boolean selected) {
 		System.out.println("setSelectedAccount(" + id + ", " + selected + ")");
-		accounts.setSelected(id, selected);
-		update(UpdateType.ACCOUNT_SELECTION);
-		reloadData();
+		if (accounts.setSelected(id, selected)) {
+			update(UpdateType.ACCOUNT_SELECTION);
+			reloadData();
+		}
 	}
 	
 	/**
@@ -483,9 +484,10 @@ public class GUIController extends Application implements Initializable {
 	 * @param selected is true if location should be selected, false otherwise
 	 */
 	public void setSelectedLocation(int id, boolean selected) {
-		locations.setSelected(id, selected);
-		update(UpdateType.LOCATION_SELECTION);
-		reloadData();
+		if (locations.setSelected(id, selected)) {
+			update(UpdateType.LOCATION_SELECTION);
+			reloadData();
+		}
 	}
 	
 	/**
