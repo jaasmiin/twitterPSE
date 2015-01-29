@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import twitter4j.Status;
 import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
