@@ -30,7 +30,7 @@ public class Category extends Result {
      *            the parentId of this category as int (0 if root)
      * @param used
      *            true if this category is mapped at minimum to one account,
-     *            else false
+     *            false otherwise
      */
     public Category(int id, String name, int parentId, boolean used) {
         super(id);
@@ -102,10 +102,10 @@ public class Category extends Result {
     }
 
     /**
-     * specified weather this category is used as account-category pair or not
+     * specifies whether this category is used as an account-category pair or not
      * 
      * @param used
-     *            true if the category is used, else false
+     *            true if the category is used, false otherwise
      */
     public void setUsed(boolean used) {
         this.used = used;
