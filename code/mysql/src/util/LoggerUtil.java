@@ -8,7 +8,7 @@ import java.util.logging.SimpleFormatter;
 
 /**
  * 
- * util class to handle loggers
+ * util class to handle loggers and to get an instance of them
  * 
  * @author Holger Ebhart
  * @version 1.0
