@@ -90,31 +90,29 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         //topological sort list of categories in reverse order
-        categories = topSortCategories(categories);
+        //TODO: mit ein bisschen Glück, wird die Sortierung gar nicht benötigt
+        //categories = topSortCategories(categories);
         
-        //TODO weitermachen
+        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
+        for (int i = 0; i < categories.size(); i++) {
+        	idx.put(categories.get(i).getId(), i);
+        }
         
         Category ret = null;
-
-        // build category tree by parentIds
-        /*for (Category parent : parents) {
-            if (parent.getParentId() == 0) {
-                ret = parent;
-                ret.setUsed(true);
-            }
-            Iterator<Category> it = childs.iterator();
-            Category child;
-            while (it.hasNext()) {
-                child = it.next();
-                if (parent.getId() == child.getParentId()) {
-                    if (child.isUsed()) {
-                        parent.setUsed(true);
-                    }
-                    parent.addChild(child);
-                    it.remove();
-                }
-            }
-        }*/
+        
+        for (int i = 0; i < categories.size(); i++) {
+        	Category category = categories.get(i);
+        	int parentId = category.getParentId();
+        	
+        	if (parentId == 0) {
+        		ret = category;
+        		continue;
+        	}
+        	
+        	int parentPosition = idx.get(parentId);
+        	Category parent = categories.get(parentPosition);
+        	parent.addChild(category);
+        }
 
         return ret;
     }
@@ -335,12 +333,22 @@ public class DBgui extends DBConnection implements DBIgui {
     	}
     	
     	//create topological sorting
-    	List<Integer> topSort = new LinkedList<Integer>();
+    	List<Category> topSort = new LinkedList<Category>();
     	while (!q.isEmpty()) {
     		Integer node = q.poll();
-    		topSort.add(node);
-    		//TODO: weitermachen
+    		topSort.add(categories.get(node));
+    		
+    		//delete edge in implicit graph
+    		Category category = categories.get(node);
+    		int parentPosition = idx.get(category.getParentId()); 
+    		inDegree[parentPosition]--;
+    		
+    		if (inDegree[parentPosition] == 0) {
+    			q.add(parentPosition);
+    		}
     	}
+    	
+    	return topSort;
     }
     
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
