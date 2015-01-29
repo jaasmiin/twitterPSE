@@ -60,10 +60,16 @@ public class MyUnfoldingMap extends PApplet {
         dataEntriesMap = loadCountriesFromCSV("countries.csv");
         setValues = new ArrayList<String>();
 
-        noLoop(); // Möglicherweise löschen!!!
+        loop();
     }
 
     public void draw() {
+//    	try {
+//			Thread.sleep(1000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
         //switchProvider();
         currentMap.draw();
     }
