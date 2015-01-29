@@ -90,18 +90,21 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         //topological sort list of categories in reverse order
-        //TODO: mit ein bisschen Glück, wird die Sortierung gar nicht benötigt
-        //categories = topSortCategories(categories);
+        categories = topSortCategories(categories);
         
         HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
-        for (int i = 0; i < categories.size(); i++) {
-        	idx.put(categories.get(i).getId(), i);
+        Iterator<Category> it = categories.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+        	idx.put(it.next().getId(), i);
+        	i++;
         }
         
         Category ret = null;
         
-        for (int i = 0; i < categories.size(); i++) {
-        	Category category = categories.get(i);
+        it = categories.iterator();
+        while (it.hasNext()) {
+        	Category category = it.next();
         	int parentId = category.getParentId();
         	
         	if (parentId == 0) {
@@ -319,7 +322,8 @@ public class DBgui extends DBConnection implements DBIgui {
     	it = categories.iterator();
     	while (it.hasNext()) {
     		Category category = it.next();
-    		inDegree[idx.get(category.getParentId())]++;
+    		int parentId = category.getParentId();
+    		if (parentId != 0) inDegree[idx.get(parentId)]++;
     	}
     	
     	//look for nodes with inDegree 0
@@ -340,7 +344,10 @@ public class DBgui extends DBConnection implements DBIgui {
     		
     		//delete edge in implicit graph
     		Category category = categories.get(node);
-    		int parentPosition = idx.get(category.getParentId()); 
+    		int parentId = category.getParentId();
+    		if (parentId == 0) continue;
+    		
+    		int parentPosition = idx.get(parentId);
     		inDegree[parentPosition]--;
     		
     		if (inDegree[parentPosition] == 0) {
