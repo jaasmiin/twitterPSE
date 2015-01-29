@@ -10,7 +10,8 @@ package unfolding;
 public class DataEntry {
 
     private String countryName;
-    private String countryId;
+    private String countryId3Chars;
+    private String countryId2Chars;
     private Double value;
     
     public DataEntry() {
@@ -25,12 +26,20 @@ public class DataEntry {
         this.countryName = countryName;
     }
 
-    public String getCountryId() {
-        return countryId;
+    public String getCountryId3Chars() {
+        return countryId3Chars;
+    }
+    
+    public String getCountryId2Chars() {
+        return countryId3Chars;
     }
 
-    public void setCountryId(String countryId) {
-        this.countryId = countryId;
+    public void setCountryId3Chars(String countryId) {
+        this.countryId2Chars = countryId;
+    }
+    
+    public void setCountryId2Chars(String countryId) {
+        this.countryId2Chars = countryId;
     }
 
     public Double getValue() {

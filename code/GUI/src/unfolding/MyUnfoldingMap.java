@@ -147,9 +147,10 @@ public class MyUnfoldingMap extends PApplet {
             if (column.length >= 3) {
                 DataEntry dataEntry = new DataEntry();
                 dataEntry.setCountryName(column[0]);
-                dataEntry.setCountryId(column[1]);
+                dataEntry.setCountryId3Chars(column[1]);
+                dataEntry.setCountryId2Chars(column[2]);
                 dataEntry.setValue((double) -1);
-                dataEntriesMap.put(column[1], dataEntry);
+                dataEntriesMap.put(column[2], dataEntry);
             }
         }
 
