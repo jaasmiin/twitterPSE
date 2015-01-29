@@ -3,6 +3,8 @@ package unfolding;
  * 
  */
 
+
+
 import java.applet.Applet;
 import java.applet.AppletContext;
 import java.awt.Component;
@@ -10,6 +12,7 @@ import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
@@ -68,21 +71,24 @@ public class MyUnfoldingMap extends PApplet {
      * Shades countrys dependent on their relative frequency of tweets
      */
     public void shadeCountries() {
-        for (Marker marker: countryMarker) {
+        for (Marker marker : countryMarker) {
             String countryId = marker.getId();
-            DataEntry dataEntry = dataEntriesMap.get(Integer.parseInt(countryId));
-            
+            DataEntry dataEntry = dataEntriesMap.get(countryId);
+
             if (dataEntry != null && dataEntry.getValue() != -1) {
+
                 //Take value as brightness
-                float transparency = map(dataEntry.getValue(), 0, 100, 10, 255);
-                marker.setColor(color(39, 190, 7, transparency));
+                Double transparency = dataEntry.getValue();
+                float transpa = Float.parseFloat(transparency.toString());
+
+                marker.setColor(color(39, 190, 7, transpa));
                 marker.setStrokeColor(color(73, 118, 41));
                 marker.setStrokeWeight(2);
             } else {
-                //value doesn't exist 
+                // value doesn't exist
                 marker.setColor(color(100, 120));
             }
-            
+
         }
     }
     
@@ -90,28 +96,29 @@ public class MyUnfoldingMap extends PApplet {
      * Updates new values to be visualized on the map.
      * @param changedEntries String array containing country id an new value of it
      */
-    public void update(String[][] changedEntries) {
-        //Reset all entries to '-1' 
-        if(!setValues.isEmpty()) {
-            for(String id: setValues) {
+    public void update(HashMap<String, Double> changedEntries) {
+
+        if (!setValues.isEmpty()) {
+            for (String id : setValues) {
+
                 DataEntry edit = dataEntriesMap.get(id);
-                edit.setValue(-1);
+                edit.setValue((double) -1);
                 dataEntriesMap.put(id, edit);
             }
             setValues.clear();
         }
-        
-        for(int i = 0; i < changedEntries.length; i++) {
-            String id = changedEntries[i][0];
-            float newValue = Float.parseFloat(changedEntries[i][1]);
-            DataEntry newEntry = dataEntriesMap.get(id);
-            newEntry.setValue(newValue);
-            dataEntriesMap.put(id, newEntry);
-            setValues.add(id);
+
+        for(Entry<String, Double> e: changedEntries.entrySet()) {
+            
+            DataEntry newEntry = dataEntriesMap.get(e.getKey());
+            newEntry.setValue(e.getValue());
+            
+            dataEntriesMap.put(e.getKey(), newEntry);
+            setValues.add(e.getKey());
         }
         shadeCountries();
-    }
-    
+        redraw();
+    }    
 //    /**
 //     * Switches provider of the map
 //     * By pressing '1' an '2'
@@ -136,7 +143,7 @@ public class MyUnfoldingMap extends PApplet {
                 DataEntry dataEntry = new DataEntry();
                 dataEntry.setCountryName(column[0]);
                 dataEntry.setCountryId(column[1]);
-                dataEntry.setValue(-1);
+                dataEntry.setValue((double) -1);
                 dataEntriesMap.put(column[1], dataEntry);
             }
         }
