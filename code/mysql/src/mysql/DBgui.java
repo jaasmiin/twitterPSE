@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import twitter4j.User;
+import util.Util;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
@@ -270,8 +271,7 @@ public class DBgui extends DBConnection implements DBIgui {
             stmt.setString(2, user.getScreenName());
             stmt.setInt(3, user.getFollowersCount());
             stmt.setInt(4, locationId);
-            stmt.setString(5,
-                    user.getURL().replace("\\", "/").replace("\"", "\"\""));
+            stmt.setString(5, Util.checkURL(user.getURL()));
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         }
