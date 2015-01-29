@@ -88,36 +88,8 @@ public class DBgui extends DBConnection implements DBIgui {
             // close mysql-statement
             closeResultAndStatement(stmt, res);
         }
-
-        //topological sort list of categories in reverse order
-        categories = topSortCategories(categories);
         
-        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
-        Iterator<Category> it = categories.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-        	idx.put(it.next().getId(), i);
-        	i++;
-        }
-        
-        Category ret = null;
-        
-        it = categories.iterator();
-        while (it.hasNext()) {
-        	Category category = it.next();
-        	int parentId = category.getParentId();
-        	
-        	if (parentId == 0) {
-        		ret = category;
-        		continue;
-        	}
-        	
-        	int parentPosition = idx.get(parentId);
-        	Category parent = categories.get(parentPosition);
-        	parent.addChild(category);
-        }
-
-        return ret;
+        return getCategoryTree(categories);
     }
 
     @Override
@@ -297,6 +269,51 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     /**
+     * creates the category tree
+     * 
+     * @param categories the list of categories
+     * @return the top level category
+     */
+    private Category getCategoryTree(List<Category> categories) {
+        //topological sort list of categories in reverse order
+        categories = topSortCategories(categories);
+        
+        //get positions of categories in the list for fast access
+        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
+        Iterator<Category> it = categories.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            idx.put(it.next().getId(), i);
+            i++;
+        }
+        
+        Category ret = null;
+        
+        it = categories.iterator();
+        while (it.hasNext()) {
+            Category category = it.next();
+            
+            if (category.isUsed()) {
+                int parentId = category.getParentId();
+                if (parentId == 0) {
+                    ret = category;
+                    continue;
+                }
+                
+                int parentPosition = idx.get(parentId);
+                Category parent = categories.get(parentPosition);
+                parent.setUsed(true);
+                parent.addChild(category);
+            }
+            else {
+                System.out.println("UNUSED-ID: " + category.getId());
+            }
+        }
+
+        return ret;
+    }
+    
+    /**
      * does a topological sort of categories
      * 
      * if category i has parent j, j will be before i
@@ -312,8 +329,7 @@ public class DBgui extends DBConnection implements DBIgui {
     	Iterator<Category> it = categories.iterator();
     	int i = 0;
     	while (it.hasNext()) {
-    		Category category = it.next();
-    		idx.put(category.getId(), i);
+    		idx.put(it.next().getId(), i);
     		i++;
     	}
     	
@@ -337,16 +353,15 @@ public class DBgui extends DBConnection implements DBIgui {
     	}
     	
     	//create topological sorting
-    	List<Category> topSort = new LinkedList<Category>();
+    	List<Category> topSort = new ArrayList<Category>();
     	while (!q.isEmpty()) {
     		Integer node = q.poll();
-    		topSort.add(categories.get(node));
+    		Category category = categories.get(node);
+    		topSort.add(category);
     		
     		//delete edge in implicit graph
-    		Category category = categories.get(node);
     		int parentId = category.getParentId();
     		if (parentId == 0) continue;
-    		
     		int parentPosition = idx.get(parentId);
     		inDegree[parentPosition]--;
     		
