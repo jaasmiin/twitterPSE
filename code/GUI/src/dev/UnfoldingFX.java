@@ -1,5 +1,8 @@
 package dev;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
 import javax.swing.JPanel;
 
 import unfolding.MyUnfoldingMap;
@@ -10,17 +13,46 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 public class UnfoldingFX extends Application {
-	private SwingNode mapSwingNode;
-	
+	private SwingNode mapSwingNode = new SwingNode();
+	private MyUnfoldingMap map = new MyUnfoldingMap();
     @Override
     public void start(Stage stage) {
-        mapSwingNode = new SwingNode();
-        
-        MyUnfoldingMap map = new MyUnfoldingMap();
 		map.init();
 		
 		JPanel contentPane = new JPanel();
         contentPane.setSize(900, 600);
+        contentPane.addMouseListener(new MouseListener() {
+        	private int x = 0;
+        	private int y = 0;
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				map.move(e.getX() - x, e.getY() - y);
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				x = e.getX();
+				y = e.getY();
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("Mouse clicked.");
+			}
+		});
     	mapSwingNode.resize(contentPane.getWidth(), contentPane.getHeight());                
         mapSwingNode.setContent(contentPane);        
 		mapSwingNode.getContent().add(map);

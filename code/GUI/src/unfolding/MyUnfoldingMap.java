@@ -6,6 +6,7 @@ package unfolding;
 
 
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +17,7 @@ import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.MapUtils;
+import de.fhpotsdam.unfolding.utils.ScreenPosition;
 import processing.core.PApplet;
 
 /**
@@ -40,12 +42,22 @@ public class MyUnfoldingMap extends PApplet {
     	this.setSize(900, 600);
 	}
 
+    public void zoom(Point point) {
+    	currentMap.zoomAndPanTo(currentMap.getZoomLevel() - 1, new ScreenPosition(point.x, point.y));
+    	currentMap.move(1, 2);
+    }
+    
+    public void move(int x, int y) {
+    	currentMap.moveBy(x, y);
+    	System.out.println(x + " " + y);
+    	redraw();
+    }
+    
     public void setup() {  //check size of map
         size(900, 600);
         map1 = new UnfoldingMap(this, P2D);
         //map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
         
-
         currentMap = map1;
 
         currentMap.zoomLevel(1);
@@ -57,7 +69,7 @@ public class MyUnfoldingMap extends PApplet {
 
         countryMarker = MapUtils.createSimpleMarkers(countries);
 
-        dataEntriesMap = loadCountriesFromCSV("countries.csv");
+//        dataEntriesMap = loadCountriesFromCSV("countries.csv");
         setValues = new ArrayList<String>();
 
         loop();
