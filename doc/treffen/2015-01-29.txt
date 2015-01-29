@@ -1,0 +1,8 @@
+Besprechung mit Betreuern
+=========================
+
+[ ] Anzahl der Accounts pro Kategorie in GUI anzeigen (optional)
+
+- GUI Sprache egal
+	- u.U. sogar Strings aus Code auslagern
+- Wenig Kategorien -> Kein Problem
