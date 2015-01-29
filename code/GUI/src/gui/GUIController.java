@@ -56,7 +56,7 @@ public class GUIController extends Application implements Initializable {
 	private ListView<String> lstInfo;
 	
 	private static GUIController instance = null;
-	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
+	private static ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
 	private static DBgui db;
 	private Category categoryRoot;
@@ -98,6 +98,7 @@ public class GUIController extends Application implements Initializable {
 				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 					@Override
 					public void handle(WindowEvent event) {
+						System.out.println("gui elements: " + guiElements.size());
 						event.consume();
 						close();
 					}
@@ -111,6 +112,7 @@ public class GUIController extends Application implements Initializable {
 	 * if there has been a connection.
 	 */
 	public void close() {
+		update(UpdateType.CLOSE);
 		if (db != null && db.isConnected()) {
 			System.out.println("Verbindung mit Datenbank wird geschlossen...");
 			db.disconnect();

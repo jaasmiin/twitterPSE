@@ -74,6 +74,11 @@ public class StandardMapController extends OutputElement implements Initializabl
  
    @Override
     public void update(UpdateType type) {
+	   if (type == UpdateType.CLOSE) {
+		   if (map != null) {
+			   map.exit();
+		   }
+	   }
         /*if(type.equals(UpdateType.TWEET)) {
             uneditedData = superController.getDataByLocation();
             HashMap<String, Integer> forCalc = new HashMap<String, Integer>();

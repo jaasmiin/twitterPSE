@@ -47,12 +47,6 @@ public class MyUnfoldingMap extends PApplet {
     	currentMap.move(1, 2);
     }
     
-    public void move(int x, int y) {
-    	currentMap.moveBy(x, y);
-    	System.out.println(x + " " + y);
-    	redraw();
-    }
-    
     public void setup() {  //check size of map
         size(900, 600);
         map1 = new UnfoldingMap(this, P2D);
