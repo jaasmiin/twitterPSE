@@ -305,9 +305,6 @@ public class DBgui extends DBConnection implements DBIgui {
                 parent.setUsed(true);
                 parent.addChild(category);
             }
-            else {
-                System.out.println("UNUSED-ID: " + category.getId());
-            }
         }
 
         return ret;
