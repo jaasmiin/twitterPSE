@@ -11,10 +11,10 @@ public class DataEntry {
 
     private String countryName;
     private String countryId;
-    private float value;
+    private Double value;
     
     public DataEntry() {
-        this.value = -1;
+        this.value = (double) -1;
     }
     
     public String getCountryName() {
@@ -33,11 +33,11 @@ public class DataEntry {
         this.countryId = countryId;
     }
 
-    public float getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(float value) {
-        this.value = value;
+    public void setValue(double d) {
+        this.value = d;
     }    
 }

@@ -3,6 +3,7 @@ package gui.standardMap;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
@@ -21,8 +22,10 @@ public class StandardMapController extends OutputElement implements
     @FXML
     private SwingNode mapSwingNode;
 
-    TweetsAndRetweets uneditedData;
+    private TweetsAndRetweets uneditedData;
     MyUnfoldingMap map;
+
+    private HashMap<String, Double> calculatedData;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -62,10 +65,19 @@ public class StandardMapController extends OutputElement implements
 
     @Override
     public void update(UpdateType type) {
-        if (type.equals(UpdateType.TWEET)) {
+        if(type.equals(UpdateType.TWEET)) {
             uneditedData = superController.getDataByLocation();
-            // TODO: Get calculated data from somewhere
-            // map.update(); insert new data
+            HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
+            for (mysql.result.Retweets r: uneditedData.retweets) {
+                int counter = r.getCounter();
+                String id = r.getLocationCode();
+                forCalc.put(id, counter);
+            }
+            
+            calculatedData = superController.getDisplayValuePerCountry(uneditedData, forCalc);
+            
+            //TODO: Get calculated data from somewhere
+            //map.update();  insert new data
         }
     }
 }
