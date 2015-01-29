@@ -1,7 +1,6 @@
 package gui.standardMap;
 
-import Retweets;
-import UpdateType;
+
 
 import java.net.URL;
 import java.util.HashMap;
@@ -62,9 +61,9 @@ public class StandardMapController extends OutputElement implements Initializabl
     
         
  
-    @Override
+   @Override
     public void update(UpdateType type) {
-        if(type.equals(UpdateType.TWEET)) {
+       /* if(type.equals(UpdateType.TWEET)) {
             uneditedData = superController.getDataByLocation();
             HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
             for (mysql.result.Retweets r: uneditedData.retweets) {
@@ -77,6 +76,6 @@ public class StandardMapController extends OutputElement implements Initializabl
             
             //TODO: Get calculated data from somewhere
             //map.update();  insert new data
-        }
-    }
+        } */
+    } 
 }
