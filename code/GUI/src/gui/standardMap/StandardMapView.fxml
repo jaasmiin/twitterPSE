@@ -6,8 +6,5 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.standardMap.StandardMapController">
-   <children>
-      <SwingNode fx:id="mapSwingNode" />
-   </children>
-</StackPane>
+
+<SwingNode fx:id="mapSwingNode" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.standardMap.StandardMapController" />
