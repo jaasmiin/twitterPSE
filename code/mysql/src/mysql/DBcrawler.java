@@ -12,6 +12,7 @@ import java.util.Stack;
 import java.util.logging.Logger;
 
 import twitter4j.User;
+import util.Util;
 
 /**
  * 
@@ -76,18 +77,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         } else {
             // add account
 
-            location = checkString(location, 3, DEFAULT_LOCATION);
+            location = Util.checkString(location, 3, DEFAULT_LOCATION);
 
-            name = checkString(name, 30, null);
+            name = Util.checkString(name, 30, null);
 
-            if (url != null) {
-                if (url.startsWith("http://www.")) {
-                    url = url.substring(11, url.length());
-                } else if (url.startsWith("http://")) {
-                    url = url.substring(7, url.length());
-                }
-                url = checkString(url, 100, null);
-            }
+            url = Util.checkURL(url);
 
             // insert location
             result1 = true;
@@ -180,7 +174,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         if (date == null)
             return new boolean[] {false, false };
 
-        location = checkString(location, 3, DEFAULT_LOCATION);
+        location = Util.checkString(location, 3, DEFAULT_LOCATION);
 
         boolean result1 = true;
         if (!addLocation(location, null)) {
@@ -216,8 +210,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
      */
     private boolean addLocation(String code, String parent) {
 
-        code = checkString(code, 3, "0");
-        parent = checkString(parent, 3, null);
+        code = Util.checkString(code, 3, "0");
+        parent = Util.checkString(parent, 3, null);
 
         // HashTable lookup
         if (locationHash.contains(code)
@@ -403,9 +397,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean addLocationString(String code, String word, String timeZone) {
 
-        timeZone = checkString(timeZone, 200, "");
-        code = checkString(code, 3, null);
-        word = checkString(word, 250, null);
+        timeZone = Util.checkString(timeZone, 200, "");
+        code = Util.checkString(code, 3, null);
+        word = Util.checkString(word, 250, null);
         if (word == null || code == null)
             return false;
 
@@ -423,20 +417,6 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         return executeStatementUpdate(stmt, false);
-    }
-
-    private String checkString(String word, int maxLength, String byDefault) {
-        if (word == null) {
-            return byDefault;
-
-        } else {
-            String ret = word.replace("\\", "/");
-            ret = ret.replace("\"", "\"\"");
-            if (ret.length() > maxLength) {
-                ret = ret.substring(0, maxLength);
-            }
-            return ret;
-        }
     }
 
     @Override

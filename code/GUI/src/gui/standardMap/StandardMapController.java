@@ -55,19 +55,20 @@ public class StandardMapController extends OutputElement implements Initializabl
     	mapSwingNode.resize(contentPane.getWidth(), contentPane.getHeight());                
         mapSwingNode.setContent(contentPane);        
 		mapSwingNode.getContent().add(map);
-		try {
-			Thread.sleep(1500);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		map.redraw();
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-		mapSwingNode.getContent().repaint();
-}
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) { // TODO: close this thread
+					mapSwingNode.getContent().repaint();
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+    }
     
         
  
@@ -87,7 +88,7 @@ public class StandardMapController extends OutputElement implements Initializabl
             //TODO: repaint pane
             //TODO: Get calculated data from somewhere
             //map.update();  insert new data
-        } */
+        }*/
     } 
 
 }

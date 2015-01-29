@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import twitter4j.User;
+import util.Util;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
@@ -270,8 +271,7 @@ public class DBgui extends DBConnection implements DBIgui {
             stmt.setString(2, user.getScreenName());
             stmt.setInt(3, user.getFollowersCount());
             stmt.setInt(4, locationId);
-            stmt.setString(5,
-                    user.getURL().replace("\\", "/").replace("\"", "\"\""));
+            stmt.setString(5, Util.checkURL(user.getURL()));
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         }
@@ -412,8 +412,9 @@ public class DBgui extends DBConnection implements DBIgui {
 
                     // add account and tweet
                     if (temp == null) {
-                        accounts.add(new Account(id, res.getString(2),
-                                new Tweets(null, res.getInt(1))));
+                        accounts.add(new Account(id, res
+                                .getString("AccountName"), new Tweets(null, res
+                                .getInt(1))));
                     } else {
                         // add tweets to account
 
@@ -421,8 +422,9 @@ public class DBgui extends DBConnection implements DBIgui {
                                 .getInt(1)));
                     }
                 } else {
-                    accounts.add(new Account(res.getInt(3), res.getString(2),
-                            new Tweets(null, res.getInt(1))));
+                    accounts.add(new Account(res.getInt(3), res
+                            .getString("AccountName"), new Tweets(null, res
+                            .getInt(1))));
                 }
             }
         } catch (SQLException e) {
@@ -460,14 +462,18 @@ public class DBgui extends DBConnection implements DBIgui {
     private List<Account> getRetweetSumPerAccount(Statement stmt, boolean byDate) {
 
         String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, AccountId;";
+        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId;";
 
         ResultSet res = null;
-        runningRequest = true;
+
         try {
+            runningRequest = true;
             res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
+            // TODO remove log below
+            logger.warning("SQL-Exception thrown by this statement: "
+                    + (byDate ? a : b));
         } finally {
             runningRequest = false;
         }
@@ -479,7 +485,7 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
 
-                int id = res.getInt(3);
+                int id = res.getInt("AccountId");
                 Account temp = null;
                 Iterator<Account> it = ret.iterator();
                 while (it.hasNext() && temp == null) {
@@ -491,9 +497,9 @@ public class DBgui extends DBConnection implements DBIgui {
 
                 if (temp == null) {
                     // add account and retweet
-                    ret.add(new Account(id, res.getString(2), new Retweets(
-                            (byDate ? res.getDate(4) : null), res.getInt(1),
-                            res.getInt(2))));
+                    ret.add(new Account(id, "", new Retweets((byDate ? res
+                            .getDate("Day") : null), res.getInt(1), res
+                            .getInt(2))));
                 } else {
                     // add retweets to account
                     Retweets element = new Retweets(
