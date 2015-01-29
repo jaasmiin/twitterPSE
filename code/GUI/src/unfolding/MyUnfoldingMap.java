@@ -78,7 +78,6 @@ public class MyUnfoldingMap extends PApplet {
             DataEntry dataEntry = dataEntriesMap.get(countryId);
 
             if (dataEntry != null && dataEntry.getValue() != -1) {
-
                 //Take value as brightness
                 Double transparency = dataEntry.getValue();
                 float transpa = Float.parseFloat(transparency.toString());
@@ -156,5 +155,4 @@ public class MyUnfoldingMap extends PApplet {
 
         return dataEntriesMap;
     }
-
 }

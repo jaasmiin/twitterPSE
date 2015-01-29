@@ -37,7 +37,7 @@ public class DataEntry {
         return value;
     }
 
-    public void setValue(Double double1) {
-        this.value = double1;
+    public void setValue(double d) {
+        this.value = d;
     }    
 }

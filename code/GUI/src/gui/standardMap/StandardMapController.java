@@ -3,6 +3,7 @@ package gui.standardMap;
 
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 import javax.swing.JPanel;
@@ -24,7 +25,9 @@ public class StandardMapController extends OutputElement implements Initializabl
    
     MyUnfoldingMap map;  
     MyUnfoldingMap map2 = new MyUnfoldingMap();
-    
+
+
+    private HashMap<String, Double> calculatedData;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -70,7 +73,7 @@ public class StandardMapController extends OutputElement implements Initializabl
  
    @Override
     public void update(UpdateType type) {
-       /* if(type.equals(UpdateType.TWEET)) {
+        /*if(type.equals(UpdateType.TWEET)) {
             uneditedData = superController.getDataByLocation();
             HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
             for (mysql.result.Retweets r: uneditedData.retweets) {
