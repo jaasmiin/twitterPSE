@@ -4,6 +4,8 @@ package unfolding;
  * 
  */
 
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +15,6 @@ import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.marker.Marker;
-import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 import processing.core.PApplet;
 
@@ -28,26 +29,32 @@ public class MyUnfoldingMap extends PApplet {
      */
     private static final long serialVersionUID = 1L;
     private UnfoldingMap map1;
-    private UnfoldingMap map2;
+    //private UnfoldingMap map2;
     private UnfoldingMap currentMap;
     private HashMap<String, DataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
     private List<String> setValues;
 
-    public void setup() { // check size of map
-        size(900, 600);
+    public MyUnfoldingMap() {
+    	super();
+    	this.setSize(900, 600);
+	}
 
-        map1 = new UnfoldingMap(this);
-        map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
+    public void setup() {  //check size of map
+        size(900, 600);
+        map1 = new UnfoldingMap(this, P2D);
+        //map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
+        
 
         currentMap = map1;
 
         currentMap.zoomLevel(1);
         currentMap.setZoomRange(2, 4);
-        MapUtils.createDefaultEventDispatcher(this, map1, map2);
+      
+        MapUtils.createDefaultEventDispatcher(this, map1);
+        
+        List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
 
-        List<Feature> countries = GeoJSONReader.loadData(this,
-                "countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);
 
         dataEntriesMap = loadCountriesFromCSV("countries.csv");
@@ -57,7 +64,7 @@ public class MyUnfoldingMap extends PApplet {
     }
 
     public void draw() {
-        switchProvider();
+        //switchProvider();
         currentMap.draw();
     }
 
@@ -67,15 +74,16 @@ public class MyUnfoldingMap extends PApplet {
     public void shadeCountries() {
         for (Marker marker : countryMarker) {
             String countryId = marker.getId();
-            DataEntry dataEntry = dataEntriesMap.get(Integer
-                    .parseInt(countryId));
+
+            DataEntry dataEntry = dataEntriesMap.get(countryId);
 
             if (dataEntry != null && dataEntry.getValue() != -1) {
-                // Take value as brightness
-                float trasp = Float.parseFloat(dataEntry.getValue().toString());
+                //Take value as brightness
+                Double transparency = dataEntry.getValue();
+                float transpa = Float.parseFloat(transparency.toString());
+
+                marker.setColor(color(39, 190, 7, transpa));
                 
-                float transparency = map(trasp, 0, 100, 10, 255);
-                marker.setColor(color(39, 190, 7, transparency));
                 marker.setStrokeColor(color(73, 118, 41));
                 marker.setStrokeWeight(2);
             } else {
@@ -115,17 +123,19 @@ public class MyUnfoldingMap extends PApplet {
         shadeCountries();
         redraw();
     }    
-
-    /**
-     * Switches provider of the map By pressing '1' an '2'
-     */
-    public void switchProvider() {
-        if (key == '1') {
-            currentMap = map1;
-        } else if (key == '2') {
-            currentMap = map2;
-        }
-    }
+//    /**
+//     * Switches provider of the map
+//     * By pressing '1' an '2'
+//     */
+//    public void switchProvider() {
+//        if(key == '1') {
+//            currentMap = map1;
+//        }
+//        else if (key == '2') {
+//            currentMap = map2;
+//        }
+//    }
+    
 
     private HashMap<String, DataEntry> loadCountriesFromCSV(String file) {
         HashMap<String, DataEntry> dataEntriesMap = new HashMap<String, DataEntry>();
@@ -137,9 +147,10 @@ public class MyUnfoldingMap extends PApplet {
             if (column.length >= 3) {
                 DataEntry dataEntry = new DataEntry();
                 dataEntry.setCountryName(column[0]);
-                dataEntry.setCountryId(column[1]);
+                dataEntry.setCountryId3Chars(column[1]);
+                dataEntry.setCountryId2Chars(column[2]);
                 dataEntry.setValue((double) -1);
-                dataEntriesMap.put(column[1], dataEntry);
+                dataEntriesMap.put(column[2], dataEntry);
             }
         }
 
