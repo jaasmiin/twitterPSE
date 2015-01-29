@@ -633,6 +633,7 @@ public class GUIController extends Application implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		update(UpdateType.GUI_STARTED);
 		new Thread(rnbInitDBConnection).start();
 	}
 	

@@ -6,6 +6,8 @@ package unfolding;
 
 
 
+import gui.GUIController;
+
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,9 +43,11 @@ public class MyUnfoldingMap extends PApplet {
     	super();
     	this.setSize(900, 600);
 	}
-    
+
     public void setup() {  //check size of map
         size(900, 600);
+        smooth();
+        
         map1 = new UnfoldingMap(this, P2D);
         //map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
         
@@ -66,13 +70,8 @@ public class MyUnfoldingMap extends PApplet {
     public UnfoldingMap getMap() {
     	return currentMap;
     }
+    
     public void draw() {
-//    	try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
         //switchProvider();
         currentMap.draw();
     }
