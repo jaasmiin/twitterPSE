@@ -7,7 +7,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.logging.Logger;
 
 import twitter4j.User;
@@ -69,17 +71,15 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
-        List<Category> parents = new ArrayList<Category>();
-        List<Category> childs = new ArrayList<Category>();
+        //create a list with all categories
+        List<Category> categories = new ArrayList<Category>();
         try {
             while (res.next()) {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
                 boolean used = res.getInt("AccountId") == 0;
-                Category c = new Category(id, res.getString("Name"), parent,
-                        used);
-                parents.add(c);
-                childs.add(c);
+                Category c = new Category(id, res.getString("Name"), parent, used);
+                categories.add(c);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -89,10 +89,15 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
+        //topological sort list of categories in reverse order
+        categories = topSortCategories(categories);
+        
+        //TODO weitermachen
+        
         Category ret = null;
 
         // build category tree by parentIds
-        for (Category parent : parents) {
+        /*for (Category parent : parents) {
             if (parent.getParentId() == 0) {
                 ret = parent;
                 ret.setUsed(true);
@@ -109,7 +114,7 @@ public class DBgui extends DBConnection implements DBIgui {
                     it.remove();
                 }
             }
-        }
+        }*/
 
         return ret;
     }
@@ -290,6 +295,54 @@ public class DBgui extends DBConnection implements DBIgui {
         return getTweetSum(stmt, byDates);
     }
 
+    /**
+     * does a topological sort of categories
+     * 
+     * if category i has parent j, j will be before i
+     * 
+     * @param categories the list of categories
+     * @return the sorted list of categories
+     */
+    private List<Category> topSortCategories(List<Category> categories) {
+    	int[] inDegree = new int[categories.size()];
+    	HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
+    	
+    	//get a mapping: CategoryId to array list index
+    	Iterator<Category> it = categories.iterator();
+    	int i = 0;
+    	while (it.hasNext()) {
+    		Category category = it.next();
+    		idx.put(category.getId(), i);
+    		i++;
+    	}
+    	
+    	//count the inDegree of each node in the DAG
+    	//in this case the number of children of each category
+    	it = categories.iterator();
+    	while (it.hasNext()) {
+    		Category category = it.next();
+    		inDegree[idx.get(category.getParentId())]++;
+    	}
+    	
+    	//look for nodes with inDegree 0
+    	//those are the start nodes for the topological sorting
+    	//insert them into a queue
+    	Queue<Integer> q = new LinkedList<Integer>();
+    	for (i = 0; i < categories.size(); i++) {
+    		if (inDegree[i] == 0) {
+    			q.add(i);
+    		}
+    	}
+    	
+    	//create topological sorting
+    	List<Integer> topSort = new LinkedList<Integer>();
+    	while (!q.isEmpty()) {
+    		Integer node = q.poll();
+    		topSort.add(node);
+    		//TODO: weitermachen
+    	}
+    }
+    
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
         String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
