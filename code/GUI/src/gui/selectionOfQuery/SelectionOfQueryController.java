@@ -18,7 +18,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import gui.InputElement;
+import gui.RunnableParameter;
 
 public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
 	
@@ -42,6 +44,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		for (Account a : accounts) {
 			lstAccount.getItems().add(a);
 		}
+		tipAccount.setDisable(false);
 	}
 	
 	private void updateCategory(Category rootCategory) {
@@ -49,13 +52,16 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		rootItem.setExpanded(true);
 		updateCategoryRec(rootCategory, rootItem);
 		trvCategory.setRoot(rootItem);
+		tipCategory.setDisable(false);
 	}
 	
 	private void updateCategoryRec(Category category, TreeItem<Category> item) {
-		for (Category childCategory : category.getChilds()) {
-			TreeItem<Category> child = new TreeItem<Category>(childCategory);
-			updateCategoryRec(childCategory, child);
-			item.getChildren().add(child);
+		if (category.isUsed()) {
+			for (Category childCategory : category.getChilds()) {
+				TreeItem<Category> child = new TreeItem<Category>(childCategory);
+				updateCategoryRec(childCategory, child);
+				item.getChildren().add(child);
+			}
 		}
 	}
 	
@@ -66,13 +72,12 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			rootItem.getChildren().add(new TreeItem<Location>(location));
 		}
 		trvLocation.setRoot(rootItem);
+		tipLocation.setDisable(false);
 	}
 	
 	@Override
 	public void update(UpdateType type) {
-		if (type == UpdateType.TWEET) {
-			// TODO: load data and update elements
-		} else if (type == UpdateType.LOCATION) {
+		if (type == UpdateType.LOCATION) {
 			updateLocation(superController.getLocations(txtFilterSearch.getText()));
 		} else if (type == UpdateType.CATEGORY) {
 			updateCategory(superController.getCategoryRoot(txtFilterSearch.getText()));
@@ -86,24 +91,43 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	@FXML
 	@Override
 	public void handle(Event e) {
-		if (e.getSource().equals(trvCategory)) {
-			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
-						" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-				superController.setSelectedCategory(trvCategory.getSelectionModel().getSelectedItem().getValue().getId(), true);
-			}
-		} else if (e.getSource().equals(trvLocation)) {
-			if (trvLocation.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
-						" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
-				superController.setSelectedLocation(trvLocation.getSelectionModel().getSelectedItem().getValue().getId(), true);
-			}
-		} else if(e.getSource().equals(lstAccount)) {
-			if (lstAccount.getSelectionModel().getSelectedItem() != null) {
-				System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
-						" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
-				superController.setSelectedAccount(lstAccount.getSelectionModel().getSelectedItem().getId(), true);
-			}
+		if (e instanceof MouseEvent && ((MouseEvent) e).getClickCount() == 2) {
+			if (e.getSource().equals(trvCategory)) {
+				if (trvCategory.getSelectionModel().getSelectedItem() != null) {
+					System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
+							" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
+					new Thread(new RunnableParameter<Integer>(trvCategory.getSelectionModel().getSelectedItem().getValue().getId()) {
+						@Override
+						public void run() {	
+							superController.setSelectedCategory(parameter, true);
+						}
+					}).start();
+				}
+			} else if (e.getSource().equals(trvLocation)) {
+				if (trvLocation.getSelectionModel().getSelectedItem() != null) {
+					System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
+							" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
+					new Thread(new RunnableParameter<Integer>(trvLocation.getSelectionModel().getSelectedItem().getValue().getId()) {
+						@Override
+						public void run() {
+							superController.setSelectedLocation(parameter, true);
+						}
+					}).start();
+					
+				}
+			} else if(e.getSource().equals(lstAccount)) {
+				if (lstAccount.getSelectionModel().getSelectedItem() != null) {
+					System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
+							" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
+					new Thread(new RunnableParameter<Integer>(lstAccount.getSelectionModel().getSelectedItem().getId()) {
+						@Override
+						public void run() {
+							superController.setSelectedAccount(parameter, true);
+						}
+					}).start();
+					
+				}
+			} 
 		} else if (e.getSource().equals(txtFilterSearch)) {
 			if (e instanceof KeyEvent) {
 				KeyEvent k = (KeyEvent) e;
@@ -122,10 +146,8 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		if (trvCategory != null) { // only one time in SelectionOfQueryView
-			super.initialize(location, resources);
-			superController.subscribe(this);
-		}
+		super.initialize(location, resources);
+		superController.subscribe(this);
 	}
 
 }

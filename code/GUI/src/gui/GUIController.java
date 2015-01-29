@@ -24,6 +24,7 @@ import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.Retweets;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -35,7 +36,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
@@ -52,7 +53,7 @@ public class GUIController extends Application implements Initializable {
 	@FXML
 	private TextField txtSearch;
 	@FXML
-	private Label lblInfo;
+	private ListView<String> lstInfo;
 	
 	private static GUIController instance = null;
 	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
@@ -67,15 +68,16 @@ public class GUIController extends Application implements Initializable {
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 	private Date selectedStartDate, selectedEndDate;
-	private String accountSearchText = "";
-	private boolean ready = false; 
+	private String accountSearchText = ""; 
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
 		}
 		return instance;
 	}
-	
+	/**
+	 * Create a GUIController and set the singelton instance.
+	 */
 	public GUIController() {
 		super();
 		instance = this; // TODO: JavaFX creates two instances of GUIController?
@@ -96,6 +98,7 @@ public class GUIController extends Application implements Initializable {
 				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 					@Override
 					public void handle(WindowEvent event) {
+						event.consume();
 						close();
 					}
 				});
@@ -103,6 +106,10 @@ public class GUIController extends Application implements Initializable {
 				e.printStackTrace();
 			}
 	}
+	/**
+	 * Close the application and disconnect from db,
+	 * if there has been a connection.
+	 */
 	public void close() {
 		if (db != null && db.isConnected()) {
 			System.out.println("Verbindung mit Datenbank wird geschlossen...");
@@ -112,21 +119,38 @@ public class GUIController extends Application implements Initializable {
 		Platform.exit();
 	}
 	
+	/**
+	 * Get whether the GUIController is connected to
+	 * the database.
+	 * @return true if connected, false otherwise
+	 */
 	public boolean isConnected() {
 		return db != null && db.isConnected();
 	}
+
+	/**
+	 * Get if the application is ready meaning all locations,
+	 * categories and accounts are already loaded from db.
+	 * @return true if data is loaded, false otherwise
+	 */
 	public boolean isReady() {
-		return ready;
+		return !locations.get().isEmpty() && !categories.isEmpty() && !accounts.get().isEmpty();
 	}
+	
+	/**
+	 * Start the application.
+	 * @param args this parameter is not used
+	 */
 	public static void main(String[] args) {
-		launch(args);
+		launch();
 	}
 	
 	private Runnable rnbInitDBConnection = new Runnable() {
 		@Override
 		public void run() {
 			boolean success = true;
-			lblInfo.setText("Verbindung mit DB wird aufgebaut...");
+			String info = "Baue Verbindung mit DB auf...";
+			setInfo(info);
 			AccessData accessData = null;
 			try {
 				accessData = getDBAccessData();
@@ -144,23 +168,17 @@ public class GUIController extends Application implements Initializable {
 					try {
 						db.connect();
 					} catch (SQLException e) {
-	//					e.printStackTrace();
 						success = false;
 					}
 				} else {
-					setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.");
+					setInfo("Fehler, es konnte keine Verbindung zur DB hergestellt werden.", info);
 				}
 			} else {
-				setInfo("Fehler, es konnten konnten keine Login Daten geladen werden.");
+				setInfo("Fehler, es konnten konnten keine Login Daten geladen werden.", info);
 			}
 			if (success) {
-				setInfo("Erfolreich mit DB verbunden.");
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						reloadAll();
-					}
-				});
+				setInfo("Mit DB verbunden.", info);
+				reloadAll();
 			}
 		}
 	};
@@ -213,26 +231,35 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadLocation() {
+		String info = "Lade Orte...";
+		setInfo(info);
 		locations.clear();
 		locations.addAll(db.getLocations());
 		update(UpdateType.LOCATION);
+		setInfo("Orte geladen.", info);
 	}
 	
 	private void reloadAccounts() {
+		String info = "Lade Accounts...";
+		setInfo(info);
 		accounts.clear();
 		accounts.addAll(db.getAccounts(accountSearchText));
 		update(UpdateType.ACCOUNT);
+		setInfo("Accounts geladen.", info);
 	}
 	
-	private void reloadCategories() {		
+	private void reloadCategories() {
+		String info = "Lade Kategorien...";
+		setInfo(info);
 		categoryRoot = db.getCategories();
 		if (categoryRoot != null) {
 			reloadCategoryHashMap();
 			update(UpdateType.CATEGORY);
+			setInfo("Kategorien geladen.", info);
 		} else {
 			categoryRoot = new Category(0, "Fehler", 0, false);
 			update(UpdateType.ERROR);
-			setInfo("Fehler bei der Kommunikation mir der Datenbank.");
+			setInfo("Fehler bei der Kommunikation mir der Datenbank.", info);
 		}
 	}
 	
@@ -240,6 +267,7 @@ public class GUIController extends Application implements Initializable {
 		categories.clear();
 		reloadCategoryHashMap(categoryRoot);
 	}
+	
 	private void reloadCategoryHashMap(Category category) {
 		for (Category child : category.getChilds()) {
 			reloadCategoryHashMap(child);	
@@ -248,6 +276,8 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	private void reloadData() {
+		String info = "Lade Daten...";
+		setInfo(info);
 		Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
 		List<Location> selectedLocations = locations.getSelected();
 		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
@@ -270,23 +300,58 @@ public class GUIController extends Application implements Initializable {
 				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
 			} catch (IllegalArgumentException | SQLException e) {
 				success = false;
-				setInfo(e.getMessage());
+				setInfo("Fehler bei der Kommunikation mit der DB.", info);
 			}
 			if (success) {
+				setInfo("Daten geladen.", info);
 				update(UpdateType.TWEET);
 			}
+		} else {
+			setInfo("Konnte keine Daten laden, bitte wählen Sie mindestens einen Filter.", info);
 		}
 	}
 	
 	private void reloadAll() {
-		reloadAccounts();
-		reloadCategories();
-		reloadLocation();
-		ready = true;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadAccounts();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadCategories();
+			}
+		}).start();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				reloadLocation();
+			}
+		}).start();
 	}
 	
-	private void setInfo(String text) {
-		Platform.runLater(new InfoRunnable(lblInfo, text));
+	private void setInfo(final String info) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				lstInfo.getItems().removeAll(info);
+				lstInfo.getItems().add(info);
+			}
+		});
+	}
+	
+	private void setInfo(final String info, final String oldInfo) {
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				lstInfo.getItems().remove(oldInfo);
+				lstInfo.getItems().removeAll(info);
+				lstInfo.getItems().add(info);
+				Platform.runLater(new InfoRunnable(lstInfo, info));
+			}
+		});
 	}
 	
 	/**
@@ -349,6 +414,11 @@ public class GUIController extends Application implements Initializable {
 		return newRoot;
 	}
 	
+	/**
+	 * Get accounts containing the text.
+	 * @param text with which should be compared incase-sensitively. 
+	 * @return list of accounts containing text
+	 */
 	public List<Account> getAccounts(String text) {
 		if (!accountSearchText.equals(text)) {
 			accountSearchText = text;
@@ -381,6 +451,20 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Set of an account is selected.
+	 * @param id of account
+	 * @param selected is true if account should be selected, false otherwise
+	 */
+	public void setSelectedAccount(int id, boolean selected) {
+		System.out.println("setSelectedAccount(" + id + ", " + selected + ")");
+		if (accounts.setSelected(id, selected)) {
+			System.out.println("update(UpdateType.ACCOUNT_SELECTION);");
+			update(UpdateType.ACCOUNT_SELECTION);
+			reloadData();
+		}
+	}
+	
+	/**
 	 * Set if a category is selected.
 	 * @param id of category
 	 * @param selected is true if category should be selected, false otherwise
@@ -391,6 +475,7 @@ public class GUIController extends Application implements Initializable {
 		} else {
 			selectedCategories.remove(id);
 		}
+		update(UpdateType.CATEGORY_SELECTION);
 		reloadData();
 	}
 	
@@ -400,8 +485,10 @@ public class GUIController extends Application implements Initializable {
 	 * @param selected is true if location should be selected, false otherwise
 	 */
 	public void setSelectedLocation(int id, boolean selected) {
-		locations.setSelected(id, selected);
-		reloadData();
+		if (locations.setSelected(id, selected)) {
+			update(UpdateType.LOCATION_SELECTION);
+			reloadData();
+		}
 	}
 	
 	/**
@@ -423,6 +510,7 @@ public class GUIController extends Application implements Initializable {
 		}
 		return selectedCategoriesList;
 	}
+	
 	/**
 	 * Get list of selected locations.
 	 * @return selected locations
@@ -430,17 +518,7 @@ public class GUIController extends Application implements Initializable {
 	public List<Location> getSelectedLocations() {
 		return locations.getSelected();
 	}
-	
-	/**
-	 * Set of an account is selected.
-	 * @param id of account
-	 * @param selected is true if account should be selected, false otherwise
-	 */
-	public void setSelectedAccount(int id, boolean selected) {
-		accounts.setSelected(id, selected);
-		reloadData();
-	}
-	
+		
 	/**
 	 * Get data grouped by account.
 	 * @return data grouped by account or null
@@ -572,11 +650,22 @@ public class GUIController extends Application implements Initializable {
 	 * @return the hashmap mapping countries to the number quantifying the 
 	 * retweet activity in this country
 	 */
-	public HashMap<String, Double> getDisplayValuePerCountry(Object whatever, HashMap<String, Integer> retweetsPerLocation ) {
+	public HashMap<String, Double> getDisplayValuePerCountry(TweetsAndRetweets tar, HashMap<String, Integer> retweetsPerLocation ) {
 	    HashMap<String, Double> result = new HashMap<String, Double>();
 	    
-	    //return something none null
-	    result.put("US", 0.5);
+	    Iterator<Retweets> it = tar.retweets.iterator();
+	    int overallCounter = 0;
+	    while (it.hasNext()) {
+	    	overallCounter += it.next().getCounter();
+	    }
+	    
+	    it = tar.retweets.iterator();
+	    while (it.hasNext()) {
+	    	Retweets country = it.next();
+	    	
+	    	double relativeValue = country.getCounter() / (overallCounter * retweetsPerLocation.get(country.getLocationCode()));
+	    	result.put(country.getLocationCode(), relativeValue);
+	    }
 	    
 	    return result;
 	}

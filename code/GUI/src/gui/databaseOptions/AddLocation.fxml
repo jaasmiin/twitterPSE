@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane fx:id="tabPane_Loc" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+  <tabs>
+    <Tab fx:id="tab_Loc_tab1" text="Account wählen">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TextField fx:id="txtField_Loc_tab1" layoutX="14.0" layoutY="60.0" />
+                  <Label layoutX="14.0" layoutY="23.0" text="Suche Account" />
+                  <ListView fx:id="list_Loc_tab1" layoutX="300.0" layoutY="60.0" prefHeight="256.0" prefWidth="272.0" />
+                  <Label layoutX="300.0" layoutY="23.0" text="Acounts in Datenbank" />
+                  <Button fx:id="b_Loc_tab1" layoutX="507.0" layoutY="316.0" mnemonicParsing="false" text="Weiter" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+    <Tab fx:id="tab_Loc_tab2" text="Kategorie wählen">
+      <content>
+        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="361.0" prefWidth="509.0">
+               <children>
+                  <TextField fx:id="txtField_Loc_tab2" layoutX="14.0" layoutY="23.0" prefHeight="31.0" prefWidth="159.0" />
+                  <Button fx:id="b_Loc_tab2_zurueck" layoutX="374.0" layoutY="310.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="93.0" text="Zurück" />
+                  <Button fx:id="b_Loc_tab2_fertig" layoutX="479.0" layoutY="310.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="87.0" text="Fertig" />
+                  <TreeView fx:id="trv_Loc_tab2" layoutX="321.0" layoutY="23.0" prefHeight="263.0" prefWidth="245.0" />
+               </children></AnchorPane>
+      </content>
+    </Tab>
+  </tabs>
+</TabPane>

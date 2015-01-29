@@ -26,10 +26,12 @@ public interface DBIcategorizer {
      * 
      * @param url
      *            the url from twitter of the website of this account as String
+     * @param name
+     *            the name of the twitter account, with wildcards instead of spaced
      * @return a list of categoryIds where an url match was successful as
      *         List<Integer>
      */
-    public List<Integer> getCategoriesForAccount(String url);
+    public List<Integer> getCategoriesForAccount(String url, String name);
 
     /**
      * inserts first the category in the database and then an entry to connect

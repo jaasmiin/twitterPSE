@@ -5,11 +5,10 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Menu mnemonicParsing="false" text="Datenbank" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+<Menu mnemonicParsing="false" text="Datenbank" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="gui.databaseOptions.DatabaseOptController">
             <items>
-              <MenuItem mnemonicParsing="false" text="Kategorie hinzufügen" fx:id="addCat"/>
-              <MenuItem mnemonicParsing="false" text="Ort ändern" fx:id="addLoc"/>
-              <MenuItem mnemonicParsing="false" text="Account hinzufügen" fx:id="addAcount"/>
+              <MenuItem fx:id="addCat" mnemonicParsing="false" text="Kategorie hinzufÃ¼gen" />
+              <MenuItem fx:id="addLoc" mnemonicParsing="false" text="Ort Ã¤ndern" />
+              <MenuItem fx:id="addAcount" mnemonicParsing="false" text="Account hinzufÃ¼gen" />
             </items>
           </Menu>
-

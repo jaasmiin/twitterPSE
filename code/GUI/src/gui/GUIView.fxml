@@ -68,7 +68,8 @@
           </Tab>
         </tabs>
       </TabPane>      
-      <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
+      <!-- <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />-->
+      <ListView fx:id="lstInfo" maxHeight="50" disable="true" maxWidth="1.7976931348623157E308" minWidth="-Infinity" GridPane.columnSpan="3" GridPane.halignment="LEFT" orientation="HORIZONTAL" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

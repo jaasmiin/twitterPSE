@@ -1,2 +1,4 @@
 .settings
 logs
+*.lck
+LogFile.*

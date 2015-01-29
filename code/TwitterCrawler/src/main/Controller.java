@@ -77,7 +77,7 @@ public class Controller extends Thread {
 
         workerThreadNum = numberOfThreads;
         // set number of locators relative to number of worker
-        locatorThreadNum = workerThreadNum * 2;
+        locatorThreadNum = workerThreadNum * 4;
 
         statusProcessor = new StatusProcessor[workerThreadNum];
         thrdStatusProcessor = new Thread[workerThreadNum];

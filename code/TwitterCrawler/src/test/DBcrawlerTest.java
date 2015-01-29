@@ -55,11 +55,11 @@ public class DBcrawlerTest {
         assertEquals(6, h.size());
     }
 
-    @Test
-    public void testGetCountryCodes() {
-        HashSet<String> h = dbc.getCountryCodes();
-        assertEquals(8, h.size());
-    }
+    // @Test
+    // public void testGetCountryCodes() {
+    // HashSet<String> h = dbc.getCountryCodes();
+    // assertEquals(8, h.size());
+    // }
 
     /**
      * test for number of NonVerifiedAccounts
@@ -168,82 +168,82 @@ public class DBcrawlerTest {
         assertEquals(1, l.length);
     }
 
-    /**
-     * test to add a location
-     */
-    @Test
-    public void test1AddLocation() {
-        boolean res = dbc.addLocation("TTT", null);
-        HashSet<String> h = dbc.getCountryCodes();
-        cleaner.sql("DELETE FROM location WHERE code = \"TTT\";");
-        assertTrue(res);
-        assertTrue(h.contains("TTT"));
-        assertEquals(9, h.size());
-    }
+    // /**
+    // * test to add a location
+    // */
+    // @Test
+    // public void test1AddLocation() {
+    // boolean res = dbc.addLocation("TTT", null);
+    // HashSet<String> h = dbc.getCountryCodes();
+    // cleaner.sql("DELETE FROM location WHERE code = \"TTT\";");
+    // assertTrue(res);
+    // assertTrue(h.contains("TTT"));
+    // assertEquals(9, h.size());
+    // }
 
-    /**
-     * test to add a location that's code is to long
-     */
-    @Test
-    public void test2AddLocation() {
-        boolean res = dbc.addLocation("000TTT", null);
-        HashSet<String> h = dbc.getCountryCodes();
-        cleaner.sql("DELETE FROM location WHERE code = \"000\";");
-        assertTrue(res);
-        assertTrue(h.contains("000"));
-        assertEquals(9, h.size());
-    }
+    // /**
+    // * test to add a location that's code is to long
+    // */
+    // @Test
+    // public void test2AddLocation() {
+    // boolean res = dbc.addLocation("000TTT", null);
+    // HashSet<String> h = dbc.getCountryCodes();
+    // cleaner.sql("DELETE FROM location WHERE code = \"000\";");
+    // assertTrue(res);
+    // assertTrue(h.contains("000"));
+    // assertEquals(9, h.size());
+    // }
 
-    /**
-     * test to add a location with parent
-     */
-    @Test
-    public void test3AddLocation() {
-        boolean res = dbc.addLocation("000TTT", "T0");
-        HashSet<String> h = dbc.getCountryCodes();
-        cleaner.sql("DELETE FROM location WHERE code = \"000\";");
-        assertTrue(res);
-        assertTrue(h.contains("000"));
-        assertEquals(9, h.size());
-    }
+    // /**
+    // * test to add a location with parent
+    // */
+    // @Test
+    // public void test3AddLocation() {
+    // boolean res = dbc.addLocation("000TTT", "T0");
+    // HashSet<String> h = dbc.getCountryCodes();
+    // cleaner.sql("DELETE FROM location WHERE code = \"000\";");
+    // assertTrue(res);
+    // assertTrue(h.contains("000"));
+    // assertEquals(9, h.size());
+    // }
 
-    /**
-     * test to add a location with parent for a few times
-     */
-    @Test
-    public void test4AddLocation() {
-        boolean res1 = dbc.addLocation("000TTT", "ZZ");
-        boolean res2 = dbc.addLocation("000TTT", "ZZ");
-        HashSet<String> h = dbc.getCountryCodes();
-        cleaner.sql("DELETE FROM location WHERE code = \"000\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"ZZ\";");
-        assertTrue(res1);
-        assertTrue(res2);
-        assertTrue(h.contains("000"));
-        assertTrue(h.contains("ZZ"));
-        assertEquals(10, h.size());
-    }
+    // /**
+    // * test to add a location with parent for a few times
+    // */
+    // @Test
+    // public void test4AddLocation() {
+    // boolean res1 = dbc.addLocation("000TTT", "ZZ");
+    // boolean res2 = dbc.addLocation("000TTT", "ZZ");
+    // HashSet<String> h = dbc.getCountryCodes();
+    // cleaner.sql("DELETE FROM location WHERE code = \"000\";");
+    // cleaner.sql("DELETE FROM location WHERE code = \"ZZ\";");
+    // assertTrue(res1);
+    // assertTrue(res2);
+    // assertTrue(h.contains("000"));
+    // assertTrue(h.contains("ZZ"));
+    // assertEquals(10, h.size());
+    // }
 
-    /**
-     * test to add two locations with parent
-     */
-    @Test
-    public void test5AddLocation() {
-        boolean res1 = dbc.addLocation("PPP", "ZZ");
-        boolean res2 = dbc.addLocation("XXXC", "ZZZB");
-        HashSet<String> h = dbc.getCountryCodes();
-        cleaner.sql("DELETE FROM location WHERE code = \"PPP\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"ZZ\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"XXX\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"ZZZ\";");
-        assertTrue(res1);
-        assertTrue(res2);
-        assertTrue(h.contains("PPP"));
-        assertTrue(h.contains("ZZ"));
-        assertTrue(h.contains("XXX"));
-        assertTrue(h.contains("ZZZ"));
-        assertEquals(12, h.size());
-    }
+    // /**
+    // * test to add two locations with parent
+    // */
+    // @Test
+    // public void test5AddLocation() {
+    // boolean res1 = dbc.addLocation("PPP", "ZZ");
+    // boolean res2 = dbc.addLocation("XXXC", "ZZZB");
+    // HashSet<String> h = dbc.getCountryCodes();
+    // cleaner.sql("DELETE FROM location WHERE code = \"PPP\";");
+    // cleaner.sql("DELETE FROM location WHERE code = \"ZZ\";");
+    // cleaner.sql("DELETE FROM location WHERE code = \"XXX\";");
+    // cleaner.sql("DELETE FROM location WHERE code = \"ZZZ\";");
+    // assertTrue(res1);
+    // assertTrue(res2);
+    // assertTrue(h.contains("PPP"));
+    // assertTrue(h.contains("ZZ"));
+    // assertTrue(h.contains("XXX"));
+    // assertTrue(h.contains("ZZZ"));
+    // assertEquals(12, h.size());
+    // }
 
     @Test
     public void test1AddRetweet() {

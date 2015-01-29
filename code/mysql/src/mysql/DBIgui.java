@@ -97,50 +97,6 @@ public interface DBIgui {
             Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException;
 
-    /**
-     * returns all accounts that match a category- and a location-ID, with the
-     * associated number of Tweets and Retweets per Day
-     * 
-     * @param categoryIDs
-     *            the ids of the selected categorys as int[]
-     * @param locationIDs
-     *            the ids of the selected locations as int[]
-     * @param accountIDs
-     *            the ids of the additional accounts as int[]
-     * @return all accounts that match a category- and a location-ID, with the
-     *         associated number of Tweets and Retweets per Day as List<Account>
-     * @throws IllegalArgumentException
-     *             thrown if categoryIDs or/and LocationIDs is empty or null
-     * @throws SQLException
-     *             thrown if the sql-query couldn't be built
-     * @deprecated use getAllData and set byDates on true
-     */
-    public List<Account> getAllDataWithDates(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs)
-            throws IllegalArgumentException, SQLException;
-
-    /**
-     * returns the total number of tweets and retweets from all the accounts
-     * that match a category- and a location-ID per location per day
-     * 
-     * @param categoryIDs
-     *            the ids of the selected categorys as int[]
-     * @param locationIDs
-     *            the ids of the selected locations as int[]
-     * @param accountIDs
-     *            the ids of the additional accounts as int[]
-     * @return the total number of tweets and retweets from all the accounts
-     *         that match a category- and a location-ID per location per Day as
-     *         TweetsAndRetweets
-     * @throws IllegalArgumentException
-     *             thrown if categoryIDs or/and LocationIDs is empty or null
-     * @throws SQLException
-     *             thrown if the sql-query couldn't be built
-     * @deprecated use getSumOfData and set byDates on true
-     */
-    public TweetsAndRetweets getSumOfDataWithDates(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs)
-            throws IllegalArgumentException, SQLException;
 
     /**
      * Return list of accounts which name contains search

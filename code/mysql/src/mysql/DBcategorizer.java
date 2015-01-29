@@ -42,17 +42,20 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     @Override
     public List<Account> getNonCategorized() {
 
-        String sqlCommand = "SELECT Id, URL FROM accounts WHERE Categorized = 0;";
+        String sqlCommand = "SELECT Id, AccountName, URL FROM accounts WHERE Categorized = 0;";
 
         // create and execute statement to get uncategorized accounts
         ResultSet result = null;
         Statement stmt = null;
+        runningRequest = true;
         try {
             stmt = c.createStatement();
             result = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
             return new ArrayList<Account>();
+        } finally {
+            runningRequest = false;
         }
 
         // create list of accounts to return
@@ -61,7 +64,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
             // read mysql-result and add accounts into the return list
             while (result.next()) {
                 ret.add(new Account(result.getInt("Id"), result
-                        .getString("URL")));
+                        .getString("AccountName"), result.getString("URL")));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -99,20 +102,16 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         if (result1) {
             // create and execute statement to set categorized = true
             Statement stmt2 = null;
+            runningRequest = true;
             try {
                 stmt2 = c.createStatement();
                 result2 = stmt2.executeUpdate(sqlCommand) >= 0 ? true : false;
             } catch (SQLException e) {
                 sqlExceptionLog(e, stmt2);
             } finally {
+                runningRequest = false;
                 // close mysql-statement
-                if (stmt2 != null) {
-                    try {
-                        stmt2.close();
-                    } catch (SQLException e) {
-                        sqlExceptionLog(e);
-                    }
-                }
+                closeStatement(stmt2);
             }
         }
 
@@ -120,22 +119,26 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     }
 
     @Override
-    public List<Integer> getCategoriesForAccount(String url) {
+    public List<Integer> getCategoriesForAccount(String url, String name) {
+        // create list of category-Ids to return
+        List<Integer> ret = new ArrayList<Integer>();
 
-        // create the statement to look for url matches
+        // create the statement to look for url and name matches
         ResultSet result = null;
         PreparedStatement stmt = null;
+        runningRequest = true;
         try {
-            stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? LIMIT 100;");
+            stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? OR Page LIKE ?;");
             stmt.setString(1, url + "%");
+            stmt.setString(2, "%" + name + "%");
             result = stmt.executeQuery();
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
             return new ArrayList<Integer>();
+        } finally {
+            runningRequest = false;
         }
 
-        // create list of category-Ids to return
-        List<Integer> ret = new ArrayList<Integer>();
         // read the mysql-result
         try {
             // add each category-id to the return list
