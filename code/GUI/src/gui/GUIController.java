@@ -98,7 +98,6 @@ public class GUIController extends Application implements Initializable {
 				scene.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 					@Override
 					public void handle(WindowEvent event) {
-						System.out.println("gui elements: " + guiElements.size());
 						event.consume();
 						close();
 					}

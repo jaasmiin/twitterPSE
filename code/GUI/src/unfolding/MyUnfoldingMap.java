@@ -41,11 +41,6 @@ public class MyUnfoldingMap extends PApplet {
     	super();
     	this.setSize(900, 600);
 	}
-
-    public void zoom(Point point) {
-    	currentMap.zoomAndPanTo(currentMap.getZoomLevel() - 1, new ScreenPosition(point.x, point.y));
-    	currentMap.move(1, 2);
-    }
     
     public void setup() {  //check size of map
         size(900, 600);
@@ -68,7 +63,9 @@ public class MyUnfoldingMap extends PApplet {
 
         loop();
     }
-
+    public UnfoldingMap getMap() {
+    	return currentMap;
+    }
     public void draw() {
 //    	try {
 //			Thread.sleep(1000);

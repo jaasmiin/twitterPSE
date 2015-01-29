@@ -8,9 +8,11 @@ import javax.swing.JPanel;
 import unfolding.MyUnfoldingMap;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class UnfoldingFX extends Application {
 	private SwingNode mapSwingNode = new SwingNode();
@@ -50,7 +52,7 @@ public class UnfoldingFX extends Application {
 			
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("Mouse clicked.");
+
 			}
 		});
     	mapSwingNode.resize(contentPane.getWidth(), contentPane.getHeight());                
@@ -62,7 +64,12 @@ public class UnfoldingFX extends Application {
 
         stage.setScene(new Scene(pane, contentPane.getWidth(), contentPane.getHeight()));
         stage.show();
-        
+        stage.getScene().getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
+			@Override
+			public void handle(WindowEvent event) {
+				map.exit();
+			}
+		});
         new Thread(new Runnable() {
 			@Override
 			public void run() {
