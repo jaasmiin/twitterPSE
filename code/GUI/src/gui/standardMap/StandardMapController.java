@@ -84,6 +84,7 @@ public class StandardMapController extends OutputElement implements Initializabl
             
             calculatedData = superController.getDisplayValuePerCountry(uneditedData, forCalc);
             
+            //TODO: repaint pane
             //TODO: Get calculated data from somewhere
             //map.update();  insert new data
         } */
