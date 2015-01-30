@@ -29,6 +29,7 @@ public class ContentTableController extends OutputElement implements Initializab
 	
 	@FXML
     private TableView<Account> table;
+	TableColumn<Account, Integer> retweetColumn;
 	
 	@Override
 	public void update(UpdateType type) {
@@ -37,7 +38,9 @@ public class ContentTableController extends OutputElement implements Initializab
 			// TODO: remove test print
 			System.out.println("ContentTable : AccountsList.size = " + accountList.size());
 			table.setItems(accountList);	
-		}		
+		} else if (type == UpdateType.LOCATION) {
+			addLocationColumns();
+		}
 	}
 	
 	@Override
@@ -71,8 +74,13 @@ public class ContentTableController extends OutputElement implements Initializab
 			@Override
 			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
 				int tweetNumber = 0;
+				// TODO: remove test print
+				System.out.println("account.getName = " + account.getValue().getName());
+				System.out.println("account.getTweets.size = " + account.getValue().getTweets().size());
+				System.out.println("account.getCounter = " + account.getValue().getTweets().get(0).getCounter());
+				
 				if (account.getValue() != null) {
-					tweetNumber = account.getValue().getTweets().size();					
+					tweetNumber = account.getValue().getTweets().get(0).getCounter();					
 				} 				
 				return new SimpleIntegerProperty(tweetNumber).asObject();
 			}
@@ -87,10 +95,12 @@ public class ContentTableController extends OutputElement implements Initializab
 	 * a certain account received to the table.
 	 */
 	private void addRetweetsColumn() {
-		TableColumn<Account, Integer> retweetColumn = new TableColumn<>("Retweets");		
-		
+		retweetColumn = new TableColumn<>("Retweets");				
+		table.getColumns().add(retweetColumn);
+	}
+	
+	private void addLocationColumns() {
 		// TODO: improve performance (have to iterate over retweetlist for every location)
-		System.out.println("getLocations.size = " + superController.getLocations().size());
 		
 		for (Location currentLocation : superController.getLocations()) {
 			final Location tempLocation = currentLocation;
@@ -115,9 +125,7 @@ public class ContentTableController extends OutputElement implements Initializab
 						
 					});
 			retweetColumn.getColumns().add(countryColumn);
-		}
-		
-		table.getColumns().add(retweetColumn);
+		}	
 	}
 
 }
