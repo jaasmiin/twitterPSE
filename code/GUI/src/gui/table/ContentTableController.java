@@ -32,10 +32,10 @@ public class ContentTableController extends OutputElement implements Initializab
 	
 	@Override
 	public void update(UpdateType type) {
-		System.out.println("ContentTable updated");
-		if (true) {
+		if (type == UpdateType.TWEET) {
 			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
-			System.out.println("AccountsList.size = " + accountList.size());
+			// TODO: remove test print
+			System.out.println("ContentTable : AccountsList.size = " + accountList.size());
 			table.setItems(accountList);	
 		}		
 	}
@@ -44,7 +44,6 @@ public class ContentTableController extends OutputElement implements Initializab
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		superController.subscribe(this);
-		System.out.println("ContentTable initialized");
 		
 		addAccountsColumn();
 		addTweetsColumn();
@@ -73,7 +72,7 @@ public class ContentTableController extends OutputElement implements Initializab
 			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
 				int tweetNumber = 0;
 				if (account.getValue() != null) {
-					tweetNumber = account.getValue().getTweets().size();
+					tweetNumber = account.getValue().getTweets().get(0).getCounter();					
 				} 				
 				return new SimpleIntegerProperty(tweetNumber).asObject();
 			}
@@ -91,6 +90,7 @@ public class ContentTableController extends OutputElement implements Initializab
 		TableColumn<Account, Integer> retweetColumn = new TableColumn<>("Retweets");		
 		
 		// TODO: improve performance (have to iterate over retweetlist for every location)
+		System.out.println("getLocations.size = " + superController.getLocations().size());
 		
 		for (Location currentLocation : superController.getLocations()) {
 			final Location tempLocation = currentLocation;
