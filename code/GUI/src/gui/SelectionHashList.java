@@ -16,18 +16,20 @@ public class SelectionHashList<T> {
 	private SelectionHashListEntry first, last;
 	private SelectionHashListEntry firstSelected, lastSelected;
 	private int selectedCounter;
+	private int counter;
 	private List<T> list = new List<T>() {
 		@Override
 		public int size() {
-			return hashMap.size();
+			return counter;
 		}
 		@Override
 		public boolean isEmpty() {
-			return hashMap.isEmpty();
+			return counter == 0;
 		}
 		@Override
 		public boolean contains(Object o) {
-			return hashMap.containsValue(o);
+			SelectionHashListEntry e = hashMap.get(o);
+			return e != null && e.isVisible();
 		}
 
 		@Override
@@ -352,16 +354,37 @@ public class SelectionHashList<T> {
 		last = null;
 		firstSelected = null;
 		lastSelected = null;
+		counter = 0;
 		selectedCounter = 0;
 	}
 	
+	
 	/**
-	 * Insert an element into data structure.
-	 * The element is deselected by default.
-	 * @param t element which will be inserted
+	 * Insert or update a item in data structure.
+	 * An inserted element is deselected by default.
+	 * @param t item which will be inserted or updated
 	 */
-	public void insert(T t) {
+	public void update(T t) {
+		if (hashMap.containsValue(t)) {
+			SelectionHashListEntry e = hashMap.get(t);
+			if (e.isVisible()) {
+				e.setValue(t);
+			} else {
+				insertIntoList(e);
+			}
+		} else {
+			insertNewElement(t);
+		}
+	}
+	
+	private void insertNewElement(T t) { // TODO: what if exists?
 		SelectionHashListEntry e = new SelectionHashListEntry(t, null, null);
+		insertIntoList(e);
+		hashMap.put(e.hashCode(), e);
+	}
+	
+	private void insertIntoList(SelectionHashListEntry e) {
+		e.setVisible(true);
 		if (first == null) {
 			first = e;
 			last = e;
@@ -370,22 +393,23 @@ public class SelectionHashList<T> {
 			e.setPrev(last);
 			last = e;
 		}
-		hashMap.put(e.hashCode(), e);
+		counter++;
 	}
 	
 	/**
-	 * Add many elements to the data structure.
-	 * All elements are deselected by default.
-	 * @param l Element which will be inserted
+	 * Insert or update many elements to the data structure.
+	 * All inserted elements are deselected by default.
+	 * @param l Element which will be inserted or updated
 	 */
-	public void addAll(List<T> l) {
+	public void updateAll(List<T> l) {
 		for (T t : l) {
-			insert(t);
+			update(t);
 		}
 	}
 	
 	/**
 	 * Empty data structure / remove all elements
+	 * including selected items
 	 */
 	public void clear() {
 		hashMap.clear();
@@ -396,7 +420,18 @@ public class SelectionHashList<T> {
 	}
 	
 	/**
+	 * Remove many elements.
+	 * If element is selected it will remain selected.
+	 */
+	public void removeAll() {
+		for (T t : list) {
+			remove(t);
+		}
+	}
+	
+	/**
 	 * Remove specific element.
+	 * If element is selected it will remain selected.
 	 * @param t which will be removed.
 	 */
 	public void remove(T t) {
@@ -414,26 +449,15 @@ public class SelectionHashList<T> {
 			if (e.getNext() != null) {
 				e.getNext().setNext(e.getPrev());
 			}
-			if (e.isSelected()) {
-				if (lastSelected.getValue().equals(e.getValue())) {
-					lastSelected = e.getPrevSelected();
-				}
-				if (firstSelected.getValue().equals(e.getValue())) {
-					firstSelected = e.getNextSelected();
-				}
-				if (e.getPrevSelected() != null) {
-					e.getPrevSelected().setNextSelected((e.getNextSelected()));
-				} 
-				if (e.getNextSelected() != null) {
-					e.getNextSelected().setNextSelected(e.getPrevSelected());
-				}
+			if (!e.isSelected()) {
+				hashMap.remove(t.hashCode());
+			} else {
+				e.setVisible(false);
 			}
-			if (hashMap.remove(t.hashCode()) != null) {
-				selectedCounter--;
-			}
+			counter--;
 		}
 	}
-	
+
 	/**
 	 * Select or deselect an element if it exists in the data structure.
 	 * @param t Element which will be selected / deselected
@@ -482,6 +506,9 @@ public class SelectionHashList<T> {
 				}
 				e.setNextSelected(null);
 				e.setPrevSelected(null);
+				if (!e.isVisible()) {
+					hashMap.remove(e.hashCode());
+				}
 			}
 		}
 		return changed;
@@ -517,10 +544,12 @@ public class SelectionHashList<T> {
 		private T value;
 		private SelectionHashListEntry next, prev;
 		private SelectionHashListEntry nextSelected, prevSelected;
+		private boolean visible;
 		public SelectionHashListEntry(T value, SelectionHashListEntry prev, SelectionHashListEntry next) {
 			this.value = value;
 			this.prev = prev;
 			this.next = next;
+			visible = true;
 		}
 		public SelectionHashListEntry getNext() {
 			return next;
@@ -540,7 +569,9 @@ public class SelectionHashList<T> {
 		public T getValue() {
 			return value;
 		}
-		
+		public boolean isVisible() {
+			return visible;
+		}
 		public void setNext(SelectionHashListEntry e) {
 			next = e;
 		}
@@ -553,9 +584,15 @@ public class SelectionHashList<T> {
 		public void setPrevSelected(SelectionHashListEntry e) {
 			prevSelected = e;
 		}
+		public void setVisible(boolean visible) {
+			this.visible = visible;
+		}
+		public void setValue(T t) {
+			value = t;
+		}
 		@Override
 		public int hashCode() {
 			return value.hashCode();
-		}
+		}		
 	}
 }

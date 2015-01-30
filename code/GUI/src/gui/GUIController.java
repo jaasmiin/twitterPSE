@@ -234,8 +234,8 @@ public class GUIController extends Application implements Initializable {
 	private void reloadLocation() {
 		String info = "Lade Orte...";
 		setInfo(info);
-		locations.clear();
-		locations.addAll(db.getLocations());
+		locations.removeAll();
+		locations.updateAll(db.getLocations());
 		update(UpdateType.LOCATION);
 		setInfo("Orte geladen.", info);
 	}
@@ -243,8 +243,8 @@ public class GUIController extends Application implements Initializable {
 	private void reloadAccounts() {
 		String info = "Lade Accounts...";
 		setInfo(info);
-		accounts.clear();
-		accounts.addAll(db.getAccounts(accountSearchText));
+		accounts.removeAll();
+		accounts.updateAll(db.getAccounts(accountSearchText));
 		update(UpdateType.ACCOUNT);
 		setInfo("Accounts geladen.", info);
 	}
@@ -308,7 +308,10 @@ public class GUIController extends Application implements Initializable {
 				update(UpdateType.TWEET);
 			}
 		} else {
+			dataByLocation = new TweetsAndRetweets();
+			dataByAccount = new ArrayList<Account>();
 			setInfo("Konnte keine Daten laden, bitte wählen Sie mindestens einen Filter.", info);
+			update(UpdateType.TWEET);
 		}
 	}
 	
