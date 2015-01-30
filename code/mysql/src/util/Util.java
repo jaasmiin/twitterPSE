@@ -1,5 +1,12 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import mysql.result.Account;
+
 /**
  * class provides static utility methods
  * 
@@ -52,6 +59,22 @@ public class Util {
         }
         url = Util.checkString(url, 100, null);
         return url;
+    }
+
+    /**
+     * converts an Account-Collection into a List
+     * 
+     * @param c
+     *            the collection to convert as Collection<Account>
+     * @return the converted collection as List<Account>
+     */
+    public static List<Account> collectionToList(Collection<Account> c) {
+        List<Account> ret = new ArrayList<Account>();
+        Iterator<Account> it = c.iterator();
+        while (it.hasNext()) {
+            ret.add(it.next());
+        }
+        return ret;
     }
 
 }

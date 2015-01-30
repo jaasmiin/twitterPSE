@@ -375,7 +375,43 @@ public class DBgui extends DBConnection implements DBIgui {
         return getTweetSumPerAccount(stmt, byDates);
     }
 
+    private HashMap<Integer, Account> getAccounts(Statement stmt) {
+
+        String query = "SELECT Id, AccountName FROM final LEFT JOIN accounts ON final.val=accounts.Id ORDER BY Id DESC;";
+
+        ResultSet res = null;
+        runningRequest = true;
+        try {
+            res = stmt.executeQuery(query);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        } finally {
+            runningRequest = false;
+        }
+
+        if (res == null)
+            return new HashMap<Integer, Account>();
+
+        HashMap<Integer, Account> ret = new HashMap<Integer, Account>();
+        try {
+            while (res.next()) {
+                ret.put(res.getInt(1),
+                        new Account(res.getInt(1), res.getString(2)));
+            }
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            return new HashMap<Integer, Account>();
+        } finally {
+            closeResult(res);
+        }
+
+        return ret;
+
+    }
+
     private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {
+
+        HashMap<Integer, Account> accounts = getAccounts(stmt);
 
         String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
         String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
@@ -392,74 +428,38 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         if (res == null)
-            return new ArrayList<Account>();
+            return Util.collectionToList(accounts.values());
 
-        List<Account> accounts = new ArrayList<Account>();
         try {
             while (res.next()) {
-                if (byDate) {
+                int id = res.getInt(3);
 
-                    int id = res.getInt(3);
-                    Account temp = null;
-                    Account ac;
-                    Iterator<Account> it = accounts.iterator();
-                    while (it.hasNext() && temp == null) {
-                        ac = it.next();
-                        if (ac.getId() == id) {
-                            temp = ac;
-                        }
-                    }
-
-                    // add account and tweet
-                    if (temp == null) {
-                        accounts.add(new Account(id, res
-                                .getString("AccountName"), new Tweets(null, res
-                                .getInt(1))));
-                    } else {
-                        // add tweets to account
-
-                        temp.addTweet(new Tweets(res.getDate("Day"), res
+                accounts.get(id).addTweet(
+                        new Tweets(byDate ? res.getDate("Day") : null, res
                                 .getInt(1)));
-                    }
-                } else {
-                    accounts.add(new Account(res.getInt(3), res
-                            .getString("AccountName"), new Tweets(null, res
-                            .getInt(1))));
-                }
+
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new ArrayList<Account>();
+            return Util.collectionToList(accounts.values());
         } finally {
             closeResult(res);
         }
 
+        System.out.println("Accounts: " + accounts.size());
+        
         // get retweets
-        List<Account> retweets = getRetweetSumPerAccount(stmt, byDate);
+        getRetweetSumPerAccount(stmt, byDate, accounts);
 
-        // match Account lists
-        for (Account account : accounts) {
-            Iterator<Account> it = retweets.iterator();
-            // add retweets
-            boolean exit = false;
-            while (it.hasNext() && !exit) {
-                Account temp = it.next();
-
-                if (temp.getId() == account.getId()) {
-                    // match
-                    for (Retweets r : temp.getRetweets()) {
-                        account.addRetweet(r);
-                    }
-                    it.remove();
-                    exit = true;
-                }
-            }
+        for (Account x : Util.collectionToList(accounts.values())) {
+            System.out.println(x.getRetweets().size());
         }
 
-        return accounts;
+        return Util.collectionToList(accounts.values());
     }
 
-    private List<Account> getRetweetSumPerAccount(Statement stmt, boolean byDate) {
+    private void getRetweetSumPerAccount(Statement stmt, boolean byDate,
+            HashMap<Integer, Account> ret) {
 
         String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
         String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId;";
@@ -471,53 +471,28 @@ public class DBgui extends DBConnection implements DBIgui {
             res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            // TODO remove log below
-            logger.warning("SQL-Exception thrown by this statement: "
-                    + (byDate ? a : b));
         } finally {
             runningRequest = false;
         }
 
         if (res == null)
-            return new ArrayList<Account>();
+            return;
 
-        List<Account> ret = new ArrayList<Account>();
         try {
             while (res.next()) {
 
                 int id = res.getInt("AccountId");
-                Account temp = null;
-                Iterator<Account> it = ret.iterator();
-                while (it.hasNext() && temp == null) {
-                    Account ac = it.next();
-                    if (ac.getId() == id) {
-                        temp = ac;
-                    }
-                }
-
-                if (temp == null) {
-                    // add account and retweet
-                    ret.add(new Account(id, "", new Retweets((byDate ? res
-                            .getDate("Day") : null), res.getInt(1), res
-                            .getInt(2))));
-                } else {
-                    // add retweets to account
-                    Retweets element = new Retweets(
-                            (byDate ? res.getDate("Day") : null),
-                            res.getInt(1), res.getInt(2));
-                    element.setLocationCode(res.getString("Code"));
-                    temp.addRetweet(element);
-                }
+                Retweets element = new Retweets((byDate ? res.getDate("Day")
+                        : null), res.getInt(1), res.getInt(2));
+                element.setLocationCode(res.getString("Code"));
+                ret.get(id).addRetweet(element);
 
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new ArrayList<Account>();
         } finally {
             closeResultAndStatement(stmt, res);
         }
-
-        return ret;
     }
 
     private Statement createBasicStatement(Integer[] categoryIDs,
