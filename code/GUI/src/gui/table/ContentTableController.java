@@ -72,7 +72,7 @@ public class ContentTableController extends OutputElement implements Initializab
 			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
 				int tweetNumber = 0;
 				if (account.getValue() != null) {
-					tweetNumber = account.getValue().getTweets().get(0).getCounter();					
+					tweetNumber = account.getValue().getTweets().size();					
 				} 				
 				return new SimpleIntegerProperty(tweetNumber).asObject();
 			}
