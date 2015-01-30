@@ -375,12 +375,14 @@ public class DBgui extends DBConnection implements DBIgui {
     	if (byDate) {
     		sqlCommand += "rd.Day AS Day, ";
     	}
-    	sqlCommand += "SUM(r.Counter) AS SumOfRetweets "
+    	sqlCommand += "SUM(r.Counter) AS SumOfRetweets, SUM(t.Counter) AS SumOfTweets "
     			    + "FROM accounts a "
 		    			+ "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
 		    			+ "LEFT JOIN location al ON a.LocationId = al.Id "
-		    			+ "INNER JOIN retweets r ON a.Id = r.AccountId "
-		    				+ "LEFT JOIN day rd ON r.DayID = rd.Id ";
+		    			+ "LEFT JOIN retweets r ON a.Id = r.AccountId "
+		    				+ "LEFT JOIN day rd ON r.DayID = rd.Id "
+	    				+ "LEFT JOIN tweets t ON a.Id = t.AccountId "
+		    				+ "LEFT JOIN day td ON t.DayID = td.Id ";
     	if (!categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty()) {
     		sqlCommand += "WHERE ";
 	    	if (!categoryIDs.isEmpty()) {
@@ -411,12 +413,16 @@ public class DBgui extends DBConnection implements DBIgui {
 	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
 	    	}
     	}
+    	if (byDate) {
+    		sqlCommand += !categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty() ? "WHERE " : "AND "
+    			+ "rd.Id=td.Id ";
+    	}
     	sqlCommand += "GROUP BY a.AccountName";
     	if (byDate) {
     		sqlCommand += ", rd.Day ";
     	}
     	sqlCommand += " ORDER BY SUM(r.Counter) DESC;";
-    	
+    	System.out.println(sqlCommand);
         ResultSet rs = null;
         Statement stmt = null;
         runningRequest = true;
@@ -432,9 +438,11 @@ public class DBgui extends DBConnection implements DBIgui {
         
         try {
             while (rs.next()) {
-            	Account a = new Account(rs.getInt("AccountId"), rs.getInt("TwitterAccountId"),
+            	Account a = new Account(rs.getInt("AccountId"), rs.getLong("TwitterAccountId"),
             			rs.getString("AccountName"), rs.getBoolean("Verified"), rs.getString("url"), 
             			rs.getInt("Follower"), rs.getInt("LocationId"));
+            	a.addRetweet(new Retweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfRetweets"), rs.getInt("LocationId")));
+            	a.addTweet(new Tweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfTweets")));
             	accounts.add(a);
             }
         } catch (SQLException e) {
