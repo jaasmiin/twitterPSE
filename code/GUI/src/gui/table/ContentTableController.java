@@ -37,6 +37,8 @@ public class ContentTableController extends OutputElement implements Initializab
 			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
 			// TODO: remove test print
 			System.out.println("ContentTable : AccountsList.size = " + accountList.size());
+			System.out.println("Account.retweets.size = " + accountList.get(0).getRetweets().size());
+			System.out.println("Account.retweets.counter = " + accountList.get(0).getRetweets().get(0).getCounter());
 			table.setItems(accountList);	
 		} else if (type == UpdateType.LOCATION) {
 			addLocationColumns();
