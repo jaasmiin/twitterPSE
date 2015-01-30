@@ -5,6 +5,7 @@ import gui.GUIElement.UpdateType;
 
 import java.awt.image.ColorModel;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.JDialog;
 
@@ -43,11 +44,20 @@ public class StandardMapDialog extends JDialog {
 				int counter = r.getCounter();
 				String id = r.getLocationCode();
 				forCalc.put(id, counter);
-				System.out.println(id + " - " + counter);
+				
 			}
-
+			Set<String> keySet = forCalc.keySet();
+			for (String key : keySet) {
+				System.out.println(key + " - " + forCalc.get(key));
+			}
+			System.out.println("############################################################");
 			calculatedData = superController.getDisplayValuePerCountry(
-					uneditedData, forCalc);
+					superController.get, forCalc);
+			
+		    keySet = calculatedData.keySet();
+			for (String key : keySet) {
+				System.out.println(key + " - " + calculatedData.get(key));
+			}
 			
 			map.update(calculatedData);
 			map.redraw();

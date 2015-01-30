@@ -167,6 +167,7 @@ public class GUIController extends Application implements Initializable {
 					db = new DBgui(accessData, LoggerUtil.getLogger());
 				} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
+					e.printStackTrace();
 					success = false;
 				}
 				if (success) {
@@ -727,12 +728,12 @@ public class GUIController extends Application implements Initializable {
 	    while (it.hasNext()) {
 	    	overallCounter += it.next().getCounter();
 	    }
-	    
+	    System.out.println("overall value: " + ((double)1) /overallCounter);
 	    it = tar.retweets.iterator();
 	    while (it.hasNext()) {
 	    	Retweets country = it.next();
 	    	
-	    	double relativeValue = country.getCounter() / (overallCounter * retweetsPerLocation.get(country.getLocationCode()));
+	    	double relativeValue = country.getCounter() / ((double) (overallCounter * retweetsPerLocation.get(country.getLocationCode())));
 	    	result.put(country.getLocationCode(), relativeValue);
 	    }
 	    
