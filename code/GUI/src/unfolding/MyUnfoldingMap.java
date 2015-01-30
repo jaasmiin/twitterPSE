@@ -1,11 +1,5 @@
 package unfolding;
 
-/**
- * 
- */
-
-
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +15,7 @@ import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 
 /**
+ * Class of a unfolding map that is used to visualize Tweets und Retweets spread 
  * @author Lidia
  * 
  */
@@ -35,8 +30,22 @@ public class MyUnfoldingMap extends PApplet {
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
+    
+    /**
+     * List of countryIds which are colored in the map
+     */
     private List<String> setValues;
+    
+    /**
+     * HashMap to match between 2 char and 3 char country id
+     * key --> 3 char
+     * value --> 2 char
+     */
     private HashMap<String, String> countryIdTrans;
+    
+    /**
+     * Maximal value of the displayed entries
+     */
     private float maxValue = 0;
     
     public MyUnfoldingMap() {
@@ -77,6 +86,7 @@ public class MyUnfoldingMap extends PApplet {
         */
 
     }
+    
     public UnfoldingMap getMap() {
     	return currentMap;
     }
@@ -121,7 +131,7 @@ public class MyUnfoldingMap extends PApplet {
      * Updates new values to be visualized on the map.
      * 
      * @param changedEntries
-     *            String array containing country id an new value of it
+     *            String array containing country id and new value of it
      */
     public void update(HashMap<String, Double> changedEntries) {
 
@@ -164,7 +174,12 @@ public class MyUnfoldingMap extends PApplet {
 //        }
 //    }
     
-
+    
+/**
+ * Loads 2 and 3 char countryIds in HashMap for further use
+ * @param file countryIds as .csv
+ * @return HashMap containing countryIds
+ */
     private HashMap<String, MyDataEntry> loadCountriesFromCSV(String file) {
         dataEntriesMap = new HashMap<String, MyDataEntry>();
         countryIdTrans = new HashMap<String, String>();
@@ -187,12 +202,16 @@ public class MyUnfoldingMap extends PApplet {
         return dataEntriesMap;
     }
 
+    /**
+     * Resets all colored markers
+     */
     public void resetMarkers() {
         for(Marker m : countryMarker) {
             m.setColor(color(173,173,173,50));
             m.setStrokeColor(color(241, 241, 241, 50));
             m.setStrokeWeight(1);
         }
-        
     }
+    
+
 }
