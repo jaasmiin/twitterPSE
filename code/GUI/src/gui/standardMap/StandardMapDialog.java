@@ -3,7 +3,9 @@ package gui.standardMap;
 import gui.GUIController;
 import gui.GUIElement.UpdateType;
 
+import java.awt.image.ColorModel;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.swing.JDialog;
 
@@ -24,6 +26,7 @@ public class StandardMapDialog extends JDialog {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		add(map);
 		map.init();
+		setVisible(true);
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -41,20 +44,35 @@ public class StandardMapDialog extends JDialog {
 				int counter = r.getCounter();
 				String id = r.getLocationCode();
 				forCalc.put(id, counter);
+				
 			}
-
-			calculatedData = superController.getDisplayValuePerCountry(
-					uneditedData, forCalc);
+			Set<String> keySet = forCalc.keySet();
+			for (String key : keySet) {
+				System.out.println(key + " - " + forCalc.get(key));
+			}
+			System.out.println("############################################################");
+			calculatedData = superController.getDisplayValuePerCountry(forCalc,1);
+			
+		    keySet = calculatedData.keySet();
+			for (String key : keySet) {
+				System.out.println(key + " - " + calculatedData.get(key));
+			}
+			
+			map.update(calculatedData);
+			map.redraw();
 
 			// TODO: repaint pane
 			// TODO: Get calculated data from somewhere
 			// map.update(); insert new data
 			break;
 		case GUI_STARTED:
+		    map.resetMarkers();
 			map.redraw();
 			setVisible(true);
-//			repaint();
 			break;
+		
+		default:
+		    map.resetMarkers();
 		}
 	}
 

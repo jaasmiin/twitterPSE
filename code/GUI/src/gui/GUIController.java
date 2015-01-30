@@ -15,16 +15,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Stack;
+
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.Retweets;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -163,6 +166,7 @@ public class GUIController extends Application implements Initializable {
 					db = new DBgui(accessData, LoggerUtil.getLogger());
 				} catch (SecurityException | IOException | InstantiationException | IllegalAccessException
 						| ClassNotFoundException e) {
+					e.printStackTrace();
 					success = false;
 				}
 				if (success) {
@@ -234,8 +238,8 @@ public class GUIController extends Application implements Initializable {
 	private void reloadLocation() {
 		String info = "Lade Orte...";
 		setInfo(info);
-		locations.clear();
-		locations.addAll(db.getLocations());
+		locations.removeAll();
+		locations.updateAll(db.getLocations());
 		update(UpdateType.LOCATION);
 		setInfo("Orte geladen.", info);
 	}
@@ -243,8 +247,8 @@ public class GUIController extends Application implements Initializable {
 	private void reloadAccounts() {
 		String info = "Lade Accounts...";
 		setInfo(info);
-		accounts.clear();
-		accounts.addAll(db.getAccounts(accountSearchText));
+		accounts.removeAll();
+		accounts.updateAll(db.getAccounts(accountSearchText));
 		update(UpdateType.ACCOUNT);
 		setInfo("Accounts geladen.", info);
 	}
@@ -266,40 +270,60 @@ public class GUIController extends Application implements Initializable {
 	
 	private void reloadCategoryHashMap() {
 		categories.clear();
-		reloadCategoryHashMap(categoryRoot);
+		reloadCategoryHashMapRec(categoryRoot);
 	}
 	
-	private void reloadCategoryHashMap(Category category) {
+	private void reloadCategoryHashMapRec(Category category) {
 		for (Category child : category.getChilds()) {
-			reloadCategoryHashMap(child);	
+			reloadCategoryHashMapRec(child);	
 		}
 		categories.put(category.getId(), category);
+	}
+	
+	/**
+	 * Get all childs of a category recursively including own id.
+	 * @param id of category
+	 * @return a set of all childs including own id or a empty set
+	 * if id could not be found in categories HashMap
+	 */
+	private Set<Integer> getSelectedChildCategories(int id) {
+		Set<Integer> idList = new HashSet<Integer>();
+		if (categories.containsKey(id)) {
+			Queue<Category> categories = new LinkedList<Category>();
+			categories.add(this.categories.get(id));
+			while (!categories.isEmpty()) {
+				Category category = categories.poll();
+				idList.add(category.getId());
+				categories.addAll(category.getChilds());
+			}
+		}
+		return idList;
 	}
 	
 	private void reloadData() {
 		String info = "Lade Daten...";
 		setInfo(info);
-		Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
-		List<Location> selectedLocations = locations.getSelected();
-		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
-		int i = 0;
-		for (Location l : selectedLocations) {
-			selectedLocationsArray[i++] = l.getId();
+		List<Integer> selectedLocations = new ArrayList<Integer>();
+		for (Location l : locations.getSelected()) {
+			selectedLocations.add(l.getId());
 		}
-		List<Account> selectedAccounts = accounts.getSelected();
-		Integer[] selectedAccountsArray = new Integer[selectedAccounts.size()];
-		i = 0;
-		for (Account a : selectedAccounts) {
-			selectedAccountsArray[i++] = a.getId();
+		List<Integer> selectedAccounts = new ArrayList<Integer>();
+		for (Account a : accounts.getSelected()) {
+			selectedAccounts.add(a.getId());
 		}
-		if (selectedCategoriesArray.length + selectedLocationsArray.length + selectedAccountsArray.length >= 1) {
+		List<Integer> allSelectedCategories = new ArrayList<Integer>();
+		for (Integer id : selectedCategories) {
+			allSelectedCategories.addAll(getSelectedChildCategories(id));
+		}
+		
+		if (allSelectedCategories.size() + selectedLocations.size() + selectedAccounts.size() >= 1) {
 
 			boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
 			boolean success = true;
 			try {
-				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-			} catch (IllegalArgumentException | SQLException e) {
+				dataByLocation = db.getSumOfData(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
+				dataByAccount = db.getAllData(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
+			} catch (IllegalArgumentException e) {
 				success = false;
 				setInfo("Fehler bei der Kommunikation mit der DB.", info);
 			}
@@ -308,10 +332,16 @@ public class GUIController extends Application implements Initializable {
 				update(UpdateType.TWEET);
 			}
 		} else {
+			dataByLocation = new TweetsAndRetweets();
+			dataByAccount = new ArrayList<Account>();
 			setInfo("Konnte keine Daten laden, bitte wählen Sie mindestens einen Filter.", info);
+			update(UpdateType.TWEET);
 		}
 	}
 	
+	/**
+	 * Reload accounts, categories and locations parallel from db.
+	 */
 	private void reloadAll() {
 		new Thread(new Runnable() {
 			@Override
@@ -333,6 +363,10 @@ public class GUIController extends Application implements Initializable {
 		}).start();
 	}
 	
+	/**
+	 * Display information in information list.
+	 * @param info which should be displayed
+	 */
 	private void setInfo(final String info) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -343,6 +377,12 @@ public class GUIController extends Application implements Initializable {
 		});
 	}
 	
+	/**
+	 * Remove the old information and display the new information
+	 * for some seconds.
+	 * @param info which should be displayed
+	 * @param oldInfo which should be removed
+	 */
 	private void setInfo(final String info, final String oldInfo) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -466,18 +506,38 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Set if all categories in the list are selected or not.
+	 * Update is called after all categories are (de)selected.
+	 * @param ids of all categories
+	 * @param selected true if category should be selected, false otherwise
+	 */
+	public void setSelectedCategory(Set<Integer> ids, boolean selected) {
+		for (Integer id : ids) {
+			setSelectedCategory(id, selected, false);
+		}
+		update(UpdateType.CATEGORY_SELECTION);
+		reloadData();
+	}
+	
+	/**
 	 * Set if a category is selected.
 	 * @param id of category
 	 * @param selected is true if category should be selected, false otherwise
 	 */
 	public void setSelectedCategory(int id, boolean selected) {
+		setSelectedCategory(id, selected, true);
+	}
+	
+	private void setSelectedCategory(int id, boolean selected, boolean update) {
 		if (selected) {
 			selectedCategories.add(id);
 		} else {
 			selectedCategories.remove(id);
 		}
-		update(UpdateType.CATEGORY_SELECTION);
-		reloadData();
+		if (update) {
+			update(UpdateType.CATEGORY_SELECTION);
+			reloadData();
+		}
 	}
 	
 	/**
@@ -638,36 +698,55 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Get the sum of all retweets per location
+	 * @return HashMap with location code and the sum of retweets as integer.
+	 */
+	public HashMap<String, Integer> getSumOfRetweetsPerLocation() {
+		return db.getAllRetweetsPerLocation();
+	}
+	
+	/**
 	 * calculates the displayed value per country
 	 * 
 	 * given: a category, country, accounts combination
 	 * calculates: 
 	 *  
 	 *   number of retweets for that combination in that country                      1
-	 *   -------------------------------------------------------  *  ------------------------------------
+	 *   -------------------------------------------------------  *  ------------------------------------ * scale
 	 *          number of retweets for that combination               number of retweets in that country
 	 * 
-	 * @param TODO: einfuegen
-	 * @param retweetsPerLocation the number of retweets per country
+	 * @param retweetsPerLocation number of retweets for each country in a category/country/accounts combination
+	 * @param scale the value in scale is multiplied with the calculated relative factor to point out differences, it has to be positive
 	 * @return the hashmap mapping countries to the number quantifying the 
-	 * retweet activity in this country
+	 * retweet activity in this country or null if retweetsPerLocation contained invalid countrycode identifier, or scale is not positive
 	 */
-	public HashMap<String, Double> getDisplayValuePerCountry(TweetsAndRetweets tar, HashMap<String, Integer> retweetsPerLocation ) {
+	public HashMap<String, Double> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
+		if (scale <= 0.0000000000001) {
+			return null;
+		}
 	    HashMap<String, Double> result = new HashMap<String, Double>();
+	    HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
 	    
-	    Iterator<Retweets> it = tar.retweets.iterator();
+	    // calculate overall number of retweets in this special combination
+	    Set<String> keySet = retweetsPerLocation.keySet(); 
 	    int overallCounter = 0;
-	    while (it.hasNext()) {
-	    	overallCounter += it.next().getCounter();
+	    for(String key : keySet) {
+	    	overallCounter += retweetsPerLocation.get(key);		
 	    }
+	   
+	    System.out.println("1/overall value: " + ((double)1) /overallCounter);
 	    
-	    it = tar.retweets.iterator();
-	    while (it.hasNext()) {
-	    	Retweets country = it.next();
-	    	
-	    	double relativeValue = country.getCounter() / (overallCounter * retweetsPerLocation.get(country.getLocationCode()));
-	    	result.put(country.getLocationCode(), relativeValue);
+	    // calculate relative vlaue  
+	    for(String key : keySet) {
+	    	if (!totalNumberOfRetweets.containsKey(key)) {
+	    		System.out.println("ERROR");
+	    		return null;
+	    	}
+	    	double relativeValue = retweetsPerLocation.get(key) / ((double) overallCounter * totalNumberOfRetweets.get(key));
+	    	relativeValue *= scale;
+	    	result.put(key, relativeValue);
 	    }
+	
 	    
 	    return result;
 	}

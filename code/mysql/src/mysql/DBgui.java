@@ -29,7 +29,6 @@ import mysql.result.TweetsAndRetweets;
  * 
  */
 public class DBgui extends DBConnection implements DBIgui {
-
     /**
      * configure the connection to the database
      * 
@@ -72,14 +71,15 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
-        //create a list with all categories
+        // create a list with all categories
         List<Category> categories = new ArrayList<Category>();
         try {
             while (res.next()) {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
-                boolean used = res.getInt("AccountId") == 0;
-                Category c = new Category(id, res.getString("Name"), parent, used);
+                boolean used = res.getInt("AccountId") == 0 ? false : true;
+                Category c = new Category(id, res.getString("Name"), parent,
+                        used);
                 categories.add(c);
             }
         } catch (SQLException e) {
@@ -89,7 +89,7 @@ public class DBgui extends DBConnection implements DBIgui {
             // close mysql-statement
             closeResultAndStatement(stmt, res);
         }
-        
+
         return getCategoryTree(categories);
     }
 
@@ -122,6 +122,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             closeResultAndStatement(stmt, res);
         }
+
+        assert (ret.size() == 249);
 
         return ret;
     }
@@ -257,28 +259,18 @@ public class DBgui extends DBConnection implements DBIgui {
         return executeStatementUpdate(stmt, false);
     }
 
-    @Override
-    public TweetsAndRetweets getSumOfData(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
-            throws IllegalArgumentException, SQLException {
-
-        Statement stmt = createBasicStatement(categoryIDs, locationIDs,
-                accountIDs);
-
-        return getTweetSum(stmt, byDates);
-    }
-
     /**
      * creates the category tree
      * 
-     * @param categories the list of categories
+     * @param categories
+     *            the list of categories
      * @return the top level category
      */
     private Category getCategoryTree(List<Category> categories) {
-        //topological sort list of categories in reverse order
+        // topological sort list of categories in reverse order
         categories = topSortCategories(categories);
-        
-        //get positions of categories in the list for fast access
+
+        // get positions of categories in the list for fast access
         HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
         Iterator<Category> it = categories.iterator();
         int i = 0;
@@ -286,20 +278,20 @@ public class DBgui extends DBConnection implements DBIgui {
             idx.put(it.next().getId(), i);
             i++;
         }
-        
+
         Category ret = null;
-        
+
         it = categories.iterator();
         while (it.hasNext()) {
             Category category = it.next();
-            
+
             if (category.isUsed()) {
                 int parentId = category.getParentId();
                 if (parentId == 0) {
                     ret = category;
                     continue;
                 }
-                
+
                 int parentPosition = idx.get(parentId);
                 Category parent = categories.get(parentPosition);
                 parent.setUsed(true);
@@ -309,351 +301,313 @@ public class DBgui extends DBConnection implements DBIgui {
 
         return ret;
     }
-    
+
     /**
      * does a topological sort of categories
      * 
      * if category i has parent j, j will be before i
      * 
-     * @param categories the list of categories
+     * @param categories
+     *            the list of categories
      * @return the sorted list of categories
      */
     private List<Category> topSortCategories(List<Category> categories) {
-    	int[] inDegree = new int[categories.size()];
-    	HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
-    	
-    	//get a mapping: CategoryId to array list index
-    	Iterator<Category> it = categories.iterator();
-    	int i = 0;
-    	while (it.hasNext()) {
-    		idx.put(it.next().getId(), i);
-    		i++;
-    	}
-    	
-    	//count the inDegree of each node in the DAG
-    	//in this case the number of children of each category
-    	it = categories.iterator();
-    	while (it.hasNext()) {
-    		Category category = it.next();
-    		int parentId = category.getParentId();
-    		if (parentId != 0) inDegree[idx.get(parentId)]++;
-    	}
-    	
-    	//look for nodes with inDegree 0
-    	//those are the start nodes for the topological sorting
-    	//insert them into a queue
-    	Queue<Integer> q = new LinkedList<Integer>();
-    	for (i = 0; i < categories.size(); i++) {
-    		if (inDegree[i] == 0) {
-    			q.add(i);
-    		}
-    	}
-    	
-    	//create topological sorting
-    	List<Category> topSort = new ArrayList<Category>();
-    	while (!q.isEmpty()) {
-    		Integer node = q.poll();
-    		Category category = categories.get(node);
-    		topSort.add(category);
-    		
-    		//delete edge in implicit graph
-    		int parentId = category.getParentId();
-    		if (parentId == 0) continue;
-    		int parentPosition = idx.get(parentId);
-    		inDegree[parentPosition]--;
-    		
-    		if (inDegree[parentPosition] == 0) {
-    			q.add(parentPosition);
-    		}
-    	}
-    	
-    	return topSort;
-    }
-    
-    private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
+        int[] inDegree = new int[categories.size()];
+        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
 
-        String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
-        String b = "SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;";
-
-        ResultSet res = null;
-        runningRequest = true;
-        try {
-            stmt.executeBatch();
-            res = stmt.executeQuery(byDate ? a : b);
-        } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
-        } finally {
-            runningRequest = false;
+        // get a mapping: CategoryId to array list index
+        Iterator<Category> it = categories.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            idx.put(it.next().getId(), i);
+            i++;
         }
 
-        List<Tweets> tweets = new ArrayList<Tweets>();
-        if (res != null) {
-            try {
-                while (res.next()) {
-                    tweets.add(new Tweets((byDate ? res.getDate("Day") : null),
-                            res.getInt(1)));
-                }
-            } catch (SQLException e) {
-                sqlExceptionResultLog(e);
-            } finally {
-                closeResult(res);
+        // count the inDegree of each node in the DAG
+        // in this case the number of children of each category
+        it = categories.iterator();
+        while (it.hasNext()) {
+            Category category = it.next();
+            int parentId = category.getParentId();
+            if (parentId != 0)
+                inDegree[idx.get(parentId)]++;
+        }
+
+        // look for nodes with inDegree 0
+        // those are the start nodes for the topological sorting
+        // insert them into a queue
+        Queue<Integer> q = new LinkedList<Integer>();
+        for (i = 0; i < categories.size(); i++) {
+            if (inDegree[i] == 0) {
+                q.add(i);
             }
         }
 
-        TweetsAndRetweets ret = new TweetsAndRetweets();
-        ret.tweets = tweets;
-        ret.retweets = getRetweetSum(stmt, byDate);
+        // create topological sorting
+        List<Category> topSort = new ArrayList<Category>();
+        while (!q.isEmpty()) {
+            Integer node = q.poll();
+            Category category = categories.get(node);
+            topSort.add(category);
 
-        return ret;
-    }
+            // delete edge in implicit graph
+            int parentId = category.getParentId();
+            if (parentId == 0)
+                continue;
+            int parentPosition = idx.get(parentId);
+            inDegree[parentPosition]--;
 
-    private List<Retweets> getRetweetSum(Statement stmt, boolean byDate) {
-
-        String a = "SELECT SUM(Counter), LocationId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, DayId;";
-        String b = "SELECT SUM(Counter), LocationId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
-
-        ResultSet res = null;
-        runningRequest = true;
-        try {
-            // stmt.executeBatch();
-            res = stmt.executeQuery(byDate ? a : b);
-        } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
-        } finally {
-            runningRequest = false;
-        }
-
-        if (res == null)
-            return new ArrayList<Retweets>();
-
-        List<Retweets> ret = new ArrayList<Retweets>();
-        try {
-            while (res.next()) {
-                Retweets element = new Retweets((byDate ? res.getDate("Day")
-                        : null), res.getInt(1), res.getInt("LocationId"));
-                element.setLocationCode(res.getString("Code"));
-                ret.add(element);
+            if (inDegree[parentPosition] == 0) {
+                q.add(parentPosition);
             }
-        } catch (SQLException e) {
-            sqlExceptionResultLog(e);
-            return new ArrayList<Retweets>();
-        } finally {
-            closeResultAndStatement(stmt, res);
         }
 
-        return ret;
+        return topSort;
     }
 
     @Override
-    public List<Account> getAllData(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
-            throws IllegalArgumentException, SQLException {
-
-        Statement stmt = createBasicStatement(categoryIDs, locationIDs,
-                accountIDs);
-
-        return getTweetSumPerAccount(stmt, byDates);
-    }
-
-    private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {
-
-        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
-        String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
-
-        ResultSet res = null;
+    public List<Account> getAllData(List<Integer> categoryIDs, List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
+    	List<Account> accounts = new ArrayList<Account>();
+    	
+    	String sqlCommand = "SELECT a.Id AS AccountId, a.TwitterAccountId, a.AccountName, "
+    			+ "a.Verified, a.URL, a.Follower, a.LocationId, ";
+    	if (byDate) {
+    		sqlCommand += "rd.Day AS Day, ";
+    	}
+    	sqlCommand += "SUM(r.Counter) AS SumOfRetweets, SUM(t.Counter) AS SumOfTweets "
+    			    + "FROM accounts a "
+		    			+ "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
+		    			+ "LEFT JOIN location al ON a.LocationId = al.Id "
+		    			+ "LEFT JOIN retweets r ON a.Id = r.AccountId "
+		    				+ "LEFT JOIN day rd ON r.DayID = rd.Id "
+	    				+ "LEFT JOIN tweets t ON a.Id = t.AccountId "
+		    				+ "LEFT JOIN day td ON t.DayID = td.Id ";
+    	if (!categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty()) {
+    		sqlCommand += "WHERE ";
+	    	if (!categoryIDs.isEmpty()) {
+	    		sqlCommand += "ac.CategoryId IN (";
+	    		for (Integer id : categoryIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!locationIDs.isEmpty()) {
+	    		if (!categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "al.Id IN (";
+	    		for (Integer id : locationIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!accountIDs.isEmpty()) {
+	    		if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "a.Id IN (";
+	    		for (Integer id : accountIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+    	}
+    	if (byDate) {
+    		sqlCommand += !categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty() ? "WHERE " : "AND "
+    			+ "rd.Id=td.Id ";
+    	}
+    	sqlCommand += "GROUP BY a.AccountName";
+    	if (byDate) {
+    		sqlCommand += ", rd.Day ";
+    	}
+    	sqlCommand += " ORDER BY SUM(r.Counter) DESC;";
+        ResultSet rs = null;
+        Statement stmt = null;
         runningRequest = true;
         try {
-            stmt.executeBatch();
-            res = stmt.executeQuery(byDate ? a : b);
+            stmt = c.createStatement();
+            rs = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
+            return accounts;
         } finally {
             runningRequest = false;
         }
-
-        if (res == null)
-            return new ArrayList<Account>();
-
-        List<Account> accounts = new ArrayList<Account>();
+        
         try {
-            while (res.next()) {
-                if (byDate) {
-
-                    int id = res.getInt(3);
-                    Account temp = null;
-                    Account ac;
-                    Iterator<Account> it = accounts.iterator();
-                    while (it.hasNext() && temp == null) {
-                        ac = it.next();
-                        if (ac.getId() == id) {
-                            temp = ac;
-                        }
-                    }
-
-                    // add account and tweet
-                    if (temp == null) {
-                        accounts.add(new Account(id, res
-                                .getString("AccountName"), new Tweets(null, res
-                                .getInt(1))));
-                    } else {
-                        // add tweets to account
-
-                        temp.addTweet(new Tweets(res.getDate("Day"), res
-                                .getInt(1)));
-                    }
-                } else {
-                    accounts.add(new Account(res.getInt(3), res
-                            .getString("AccountName"), new Tweets(null, res
-                            .getInt(1))));
-                }
+            while (rs.next()) {
+            	Account a = new Account(rs.getInt("AccountId"), rs.getLong("TwitterAccountId"),
+            			rs.getString("AccountName"), rs.getBoolean("Verified"), rs.getString("url"), 
+            			rs.getInt("Follower"), rs.getInt("LocationId"));
+            	a.addRetweet(new Retweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfRetweets"), rs.getInt("LocationId")));
+            	a.addTweet(new Tweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfTweets")));
+            	accounts.add(a);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
             return new ArrayList<Account>();
         } finally {
-            closeResult(res);
+            closeResultAndStatement(stmt, rs);
         }
-
-        // get retweets
-        List<Account> retweets = getRetweetSumPerAccount(stmt, byDate);
-
-        // match Account lists
-        for (Account account : accounts) {
-            Iterator<Account> it = retweets.iterator();
-            // add retweets
-            boolean exit = false;
-            while (it.hasNext() && !exit) {
-                Account temp = it.next();
-
-                if (temp.getId() == account.getId()) {
-                    // match
-                    for (Retweets r : temp.getRetweets()) {
-                        account.addRetweet(r);
-                    }
-                    it.remove();
-                    exit = true;
-                }
-            }
-        }
-
-        return accounts;
+        
+    	return accounts;
+    }
+    
+    @Override
+    public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs, List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
+    	TweetsAndRetweets tweetsAndRetweets = new TweetsAndRetweets();
+    	tweetsAndRetweets.retweets = getRetweetSum(categoryIDs, locationIDs, accountIDs, byDate);
+    	tweetsAndRetweets.tweets = getTweetSum(categoryIDs, locationIDs, accountIDs, byDate);
+    	return tweetsAndRetweets;
     }
 
-    private List<Account> getRetweetSumPerAccount(Statement stmt, boolean byDate) {
-
-        String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId;";
-
-        ResultSet res = null;
-
+    private List<Retweets> getRetweetSum(List<Integer> categoryIDs, List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
+    	String sqlCommand = "SELECT rl.Id AS LocationId, rl.Code AS LocationCode, ";
+    	if (byDate) {
+    		sqlCommand += "rd.Day AS Day, ";
+    	}
+    	sqlCommand += "SUM(r.Counter) AS SumOfRetweets "
+    			    + "FROM accounts a "
+		    			+ "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
+		    			+ "LEFT JOIN location al ON a.LocationId = al.Id "
+		    			+ "INNER JOIN retweets r ON a.Id = r.AccountId "
+		    				+ "LEFT JOIN day rd ON r.DayID = rd.Id "
+		    				+ "LEFT JOIN location rl ON r.LocationId = rl.Id ";
+    	if (!categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty()) {
+    		sqlCommand += "WHERE ";
+	    	if (!categoryIDs.isEmpty()) {
+	    		sqlCommand += "ac.CategoryId IN (";
+	    		for (Integer id : categoryIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!locationIDs.isEmpty()) {
+	    		if (!categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "al.Id IN (";
+	    		for (Integer id : locationIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!accountIDs.isEmpty()) {
+	    		if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "a.Id IN (";
+	    		for (Integer id : accountIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+    	}
+    	sqlCommand += "GROUP BY rl.Id";
+    	if (byDate) {
+    		sqlCommand += ", rd.Day ";
+    	}
+    	sqlCommand += " ORDER BY SUM(r.Counter) DESC;";
+    	List<Retweets> retweets = new ArrayList<Retweets>();
+        ResultSet rs = null;
+        Statement stmt = null;
+        runningRequest = true;
         try {
-            runningRequest = true;
-            res = stmt.executeQuery(byDate ? a : b);
+            stmt = c.createStatement();
+            rs = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            // TODO remove log below
-            logger.warning("SQL-Exception thrown by this statement: "
-                    + (byDate ? a : b));
+            return retweets;
         } finally {
             runningRequest = false;
         }
-
-        if (res == null)
-            return new ArrayList<Account>();
-
-        List<Account> ret = new ArrayList<Account>();
+        
         try {
-            while (res.next()) {
-
-                int id = res.getInt("AccountId");
-                Account temp = null;
-                Iterator<Account> it = ret.iterator();
-                while (it.hasNext() && temp == null) {
-                    Account ac = it.next();
-                    if (ac.getId() == id) {
-                        temp = ac;
-                    }
-                }
-
-                if (temp == null) {
-                    // add account and retweet
-                    ret.add(new Account(id, "", new Retweets((byDate ? res
-                            .getDate("Day") : null), res.getInt(1), res
-                            .getInt(2))));
-                } else {
-                    // add retweets to account
-                    Retweets element = new Retweets(
-                            (byDate ? res.getDate("Day") : null),
-                            res.getInt(1), res.getInt(2));
-                    element.setLocationCode(res.getString("Code"));
-                    temp.addRetweet(element);
-                }
-
+            while (rs.next()) {
+            	Retweets r = new Retweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfRetweets"), rs.getInt("LocationId"));
+            	r.setLocationCode(rs.getString("LocationCode"));
+            	retweets.add(r);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new ArrayList<Account>();
+            return new ArrayList<Retweets>();
         } finally {
-            closeResultAndStatement(stmt, res);
+            closeResultAndStatement(stmt, rs);
         }
-
-        return ret;
+        
+        return retweets;
     }
-
-    private Statement createBasicStatement(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs) throws SQLException {
-
-        boolean categoryIsSet = categoryIDs != null && categoryIDs.length > 0;
-        boolean locationIsSet = locationIDs != null && locationIDs.length > 0;
-        boolean accountIsSet = accountIDs != null && accountIDs.length > 0;
-        if (!categoryIsSet && !locationIsSet && !accountIsSet) {
-            throw new IllegalArgumentException();
+    
+    private List<Tweets> getTweetSum(List<Integer> categoryIDs, List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
+    	String sqlCommand = "SELECT SUM(t.Counter) AS SumOfTweets"; 
+    	if (byDate) {
+    		sqlCommand += ", rd.Day AS Day";
+    	}
+    	sqlCommand += " FROM accounts a "
+		    			+ "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
+		    			+ "LEFT JOIN location al ON a.LocationId = al.Id "
+		    			+ "INNER JOIN tweets t ON a.Id = t.AccountId "
+		    				+ "LEFT JOIN day rd ON r.DayID = rd.Id ";
+    	if (!categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty()) {
+    		sqlCommand += "WHERE ";
+	    	if (!categoryIDs.isEmpty()) {
+	    		sqlCommand += "ac.CategoryId IN (";
+	    		for (Integer id : categoryIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!locationIDs.isEmpty()) {
+	    		if (!categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "al.Id IN (";
+	    		for (Integer id : locationIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!accountIDs.isEmpty()) {
+	    		if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "a.Id IN (";
+	    		for (Integer id : accountIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+    	}
+    	sqlCommand += ";";
+    	
+    	List<Tweets> tweets = new ArrayList<Tweets>();
+        ResultSet rs = null;
+        Statement stmt = null;
+        runningRequest = true;
+        try {
+            stmt = c.createStatement();
+            rs = stmt.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+            return tweets;
+        } finally {
+            runningRequest = false;
         }
-
-        Statement stmt = c.createStatement();
-
-        stmt.addBatch("CREATE TEMPORARY TABLE IF NOT EXISTS final (val int PRIMARY KEY);");
-
-        if (categoryIsSet || locationIsSet) {
-            String c = "INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
-
-            if (categoryIsSet) {
-                c += "(CategoryId=" + categoryIDs[0];
-
-                for (int i = 1; i < categoryIDs.length; i++) {
-                    c += " OR CategoryId=" + categoryIDs[i];
-                }
+        
+        try {
+            if (rs.next()) {
+            	Tweets t = new Tweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfRetweets"));
+            	tweets.add(t);
             }
-
-            if (categoryIsSet && locationIsSet) {
-                c += ") AND ";
-            }
-
-            if (locationIsSet) {
-                c += "(LocationId=" + locationIDs[0];
-
-                for (int i = 1; i < locationIDs.length; i++) {
-                    c += " OR LocationId=" + locationIDs[i];
-                }
-            }
-
-            c += ");";
-            stmt.addBatch(c);
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            e.printStackTrace();
+            return new ArrayList<Tweets>();
+        } finally {
+            closeResultAndStatement(stmt, rs);
         }
-
-        if (accountIsSet) {
-            // add accounts
-            String ca = "INSERT IGNORE INTO final (val) VALUES ("
-                    + accountIDs[0] + ")";
-            for (int i = 1; i < accountIDs.length; i++) {
-                ca += ", (" + accountIDs[i] + ")";
-
-            }
-            ca += ";";
-            stmt.addBatch(ca);
-        }
-
-        return stmt;
+        
+        return tweets;
     }
 
     @Override

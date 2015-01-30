@@ -69,8 +69,8 @@ public interface DBIgui {
      * @throws SQLException
      *             thrown if the sql-query couldn't be built
      */
-    public List<Account> getAllData(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
+    public List<Account> getAllData(List<Integer> categoryIDs,
+    		List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException;
 
     /**
@@ -93,8 +93,8 @@ public interface DBIgui {
      * @throws SQLException
      *             thrown if the sql-query couldn't be built
      */
-    public TweetsAndRetweets getSumOfData(Integer[] categoryIDs,
-            Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
+    public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
+    		List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException;
 
 

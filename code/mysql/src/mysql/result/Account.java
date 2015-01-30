@@ -106,21 +106,35 @@ public class Account extends Result {
                 new int[0], new ArrayList<Tweets>(), new ArrayList<Retweets>());
     }
 
-    /**
-     * create a new object to store a account-data
-     * 
-     * @param id
-     *            the id of the account in the database as int
-     * @param name
-     *            the name of the account as String
-     * @param tweets
-     *            a sum of tweets of the account as Tweets
-     */
-    public Account(int id, String name, Tweets tweets) {
-        this(id, 0, name, false, null, 0, 0, new int[0],
-                new ArrayList<Tweets>(), new ArrayList<Retweets>());
-        addTweet(tweets);
-    }
+    // /**
+    // * create a new object to store a account-data
+    // *
+    // * @param id
+    // * the id of the account in the database as int
+    // * @param name
+    // * the name of the account as String
+    // * @param tweets
+    // * a sum of tweets of the account as Tweets
+    // */
+    // public Account(int id, String name, Tweets tweets) {
+    // this(id, 0, name, false, null, 0, 0, new int[0],
+    // new ArrayList<Tweets>(), new ArrayList<Retweets>());
+    // addTweet(tweets);
+    // }
+
+    // /**
+    // * create a new object to store a account-data
+    // *
+    // * @param id
+    // * the id of the account in the database as int
+    // * @param retweets
+    // * a sum of retweets of the account as Retweets
+    // */
+    // public Account(int id, Retweets retweets) {
+    // this(id, 0, null, false, null, 0, 0, new int[0],
+    // new ArrayList<Tweets>(), new ArrayList<Retweets>());
+    // addRetweet(retweets);
+    // }
 
     /**
      * create a new object to store a account-data
@@ -128,28 +142,24 @@ public class Account extends Result {
      * @param id
      *            the id of the account in the database as int
      * @param name
-     *            the name of the account as String
-     * @param retweets
-     *            a sum of retweets of the account as Retweets
-     */
-    public Account(int id, String name, Retweets retweets) {
-        this(id, 0, name, false, null, 0, 0, new int[0],
-                new ArrayList<Tweets>(), new ArrayList<Retweets>());
-        addRetweet(retweets);
-    }
-
-    /**
-     * create a new object to store a account-data
-     * 
-     * @param id
-     *            the id of the account in the database as int
-     * @param name
-     * 			  the name of the account
+     *            the name of the account
      * @param url
      *            the official url of the account as String
      */
     public Account(int id, String name, String url) {
         this(id, 0, name, false, url, 0, -1);
+    }
+
+    /**
+     * create a new object to store a account-data
+     * 
+     * @param id
+     *            the id of the account in the database as int
+     * @param name
+     *            the name of the account
+     */
+    public Account(int id, String name) {
+        this(id, 0, name, false, null, 0, -1);
     }
 
     /**
@@ -265,15 +275,15 @@ public class Account extends Result {
 
     @Override
     public String toString() {
-    	return getName();
+        return getName();
     }
 
     @Override
     public boolean equals(Object o) {
-    	boolean equal = false;
-		if (o != null && o.getClass() == this.getClass()) {
-			equal = ((Result) o).getId() == getId();
-		} 
-    	return equal;
+        boolean equal = false;
+        if (o != null && o.getClass() == this.getClass()) {
+            equal = ((Result) o).getId() == getId();
+        }
+        return equal;
     }
 }
