@@ -1,5 +1,5 @@
 package gui;
-	
+
 import gui.GUIElement.UpdateType;
 
 import java.io.BufferedReader;
@@ -44,11 +44,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
 import util.LoggerUtil;
+
 /**
- * Supercontroller which provides information from db
- * and informs subcontroller on data changes.
+ * Supercontroller which provides information from db and informs subcontroller
+ * on data changes.
+ * 
  * @author Maximilian Awiszus and Paul Jungeblut
- *
+ * 
  */
 public class GUIController extends Application implements Initializable {
 	@FXML
