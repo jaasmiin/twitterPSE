@@ -56,7 +56,7 @@ public class GUIController extends Application implements Initializable {
 	private ListView<String> lstInfo;
 	
 	private static GUIController instance = null;
-	private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
+	private static ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
 	private static DBgui db;
 	private Category categoryRoot;
@@ -111,6 +111,7 @@ public class GUIController extends Application implements Initializable {
 	 * if there has been a connection.
 	 */
 	public void close() {
+		update(UpdateType.CLOSE);
 		if (db != null && db.isConnected()) {
 			System.out.println("Verbindung mit Datenbank wird geschlossen...");
 			db.disconnect();
@@ -632,6 +633,7 @@ public class GUIController extends Application implements Initializable {
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
+		update(UpdateType.GUI_STARTED);
 		new Thread(rnbInitDBConnection).start();
 	}
 	

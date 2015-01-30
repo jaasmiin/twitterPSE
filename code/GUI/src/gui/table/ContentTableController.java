@@ -32,14 +32,19 @@ public class ContentTableController extends OutputElement implements Initializab
 	
 	@Override
 	public void update(UpdateType type) {
-		ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
-		table.setItems(accountList);
+		System.out.println("ContentTable updated");
+		if (true) {
+			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
+			System.out.println("AccountsList.size = " + accountList.size());
+			table.setItems(accountList);	
+		}		
 	}
 	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		superController.subscribe(this);
+		System.out.println("ContentTable initialized");
 		
 		addAccountsColumn();
 		addTweetsColumn();

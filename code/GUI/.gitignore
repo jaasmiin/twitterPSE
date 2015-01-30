@@ -2,3 +2,4 @@
 logs
 *.lck
 LogFile.*
+bin
