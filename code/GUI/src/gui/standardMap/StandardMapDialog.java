@@ -45,6 +45,10 @@ public class StandardMapDialog extends JDialog {
 
 			calculatedData = superController.getDisplayValuePerCountry(
 					uneditedData, forCalc);
+			
+			map.update(calculatedData);
+			map.redraw();
+			
 
 			// TODO: repaint pane
 			// TODO: Get calculated data from somewhere

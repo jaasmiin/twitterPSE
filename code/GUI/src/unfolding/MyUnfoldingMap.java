@@ -69,6 +69,15 @@ public class MyUnfoldingMap extends PApplet {
         dataEntriesMap = loadCountriesFromCSV("countries.csv");
         setValues = new ArrayList<String>();
         
+        /*
+        //TEST
+        HashMap<String, Double> test = new HashMap<String, Double>();
+        test.put("AR", 7.45974);
+        test.put("US", 19.395875);
+        test.put("DE", 4.3595);
+        update(test);
+        */
+
     }
     public UnfoldingMap getMap() {
     	return currentMap;
@@ -131,17 +140,17 @@ public class MyUnfoldingMap extends PApplet {
         for(Entry<String, Double> e: changedEntries.entrySet()) {
             
             DataEntry newEntry = dataEntriesMap.get(e.getKey());
-            newEntry.setValue(e.getValue());
-            
-            dataEntriesMap.put(e.getKey(), newEntry);
-            setValues.add(e.getKey());
-            
+            if(newEntry != null) {
+                newEntry.setValue(e.getValue());
+                dataEntriesMap.put(e.getKey(), newEntry);
+                setValues.add(e.getKey());
+            }
+
             if(Float.parseFloat(e.getValue().toString()) > maxValue) {
                 maxValue = Float.parseFloat(e.getValue().toString());
             }
         }
         shadeCountries();
-        redraw();
     }    
 //    /**
 //     * Switches provider of the map
