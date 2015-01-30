@@ -111,109 +111,109 @@ public class DBguiTest {
         assertEquals(0, a.size());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void test1GetSumOfData() {
-        try {
-            dbg.getSumOfData(new Integer[0], new Integer[0], new Integer[0],
-                    false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void test2GetSumOfData() {
-        TweetsAndRetweets test = new TweetsAndRetweets();
-        try {
-            test = dbg.getSumOfData(new Integer[] {1 }, new Integer[] {1 },
-                    new Integer[0], false);
-        } catch (IllegalArgumentException | SQLException e) {
-            e.printStackTrace();
-        }
-        assertEquals(1, test.tweets.size());
-        assertEquals(6, test.tweets.get(0).getCounter());
-        assertNull(test.tweets.get(0).getDate());
-        assertEquals(3, test.retweets.size());
-    }
-
-    @Test
-    public void test2GetSumOfDataWithDates() {
-        TweetsAndRetweets test = new TweetsAndRetweets();
-        try {
-            test = dbg.getSumOfData(new Integer[] {1 }, new Integer[] {1 },
-                    new Integer[0], true);
-        } catch (IllegalArgumentException | SQLException e) {
-            e.printStackTrace();
-        }
-        assertEquals(3, test.tweets.size());
-        assertEquals(3, test.tweets.get(0).getCounter());
-        assertEquals(2, test.tweets.get(1).getCounter());
-        assertEquals(1, test.tweets.get(2).getCounter());
-        assertEquals(4, test.retweets.size());
-        assertEquals(10, test.retweets.get(3).getCounter());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test1GetSumOfDataWithDates() {
-        try {
-            dbg.getSumOfData(new Integer[0], new Integer[0], new Integer[0],
-                    true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test1GetAllDataWithDates() {
-        try {
-            dbg.getAllData(new Integer[0], new Integer[0], new Integer[0], true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void test2GetAllDataWithDates() {
-        List<Account> res = null;
-        try {
-            res = dbg.getAllData(new Integer[] {1 }, new Integer[] {1 },
-                    new Integer[0], true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        assertEquals(2, res.size());
-        assertEquals(2, res.get(0).getTweets().size());
-        assertEquals(1, res.get(1).getTweets().size());
-        assertEquals(3, res.get(0).getRetweets().size());
-        assertEquals(2, res.get(1).getRetweets().size());
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void test1GetAllData() {
-        try {
-            dbg.getAllData(new Integer[0], new Integer[0], new Integer[0],
-                    false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Test
-    public void test2GetAllData() {
-        List<Account> res = null;
-        try {
-            res = dbg.getAllData(new Integer[] {1 }, new Integer[] {1 },
-                    new Integer[0], false);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        assertEquals(2, res.size());
-        assertEquals(1, res.get(0).getTweets().size());
-        assertEquals(1, res.get(1).getTweets().size());
-        System.out.println(res.get(0).getRetweets().get(0).getLocation());
-        assertEquals(2, res.get(0).getRetweets().size());
-        assertEquals(2, res.get(1).getRetweets().size());
-    }
+    // @Test(expected = IllegalArgumentException.class)
+    // public void test1GetSumOfData() {
+    // try {
+    // dbg.getSumOfData(new Integer[0], new Integer[0], new Integer[0],
+    // false);
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // @Test
+    // public void test2GetSumOfData() {
+    // TweetsAndRetweets test = new TweetsAndRetweets();
+    // try {
+    // test = dbg.getSumOfData(new Integer[] {1 }, new Integer[] {1 },
+    // new Integer[0], false);
+    // } catch (IllegalArgumentException | SQLException e) {
+    // e.printStackTrace();
+    // }
+    // assertEquals(1, test.tweets.size());
+    // assertEquals(6, test.tweets.get(0).getCounter());
+    // assertNull(test.tweets.get(0).getDate());
+    // assertEquals(3, test.retweets.size());
+    // }
+    //
+    // @Test
+    // public void test2GetSumOfDataWithDates() {
+    // TweetsAndRetweets test = new TweetsAndRetweets();
+    // try {
+    // test = dbg.getSumOfData(new Integer[] {1 }, new Integer[] {1 },
+    // new Integer[0], true);
+    // } catch (IllegalArgumentException | SQLException e) {
+    // e.printStackTrace();
+    // }
+    // assertEquals(3, test.tweets.size());
+    // assertEquals(3, test.tweets.get(0).getCounter());
+    // assertEquals(2, test.tweets.get(1).getCounter());
+    // assertEquals(1, test.tweets.get(2).getCounter());
+    // assertEquals(4, test.retweets.size());
+    // assertEquals(10, test.retweets.get(3).getCounter());
+    // }
+    //
+    // @Test(expected = IllegalArgumentException.class)
+    // public void test1GetSumOfDataWithDates() {
+    // try {
+    // dbg.getSumOfData(new Integer[0], new Integer[0], new Integer[0],
+    // true);
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // @Test(expected = IllegalArgumentException.class)
+    // public void test1GetAllDataWithDates() {
+    // try {
+    // dbg.getAllData(new Integer[0], new Integer[0], new Integer[0], true);
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // @Test
+    // public void test2GetAllDataWithDates() {
+    // List<Account> res = null;
+    // try {
+    // res = dbg.getAllData(new Integer[] {1 }, new Integer[] {1 },
+    // new Integer[0], true);
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // assertEquals(2, res.size());
+    // assertEquals(2, res.get(0).getTweets().size());
+    // assertEquals(1, res.get(1).getTweets().size());
+    // assertEquals(3, res.get(0).getRetweets().size());
+    // assertEquals(2, res.get(1).getRetweets().size());
+    // }
+    //
+    // @Test(expected = IllegalArgumentException.class)
+    // public void test1GetAllData() {
+    // try {
+    // dbg.getAllData(new Integer[0], new Integer[0], new Integer[0],
+    // false);
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // @Test
+    // public void test2GetAllData() {
+    // List<Account> res = null;
+    // try {
+    // res = dbg.getAllData(new Integer[] {1 }, new Integer[] {1 },
+    // new Integer[0], false);
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // assertEquals(2, res.size());
+    // assertEquals(1, res.get(0).getTweets().size());
+    // assertEquals(1, res.get(1).getTweets().size());
+    // System.out.println(res.get(0).getRetweets().get(0).getLocation());
+    // assertEquals(2, res.get(0).getRetweets().size());
+    // assertEquals(2, res.get(1).getRetweets().size());
+    // }
 
     @After
     public void tearDown() {
