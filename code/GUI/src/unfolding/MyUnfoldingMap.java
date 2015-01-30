@@ -110,6 +110,11 @@ public class MyUnfoldingMap extends PApplet {
         
         Marker country = currentMap.getFirstHitMarker(x, y);
         if (country != null) {
+            
+            String countryId = country.getId();
+            String char2Id = countryIdTrans.get(countryId);  //3 char Ländercode in 2 char umwandeln
+            MyDataEntry loc = dataEntriesMap.get(char2Id);
+
             String countryName = country.getProperties().values().toArray()[0].toString();
             MyDataEntry location = dataEntriesMap.get(countryName);
             if (location != null) {
