@@ -303,34 +303,28 @@ public class GUIController extends Application implements Initializable {
 	private void reloadData() {
 		String info = "Lade Daten...";
 		setInfo(info);
-		List<Location> selectedLocations = locations.getSelected();
-		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
-		Set<Integer> allSelectedCategories = new HashSet<Integer>();
+		List<Integer> selectedLocations = new ArrayList<Integer>();
+		for (Location l : locations.getSelected()) {
+			selectedLocations.add(l.getId());
+		}
+		List<Integer> selectedAccounts = new ArrayList<Integer>();
+		for (Account a : accounts.getSelected()) {
+			selectedAccounts.add(a.getId());
+		}
+		List<Integer> allSelectedCategories = new ArrayList<Integer>();
 		for (Integer id : selectedCategories) {
 			allSelectedCategories.addAll(getSelectedChildCategories(id));
 		}
-		Integer[] selectedCategoriesArray = allSelectedCategories.toArray(new Integer[allSelectedCategories.size()]);
-		int i = 0;
-		for (Location l : selectedLocations) {
-			selectedLocationsArray[i++] = l.getId();
-		}
-		List<Account> selectedAccounts = accounts.getSelected();
-		Integer[] selectedAccountsArray = new Integer[selectedAccounts.size()];
-		i = 0;
-		for (Account a : selectedAccounts) {
-			selectedAccountsArray[i++] = a.getId();
-		}
-		System.out.println("Anzahl: " + selectedAccountsArray.length);
-		if (selectedCategoriesArray.length + selectedLocationsArray.length + selectedAccountsArray.length >= 1) {
+		
+		if (allSelectedCategories.size() + selectedLocations.size() + selectedAccounts.size() >= 1) {
 
 			boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
 			boolean success = true;
 			try {
-				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-				System.out.println("db.getSumOfData(" + selectedCategoriesArray.length + "," + selectedLocationsArray.length + "," + selectedAccountsArray.length + "," + dateSelected + ");");
-				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-				System.out.println("data here");
-			} catch (IllegalArgumentException | SQLException e) {
+				dataByLocation = db.getRetweetSum(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
+//				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+//				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+			} catch (IllegalArgumentException e) {
 				success = false;
 				setInfo("Fehler bei der Kommunikation mit der DB.", info);
 			}

@@ -379,6 +379,82 @@ public class DBgui extends DBConnection implements DBIgui {
         return getTweetSum(stmt, byDates);
     }
 
+    public TweetsAndRetweets getRetweetSum(List<Integer> categoryIDs, List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
+    	String sqlCommand = "SELECT rl.Id AS LocationId, ";
+    	if (byDate) {
+    		sqlCommand += "rd.Day AS Day, ";
+    	}
+    	sqlCommand += "SUM(r.Counter) AS SumOfRetweets "
+    			    + "FROM accounts a "
+		    			+ "INNER JOIN accountCategory ac ON a.Id = ac.AccountId "
+		    			+ "INNER JOIN location al ON a.LocationId = al.Id "
+		    			+ "INNER JOIN retweets r ON a.Id = r.AccountId "
+		    				+ "INNER JOIN day rd ON r.DayID = rd.Id "
+		    				+ "INNER JOIN location rl ON r.LocationId = rl.Id ";
+    	if (!categoryIDs.isEmpty() || !locationIDs.isEmpty() || !accountIDs.isEmpty()) {
+    		sqlCommand += "WHERE ";
+	    	if (!categoryIDs.isEmpty()) {
+	    		sqlCommand += "ac.CategoryId IN (";
+	    		for (Integer id : categoryIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!locationIDs.isEmpty()) {
+	    		if (!categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "rl.Id IN (";
+	    		for (Integer id : locationIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+	    	if (!accountIDs.isEmpty()) {
+	    		if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
+	    			sqlCommand += "and ";
+	    		}
+	    		sqlCommand += "a.Id IN (";
+	    		for (Integer id : accountIDs) {
+	    			sqlCommand += id + ",";
+	    		}
+	    		sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1) + ") " + sqlCommand.substring(sqlCommand.length(), sqlCommand.length());
+	    	}
+    	}
+    	sqlCommand += "GROUP BY rl.Id, ";
+    	if (byDate) {
+    		sqlCommand += "rd.Day ";
+    	}
+    	sqlCommand += "ORDER BY SUM(r.Counter);";
+    	
+    	TweetsAndRetweets tweetsAndRetweets = new TweetsAndRetweets();
+        ResultSet rs = null;
+        Statement stmt = null;
+        runningRequest = true;
+        try {
+            stmt = c.createStatement();
+            rs = stmt.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+            return tweetsAndRetweets;
+        } finally {
+            runningRequest = false;
+        }
+        
+        try {
+            while (rs.next()) {
+            	tweetsAndRetweets.retweets.add(new Retweets(byDate ? rs.getDate("Day") : null, rs.getInt("SumOfRetweets"), rs.getInt("LocationId")));
+            }
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            return new TweetsAndRetweets();
+        } finally {
+            closeResultAndStatement(stmt, rs);
+        }
+        
+        return tweetsAndRetweets;
+    }
+    
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
         String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
