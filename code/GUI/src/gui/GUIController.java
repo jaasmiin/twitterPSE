@@ -742,7 +742,7 @@ public class GUIController extends Application implements Initializable {
 	    	overallCounter += retweetsPerLocation.get(key);		
 	    }
 	   
-	    System.out.println("overall value: " + ((double)1) /overallCounter);
+	    System.out.println("1/overall value: " + ((double)1) /overallCounter);
 	    
 	    // calculate relative vlaue  
 	    for(String key : keySet) {
