@@ -58,7 +58,8 @@ public class Category extends Result {
      * @return the name of the category as string
      * @deprecated replaced by {@link #toString()}
      */
-    public String getCategory() {
+    @Deprecated
+	public String getCategory() {
         return category;
     }
 

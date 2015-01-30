@@ -37,7 +37,8 @@ public class Location extends Result {
      * @return the name of the category as String
      * @deprecated replaced by {@link #toString()}
      */
-    public String getName() {
+    @Deprecated
+	public String getName() {
         return name;
     }
 
