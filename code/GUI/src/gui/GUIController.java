@@ -706,6 +706,14 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Get the sum of all retweets per location
+	 * @return HashMap with location code and the sum of retweets as integer.
+	 */
+	public HashMap<String, Integer> getSumOfRetweetsPerLocation() {
+		return db.getAllRetweetsPerLocation();
+	}
+	
+	/**
 	 * calculates the displayed value per country
 	 * 
 	 * given: a category, country, accounts combination
