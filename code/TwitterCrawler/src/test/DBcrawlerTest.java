@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,12 +31,19 @@ public class DBcrawlerTest {
     private DBtest cleaner;
     private DateFormat dateFormat;
 
+    private Method mAddLocation;
+    private Object[] parametersAddLocation;
+
+    private Method mGetCountryCodes;
+    private Object[] parametersGetCountryCodes;
+
     public DBcrawlerTest() {
         access = new AccessData("localhost", "3306", "twittertest", "root",
                 "root");
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 
+    @SuppressWarnings("rawtypes")
     @Before
     public void setUp() {
         try {
@@ -47,6 +56,29 @@ public class DBcrawlerTest {
                 | IOException e) {
             e.printStackTrace();
         }
+
+        Class[] pTypesAddLocation = new Class[2];
+        pTypesAddLocation[0] = java.lang.String.class;
+        pTypesAddLocation[1] = java.lang.String.class;
+        try {
+            mAddLocation = dbc.getClass().getDeclaredMethod("addLocation",
+                    pTypesAddLocation);
+            mAddLocation.setAccessible(true);
+        } catch (NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
+        parametersAddLocation = new Object[2];
+
+        Class[] pTypesGetCountryCodes = new Class[0];
+        try {
+            mGetCountryCodes = dbc.getClass().getDeclaredMethod("getCountryCodes",
+                    pTypesGetCountryCodes);
+            mGetCountryCodes.setAccessible(true);
+        } catch (NoSuchMethodException | SecurityException e) {
+            e.printStackTrace();
+        }
+        parametersGetCountryCodes = new Object[0];
+
     }
 
     @Test
@@ -55,11 +87,20 @@ public class DBcrawlerTest {
         assertEquals(6, h.size());
     }
 
-    // @Test
-    // public void testGetCountryCodes() {
-    // HashSet<String> h = dbc.getCountryCodes();
-    // assertEquals(8, h.size());
-    // }
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testGetCountryCodes() {
+        HashSet<String> h = new HashSet<String>();
+        try {
+            h = (HashSet<String>) mGetCountryCodes.invoke(dbc,
+                    parametersGetCountryCodes);
+        } catch (IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        ;
+        assertEquals(8, h.size());
+    }
 
     /**
      * test for number of NonVerifiedAccounts
@@ -168,18 +209,35 @@ public class DBcrawlerTest {
         assertEquals(1, l.length);
     }
 
-    // /**
-    // * test to add a location
-    // */
-    // @Test
-    // public void test1AddLocation() {
-    // boolean res = dbc.addLocation("TTT", null);
-    // HashSet<String> h = dbc.getCountryCodes();
-    // cleaner.sql("DELETE FROM location WHERE code = \"TTT\";");
-    // assertTrue(res);
-    // assertTrue(h.contains("TTT"));
-    // assertEquals(9, h.size());
-    // }
+    /**
+     * test to add a location
+     */
+    @SuppressWarnings("unchecked")
+    @Test
+    public void test1AddLocation() {
+
+        parametersAddLocation[0] = "TTT";
+        parametersAddLocation[1] = null;
+        boolean res = false;
+        try {
+            res = (boolean) mAddLocation.invoke(dbc, parametersAddLocation);
+        } catch (IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e1) {
+            e1.printStackTrace();
+        }
+        HashSet<String> h = new HashSet<String>();
+        try {
+            h = (HashSet<String>) mGetCountryCodes.invoke(dbc,
+                    parametersGetCountryCodes);
+        } catch (IllegalAccessException | IllegalArgumentException
+                | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        cleaner.sql("DELETE FROM location WHERE code = \"TTT\";");
+        assertTrue(res);
+        assertTrue(h.contains("TTT"));
+        assertEquals(9, h.size());
+    }
 
     // /**
     // * test to add a location that's code is to long
