@@ -62,6 +62,7 @@ public class MyUnfoldingMap extends PApplet {
         List<Feature> countries = GeoJSONReader.loadData(this,"countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);
         currentMap.addMarkers(countryMarker);
+        resetMarkers();
         
         dataEntriesMap = loadCountriesFromCSV("countries.csv");
         setValues = new ArrayList<String>();
@@ -184,5 +185,14 @@ public class MyUnfoldingMap extends PApplet {
         }
 
         return dataEntriesMap;
+    }
+
+    public void resetMarkers() {
+        for(Marker m : countryMarker) {
+            m.setColor(color(173,173,173,50));
+            m.setStrokeColor(color(241, 241, 241, 50));
+            m.setStrokeWeight(1);
+        }
+        
     }
 }

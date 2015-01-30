@@ -3,6 +3,7 @@ package gui.standardMap;
 import gui.GUIController;
 import gui.GUIElement.UpdateType;
 
+import java.awt.image.ColorModel;
 import java.util.HashMap;
 
 import javax.swing.JDialog;
@@ -24,6 +25,7 @@ public class StandardMapDialog extends JDialog {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		add(map);
 		map.init();
+		setVisible(true);
 	}
 
 	@SuppressWarnings("incomplete-switch")
@@ -48,17 +50,19 @@ public class StandardMapDialog extends JDialog {
 			
 			map.update(calculatedData);
 			map.redraw();
-			
 
 			// TODO: repaint pane
 			// TODO: Get calculated data from somewhere
 			// map.update(); insert new data
 			break;
 		case GUI_STARTED:
+		    map.resetMarkers();
 			map.redraw();
 			setVisible(true);
-//			repaint();
 			break;
+		
+		default:
+		    map.resetMarkers();
 		}
 	}
 
