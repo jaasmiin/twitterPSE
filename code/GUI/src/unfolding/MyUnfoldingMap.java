@@ -1,12 +1,13 @@
 package unfolding;
 
+import java.awt.event.MouseEvent;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import unfolding.MyDataEntry;
-
 import processing.core.PApplet;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
@@ -94,6 +95,27 @@ public class MyUnfoldingMap extends PApplet {
     public void draw() {
         //switchProvider();
         currentMap.draw();
+    }
+    
+    /**
+     * called when a mouse click is noticed
+     * 
+     * tries to get the country clicked on and calls handler
+     * @param e the event object (not needed, parameter specified by Interface)
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        float x = mouseX;
+        float y = mouseY;
+        
+        Marker country = currentMap.getFirstHitMarker(x, y);
+        if (country != null) {
+            String countryName = country.getProperties().values().toArray()[0].toString();
+            MyDataEntry location = dataEntriesMap.get(countryName);
+            if (location != null) {
+                System.out.println(location.getCountryName() + " " + location.getCountryId2Chars() + " " + location.getCountryId3Chars());
+            }
+        }
     }
 
     /**
