@@ -28,7 +28,6 @@ import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.Retweets;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;

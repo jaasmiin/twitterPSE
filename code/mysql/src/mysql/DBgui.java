@@ -395,7 +395,7 @@ public class DBgui extends DBConnection implements DBIgui {
 	    		if (!categoryIDs.isEmpty()) {
 	    			sqlCommand += "and ";
 	    		}
-	    		sqlCommand += "rl.Id IN (";
+	    		sqlCommand += "al.Id IN (";
 	    		for (Integer id : locationIDs) {
 	    			sqlCommand += id + ",";
 	    		}
@@ -486,7 +486,7 @@ public class DBgui extends DBConnection implements DBIgui {
 	    		if (!categoryIDs.isEmpty()) {
 	    			sqlCommand += "and ";
 	    		}
-	    		sqlCommand += "rl.Id IN (";
+	    		sqlCommand += "al.Id IN (";
 	    		for (Integer id : locationIDs) {
 	    			sqlCommand += id + ",";
 	    		}
@@ -508,7 +508,6 @@ public class DBgui extends DBConnection implements DBIgui {
     		sqlCommand += ", rd.Day ";
     	}
     	sqlCommand += " ORDER BY SUM(r.Counter) DESC;";
-    	
     	List<Retweets> retweets = new ArrayList<Retweets>();
         ResultSet rs = null;
         Statement stmt = null;
