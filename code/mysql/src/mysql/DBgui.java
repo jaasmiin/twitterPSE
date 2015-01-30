@@ -30,6 +30,8 @@ import mysql.result.TweetsAndRetweets;
  */
 public class DBgui extends DBConnection implements DBIgui {
 
+    private int test = 0;
+    
     /**
      * configure the connection to the database
      * 
@@ -380,7 +382,7 @@ public class DBgui extends DBConnection implements DBIgui {
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
         String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
-        String b = "SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;";
+        String b = "SELECT SUM(Counter) FROM tweets JOIN final" + test + " ON tweets.AccountId=final" + test + ".val;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -417,7 +419,7 @@ public class DBgui extends DBConnection implements DBIgui {
     private List<Retweets> getRetweetSum(Statement stmt, boolean byDate) {
 
         String a = "SELECT SUM(Counter), LocationId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId, DayId;";
-        String b = "SELECT SUM(Counter), LocationId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
+        String b = "SELECT SUM(Counter), LocationId, Code FROM retweets JOIN final" + test + " ON retweets.AccountId=final" + test + ".val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -464,7 +466,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private HashMap<Integer, Account> getAccounts(Statement stmt) {
 
-        String query = "SELECT Id, AccountName FROM final LEFT JOIN accounts ON final.val=accounts.Id ORDER BY Id DESC;";
+        String query = "SELECT Id, AccountName FROM final" + test + " LEFT JOIN accounts ON final" + test + ".val=accounts.Id ORDER BY Id DESC;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -502,8 +504,8 @@ public class DBgui extends DBConnection implements DBIgui {
 
         // System.out.println("Accounts: " + accounts.size());
 
-        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
-        String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
+        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final" + test + " ON tweets.AccountId=final" + test + ".val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final" + test + ".val=accounts.Id;";
+        String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final" + test + " ON tweets.AccountId=final" + test + ".val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -594,13 +596,16 @@ public class DBgui extends DBConnection implements DBIgui {
         if (!categoryIsSet && !locationIsSet && !accountIsSet) {
             throw new IllegalArgumentException();
         }
-
+        
+        test++;
+        
         Statement stmt = c.createStatement();
 
-        stmt.addBatch("CREATE TEMPORARY TABLE IF NOT EXISTS final (val int PRIMARY KEY);");
+        stmt.addBatch("CREATE TEMPORARY TABLE IF NOT EXISTS final" + test + " (val int PRIMARY KEY);");
+        stmt.addBatch("TRUNCATE final" + test + ";");
 
         if (categoryIsSet || locationIsSet) {
-            String c = "INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
+            String c = "INSERT IGNORE INTO final" + test + " (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
 
             if (categoryIsSet) {
                 c += "(CategoryId=" + categoryIDs[0];
@@ -627,8 +632,9 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         if (accountIsSet) {
+            
             // add accounts
-            String ca = "INSERT IGNORE INTO final (val) VALUES ("
+            String ca = "INSERT IGNORE INTO final" + test + " (val) VALUES ("
                     + accountIDs[0] + ")";
             for (int i = 1; i < accountIDs.length; i++) {
                 ca += ", (" + accountIDs[i] + ")";

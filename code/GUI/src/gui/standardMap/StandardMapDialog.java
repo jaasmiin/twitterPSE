@@ -43,6 +43,7 @@ public class StandardMapDialog extends JDialog {
 				int counter = r.getCounter();
 				String id = r.getLocationCode();
 				forCalc.put(id, counter);
+				System.out.println(id + " - " + counter);
 			}
 
 			calculatedData = superController.getDisplayValuePerCountry(
