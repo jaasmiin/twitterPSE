@@ -15,10 +15,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.Stack;
+
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
@@ -266,22 +270,46 @@ public class GUIController extends Application implements Initializable {
 	
 	private void reloadCategoryHashMap() {
 		categories.clear();
-		reloadCategoryHashMap(categoryRoot);
+		reloadCategoryHashMapRec(categoryRoot);
 	}
 	
-	private void reloadCategoryHashMap(Category category) {
+	private void reloadCategoryHashMapRec(Category category) {
 		for (Category child : category.getChilds()) {
-			reloadCategoryHashMap(child);	
+			reloadCategoryHashMapRec(child);	
 		}
 		categories.put(category.getId(), category);
+	}
+	
+	/**
+	 * Get all childs of a category recursively including own id.
+	 * @param id of category
+	 * @return a set of all childs including own id or a empty set
+	 * if id could not be found in categories HashMap
+	 */
+	private Set<Integer> getSelectedChildCategories(int id) {
+		Set<Integer> idList = new HashSet<Integer>();
+		if (categories.containsKey(id)) {
+			Queue<Category> categories = new LinkedList<Category>();
+			categories.add(this.categories.get(id));
+			while (!categories.isEmpty()) {
+				Category category = categories.poll();
+				idList.add(category.getId());
+				categories.addAll(category.getChilds());
+			}
+		}
+		return idList;
 	}
 	
 	private void reloadData() {
 		String info = "Lade Daten...";
 		setInfo(info);
-		Integer[] selectedCategoriesArray = selectedCategories.toArray(new Integer[selectedCategories.size()]);
 		List<Location> selectedLocations = locations.getSelected();
 		Integer[] selectedLocationsArray = new Integer[selectedLocations.size()];
+		Set<Integer> allSelectedCategories = new HashSet<Integer>();
+		for (Integer id : selectedCategories) {
+			allSelectedCategories.addAll(getSelectedChildCategories(id));
+		}
+		Integer[] selectedCategoriesArray = allSelectedCategories.toArray(new Integer[allSelectedCategories.size()]);
 		int i = 0;
 		for (Location l : selectedLocations) {
 			selectedLocationsArray[i++] = l.getId();
@@ -292,13 +320,16 @@ public class GUIController extends Application implements Initializable {
 		for (Account a : selectedAccounts) {
 			selectedAccountsArray[i++] = a.getId();
 		}
+		System.out.println("Anzahl: " + selectedAccountsArray.length);
 		if (selectedCategoriesArray.length + selectedLocationsArray.length + selectedAccountsArray.length >= 1) {
 
 			boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
 			boolean success = true;
 			try {
 				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+				System.out.println("db.getSumOfData(" + selectedCategoriesArray.length + "," + selectedLocationsArray.length + "," + selectedAccountsArray.length + "," + dateSelected + ");");
 				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+				System.out.println("data here");
 			} catch (IllegalArgumentException | SQLException e) {
 				success = false;
 				setInfo("Fehler bei der Kommunikation mit der DB.", info);
@@ -315,6 +346,9 @@ public class GUIController extends Application implements Initializable {
 		}
 	}
 	
+	/**
+	 * Reload accounts, categories and locations parallel from db.
+	 */
 	private void reloadAll() {
 		new Thread(new Runnable() {
 			@Override
@@ -336,6 +370,10 @@ public class GUIController extends Application implements Initializable {
 		}).start();
 	}
 	
+	/**
+	 * Display information in information list.
+	 * @param info which should be displayed
+	 */
 	private void setInfo(final String info) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -346,6 +384,12 @@ public class GUIController extends Application implements Initializable {
 		});
 	}
 	
+	/**
+	 * Remove the old information and display the new information
+	 * for some seconds.
+	 * @param info which should be displayed
+	 * @param oldInfo which should be removed
+	 */
 	private void setInfo(final String info, final String oldInfo) {
 		Platform.runLater(new Runnable() {
 			@Override
@@ -469,18 +513,38 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
+	 * Set if all categories in the list are selected or not.
+	 * Update is called after all categories are (de)selected.
+	 * @param ids of all categories
+	 * @param selected true if category should be selected, false otherwise
+	 */
+	public void setSelectedCategory(Set<Integer> ids, boolean selected) {
+		for (Integer id : ids) {
+			setSelectedCategory(id, selected, false);
+		}
+		update(UpdateType.CATEGORY_SELECTION);
+		reloadData();
+	}
+	
+	/**
 	 * Set if a category is selected.
 	 * @param id of category
 	 * @param selected is true if category should be selected, false otherwise
 	 */
 	public void setSelectedCategory(int id, boolean selected) {
+		setSelectedCategory(id, selected, true);
+	}
+	
+	private void setSelectedCategory(int id, boolean selected, boolean update) {
 		if (selected) {
 			selectedCategories.add(id);
 		} else {
 			selectedCategories.remove(id);
 		}
-		update(UpdateType.CATEGORY_SELECTION);
-		reloadData();
+		if (update) {
+			update(UpdateType.CATEGORY_SELECTION);
+			reloadData();
+		}
 	}
 	
 	/**

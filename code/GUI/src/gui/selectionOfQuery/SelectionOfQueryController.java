@@ -94,8 +94,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 		if (e instanceof MouseEvent && ((MouseEvent) e).getClickCount() == 2) {
 			if (e.getSource().equals(trvCategory)) {
 				if (trvCategory.getSelectionModel().getSelectedItem() != null) {
-					System.out.println("Kategorie: " + trvCategory.getSelectionModel().getSelectedItem().getValue() +
-							" (id=" + trvCategory.getSelectionModel().getSelectedItem().getValue().getId() + ")");
 					new Thread(new RunnableParameter<Integer>(trvCategory.getSelectionModel().getSelectedItem().getValue().getId()) {
 						@Override
 						public void run() {	
@@ -105,8 +103,6 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 				}
 			} else if (e.getSource().equals(trvLocation)) {
 				if (trvLocation.getSelectionModel().getSelectedItem() != null) {
-					System.out.println("Ort: " + trvLocation.getSelectionModel().getSelectedItem().getValue() +
-							" (id=" + trvLocation.getSelectionModel().getSelectedItem().getValue().getId() + ")");
 					new Thread(new RunnableParameter<Integer>(trvLocation.getSelectionModel().getSelectedItem().getValue().getId()) {
 						@Override
 						public void run() {
@@ -117,15 +113,12 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 				}
 			} else if(e.getSource().equals(lstAccount)) {
 				if (lstAccount.getSelectionModel().getSelectedItem() != null) {
-					System.out.println("Account: " + lstAccount.getSelectionModel().getSelectedItem() +
-							" (id=" + lstAccount.getSelectionModel().getSelectedItem().getId() + ")");
 					new Thread(new RunnableParameter<Integer>(lstAccount.getSelectionModel().getSelectedItem().getId()) {
 						@Override
 						public void run() {
 							superController.setSelectedAccount(parameter, true);
 						}
 					}).start();
-					
 				}
 			} 
 		} else if (e.getSource().equals(txtFilterSearch)) {
