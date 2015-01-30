@@ -33,7 +33,7 @@ public class ContentTableController extends OutputElement implements Initializab
 	@Override
 	public void update(UpdateType type) {
 		System.out.println("ContentTable updated");
-		if (true) {
+		if (type == UpdateType.TWEET) {
 			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
 			System.out.println("AccountsList.size = " + accountList.size());
 			table.setItems(accountList);	
