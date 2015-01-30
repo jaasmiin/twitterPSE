@@ -6,22 +6,19 @@ package unfolding;
 
 
 
-import gui.GUIController;
-
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import unfolding.MyDataEntry;
+
+import processing.core.PApplet;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.MapUtils;
-import de.fhpotsdam.unfolding.utils.ScreenPosition;
-import processing.core.PApplet;
-import processing.core.PVector;
 
 /**
  * @author Lidia
@@ -36,12 +33,12 @@ public class MyUnfoldingMap extends PApplet {
     private UnfoldingMap map1;
     //private UnfoldingMap map2;
     private UnfoldingMap currentMap;
-    private HashMap<String, DataEntry> dataEntriesMap;
+    private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
     private List<String> setValues;
     private HashMap<String, String> countryIdTrans;
     private float maxValue = 0;
-
+    
     public MyUnfoldingMap() {
     	super();
     	this.setSize(900, 600);
@@ -96,7 +93,7 @@ public class MyUnfoldingMap extends PApplet {
             String countryId = m.getId();
             String id = countryIdTrans.get(countryId);
 
-            DataEntry dataEntry = dataEntriesMap.get(id);
+            MyDataEntry dataEntry = dataEntriesMap.get(id);
             
             //Strokes
             m.setStrokeColor(color(241, 241, 241, 50));
@@ -129,8 +126,9 @@ public class MyUnfoldingMap extends PApplet {
 
         if (!setValues.isEmpty()) {
             for (String id : setValues) {
-
-                DataEntry edit = dataEntriesMap.get(id);
+                
+                MyDataEntry edit = dataEntriesMap.get(id);
+                
                 edit.setValue((double) -1);
                 dataEntriesMap.put(id, edit);
             }
@@ -139,7 +137,7 @@ public class MyUnfoldingMap extends PApplet {
 
         for(Entry<String, Double> e: changedEntries.entrySet()) {
             
-            DataEntry newEntry = dataEntriesMap.get(e.getKey());
+            MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
             if(newEntry != null) {
                 newEntry.setValue(e.getValue());
                 dataEntriesMap.put(e.getKey(), newEntry);
@@ -166,8 +164,8 @@ public class MyUnfoldingMap extends PApplet {
 //    }
     
 
-    private HashMap<String, DataEntry> loadCountriesFromCSV(String file) {
-        dataEntriesMap = new HashMap<String, DataEntry>();
+    private HashMap<String, MyDataEntry> loadCountriesFromCSV(String file) {
+        dataEntriesMap = new HashMap<String, MyDataEntry>();
         countryIdTrans = new HashMap<String, String>();
         
         String[] rows = loadStrings(file);
@@ -175,7 +173,7 @@ public class MyUnfoldingMap extends PApplet {
             // Reads country name and countryID from CSV row
             String[] column = row.split(";");
             if (column.length >= 3) {
-                DataEntry dataEntry = new DataEntry();
+                MyDataEntry dataEntry = new MyDataEntry();
                 dataEntry.setCountryName(column[0]);
                 dataEntry.setCountryId3Chars(column[1]);
                 dataEntry.setCountryId2Chars(column[2]);

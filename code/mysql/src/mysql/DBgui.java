@@ -72,14 +72,15 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
-        //create a list with all categories
+        // create a list with all categories
         List<Category> categories = new ArrayList<Category>();
         try {
             while (res.next()) {
                 int parent = res.getInt("ParentId");
                 int id = res.getInt("Id");
                 boolean used = res.getInt("AccountId") == 0;
-                Category c = new Category(id, res.getString("Name"), parent, used);
+                Category c = new Category(id, res.getString("Name"), parent,
+                        used);
                 categories.add(c);
             }
         } catch (SQLException e) {
@@ -89,7 +90,7 @@ public class DBgui extends DBConnection implements DBIgui {
             // close mysql-statement
             closeResultAndStatement(stmt, res);
         }
-        
+
         return getCategoryTree(categories);
     }
 
@@ -122,6 +123,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             closeResultAndStatement(stmt, res);
         }
+
+        assert (ret.size() == 249);
 
         return ret;
     }
@@ -257,6 +260,112 @@ public class DBgui extends DBConnection implements DBIgui {
         return executeStatementUpdate(stmt, false);
     }
 
+    /**
+     * creates the category tree
+     * 
+     * @param categories
+     *            the list of categories
+     * @return the top level category
+     */
+    private Category getCategoryTree(List<Category> categories) {
+        // topological sort list of categories in reverse order
+        categories = topSortCategories(categories);
+
+        // get positions of categories in the list for fast access
+        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
+        Iterator<Category> it = categories.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            idx.put(it.next().getId(), i);
+            i++;
+        }
+
+        Category ret = null;
+
+        it = categories.iterator();
+        while (it.hasNext()) {
+            Category category = it.next();
+
+            if (category.isUsed()) {
+                int parentId = category.getParentId();
+                if (parentId == 0) {
+                    ret = category;
+                    continue;
+                }
+
+                int parentPosition = idx.get(parentId);
+                Category parent = categories.get(parentPosition);
+                parent.setUsed(true);
+                parent.addChild(category);
+            }
+        }
+
+        return ret;
+    }
+
+    /**
+     * does a topological sort of categories
+     * 
+     * if category i has parent j, j will be before i
+     * 
+     * @param categories
+     *            the list of categories
+     * @return the sorted list of categories
+     */
+    private List<Category> topSortCategories(List<Category> categories) {
+        int[] inDegree = new int[categories.size()];
+        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
+
+        // get a mapping: CategoryId to array list index
+        Iterator<Category> it = categories.iterator();
+        int i = 0;
+        while (it.hasNext()) {
+            idx.put(it.next().getId(), i);
+            i++;
+        }
+
+        // count the inDegree of each node in the DAG
+        // in this case the number of children of each category
+        it = categories.iterator();
+        while (it.hasNext()) {
+            Category category = it.next();
+            int parentId = category.getParentId();
+            if (parentId != 0)
+                inDegree[idx.get(parentId)]++;
+        }
+
+        // look for nodes with inDegree 0
+        // those are the start nodes for the topological sorting
+        // insert them into a queue
+        Queue<Integer> q = new LinkedList<Integer>();
+        for (i = 0; i < categories.size(); i++) {
+            if (inDegree[i] == 0) {
+                q.add(i);
+            }
+        }
+
+        // create topological sorting
+        List<Category> topSort = new ArrayList<Category>();
+        while (!q.isEmpty()) {
+            Integer node = q.poll();
+            Category category = categories.get(node);
+            topSort.add(category);
+
+            // delete edge in implicit graph
+            int parentId = category.getParentId();
+            if (parentId == 0)
+                continue;
+            int parentPosition = idx.get(parentId);
+            inDegree[parentPosition]--;
+
+            if (inDegree[parentPosition] == 0) {
+                q.add(parentPosition);
+            }
+        }
+
+        return topSort;
+    }
+
     @Override
     public TweetsAndRetweets getSumOfData(Integer[] categoryIDs,
             Integer[] locationIDs, Integer[] accountIDs, boolean byDates)
@@ -268,108 +377,6 @@ public class DBgui extends DBConnection implements DBIgui {
         return getTweetSum(stmt, byDates);
     }
 
-    /**
-     * creates the category tree
-     * 
-     * @param categories the list of categories
-     * @return the top level category
-     */
-    private Category getCategoryTree(List<Category> categories) {
-        //topological sort list of categories in reverse order
-        categories = topSortCategories(categories);
-        
-        //get positions of categories in the list for fast access
-        HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
-        Iterator<Category> it = categories.iterator();
-        int i = 0;
-        while (it.hasNext()) {
-            idx.put(it.next().getId(), i);
-            i++;
-        }
-        
-        Category ret = null;
-        
-        it = categories.iterator();
-        while (it.hasNext()) {
-            Category category = it.next();
-            
-            if (category.isUsed()) {
-                int parentId = category.getParentId();
-                if (parentId == 0) {
-                    ret = category;
-                    continue;
-                }
-                
-                int parentPosition = idx.get(parentId);
-                Category parent = categories.get(parentPosition);
-                parent.setUsed(true);
-                parent.addChild(category);
-            }
-        }
-
-        return ret;
-    }
-    
-    /**
-     * does a topological sort of categories
-     * 
-     * if category i has parent j, j will be before i
-     * 
-     * @param categories the list of categories
-     * @return the sorted list of categories
-     */
-    private List<Category> topSortCategories(List<Category> categories) {
-    	int[] inDegree = new int[categories.size()];
-    	HashMap<Integer, Integer> idx = new HashMap<Integer, Integer>();
-    	
-    	//get a mapping: CategoryId to array list index
-    	Iterator<Category> it = categories.iterator();
-    	int i = 0;
-    	while (it.hasNext()) {
-    		idx.put(it.next().getId(), i);
-    		i++;
-    	}
-    	
-    	//count the inDegree of each node in the DAG
-    	//in this case the number of children of each category
-    	it = categories.iterator();
-    	while (it.hasNext()) {
-    		Category category = it.next();
-    		int parentId = category.getParentId();
-    		if (parentId != 0) inDegree[idx.get(parentId)]++;
-    	}
-    	
-    	//look for nodes with inDegree 0
-    	//those are the start nodes for the topological sorting
-    	//insert them into a queue
-    	Queue<Integer> q = new LinkedList<Integer>();
-    	for (i = 0; i < categories.size(); i++) {
-    		if (inDegree[i] == 0) {
-    			q.add(i);
-    		}
-    	}
-    	
-    	//create topological sorting
-    	List<Category> topSort = new ArrayList<Category>();
-    	while (!q.isEmpty()) {
-    		Integer node = q.poll();
-    		Category category = categories.get(node);
-    		topSort.add(category);
-    		
-    		//delete edge in implicit graph
-    		int parentId = category.getParentId();
-    		if (parentId == 0) continue;
-    		int parentPosition = idx.get(parentId);
-    		inDegree[parentPosition]--;
-    		
-    		if (inDegree[parentPosition] == 0) {
-    			q.add(parentPosition);
-    		}
-    	}
-    	
-    	return topSort;
-    }
-    
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
         String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
@@ -493,6 +500,8 @@ public class DBgui extends DBConnection implements DBIgui {
 
         HashMap<Integer, Account> accounts = getAccounts(stmt);
 
+        // System.out.println("Accounts: " + accounts.size());
+
         String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
         String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
 
@@ -526,14 +535,15 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResult(res);
         }
 
-        System.out.println("Accounts: " + accounts.size());
-        
         // get retweets
         getRetweetSumPerAccount(stmt, byDate, accounts);
 
-        for (Account x : Util.collectionToList(accounts.values())) {
-            System.out.println(x.getRetweets().size());
-        }
+        // TODO remove
+        // for (Account x : Util.collectionToList(accounts.values())) {
+        // if (x.getRetweets().size() > 1) {
+        // System.out.println(x.getRetweets().size());
+        // }
+        // }
 
         return Util.collectionToList(accounts.values());
     }
@@ -542,7 +552,7 @@ public class DBgui extends DBConnection implements DBIgui {
             HashMap<Integer, Account> ret) {
 
         String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId;";
+        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId, LocationId;";
 
         ResultSet res = null;
 
@@ -560,7 +570,6 @@ public class DBgui extends DBConnection implements DBIgui {
 
         try {
             while (res.next()) {
-
                 int id = res.getInt("AccountId");
                 Retweets element = new Retweets((byDate ? res.getDate("Day")
                         : null), res.getInt(1), res.getInt(2));
@@ -573,6 +582,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             closeResultAndStatement(stmt, res);
         }
+
     }
 
     private Statement createBasicStatement(Integer[] categoryIDs,
