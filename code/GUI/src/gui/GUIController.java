@@ -321,9 +321,8 @@ public class GUIController extends Application implements Initializable {
 			boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
 			boolean success = true;
 			try {
-				dataByLocation = db.getRetweetSum(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
-//				dataByLocation = db.getSumOfData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
-//				dataByAccount = db.getAllData(selectedCategoriesArray, selectedLocationsArray, selectedAccountsArray, dateSelected);
+				dataByLocation = db.getSumOfData(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
+				dataByAccount = db.getAllData(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
 			} catch (IllegalArgumentException e) {
 				success = false;
 				setInfo("Fehler bei der Kommunikation mit der DB.", info);
