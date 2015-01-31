@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,7 +43,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
-import unfolding.MyDataEntry;
 import util.LoggerUtil;
 
 /**
@@ -72,10 +72,8 @@ public class GUIController extends Application implements Initializable {
 	
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
-	private boolean dateRange = false;
+	private Date selectedStartDate, selectedEndDate;
 	private String accountSearchText = ""; 
-	private MyDataEntry mapDetailInformation = null;
-	
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). Application nicht gestartet. (instance == null).");
@@ -98,7 +96,7 @@ public class GUIController extends Application implements Initializable {
 				Scene scene = new Scene(parent, 800, 600);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setTitle("PSE-Twitter");
-				primaryStage.setMinHeight(500);
+				primaryStage.setMinHeight(400);
 				primaryStage.setMinWidth(600);
 				primaryStage.setScene(scene);
 				primaryStage.show();
@@ -322,10 +320,11 @@ public class GUIController extends Application implements Initializable {
 		
 		if (allSelectedCategories.size() + selectedLocations.size() + selectedAccounts.size() >= 1) {
 
+			boolean dateSelected = selectedStartDate != null && selectedEndDate != null;
 			boolean success = true;
 			try {
-				dataByLocation = db.getSumOfData(allSelectedCategories, selectedLocations, selectedAccounts, dateRange);
-				dataByAccount = db.getAllData(allSelectedCategories, selectedLocations, selectedAccounts, dateRange);
+				dataByLocation = db.getSumOfData(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
+				dataByAccount = db.getAllData(allSelectedCategories, selectedLocations, selectedAccounts, dateSelected);
 			} catch (IllegalArgumentException e) {
 				success = false;
 				setInfo("Fehler bei der Kommunikation mit der DB.", info);
@@ -457,6 +456,7 @@ public class GUIController extends Application implements Initializable {
 		}
 		return newRoot;
 	}
+	
 	/**
 	 * Creates a category tree containing all Categories given in 'CategoryIds'
 	 * @param CategoryIds
@@ -467,27 +467,59 @@ public class GUIController extends Application implements Initializable {
 		if (categoryIds == null || categoryIds.length == 0) {
 			return null;
 		}
-		
-		Category newRoot = new Category(categoryRoot.getId(), categoryRoot.toString(), categoryRoot.getParentId(), categoryRoot.isUsed());
+		Category root = null;
+		Category currentCat = null;
+		Boolean first = true;
 		
 		// contains all vertex of the tree
 		HashMap<Integer, Category> tree = new HashMap<Integer,Category>();
 		
 		// iterate over CategoryIds and create tree
 		for (int i = 0; i < categoryIds.length; i++) {
-			Category currentCat = getCategory(categoryIds[i]);
+			
+			
+			
+			currentCat = getCategory(categoryIds[i]);
+			 
 			if (currentCat == null) {
 				return null;
 			}
-			System.out.println();
-			currentCat = getCategory(currentCat.getParentId());
+			// create new category with old values but without  childs
+			currentCat = new Category(currentCat.getId(), currentCat.toString(), currentCat.getParentId(), currentCat.isUsed());
 			
+			tree.put(currentCat.getId(), currentCat);
 			
+		
+			
+			while(currentCat.getId() != 1) {
+				// while currenCat is not root
+				Category parent = getCategory(currentCat.getParentId());
+				if (parent == null) {
+					return null;
+				}
+				// create new category with old values but without  childs
+				parent = new Category(parent.getId(), parent.toString(), parent.getParentId(), parent.isUsed());
+				
+				if(tree.containsKey(parent.getId())) {
+					// look up parentId in the hashMap if found add currentCat and break
+					tree.get(parent.getId()).addChild(currentCat);
+					break;
+				}
+				else {
+					// add currentCat and go on 
+					parent.addChild(currentCat);
+					tree.put(parent.getId(), parent);
+					currentCat = parent;	
+				}
+			}
+			// hoping that categories form a tree, and root id is still 1 set in the first run to the root the root item
+			if (first) {
+				root = currentCat;
+				first = false;
+			}
 			
 		}
-		
-		
-		return null;
+		return root;
 	}
 	/**
 	 * Get accounts containing the text.
@@ -658,13 +690,25 @@ public class GUIController extends Application implements Initializable {
 	}
 	
 	/**
-	 * Set if date information should be included in data
-	 * got from getDataByAccount and getDataByLocation
-	 * @param dateRange is true if date should be included,
-	 * false otherwise
+	 * Select start and end or one day if start and end date are the same.
+	 * Earlier date will automatically be taken as start date.
+	 * If one date is null selected date range will be removed.
+	 * @param startDate of the date range
+	 * @param endDate of the date range
 	 */
-	public void setDateRange(boolean dateRange) {
-		this.dateRange = dateRange;
+	public void setDateRange(Date startDate, Date endDate) {
+		if (startDate == null || endDate == null) {
+			selectedStartDate = null;
+			selectedEndDate = null;
+		} else {
+			if(startDate.before(endDate)) {
+				selectedStartDate = startDate;
+				selectedEndDate = endDate;
+			} else {
+				selectedStartDate = endDate;
+				selectedEndDate = startDate;
+			}
+		}
 	}
 	
 	/**
@@ -676,22 +720,6 @@ public class GUIController extends Application implements Initializable {
 		db.addAccount(user, locationID);
 	}
 	
-	/**
-	 * Set the detail information.
-	 * @param detailInfo
-	 */
-	public void setMapDetailInformation(MyDataEntry detailInfo) {
-		mapDetailInformation = detailInfo;
-		update(UpdateType.MAP_DETAIL_INFORMATION);
-	}
-	
-	/**
-	 * Get the detail information
-	 * @return detail information or null if not set
-	 */
-	public MyDataEntry getMapDetailInformation() {
-		return mapDetailInformation;
-	}
 	/**
 	 * Add a category to an user.
 	 * @param accountID of user
