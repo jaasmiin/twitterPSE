@@ -35,13 +35,13 @@ public class ContentTableController extends OutputElement implements Initializab
 	public void update(UpdateType type) {
 		if (type == UpdateType.TWEET) {
 			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
-			// TODO: remove test print
-			System.out.println("ContentTable : AccountsList.size = " + accountList.size());
-			System.out.println("Account.retweets.size = " + accountList.get(0).getRetweets().size());
-			System.out.println("Account.retweets.counter = " + accountList.get(0).getRetweets().get(0).getCounter());
-			table.setItems(accountList);	
+			if (accountList.isEmpty()) {
+				table.setItems(null);
+			} else {
+				table.setItems(accountList);
+			}	
 		} else if (type == UpdateType.LOCATION) {
-			addLocationColumns();
+			//addLocationColumns();
 		}
 	}
 	
@@ -52,7 +52,8 @@ public class ContentTableController extends OutputElement implements Initializab
 		
 		addAccountsColumn();
 		addTweetsColumn();
-		addRetweetsColumn();		
+		addRetweetsColumn();
+		addFollowerColumn();
 	}
 	
 	/**
@@ -97,13 +98,31 @@ public class ContentTableController extends OutputElement implements Initializab
 	 * a certain account received to the table.
 	 */
 	private void addRetweetsColumn() {
-		retweetColumn = new TableColumn<>("Retweets");				
+		retweetColumn = new TableColumn<>("Retweets");
+		
+		// TODO: only less than ideal solution, because retweets aren't given country-wise
+		retweetColumn.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Account, Integer>, ObservableValue<Integer>>() {
+
+			@Override
+			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
+				int retweetNumber = 0;				
+				if (account.getValue() != null) {
+					retweetNumber = account.getValue().getRetweets().get(0).getCounter();					
+				} 				
+				return new SimpleIntegerProperty(retweetNumber).asObject();
+			}
+			
+		});
+		
 		table.getColumns().add(retweetColumn);
 	}
 	
+	/**
+	 * This method adds country subcolumns to retweetColumn.
+	 */
 	private void addLocationColumns() {
-		// TODO: improve performance (have to iterate over retweetlist for every location)
-		
+		// TODO: improve performance (have to iterate over retweetlist for every location)		
 		for (Location currentLocation : superController.getLocations()) {
 			final Location tempLocation = currentLocation;
 			TableColumn<Account, Integer> countryColumn = new TableColumn<>(tempLocation.toString());
@@ -128,6 +147,29 @@ public class ContentTableController extends OutputElement implements Initializab
 					});
 			retweetColumn.getColumns().add(countryColumn);
 		}	
+	}
+	
+	/**
+	 * This method adds a column displaying the number of followers of an account to the table.
+	 */
+	private void addFollowerColumn() {
+		TableColumn<Account, Integer> followerColumn = new TableColumn<>("Follower");
+		
+		followerColumn.setCellValueFactory(
+				new Callback<TableColumn.CellDataFeatures<Account, Integer>, ObservableValue<Integer>>() {
+
+			@Override
+			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
+				int followerNumber = 0;				
+				if (account.getValue() != null) {
+					followerNumber = account.getValue().getFollower();					
+				} 				
+				return new SimpleIntegerProperty(followerNumber).asObject();
+			}
+			
+		});
+		
+		table.getColumns().add(followerColumn);
 	}
 
 }
