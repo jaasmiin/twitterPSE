@@ -20,7 +20,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import gui.InputElement;
+import gui.Labels;
 import gui.RunnableParameter;
+import gui.Util;
 
 public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
 	
@@ -66,7 +68,7 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 	}
 	
 	private void updateLocation(List<Location> list) {
-		TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0, "Welt", "0000", null));
+		TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0, Util.getUppercaseStart(Labels.WORLD), "0000", null));
 		rootItem.setExpanded(true);		
 		for (Location location : list) {
 			rootItem.getChildren().add(new TreeItem<Location>(location));
@@ -136,11 +138,18 @@ public class SelectionOfQueryController extends InputElement implements EventHan
 			}
 		}
 	}
-
+	private void setLabels() {
+		tipAccount.setText(Util.getUppercaseStart(Labels.ACCOUNT));
+		tipCategory.setText(Util.getUppercaseStart(Labels.CATEGORY));
+		tipLocation.setText(Util.getUppercaseStart(Labels.LOCATION));
+		
+	}
+	
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		superController.subscribe(this);
+		setLabels();
 	}
 
 }

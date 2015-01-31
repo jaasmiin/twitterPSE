@@ -20,22 +20,8 @@
    <children>
       <MenuBar GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
         <menus>
-          <Menu mnemonicParsing="false" text="Datei">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Beenden" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Bearbeiten">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Benutzer hinzufügen" />
-            </items>
-          </Menu>
-           <fx:include fx:id="databaseMenu" source="../../src/gui/databaseOptions/DatabaseOptView.fxml" />
-          <Menu mnemonicParsing="false" text="Hilfe">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Über" />
-            </items>
-          </Menu>
+          <fx:include fx:id="databaseMenu" source="../../src/gui/databaseOptions/DatabaseOptView.fxml" />
+          <fx:include fx:id="help" source="../../src/gui/help/Help.fxml" />
         </menus>
       </MenuBar>
       <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" />
@@ -57,7 +43,7 @@
             	<fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
             </content>
           </Tab>
-          <Tab closable="false" text="Karte (Differenz)">
+          <!--<Tab closable="false" text="Karte (Differenz)">
             <content>
               <fx:include fx:id="diffMap" source="../../src/gui/diffMap/DiffMapView.fxml" />
             </content>
@@ -66,7 +52,7 @@
             <content>
               <fx:include fx:id="timeSliderMap" source="../../src/gui/timeSliderMap/TimeSliderMapView.fxml" />
             </content>
-          </Tab>
+          </Tab>-->
         </tabs>
       </TabPane>      
       <!-- <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />-->
