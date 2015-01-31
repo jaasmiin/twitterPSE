@@ -1,21 +1,10 @@
 package dev;
 
-import java.awt.Frame;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-
-import processing.core.PApplet;
 import unfolding.MyUnfoldingMap;
 import javafx.application.Application;
 import javafx.embed.swing.SwingNode;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class UnfoldingFX extends Application {
 	private SwingNode mapSwingNode = new SwingNode();

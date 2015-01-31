@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-
-import mysql.result.Location;
 /**
  * Class for quickly selecting and iterating over elements.
  * @author Maximilian Awiszus

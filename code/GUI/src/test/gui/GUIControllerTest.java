@@ -24,7 +24,8 @@ public class GUIControllerTest {
 	    // Initialise Java FX
 	    System.out.printf("About to launch FX App\n");
 	    Thread t = new Thread("JavaFX Init Thread") {
-	        public void run() {
+	        @Override
+			public void run() {
 	            GUIController.main(null);
 	        }
 	    };

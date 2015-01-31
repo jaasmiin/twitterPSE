@@ -3,7 +3,6 @@ package gui.standardMap;
 import gui.GUIController;
 import gui.GUIElement.UpdateType;
 
-import java.awt.image.ColorModel;
 import java.util.HashMap;
 import java.util.Set;
 

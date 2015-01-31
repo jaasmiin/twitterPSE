@@ -23,7 +23,8 @@ public class UnfoldingTest extends JFrame {
      */
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
-            public void run() {
+            @Override
+			public void run() {
                 try {
                     UnfoldingTest frame = new UnfoldingTest();
                     frame.setVisible(true);
