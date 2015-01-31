@@ -144,6 +144,13 @@ public class DatabaseOptController extends InputElement implements Initializable
 			b_Cat_tab2_fertig.setOnMouseClicked(new MyCatEventHandler());
 			b_Cat_tab2_zurueck.setOnMouseClicked(new MyCatEventHandler());	
 			b_Cat_tab2_entfernen.setOnMouseClicked(new MyCatEventHandler());
+			
+			// list contain default elements
+			List<Account> defaultList = superController.getAccounts("");
+			list_Cat_tab1.getItems().clear();
+			for(Account a : defaultList) {
+				list_Cat_tab1.getItems().add(a);
+			}
 		}
 		
 		//popUp add/change location
@@ -394,11 +401,25 @@ public class DatabaseOptController extends InputElement implements Initializable
 				tab_Cat_tab1.setDisable(true);
 				tab_Cat_tab2.setDisable(false);
 				tabPane_Cat.getSelectionModel().select(tab_Cat_tab2);
+				
+				//get and view all categories already belonging to the selected account
+				//System.out.println("Testaccount: " + superController.getAccount(2112062));
+				int[] categoryArr = account.getCategoryIds();
+				System.out.println("Id: " + account.getId());
+				System.out.println("Anzahl Kategorien ausgeben:    " + categoryArr.length);
+				System.out.println("Root: " + superController.categoryRoot.getParentId());
+				for (int i = 0; i < categoryArr.length; i++) {
+					Category cat = superController.getCategory(categoryArr[i]);
+					if (cat != null) {
+						System.out.println(cat.getCategory());
+					}
+				}
+				
 			}
 			
 			// ################################# tab2 ####################################
 			
-		
+			
 			if(event.getSource().equals(txtField_Cat_tab2)) {
 				// update TreeView of categories
 					
@@ -410,7 +431,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 							 
 						String input = txtField_Cat_tab2.getText();
 						System.out.println("zweites suchfeld: "+input);
-					    updateCategory(superController.getCategoryRoot(input));
+					    trv_Cat_tab2.setRoot(updateCategory(superController.getCategoryRoot(input)));
 					}
 				}
 			}				
@@ -460,12 +481,15 @@ public class DatabaseOptController extends InputElement implements Initializable
 		/**
 		 * creates tree for treeView
 		 * @param rootCategory
+		 * @return root-item
 		 */
-		private void updateCategory(Category rootCategory) {
+		private TreeItem<Category> updateCategory(Category rootCategory) {
+			
 			TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
 			rootItem.setExpanded(false);
 			updateCategoryRec(rootCategory, rootItem);
-			trv_Cat_tab2.setRoot(rootItem);
+			return rootItem;
+			
 		}
 		private void updateCategoryRec(Category category, TreeItem<Category> item) {
 			for (Category childCategory : category.getChilds()) {

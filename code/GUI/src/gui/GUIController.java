@@ -64,7 +64,7 @@ public class GUIController extends Application implements Initializable {
 	private static ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 	
 	private static DBgui db;
-	private Category categoryRoot;
+	public Category categoryRoot;
 	private SelectionHashList<Location> locations = new SelectionHashList<Location>();
 	private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
 	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
@@ -456,7 +456,38 @@ public class GUIController extends Application implements Initializable {
 		}
 		return newRoot;
 	}
-	
+	/**
+	 * Creates a category tree containing all Categories given in 'CategoryIds'
+	 * @param CategoryIds
+	 * @return root of the created tree, null if CategoryIds contains invalid Id or has length 0
+	 */
+	public Category getCategoryRoot(int[] categoryIds) {
+		
+		if (categoryIds == null || categoryIds.length == 0) {
+			return null;
+		}
+		
+		Category newRoot = new Category(categoryRoot.getId(), categoryRoot.toString(), categoryRoot.getParentId(), categoryRoot.isUsed());
+		
+		// contains all vertex of the tree
+		HashMap<Integer, Category> tree = new HashMap<Integer,Category>();
+		
+		// iterate over CategoryIds and create tree
+		for (int i = 0; i < categoryIds.length; i++) {
+			Category currentCat = getCategory(categoryIds[i]);
+			if (currentCat == null) {
+				return null;
+			}
+			System.out.println();
+			currentCat = getCategory(currentCat.getParentId());
+			
+			
+			
+		}
+		
+		
+		return null;
+	}
 	/**
 	 * Get accounts containing the text.
 	 * @param text with which should be compared incase-sensitively. 
