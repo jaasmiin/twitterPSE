@@ -32,8 +32,8 @@ import mysql.DBcrawler;
  */
 public class WebServiceLocator implements RunnableListener {
 
-    private final static String WEB_SERVICE_URL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
-    private final static String DEFAULT_LOCATION = "0";
+    private static final String WEB_SERVICE_URL = "http://172.22.214.196/localhost/TweetLoc.asmx/getCountry?";
+    private static final String DEFAULT_LOCATION = "0";
     private Logger logger;
     private ConcurrentLinkedQueue<LocateStatus> locateQueue;
     private DBcrawler dbc;

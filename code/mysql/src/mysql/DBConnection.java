@@ -19,12 +19,12 @@ import java.text.SimpleDateFormat;
  */
 public abstract class DBConnection {
 
-    private final AccessData accessData;
     protected Connection c;
     protected DateFormat dateFormat;
     protected Logger logger;
-    private boolean connected;
     protected boolean runningRequest;
+    private final AccessData accessData;
+    private boolean connected;
 
     /**
      * configure the connection to the database

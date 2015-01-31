@@ -165,7 +165,8 @@ public class DBgui extends DBConnection implements DBIgui {
         ResultSet res = null;
         runningRequest = true;
         try {
-            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, LocationId FROM accounts WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
+            stmt = c.prepareStatement("SELECT accounts.Id, TwitterAccountId, AccountName,Verified, Follower, URL, Code FROM accounts "
+                    + "JOIN location ON accounts.LocationId=location.Id WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
             stmt.setString(1, "%" + search + "%");
             res = stmt.executeQuery();
         } catch (SQLException e) {
@@ -184,7 +185,7 @@ public class DBgui extends DBConnection implements DBIgui {
                         .getLong("TwitterAccountId"), res
                         .getString("AccountName"), res.getBoolean("Verified"),
                         res.getString("URL"), res.getInt("Follower"), res
-                                .getInt("LocationId")));
+                                .getString("Code")));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -193,7 +194,48 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
+        addCategories(ret);
+
         return ret;
+    }
+
+    private void addCategories(List<Account> list) {
+
+        if (list.size() > 0) {
+            Iterator<Account> it = list.iterator();
+            String query = "SELECT AccountId, CategoryId FROM accountCategory WHERE AccountId="
+                    + it.next().getId();
+            while (it.hasNext()) {
+                query += " OR AccountId=" + it.next().getId();
+            }
+            query += ";";
+
+            Statement stmt = null;
+            ResultSet res = null;
+            try {
+                stmt = c.createStatement();
+                res = stmt.executeQuery(query);
+            } catch (SQLException e) {
+                sqlExceptionLog(e, stmt);
+                return;
+            }
+
+            try {
+                while (res.next()) {
+                    for (Account temp : list) {
+                        if (temp.getId() == res.getInt(1)) {
+                            temp.addCategoryId(res.getInt(2));
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                sqlExceptionResultLog(e);
+                return;
+            } finally {
+                closeResultAndStatement(stmt, res);
+            }
+        }
+
     }
 
     @Override
@@ -245,8 +287,10 @@ public class DBgui extends DBConnection implements DBIgui {
         // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
-            stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES (?, ?, "
-                    + (user.isVerified() ? "1" : "0") + ", ?, ?, ?, 1);");
+            stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized)"
+                    + " VALUES (?, ?, "
+                    + (user.isVerified() ? "1" : "0")
+                    + ", ?, ?, ?, 1);");
             stmt.setLong(1, user.getId());
             stmt.setString(2, user.getScreenName());
             stmt.setInt(3, user.getFollowersCount());
@@ -567,8 +611,8 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (rs.next()) {
                 Retweets r = new Retweets(byDate ? rs.getDate("Day") : null,
-                        rs.getInt("SumOfRetweets"), rs.getInt("LocationId"));
-                r.setLocationCode(rs.getString("LocationCode"));
+                        rs.getInt("SumOfRetweets"),
+                        rs.getString("LocationCode"));
                 retweets.add(r);
             }
         } catch (SQLException e) {
@@ -697,8 +741,6 @@ public class DBgui extends DBConnection implements DBIgui {
         return ret;
     }
 
-    // ALTE METHODE
-
     @Override
     public List<Account> getAllData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
@@ -719,7 +761,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private HashMap<Integer, Account> getAccounts(Statement stmt) {
 
-        String query = "SELECT Id, AccountName FROM final LEFT JOIN accounts ON final.val=accounts.Id ORDER BY Id DESC;";
+        String query = "SELECT Id, AccountName, Follower FROM final LEFT JOIN accounts ON final.val=accounts.Id ORDER BY Id DESC;";
         ResultSet res = null;
         runningRequest = true;
         try {
@@ -736,7 +778,8 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 ret.put(res.getInt(1),
-                        new Account(res.getInt(1), res.getString(2)));
+                        new Account(res.getInt(1), res.getString(2), res
+                                .getInt("Follower")));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -752,8 +795,10 @@ public class DBgui extends DBConnection implements DBIgui {
         HashMap<Integer, Account> accounts = getAccounts(stmt);
         System.out.println("Accounts: " + accounts.size());
 
-        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
-        String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
+        String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets "
+                + "JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
+        String b = "SELECT SUM(Counter),AccountName, tweets.AccountId FROM tweets "
+                + "JOIN final ON tweets.AccountId=final.val JOIN accounts ON final.val=accounts.Id GROUP BY AccountId;";
         ResultSet res = null;
         runningRequest = true;
         try {
@@ -768,9 +813,9 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 int id = res.getInt(3);
-                    accounts.get(id).addTweet(
-                            new Tweets(byDate ? res.getDate("Day") : null, res
-                                    .getInt(1)));
+                accounts.get(id).addTweet(
+                        new Tweets(byDate ? res.getDate("Day") : null, res
+                                .getInt(1)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -791,8 +836,10 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private void getRetweetSumPerAccount(Statement stmt, boolean byDate,
             HashMap<Integer, Account> ret) {
-        String a = "SELECT Counter, retweets.LocationId, AccountId, Code, Day FROM retweets JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String b = "SELECT SUM(Counter), retweets.LocationId, AccountId, Code FROM retweets JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId, LocationId;";
+        String a = "SELECT Counter, AccountId, Code, Day FROM retweets "
+                + "JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
+        String b = "SELECT SUM(Counter), AccountId, Code FROM retweets "
+                + "JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId, LocationId;";
         ResultSet res = null;
         try {
             runningRequest = true;
@@ -808,9 +855,8 @@ public class DBgui extends DBConnection implements DBIgui {
             while (res.next()) {
                 int id = res.getInt("AccountId");
                 Retweets element = new Retweets((byDate ? res.getDate("Day")
-                        : null), res.getInt(1), res.getInt(2));
-                element.setLocationCode(res.getString("Code"));
-                    ret.get(id).addRetweet(element);
+                        : null), res.getInt(1), res.getString("Code"));
+                ret.get(id).addRetweet(element);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -848,7 +894,8 @@ public class DBgui extends DBConnection implements DBIgui {
             c += ");";
             stmt.addBatch(c);
         } else if (categoryIsSet || locationIsSet) {
-            String c = "INSERT IGNORE INTO final (val) SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
+            String c = "INSERT IGNORE INTO final (val) "
+                    + "SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
             if (categoryIsSet) {
                 c += "(CategoryId=" + categories[0];
                 for (int i = 1; i < categories.length; i++) {

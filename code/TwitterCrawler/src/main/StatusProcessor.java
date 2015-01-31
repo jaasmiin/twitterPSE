@@ -26,7 +26,7 @@ import twitter4j.User;
  */
 public class StatusProcessor implements RunnableListener {
 
-    private final static String DEFAULT_LOCATION = "0";
+    private static final String DEFAULT_LOCATION = "0";
     private boolean run = true;
     private DBcrawler dbc;
     private ConcurrentLinkedQueue<Status> queue;
