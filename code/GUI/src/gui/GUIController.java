@@ -54,6 +54,7 @@ import util.LoggerUtil;
  * 
  */
 
+
 public class GUIController extends Application implements Initializable {
 
     public Category categoryRoot;
@@ -865,57 +866,50 @@ public class GUIController extends Application implements Initializable {
         return db.getAllRetweetsPerLocation();
     }
 
-    /**
-     * calculates the displayed value per country
-     * 
-     * given: a category, country, accounts combination calculates:
-     * 
-     * number of retweets for that combination in that country 1
-     * ------------------------------------------------------- *
-     * ------------------------------------ * scale number of retweets for that
-     * combination number of retweets in that country
-     * 
-     * @param retweetsPerLocation
-     *            number of retweets for each country in a
-     *            category/country/accounts combination
-     * @param scale
-     *            the value in scale is multiplied with the calculated relative
-     *            factor to point out differences, it has to be positive
-     * @return the hashmap mapping countries to the number quantifying the
-     *         retweet activity in this country or null if retweetsPerLocation
-     *         contained invalid countrycode identifier, or scale is not
-     *         positive
-     */
-    public HashMap<String, Double> getDisplayValuePerCountry(
-            HashMap<String, Integer> retweetsPerLocation, double scale) {
-        if (scale <= 0.0000000000001) {
-            return null;
-        }
-        HashMap<String, Double> result = new HashMap<String, Double>();
-        HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+	/**
+	 * calculates the displayed value per country
+	 * 
+	 * given: a category, country, accounts combination
+	 * calculates: 
+	 *  
+	 *   number of retweets for that combination in that country                      1
+	 *   -------------------------------------------------------  *  ------------------------------------ * scale
+	 *          number of retweets for that combination               number of retweets in that country
+	 * 
+	 * @param retweetsPerLocation number of retweets for each country in a category/country/accounts combination
+	 * @param scale the value in scale is multiplied with the calculated relative factor to point out differences, it has to be positive
+	 * @return the hashmap mapping countries to the number quantifying the 
+	 * retweet activity in this country or null if retweetsPerLocation contained invalid countrycode identifier, or scale is not positive
+	 */
+	public HashMap<String, MyDataEntry> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
+		if (scale <= 0.0000000000001) {
+			return null;
+		}
+	    HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
+	    HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+	    
+	    // calculate overall number of retweets in this special combination
+	    Set<String> keySet = retweetsPerLocation.keySet(); 
+	    int overallCounter = 0;
+	    for(String key : keySet) {
+	    	overallCounter += retweetsPerLocation.get(key);		
+	    }
+	   
+	    System.out.println("1/overall value: " + ((double)1) /overallCounter);
+	    
+	    // calculate relative value  
+	    for(String key : keySet) {
+	    	if (!totalNumberOfRetweets.containsKey(key)) {
+	    		System.out.println("ERROR");
+	    		return null;
+	    	}
+	    	double relativeValue = retweetsPerLocation.get(key) / ((double) overallCounter * totalNumberOfRetweets.get(key));
+	    	relativeValue *= scale;
+	    	result.put(key, new MyDataEntry(relativeValue, key, totalNumberOfRetweets.get(key), retweetsPerLocation.get(key)));
+	    }
+	    
+	    return result;
+	}
 
-        // calculate overall number of retweets in this special combination
-        Set<String> keySet = retweetsPerLocation.keySet();
-        int overallCounter = 0;
-        for (String key : keySet) {
-            overallCounter += retweetsPerLocation.get(key);
-        }
-
-        System.out.println("1/overall value: " + ((double) 1) / overallCounter);
-
-        // calculate relative vlaue
-        for (String key : keySet) {
-            if (!totalNumberOfRetweets.containsKey(key)) {
-                System.out.println("ERROR");
-                return null;
-            }
-            double relativeValue = retweetsPerLocation.get(key)
-                    / ((double) overallCounter * totalNumberOfRetweets.get(key));
-            relativeValue *= scale;
-            result.put(key, relativeValue);
-        }
-
-        return result;
-    }
 
 }
