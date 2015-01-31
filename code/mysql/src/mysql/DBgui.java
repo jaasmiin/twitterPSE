@@ -165,7 +165,7 @@ public class DBgui extends DBConnection implements DBIgui {
         ResultSet res = null;
         runningRequest = true;
         try {
-            stmt = c.prepareStatement("SELECT Id, TwitterAccountId, AccountName,Verified, Follower, URL, Code FROM accounts "
+            stmt = c.prepareStatement("SELECT accounts.Id, TwitterAccountId, AccountName,Verified, Follower, URL, Code FROM accounts "
                     + "JOIN location ON accounts.LocationId=location.Id WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
             stmt.setString(1, "%" + search + "%");
             res = stmt.executeQuery();
@@ -194,7 +194,48 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
+        addCategories(ret);
+
         return ret;
+    }
+
+    private void addCategories(List<Account> list) {
+
+        if (list.size() > 0) {
+            Iterator<Account> it = list.iterator();
+            String query = "SELECT AccountId, CategoryId FROM accountCategory WHERE AccountId="
+                    + it.next().getId();
+            while (it.hasNext()) {
+                query += " OR AccountId=" + it.next().getId();
+            }
+            query += ";";
+
+            Statement stmt = null;
+            ResultSet res = null;
+            try {
+                stmt = c.createStatement();
+                res = stmt.executeQuery(query);
+            } catch (SQLException e) {
+                sqlExceptionLog(e, stmt);
+                return;
+            }
+
+            try {
+                while (res.next()) {
+                    for (Account temp : list) {
+                        if (temp.getId() == res.getInt(1)) {
+                            temp.addCategoryId(res.getInt(2));
+                        }
+                    }
+                }
+            } catch (SQLException e) {
+                sqlExceptionResultLog(e);
+                return;
+            } finally {
+                closeResultAndStatement(stmt, res);
+            }
+        }
+
     }
 
     @Override

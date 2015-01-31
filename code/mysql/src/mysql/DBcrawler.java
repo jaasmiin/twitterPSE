@@ -114,7 +114,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
         PreparedStatement stmt = null;
         try {
-            stmt = c.prepareStatement("INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) VALUES ( ? , ?, "
+            stmt = c.prepareStatement("INSERT INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized) "
+                    + "VALUES ( ? , ?, "
                     + (isVer == true ? "1" : "0")
                     + ", ? , (SELECT Id FROM location WHERE Code = ? LIMIT 1), ? , 0) ON DUPLICATE KEY UPDATE Follower = ? ;");
             stmt.setLong(1, id);

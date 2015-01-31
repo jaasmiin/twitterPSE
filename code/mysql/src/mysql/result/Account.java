@@ -17,7 +17,7 @@ public class Account extends Result {
     private int follower;
     private String locationCode;
     private boolean verified;
-    private int[] categoryIds;
+    private List<Integer> categoryIds;
     private List<Tweets> tweets;
     private List<Retweets> retweets;
 
@@ -38,15 +38,16 @@ public class Account extends Result {
      * @param locationCode
      *            the location-code of the account as String
      * @param categoryIds
-     *            the category-id's of the account as int[]
+     *            the category-id's of the account as List<Integer>
      * @param tweets
      *            the tweets of the account as List<Tweets>
      * @param retweets
      *            the retweets of the account as List<Retweets>
      */
     public Account(int id, long twitterId, String name, boolean verified,
-            String url, int follower, String locationCode, int[] categoryIds,
-            List<Tweets> tweets, List<Retweets> retweets) {
+            String url, int follower, String locationCode,
+            List<Integer> categoryIds, List<Tweets> tweets,
+            List<Retweets> retweets) {
         super(id);
         this.verified = verified;
         this.twitterId = twitterId;
@@ -75,10 +76,10 @@ public class Account extends Result {
      * @param locationCode
      *            the location-code of the account as String
      * @param categories
-     *            the category-id's of the account as int[]
+     *            the category-id's of the account as List<Integer>
      */
     public Account(int id, long twitterId, String name, String url,
-            int follower, String locationCode, int[] categories) {
+            int follower, String locationCode, List<Integer> categories) {
         this(id, twitterId, name, false, url, follower, locationCode,
                 categories, new ArrayList<Tweets>(), new ArrayList<Retweets>());
     }
@@ -103,7 +104,8 @@ public class Account extends Result {
     public Account(int id, long twitterId, String name, boolean verified,
             String url, int follower, String locationCode) {
         this(id, twitterId, name, verified, url, follower, locationCode,
-                new int[0], new ArrayList<Tweets>(), new ArrayList<Retweets>());
+                new ArrayList<Integer>(), new ArrayList<Tweets>(),
+                new ArrayList<Retweets>());
     }
 
     /**
@@ -180,9 +182,9 @@ public class Account extends Result {
     /**
      * returns the category-id's of the account
      * 
-     * @return the category-id's of the account as int[]
+     * @return the category-id's of the account as List<Integer>
      */
-    public int[] getCategoryIds() {
+    public List<Integer> getCategoryIds() {
         return categoryIds;
     }
 
@@ -256,4 +258,9 @@ public class Account extends Result {
         }
         return equal;
     }
+
+    public void addCategoryId(int categoryId) {
+        categoryIds.add(categoryId);
+    }
+
 }

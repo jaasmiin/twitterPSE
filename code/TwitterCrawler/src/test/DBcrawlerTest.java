@@ -98,7 +98,6 @@ public class DBcrawlerTest {
                 | InvocationTargetException e) {
             e.printStackTrace();
         }
-        ;
         assertEquals(8, h.size());
     }
 

@@ -30,7 +30,7 @@ public class Controller extends Thread {
 
     // max. size of the buffer between streamListener, statusProcessors and
     // locator
-    private final static int MAX_SIZE = 100000;
+    private static final int MAX_SIZE = 100000;
     // interval to wait in seconds
     private final static int INTERVAL = 30;
 
@@ -360,7 +360,7 @@ public class Controller extends Thread {
                 }
             }
 
-            if (count >= 86400) {// one day = 86400 seconds
+            if (count >= 86400) { // one day = 86400 seconds
                 count = 0;
 
                 // add a new date to the database
