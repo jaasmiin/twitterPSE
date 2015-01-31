@@ -23,8 +23,12 @@ class DBtest extends DBConnection {
      * @param logger
      *            a logger to log exceptions as Logger
      * @throws InstantiationException
+     *             thrown if a connection to the database is impossible
      * @throws IllegalAccessException
+     *             thrown if a connection to the database is impossible
      * @throws ClassNotFoundException
+     *             thrown if a connection to the database is impossible, due to
+     *             a missing driver-class
      */
     public DBtest(AccessData accessData, Logger logger)
             throws InstantiationException, IllegalAccessException,

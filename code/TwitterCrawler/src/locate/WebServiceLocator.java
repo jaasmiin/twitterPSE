@@ -54,6 +54,7 @@ public class WebServiceLocator implements RunnableListener {
      *            webservice where buffered as
      *            ConcurrentLinkedQueue<LocateStatus>
      * @throws InstantiationException
+     *             thrown if it isn't possible to connect to the database
      */
     public WebServiceLocator(AccessData accessData, Logger logger,
 

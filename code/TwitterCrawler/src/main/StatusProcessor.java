@@ -51,6 +51,8 @@ public class StatusProcessor implements RunnableListener {
      *            the twitter-account-id's of the non verified accounts that
      *            should be tracked as ConcurrentMap<Long, Object>
      * @param locationHash
+     *            a hashmap that maps words to country-codes as HashMap<String,
+     *            String>
      * @param logger
      *            a global logger for the whole program as Logger
      * @param accessData
