@@ -43,6 +43,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
+import unfolding.MyDataEntry;
 import util.LoggerUtil;
 
 /**
@@ -722,11 +723,11 @@ public class GUIController extends Application implements Initializable {
 	 * @return the hashmap mapping countries to the number quantifying the 
 	 * retweet activity in this country or null if retweetsPerLocation contained invalid countrycode identifier, or scale is not positive
 	 */
-	public HashMap<String, Double> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
+	public HashMap<String, MyDataEntry> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
 		if (scale <= 0.0000000000001) {
 			return null;
 		}
-	    HashMap<String, Double> result = new HashMap<String, Double>();
+	    HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
 	    HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
 	    
 	    // calculate overall number of retweets in this special combination
@@ -738,7 +739,7 @@ public class GUIController extends Application implements Initializable {
 	   
 	    System.out.println("1/overall value: " + ((double)1) /overallCounter);
 	    
-	    // calculate relative vlaue  
+	    // calculate relative value  
 	    for(String key : keySet) {
 	    	if (!totalNumberOfRetweets.containsKey(key)) {
 	    		System.out.println("ERROR");
@@ -746,9 +747,8 @@ public class GUIController extends Application implements Initializable {
 	    	}
 	    	double relativeValue = retweetsPerLocation.get(key) / ((double) overallCounter * totalNumberOfRetweets.get(key));
 	    	relativeValue *= scale;
-	    	result.put(key, relativeValue);
+	    	result.put(key, new MyDataEntry(relativeValue, key, totalNumberOfRetweets.get(key), retweetsPerLocation.get(key)));
 	    }
-	
 	    
 	    return result;
 	}

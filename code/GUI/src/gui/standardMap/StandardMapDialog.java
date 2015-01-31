@@ -3,12 +3,12 @@ package gui.standardMap;
 import gui.GUIController;
 import gui.GUIElement.UpdateType;
 
-import java.awt.image.ColorModel;
 import java.util.HashMap;
 import java.util.Set;
 
 import javax.swing.JDialog;
 
+import unfolding.MyDataEntry;
 import unfolding.MyUnfoldingMap;
 import mysql.result.TweetsAndRetweets;
 
@@ -17,7 +17,7 @@ public class StandardMapDialog extends JDialog {
 	private GUIController superController;
 	private TweetsAndRetweets uneditedData;
 	private MyUnfoldingMap map = new MyUnfoldingMap();
-	private HashMap<String, Double> calculatedData;
+	private HashMap<String, MyDataEntry> calculatedData;
 
 	public StandardMapDialog(GUIController superController) {
 		this.superController = superController;
@@ -29,7 +29,6 @@ public class StandardMapDialog extends JDialog {
 		setVisible(true);
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	public void update(UpdateType type) {
 		switch (type) {
 		case CLOSE:

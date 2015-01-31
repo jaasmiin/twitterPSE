@@ -1,7 +1,6 @@
 package unfolding;
 
 import java.awt.event.MouseEvent;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,15 +109,11 @@ public class MyUnfoldingMap extends PApplet {
         
         Marker country = currentMap.getFirstHitMarker(x, y);
         if (country != null) {
-            
             String countryId = country.getId();
-            String char2Id = countryIdTrans.get(countryId);  //3 char Ländercode in 2 char umwandeln
-            MyDataEntry loc = dataEntriesMap.get(char2Id);
-
-            String countryName = country.getProperties().values().toArray()[0].toString();
-            MyDataEntry location = dataEntriesMap.get(countryName);
+            String char2Code = countryIdTrans.get(countryId);  //3 char Ländercode in 2 char umwandeln
+            MyDataEntry location = dataEntriesMap.get(char2Code);
             if (location != null) {
-                System.out.println(location.getCountryName() + " " + location.getCountryId2Chars() + " " + location.getCountryId3Chars());
+                System.out.println(location.getCountryName() + " " + char2Code + " " + location.getRetweetsLand() + " " + location.getRetweetsLandFiltered());
             }
         }
     }
@@ -158,9 +153,9 @@ public class MyUnfoldingMap extends PApplet {
      * Updates new values to be visualized on the map.
      * 
      * @param changedEntries
-     *            String array containing country id and new value of it
+     *            HashMap containing country name, display value and other data for hover effect
      */
-    public void update(HashMap<String, Double> changedEntries) {
+    public void update(HashMap<String, MyDataEntry> changedEntries) {
 
         if (!setValues.isEmpty()) {
             for (String id : setValues) {
@@ -173,17 +168,18 @@ public class MyUnfoldingMap extends PApplet {
             setValues.clear();
         }
 
-        for(Entry<String, Double> e: changedEntries.entrySet()) {
-            
+        for(Entry<String, MyDataEntry> e: changedEntries.entrySet()) {
             MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
             if(newEntry != null) {
-                newEntry.setValue(e.getValue());
+                newEntry.setValue(e.getValue().getValue());
+                newEntry.setRetweetsLand(e.getValue().getRetweetsLand());
+                newEntry.setRetweetsLandFiltered(e.getValue().getRetweetsLandFiltered());
                 dataEntriesMap.put(e.getKey(), newEntry);
                 setValues.add(e.getKey());
             }
 
-            if(Float.parseFloat(e.getValue().toString()) > maxValue) {
-                maxValue = Float.parseFloat(e.getValue().toString());
+            if(Float.parseFloat(e.getValue().getValue().toString()) > maxValue) {
+                maxValue = Float.parseFloat(e.getValue().getValue().toString());
             }
         }
         shadeCountries();
