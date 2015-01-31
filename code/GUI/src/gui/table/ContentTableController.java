@@ -23,14 +23,15 @@ import gui.OutputElement;
  * This class presents raw-data in a table.
  * 
  * @author Philipp
+ * @version 1.0
  * 
  */
 public class ContentTableController extends OutputElement implements
         Initializable {
 
+    TableColumn<Account, Integer> retweetColumn;
     @FXML
     private TableView<Account> table;
-    TableColumn<Account, Integer> retweetColumn;
 
     @Override
     public void update(UpdateType type) {

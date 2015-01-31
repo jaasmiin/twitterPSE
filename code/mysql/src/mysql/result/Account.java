@@ -31,6 +31,7 @@ public class Account extends Result {
      * @param name
      *            the name of the account as String
      * @param verified
+     *            true if this account is verified by Twitter, else false
      * @param url
      *            the official url of the account as String
      * @param follower
@@ -94,6 +95,7 @@ public class Account extends Result {
      * @param name
      *            the name of the account as String
      * @param verified
+     *            true if this account is verified by Twitter, else false
      * @param url
      *            the official url of the account as String
      * @param follower
@@ -129,6 +131,8 @@ public class Account extends Result {
      *            the id of the account in the database as int
      * @param name
      *            the name of the account
+     * @param follower
+     *            the number of followers of the account as int
      */
     public Account(int id, String name, int follower) {
         this(id, 0, name, false, null, follower, "0");
@@ -245,6 +249,16 @@ public class Account extends Result {
         retweets.add(retweet);
     }
 
+    /**
+     * adds a category to this account
+     * 
+     * @param categoryId
+     *            the id of the category to add to this account as int
+     */
+    public void addCategoryId(int categoryId) {
+        categoryIds.add(categoryId);
+    }
+
     @Override
     public String toString() {
         return getName();
@@ -257,10 +271,6 @@ public class Account extends Result {
             equal = ((Result) o).getId() == getId();
         }
         return equal;
-    }
-
-    public void addCategoryId(int categoryId) {
-        categoryIds.add(categoryId);
     }
 
 }

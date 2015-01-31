@@ -1,6 +1,5 @@
 package mysql;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,10 +46,8 @@ public interface DBIcrawler {
      * @param date
      *            the day when the retweet has been written as Date
      * @return database-request result as Boolean[]
-     * @throws SQLException
      */
-    public boolean[] addRetweet(long id, String location, Date date)
-            throws SQLException;
+    public boolean[] addRetweet(long id, String location, Date date);
 
     /**
      * inserts a new date into the database

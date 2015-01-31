@@ -22,6 +22,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * class to test the database-access of the crawler
+ * 
+ * @author Holger Ebhart
+ * @version 1.0
+ * 
+ */
 public class DBcrawlerTest {
 
     private DBcrawler dbc;

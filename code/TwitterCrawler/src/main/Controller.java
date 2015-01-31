@@ -32,7 +32,7 @@ public class Controller extends Thread {
     // locator
     private static final int MAX_SIZE = 100000;
     // interval to wait in seconds
-    private final static int INTERVAL = 30;
+    private static final int INTERVAL = 30;
 
     private final int workerThreadNum;
     private final int locatorThreadNum;
@@ -69,6 +69,8 @@ public class Controller extends Thread {
      *            the timeout in seconds (0 for infinity) as Integer
      * @param accessData
      *            the access data to the database as AccessData
+     * @param numberOfThreads
+     *            the number of worker threads as int
      * @throws IOException
      *             if an error with the LogFile.log has occurred
      */
@@ -191,6 +193,10 @@ public class Controller extends Thread {
 
     /**
      * Shut down server
+     * 
+     * @param kill
+     *            true if the application should terminate immediately, false if
+     *            it should shut down
      */
     public void shutdown(boolean kill) {
 
@@ -308,6 +314,11 @@ public class Controller extends Thread {
         logger.info("Program terminated by user");
     }
 
+    /**
+     * returns the max size of the statusQueue and the locateQueue
+     * 
+     * @return the max size of the statusQueue and the locateQueue as int
+     */
     public int getQueueSize() {
         return Math.max(locateQueue.size(), statusQueue.size());
     }
@@ -345,7 +356,7 @@ public class Controller extends Thread {
         int count = 0;
         while (run) {
 
-            if (m >= 3600) {// write statistic once an hour
+            if (m >= 3600) { // write statistic once an hour
                 m = 0;
                 writeStatistic();
             }

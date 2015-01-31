@@ -156,7 +156,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
 
         PreparedStatement stmt = null;
         try {
-            stmt = c.prepareStatement("INSERT INTO tweets (AccountId,Counter,DayId) VALUES ((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), "
+            stmt = c.prepareStatement("INSERT INTO tweets (AccountId,Counter,DayId) VALUES "
+                    + "((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), "
                     + (tweet ? "1" : "0")
                     + ", (SELECT Id FROM day WHERE Day = ? LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + "
                     + (tweet ? "1" : "0") + ";");

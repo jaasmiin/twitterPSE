@@ -55,17 +55,6 @@ public class Category extends Result {
     /**
      * Returns the name of the category
      * 
-     * @return the name of the category as string
-     * @deprecated replaced by {@link #toString()}
-     */
-    @Deprecated
-	public String getCategory() {
-        return category;
-    }
-
-    /**
-     * Returns the name of the category
-     * 
      * @return the name of the category as String
      */
     @Override
@@ -84,7 +73,7 @@ public class Category extends Result {
     }
 
     /**
-     * returns the parentId of this category
+     * returns the parentId of this category (0 if this category is root)
      * 
      * @return the parentId of this category as int
      */
@@ -103,7 +92,8 @@ public class Category extends Result {
     }
 
     /**
-     * specifies whether this category is used as an account-category pair or not
+     * specifies whether this category is used as an account-category pair or
+     * not
      * 
      * @param used
      *            true if the category is used, false otherwise

@@ -1,23 +1,22 @@
 package unfolding;
 
-
 /**
  * 
  * @author Lidia
- *
+ * @version 1.0
+ * 
  */
-
 public class MyDataEntry {
 
     private String countryName;
     private String countryId3Chars;
     private String countryId2Chars;
     private Double value;
-    
+
     public MyDataEntry() {
         this.value = (double) -1;
     }
-    
+
     public String getCountryName() {
         return countryName;
     }
@@ -29,7 +28,7 @@ public class MyDataEntry {
     public String getCountryId3Chars() {
         return countryId3Chars;
     }
-    
+
     public String getCountryId2Chars() {
         return countryId3Chars;
     }
@@ -37,7 +36,7 @@ public class MyDataEntry {
     public void setCountryId3Chars(String countryId) {
         this.countryId2Chars = countryId;
     }
-    
+
     public void setCountryId2Chars(String countryId) {
         this.countryId2Chars = countryId;
     }
@@ -48,5 +47,5 @@ public class MyDataEntry {
 
     public void setValue(double d) {
         this.value = d;
-    }    
+    }
 }

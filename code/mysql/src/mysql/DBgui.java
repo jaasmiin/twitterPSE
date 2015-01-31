@@ -128,34 +128,35 @@ public class DBgui extends DBConnection implements DBIgui {
         return ret;
     }
 
-    @Override
-    public int getAccountId(String accountName) {
-
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        runningRequest = true;
-        try {
-            stmt = c.prepareStatement("SELECT Id FROM accounts WHERE AccountName = ? LIMIT 1;");
-            stmt.setString(1, accountName);
-            res = stmt.executeQuery();
-        } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
-            return -1;
-        } finally {
-            runningRequest = false;
-        }
-
-        int ret = -1;
-        try {
-            res.next();
-            ret = res.getInt("Id");
-        } catch (SQLException e) {
-            ret = -1;
-        } finally {
-            closeResultAndStatement(stmt, res);
-        }
-        return ret;
-    }
+    // @Override
+    // public int getAccountId(String accountName) {
+    //
+    // PreparedStatement stmt = null;
+    // ResultSet res = null;
+    // runningRequest = true;
+    // try {
+    // stmt =
+    // c.prepareStatement("SELECT Id FROM accounts WHERE AccountName = ? LIMIT 1;");
+    // stmt.setString(1, accountName);
+    // res = stmt.executeQuery();
+    // } catch (SQLException e) {
+    // sqlExceptionLog(e, stmt);
+    // return -1;
+    // } finally {
+    // runningRequest = false;
+    // }
+    //
+    // int ret = -1;
+    // try {
+    // res.next();
+    // ret = res.getInt("Id");
+    // } catch (SQLException e) {
+    // ret = -1;
+    // } finally {
+    // closeResultAndStatement(stmt, res);
+    // }
+    // return ret;
+    // }
 
     @Override
     public List<Account> getAccounts(String search) {
@@ -195,6 +196,73 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         addCategories(ret);
+
+        return ret;
+    }
+
+    @Override
+    public Account getAccount(int id) {
+
+        // get informations about the account
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+        runningRequest = true;
+        try {
+            stmt = c.prepareStatement("SELECT accounts.Id, TwitterAccountId, AccountName,Verified, Follower, URL, Code FROM accounts "
+                    + "JOIN location ON accounts.LocationId=location.Id WHERE accounts.Id=? LIMIT 1;");
+            stmt.setInt(1, id);
+            res = stmt.executeQuery();
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        } finally {
+            runningRequest = false;
+        }
+
+        if (res == null)
+            return null;
+
+        Account ret = null;
+        try {
+            res.next();
+            ret = new Account(res.getInt("Id"),
+                    res.getLong("TwitterAccountId"),
+                    res.getString("AccountName"), res.getBoolean("Verified"),
+                    res.getString("URL"), res.getInt("Follower"),
+                    res.getString("Code"));
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            return ret;
+        } finally {
+            closeResult(res);
+        }
+
+        // get the categories for the account
+        stmt = null;
+        res = null;
+        runningRequest = true;
+        try {
+            stmt = c.prepareStatement("SELECT CategoryId FROM accountCategory WHERE AccountId=?;");
+            stmt.setInt(1, id);
+            res = stmt.executeQuery();
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        } finally {
+            runningRequest = false;
+        }
+
+        if (res == null)
+            return null;
+
+        try {
+            while (res.next()) {
+                ret.addCategoryId(res.getInt(1));
+            }
+        } catch (SQLException e) {
+            sqlExceptionResultLog(e);
+            return ret;
+        } finally {
+            closeResultAndStatement(stmt, res);
+        }
 
         return ret;
     }
@@ -530,10 +598,10 @@ public class DBgui extends DBConnection implements DBIgui {
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
         TweetsAndRetweets tweetsAndRetweets = new TweetsAndRetweets();
-        tweetsAndRetweets.retweets = getRetweetSum(categoryIDs, locationIDs,
-                accountIDs, byDate);
-        tweetsAndRetweets.tweets = getTweetSum(categoryIDs, locationIDs,
-                accountIDs, byDate);
+        tweetsAndRetweets.setRetweets(getRetweetSum(categoryIDs, locationIDs,
+                accountIDs, byDate));
+        tweetsAndRetweets.setTweets(getTweetSum(categoryIDs, locationIDs,
+                accountIDs, byDate));
         return tweetsAndRetweets;
     }
 
@@ -744,18 +812,16 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public List<Account> getAllData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
-        double t = System.currentTimeMillis();
+
         Statement stmt;
         List<Account> ret = new ArrayList<Account>();
         try {
             stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
             ret = getTweetSumPerAccount(stmt, byDates);
         } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.warning("SQL-Exception by gatAllData: " + e.getMessage());
         }
 
-        System.out.println("Time: " + (System.currentTimeMillis() - t));
         return ret;
     }
 
@@ -825,12 +891,7 @@ public class DBgui extends DBConnection implements DBIgui {
         }
         // get retweets
         getRetweetSumPerAccount(stmt, byDate, accounts);
-        // TODO remove
-        // for (Account x : Util.collectionToList(accounts.values())) {
-        // if (x.getRetweets().size() > 1) {
-        // System.out.println(x.getRetweets().size());
-        // }
-        // }
+
         return Util.collectionToList(accounts.values());
     }
 

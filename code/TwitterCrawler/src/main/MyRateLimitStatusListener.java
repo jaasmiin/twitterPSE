@@ -16,6 +16,12 @@ public class MyRateLimitStatusListener implements RateLimitStatusListener {
 
     private Logger logger;
 
+    /**
+     * create a new RateLimitStatusListener
+     * 
+     * @param logger
+     *            a logger to log exceptions, informations, ... as Logger
+     */
     public MyRateLimitStatusListener(Logger logger) {
         this.logger = logger;
     }

@@ -19,9 +19,21 @@ import java.text.SimpleDateFormat;
  */
 public abstract class DBConnection {
 
+    /**
+     * the connection to the database
+     */
     protected Connection c;
+    /**
+     * formatter to format a date for the database
+     */
     protected DateFormat dateFormat;
+    /**
+     * a logger to log warnings, exceptions and informations
+     */
     protected Logger logger;
+    /**
+     * boolean to indicate a running database-request
+     */
     protected boolean runningRequest;
     private final AccessData accessData;
     private boolean connected;
@@ -112,6 +124,9 @@ public abstract class DBConnection {
      * 
      * @param stmt
      *            the statement to execute as update as PreparedStatement
+     * @param resultNotNull
+     *            true if the result should be != 0, false if the result should
+     *            be >= 0
      * @return true if the update on the database was successfully, else false
      */
     protected boolean executeStatementUpdate(PreparedStatement stmt,
