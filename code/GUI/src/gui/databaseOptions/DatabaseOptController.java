@@ -465,6 +465,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 				if(!list_Cat_tab2.getItems().contains(cat)) {
 					//  add a category only once
 					list_Cat_tab2.getItems().add(cat);
+					
 				}	
 			}
 			
