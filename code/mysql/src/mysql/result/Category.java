@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class Category extends Result {
 
-    private final static int MAX_LENGTH = 50;
+    private static final int MAX_LENGTH = 50;
     private List<Category> childs;
     private String category;
     private int parent;

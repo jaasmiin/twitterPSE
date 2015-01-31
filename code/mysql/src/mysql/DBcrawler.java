@@ -185,7 +185,9 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT INTO retweets (AccountId, LocationId, Counter, DayId) VALUES "
-                    + "((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1), (SELECT Id FROM location WHERE Code = ? LIMIT 1), 1, (SELECT Id FROM day WHERE Day = ? LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + 1;");
+                    + "((SELECT Id FROM accounts WHERE TwitterAccountId = ? LIMIT 1),"
+                    + " (SELECT Id FROM location WHERE Code = ? LIMIT 1), 1, "
+                    + "(SELECT Id FROM day WHERE Day = ? LIMIT 1)) ON DUPLICATE KEY UPDATE Counter = Counter + 1;");
             stmt.setLong(1, id);
             stmt.setString(2, location);
             stmt.setString(3, dateFormat.format(date));

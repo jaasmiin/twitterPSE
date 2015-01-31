@@ -11,63 +11,38 @@ import java.util.Date;
  */
 public class Tweets {
 
-	private Date date;
-	private int counter;
-	private String locationCode;
+    private Date date;
+    private int counter;
 
-	/**
-	 * store the tweets of a day
-	 * 
-	 * @param date
-	 *            the date of the tweets as Date
-	 * @param counter
-	 *            the number of localized tweets as int
-	 */
-	public Tweets(Date date, int counter) {
-		this.date = date;
-		this.counter = counter;
-		this.locationCode = "";
-	}
+    /**
+     * store the tweets of a day
+     * 
+     * @param date
+     *            the date of the tweets as Date
+     * @param counter
+     *            the number of localized tweets as int
+     */
+    public Tweets(Date date, int counter) {
+        this.date = date;
+        this.counter = counter;
+    }
 
-	/**
-	 * returns the date of the tweets
-	 * 
-	 * @return the date of the tweets as Date
-	 */
-	public Date getDate() {
-		return date;
-	}
+    /**
+     * returns the date of the tweets
+     * 
+     * @return the date of the tweets as Date
+     */
+    public Date getDate() {
+        return date;
+    }
 
-	/**
-	 * returns the number of tweets
-	 * 
-	 * @return the number of tweets as int
-	 */
-	public int getCounter() {
-		return counter;
-	}
-
-	/**
-	 * returns the location code of this retweets
-	 * 
-	 * @return the location code of this retweets as String (max. 3 chars)
-	 */
-	public String getLocationCode() {
-		return locationCode;
-	}
-
-	/**
-	 * sets the location code of the location of this retweets
-	 * 
-	 * @param locationCode
-	 *            ths location code to set as String (max. 3 chars)
-	 */
-	public void setLocationCode(String locationCode) {
-		if (locationCode != null && locationCode.length() > 3) {
-			this.locationCode = locationCode.substring(0, 3);
-		} else {
-			this.locationCode = locationCode;
-		}
-	}
+    /**
+     * returns the number of tweets
+     * 
+     * @return the number of tweets as int
+     */
+    public int getCounter() {
+        return counter;
+    }
 
 }
