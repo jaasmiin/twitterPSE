@@ -98,7 +98,7 @@ public class GUIController extends Application implements Initializable {
 				Scene scene = new Scene(parent, 800, 600);
 				scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 				primaryStage.setTitle("PSE-Twitter");
-				primaryStage.setMinHeight(400);
+				primaryStage.setMinHeight(500);
 				primaryStage.setMinWidth(600);
 				primaryStage.setScene(scene);
 				primaryStage.show();

@@ -25,7 +25,6 @@ public class StandardMapDialog extends JDialog {
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		add(map);
 		map.init();
-		setVisible(true);
 	}
 
 	@SuppressWarnings("incomplete-switch")
