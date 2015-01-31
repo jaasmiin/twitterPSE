@@ -64,7 +64,7 @@ public class GUIController extends Application implements Initializable {
 	private static ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 
 	private static DBgui db;
-	private Category categoryRoot;
+	public Category categoryRoot;
 	private SelectionHashList<Location> locations = new SelectionHashList<Location>();
 	private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
 	private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
@@ -72,10 +72,11 @@ public class GUIController extends Application implements Initializable {
 
 	private HashSet<Integer> selectedCategories = new HashSet<Integer>();
 	private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
+	
 	private boolean dateRange = false;
 	private String accountSearchText = "";
 	private MyDataEntry mapDetailInformation = null;
-
+	
 	public static GUIController getInstance() {
 		if (instance == null) {
 			System.out.println("Fehler in GUIController getInstance(). "
@@ -337,7 +338,6 @@ public class GUIController extends Application implements Initializable {
 
 		if (allSelectedCategories.size() + selectedLocations.size()
 				+ selectedAccounts.size() >= 1) {
-
 			boolean success = true;
 			try {
 				dataByLocation = db.getSumOfData(allSelectedCategories,
@@ -491,6 +491,70 @@ public class GUIController extends Application implements Initializable {
 		return newRoot;
 	}
 
+	/**
+	 * Creates a category tree containing all Categories given in 'CategoryIds'
+	 * @param CategoryIds
+	 * @return root of the created tree, null if CategoryIds contains invalid Id or has length 0
+	 */
+	public Category getCategoryRoot(int[] categoryIds) {
+		
+		if (categoryIds == null || categoryIds.length == 0) {
+			return null;
+		}
+		Category root = null;
+		Category currentCat = null;
+		Boolean first = true;
+		
+		// contains all vertex of the tree
+		HashMap<Integer, Category> tree = new HashMap<Integer,Category>();
+		
+		// iterate over CategoryIds and create tree
+		for (int i = 0; i < categoryIds.length; i++) {
+			
+			
+			
+			currentCat = getCategory(categoryIds[i]);
+			 
+			if (currentCat == null) {
+				return null;
+			}
+			// create new category with old values but without  childs
+			currentCat = new Category(currentCat.getId(), currentCat.toString(), currentCat.getParentId(), currentCat.isUsed());
+			
+			tree.put(currentCat.getId(), currentCat);
+			
+		
+			
+			while(currentCat.getId() != 1) {
+				// while currenCat is not root
+				Category parent = getCategory(currentCat.getParentId());
+				if (parent == null) {
+					return null;
+				}
+				// create new category with old values but without  childs
+				parent = new Category(parent.getId(), parent.toString(), parent.getParentId(), parent.isUsed());
+				
+				if(tree.containsKey(parent.getId())) {
+					// look up parentId in the hashMap if found add currentCat and break
+					tree.get(parent.getId()).addChild(currentCat);
+					break;
+				}
+				else {
+					// add currentCat and go on 
+					parent.addChild(currentCat);
+					tree.put(parent.getId(), parent);
+					currentCat = parent;	
+				}
+			}
+			// hoping that categories form a tree, and root id is still 1 set in the first run to the root the root item
+			if (first) {
+				root = currentCat;
+				first = false;
+			}
+			
+		}
+		return root;
+	}
 	/**
 	 * Get accounts containing the text.
 	 * 

@@ -2,6 +2,7 @@ package gui.databaseOptions;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -10,6 +11,7 @@ import twitter4j.User;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -18,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -68,6 +71,12 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private Button b_Cat_tab2_zurueck;
 	@FXML
 	private Button b_Cat_tab2_entfernen;
+	@FXML
+	private TreeView trv_Cat_tab2_oldCats;
+	@FXML
+	private Label l_Cat_tab2_selectedAccount;
+	@FXML 
+	private Label l_Cat_tab2_success;
 	//####################### Add/Change Location#########################
 	@FXML
 	private TabPane tabPane_Loc;
@@ -114,6 +123,8 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private Account account;
 	private Stage dialogStage;
 	private final int DEFAULT_LOCATION = 1;
+	// Delay time for success messages
+	private final int DELAY = 5000;
 	
 	
 
@@ -144,6 +155,13 @@ public class DatabaseOptController extends InputElement implements Initializable
 			b_Cat_tab2_fertig.setOnMouseClicked(new MyCatEventHandler());
 			b_Cat_tab2_zurueck.setOnMouseClicked(new MyCatEventHandler());	
 			b_Cat_tab2_entfernen.setOnMouseClicked(new MyCatEventHandler());
+			
+			// list contain default elements
+			List<Account> defaultList = superController.getAccounts("");
+			list_Cat_tab1.getItems().clear();
+			for(Account a : defaultList) {
+				list_Cat_tab1.getItems().add(a);
+			}
 		}
 		
 		//popUp add/change location
@@ -323,7 +341,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 				}
 				
 				superController.setLocation(account.getId(), selectedItem.getValue().getId());
-				dialogStage.close();
+			
 			}
 			
 			if(event.getSource().equals(b_Loc_tab2_zurueck)) {
@@ -389,16 +407,40 @@ public class DatabaseOptController extends InputElement implements Initializable
 					return;
 				} 
 				account = selectedAccount;
-				System.out.println(selectedAccount.getName());
+				
 				// change tab
 				tab_Cat_tab1.setDisable(true);
 				tab_Cat_tab2.setDisable(false);
 				tabPane_Cat.getSelectionModel().select(tab_Cat_tab2);
+				
+				//get and view all categories already belonging to the selected account
+				
+				List<Integer> categoryList = account.getCategoryIds();
+				int[] categoryArr = new int[categoryList.size()];
+				
+				for (int i = 0; i < categoryArr.length; i++) {
+					categoryArr[i] = categoryList.get(i);
+				}
+				System.out.println("ausgewählter account: " + account.getName() + " kategorien: "+ account.getCategoryIds().size());
+				Category rootCat = superController.getCategoryRoot(categoryArr);
+				// set new root item in treeView
+				if (rootCat != null) {
+					TreeItem<Category> rootItem = updateCategory(rootCat);
+					trv_Cat_tab2_oldCats.setRoot(rootItem);
+				}
+				else {
+					trv_Cat_tab2_oldCats.setRoot(null);
+				}
+				// set label to show the selected account
+				l_Cat_tab2_selectedAccount.setText(account.getName());
+				
+				
+			
 			}
 			
 			// ################################# tab2 ####################################
 			
-		
+			
 			if(event.getSource().equals(txtField_Cat_tab2)) {
 				// update TreeView of categories
 					
@@ -410,7 +452,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 							 
 						String input = txtField_Cat_tab2.getText();
 						System.out.println("zweites suchfeld: "+input);
-					    updateCategory(superController.getCategoryRoot(input));
+					    trv_Cat_tab2.setRoot(updateCategory(superController.getCategoryRoot(input)));
 					}
 				}
 			}				
@@ -423,6 +465,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 				if(!list_Cat_tab2.getItems().contains(cat)) {
 					//  add a category only once
 					list_Cat_tab2.getItems().add(cat);
+					
 				}	
 			}
 			
@@ -439,12 +482,32 @@ public class DatabaseOptController extends InputElement implements Initializable
 			
 			if(event.getSource().equals(b_Cat_tab2_fertig)) {
 				// add selected Categories to database
-				System.out.println("bFertig xxxx");
+			
+				
+				// show  message for DELAY time
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						l_Cat_tab2_success.setText("Füge hinzu ... ");
+					}
+				});
 				for(Category cat : list_Cat_tab2.getItems()) {
 					superController.setCategory(account.getId(), cat.getId());
 				}	
+				// show success message for DELAY time
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						l_Cat_tab2_success.setText("Kategorie hinzugefügt");
+						try {
+							Thread.sleep(DELAY);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						l_Cat_tab2_success.setText("");
+					}
+				});
 				
-				dialogStage.close();
 			}
 			
 			if(event.getSource().equals(b_Cat_tab2_zurueck)) {
@@ -460,12 +523,15 @@ public class DatabaseOptController extends InputElement implements Initializable
 		/**
 		 * creates tree for treeView
 		 * @param rootCategory
+		 * @return root-item
 		 */
-		private void updateCategory(Category rootCategory) {
+		private TreeItem<Category> updateCategory(Category rootCategory) {
+			
 			TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
 			rootItem.setExpanded(false);
 			updateCategoryRec(rootCategory, rootItem);
-			trv_Cat_tab2.setRoot(rootItem);
+			return rootItem;
+			
 		}
 		private void updateCategoryRec(Category category, TreeItem<Category> item) {
 			for (Category childCategory : category.getChilds()) {
