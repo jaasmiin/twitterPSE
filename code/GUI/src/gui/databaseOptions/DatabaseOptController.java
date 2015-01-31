@@ -30,7 +30,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import gui.InputElement;
 
@@ -102,7 +106,10 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private Button b_Loc_tab2_zurueck;
 	@FXML
 	private Button b_Loc_tab2_entfernen;
-	
+	@FXML
+	private Label l_Loc_tab2_selectedAccount;
+	@FXML
+	private Label l_Loc_tab2_currentPlace;
 	//################################# Add Account ########################
 	@FXML
 	private TabPane tabPane_Acc;
@@ -141,6 +148,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 			addCat.setOnAction(new MyActionEventHandler());
 			addLoc.setOnAction(new MyActionEventHandler());
 			addAcount.setOnAction(new MyActionEventHandler());
+			
 		}
 		
 		//popUp add new category
@@ -175,6 +183,13 @@ public class DatabaseOptController extends InputElement implements Initializable
 			trv_Loc_tab2.setOnMouseClicked(new MyLocEventHandler());
 			b_Loc_tab2_fertig.setOnMouseClicked(new MyLocEventHandler());
 			b_Loc_tab2_zurueck.setOnMouseClicked(new MyLocEventHandler());	
+			
+			// list contain default elements
+			List<Account> defaultList = superController.getAccounts("");
+			list_Loc_tab1.getItems().clear();
+			for(Account a : defaultList) {
+				list_Loc_tab1.getItems().add(a);
+			}
 		}
 		// popUp add user
 		if (tabPane_Acc != null) {
@@ -301,11 +316,14 @@ public class DatabaseOptController extends InputElement implements Initializable
 					return;
 				} 
 				account = selectedAccount;
-				System.out.println(selectedAccount.getName());
+				System.out.println(account.getName() + "   " + account.getId());
 				// change tab
 				tab_Loc_tab1.setDisable(true);
 				tab_Loc_tab2.setDisable(false);
 				tabPane_Loc.getSelectionModel().select(tab_Loc_tab2);
+				l_Loc_tab2_currentPlace.setText(account.getLocationCode());
+				l_Loc_tab2_selectedAccount.setText(account.getName());
+				updateLocation(superController.getLocations(""));
 			}
 			
 			// ################################# tab2 ####################################
@@ -339,8 +357,8 @@ public class DatabaseOptController extends InputElement implements Initializable
 					System.out.println("an error occured!");
 					return;
 				}
-				
-				superController.setLocation(account.getId(), selectedItem.getValue().getId());
+				System.out.println(account.getId() + "    " + selectedItem.getValue().getId());
+			    superController.setLocation(account.getId(), selectedItem.getValue().getId());
 			
 			}
 			
@@ -378,7 +396,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 			
 			if(event.getSource().equals(txtField_Cat_tab1)) {
 				// update listView of account
-				
+			
 				if ( (event instanceof KeyEvent)) {
 					
 					KeyEvent k = (KeyEvent) event;
@@ -400,7 +418,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 			}
 			
 			if(event.getSource().equals(b_Cat_tab1)) {
-				// save selected account close tab
+				// save selected account inactivate tab
 			
 				Account selectedAccount = list_Cat_tab1.getSelectionModel().getSelectedItem(); 
 				if (selectedAccount == null) {
@@ -460,13 +478,21 @@ public class DatabaseOptController extends InputElement implements Initializable
 			if(event.getSource().equals(trv_Cat_tab2)) {
 				// add a category to list of selected categories
 				
-				Category cat = trv_Cat_tab2.getSelectionModel().getSelectedItem().getValue();
+				// only select on double click
+				if (event instanceof MouseEvent) {
+					MouseEvent mouse = (MouseEvent) event;
+					if (mouse.getClickCount() == 2) {
+						Category cat = trv_Cat_tab2.getSelectionModel().getSelectedItem().getValue();
+						trv_Cat_tab2.getSelectionModel().clearSelection();
+						
+						if(!list_Cat_tab2.getItems().contains(cat)) {
+							//  add a category only once
+							list_Cat_tab2.getItems().add(cat);
+							
+						}	
+					}
+				}
 				
-				if(!list_Cat_tab2.getItems().contains(cat)) {
-					//  add a category only once
-					list_Cat_tab2.getItems().add(cat);
-					
-				}	
 			}
 			
 			if(event.getSource().equals(b_Cat_tab2_entfernen)) {
@@ -483,30 +509,13 @@ public class DatabaseOptController extends InputElement implements Initializable
 			if(event.getSource().equals(b_Cat_tab2_fertig)) {
 				// add selected Categories to database
 			
-				
-				// show  message for DELAY time
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						l_Cat_tab2_success.setText("Füge hinzu ... ");
-					}
-				});
+	
 				for(Category cat : list_Cat_tab2.getItems()) {
 					superController.setCategory(account.getId(), cat.getId());
+					System.out.println("2");
 				}	
-				// show success message for DELAY time
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						l_Cat_tab2_success.setText("Kategorie hinzugefügt");
-						try {
-							Thread.sleep(DELAY);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						l_Cat_tab2_success.setText("");
-					}
-				});
+			
+				
 				
 			}
 			
@@ -563,7 +572,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 					list_Acc_tab1.getItems().clear();
 				}
 				List<User> list = TwitterAccess.getUser(input);
-				System.out.println("hello");
+				
 				// fill found users/accounts in listView
 				Iterator<User> it = list.iterator();
 				while(it.hasNext()) {

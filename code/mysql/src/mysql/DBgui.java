@@ -273,8 +273,8 @@ public class DBgui extends DBConnection implements DBIgui {
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("UPDATE accounts SET LocationId = ? WHERE Id = ?;");
-            stmt.setInt(1, accountId);
-            stmt.setInt(2, locationId);
+            stmt.setInt(1, locationId);
+            stmt.setInt(2, accountId);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         }

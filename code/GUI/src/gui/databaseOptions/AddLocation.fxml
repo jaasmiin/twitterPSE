@@ -4,7 +4,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane fx:id="tabPane_Loc" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+<TabPane fx:id="tabPane_Loc" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="416.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
   <tabs>
     <Tab fx:id="tab_Loc_tab1" text="Account wählen">
       <content>
@@ -18,14 +18,18 @@
                </children></AnchorPane>
       </content>
     </Tab>
-    <Tab fx:id="tab_Loc_tab2" text="Kategorie wählen">
+    <Tab fx:id="tab_Loc_tab2" text="Ort wählen">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="361.0" prefWidth="509.0">
                <children>
-                  <TextField fx:id="txtField_Loc_tab2" layoutX="14.0" layoutY="23.0" prefHeight="31.0" prefWidth="159.0" />
-                  <Button fx:id="b_Loc_tab2_zurueck" layoutX="374.0" layoutY="310.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="93.0" text="Zurück" />
-                  <Button fx:id="b_Loc_tab2_fertig" layoutX="479.0" layoutY="310.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="87.0" text="Fertig" />
-                  <TreeView fx:id="trv_Loc_tab2" layoutX="321.0" layoutY="23.0" prefHeight="263.0" prefWidth="245.0" />
+                  <TextField fx:id="txtField_Loc_tab2" layoutX="321.0" layoutY="14.0" prefHeight="31.0" prefWidth="159.0" />
+                  <Button fx:id="b_Loc_tab2_zurueck" layoutX="375.0" layoutY="326.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="93.0" text="Zurück" />
+                  <Button fx:id="b_Loc_tab2_fertig" layoutX="479.0" layoutY="326.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="87.0" text="Ändern" />
+                  <TreeView fx:id="trv_Loc_tab2" layoutX="321.0" layoutY="57.0" prefHeight="263.0" prefWidth="245.0" />
+                  <Label layoutX="25.0" layoutY="19.0" text="Account: " />
+                  <Label fx:id="l_Loc_tab2_selectedAccount" layoutX="127.0" layoutY="19.0" />
+                  <Label layoutX="25.0" layoutY="57.0" text="bisheriger Ort:" />
+                  <Label fx:id="l_Loc_tab2_currentPlace" layoutX="127.0" layoutY="57.0" />
                </children></AnchorPane>
       </content>
     </Tab>

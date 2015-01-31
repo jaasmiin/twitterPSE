@@ -735,7 +735,7 @@ public class GUIController extends Application implements Initializable {
 	 * @param locationID of location
 	 */
 	public void setLocation(int accountID, int locationID) {
-		db.setLocation(accountID, locationID);
+		System.out.println("result of adding:" + db.setLocation(accountID, locationID));
 	}
 
 	private void update(UpdateType type) {
