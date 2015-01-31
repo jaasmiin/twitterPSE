@@ -1,6 +1,8 @@
 
 package unfolding;
 
+import gui.GUIController;
+
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +33,7 @@ public class MyUnfoldingMap extends PApplet {
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
+    private GUIController superController;
     
     /**
      * List of countryIds which are colored in the map
@@ -49,9 +52,10 @@ public class MyUnfoldingMap extends PApplet {
      */
     private float maxValue = 0;
     
-    public MyUnfoldingMap() {
+    public MyUnfoldingMap(GUIController controller) {
     	super();
     	this.setSize(900, 600);
+    	this.superController = controller;
 	}
 
     public void setup() {  //check size of map
@@ -116,6 +120,8 @@ public class MyUnfoldingMap extends PApplet {
             if (location != null) {
                 System.out.println(location.getCountryName() + " " + char2Code + " " + location.getRetweetsLand() + " " + location.getRetweetsLandFiltered());
             }
+            // notify controller about new information;
+            superController.setMapDetailInformation(location);
         }
     }
 

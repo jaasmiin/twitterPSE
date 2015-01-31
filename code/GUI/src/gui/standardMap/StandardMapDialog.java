@@ -17,7 +17,7 @@ import mysql.result.TweetsAndRetweets;
 public class StandardMapDialog extends JDialog {
 	private GUIController superController;
 	private TweetsAndRetweets uneditedData;
-	private MyUnfoldingMap map = new MyUnfoldingMap();
+	private MyUnfoldingMap map;
 	private HashMap<String, MyDataEntry> calculatedData;
 
 	public StandardMapDialog(GUIController superController) {
@@ -25,6 +25,7 @@ public class StandardMapDialog extends JDialog {
 		setSize(600, 400);
 		setTitle("Map");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		map = new MyUnfoldingMap(superController);
 		add(map);
 		map.init();
 		setVisible(true);

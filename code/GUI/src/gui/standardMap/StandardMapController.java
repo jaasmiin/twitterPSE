@@ -32,14 +32,18 @@ public class StandardMapController extends OutputElement implements Initializabl
  
    @Override
     public void update(UpdateType type) {
-	   dialog.update(type);
+	   
 	   
 	   if (type == UpdateType.MAP_DETAIL_INFORMATION) {
 		   // update detailed information view
 		   MyDataEntry entry = superController.getMapDetailInformation();
 		   txt_StandMap_country.setText(entry.getCountryName());
-		   //txt_StandMap_retweetsQuery.setText(entry.
-		   //
+		   txt_StandMap_retweetsQuery.setText(Integer.toString(entry.getRetweetsLandFiltered()));
+		   txt_StandMap_retweetsTotal.setText(Integer.toString(entry.getRetweetsLand()));
+		   
+	   }
+	   else {
+		   dialog.update(type);
 	   }
     } 
 
