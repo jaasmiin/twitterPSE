@@ -61,9 +61,6 @@ public class StandardMapDialog extends JDialog {
 			map.update(calculatedData);
 			map.redraw();
 
-			// TODO: repaint pane
-			// TODO: Get calculated data from somewhere
-			// map.update(); insert new data
 			break;
 		case GUI_STARTED:
 		    map.resetMarkers();
