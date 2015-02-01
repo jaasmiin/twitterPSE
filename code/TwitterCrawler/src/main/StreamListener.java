@@ -70,15 +70,9 @@ public class StreamListener implements RunnableListener {
         filter.count(0);
         filter.track(track);
 
-        // watch rate limits
-        // RateLimitStatusListener rateLimitListener = new
-        // MyRateLimitStatusListener(
-        // logger);
-
         clcl = new MyConnectionLifeCycleListener();
 
         // set streaming details
-        // twitterStream.addRateLimitStatusListener(rateLimitListener);
         twitterStream.addConnectionLifeCycleListener(clcl);
         twitterStream.addListener(listener);
         twitterStream.filter(filter);

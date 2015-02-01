@@ -29,13 +29,15 @@ import mysql.result.Retweets;
  * class provides method to export data into a csv file
  * 
  * @author Holger Ebhart and Maximilian Awiszus
+ * @version 1.0
  * 
  */
 public class CSVExportController extends InputElement implements Initializable {
-	@FXML
-	private MenuItem mnFile;
-	@FXML
-	private MenuItem mniExport;
+    @FXML
+    private MenuItem mnFile;
+    @FXML
+    private MenuItem mniExport;
+
     /**
      * exports the current data into a csv file
      * 
@@ -65,6 +67,7 @@ public class CSVExportController extends InputElement implements Initializable {
         fc.getExtensionFilters().add(ef);
         fc.setTitle("Speichern unter...");
 
+        // get file path
         String path = fc.showSaveDialog(stage).getAbsolutePath();
         if (path != null) {
             if (!path.endsWith(".csv")) {
@@ -84,13 +87,17 @@ public class CSVExportController extends InputElement implements Initializable {
             return;
         }
         BufferedWriter writer = new BufferedWriter(w);
+
+        // write file line per line
         for (String[] x : string) {
+            // build line
             String line = x[0];
             for (int i = 1; i < x.length; i++) {
-                line += "," + x[i];
+                line += "," + (x[i] == null ? "0" : x[i]);
             }
 
             try {
+                // write line
                 writer.append(line);
                 writer.newLine();
             } catch (IOException e) {
@@ -108,17 +115,20 @@ public class CSVExportController extends InputElement implements Initializable {
 
         HashMap<String, Integer> h = new HashMap<String, Integer>();
 
+        // write header information
         String[][] file = new String[accounts.size() + 1][locations.size() + 3];
         file[0][0] = "Accountname";
         file[0][1] = "Country";
         file[0][2] = "Follower";
         int i = 3;
         for (Location l : locations) {
-            file[0][i] = l.toString();
+            file[0][i] = gui.Util.getUppercaseStartAndRestLowerCase(l
+                    .toString());
             h.put(l.getLocationCode(), i);
             i++;
         }
 
+        // write data into String field
         int j = 1;
         for (Account a : accounts) {
             file[j][0] = a.getName();
@@ -136,23 +146,25 @@ public class CSVExportController extends InputElement implements Initializable {
         return file;
     }
 
-	@Override
-	public void update(UpdateType type) {}
-	
-	@Override
-	public void initialize(URL location, ResourceBundle resources) {
-		super.initialize(location, resources);
-		superController.subscribe(this);
-		mnFile.setText(Labels.FILE);
-		mniExport.setText(Labels.EXPORT);
-		mniExport.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				superController.setInfo(Labels.EXPORTING);
-				exportAsCSV(superController.getDataByAccount(),
-						superController.getLocations(), superController.getStage());
-				superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
-			}
-		});
-	}
+    @Override
+    public void update(UpdateType type) {
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
+        superController.subscribe(this);
+        mnFile.setText(Labels.FILE);
+        mniExport.setText(Labels.EXPORT);
+        mniExport.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                superController.setInfo(Labels.EXPORTING);
+                exportAsCSV(superController.getDataByAccount(),
+                        superController.getLocations(),
+                        superController.getStage());
+                superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
+            }
+        });
+    }
 }
