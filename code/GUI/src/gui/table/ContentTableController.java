@@ -28,20 +28,21 @@ import gui.OutputElement;
 public class ContentTableController extends OutputElement implements Initializable {
 	
 	@FXML
-    private TableView<Account> table;
-	TableColumn<Account, Integer> retweetColumn;
+    private TableView<InternAccount> table;
+	TableColumn<InternAccount, Integer> retweetColumn;
+	ObservableList<InternAccount> data;
 	
 	@Override
 	public void update(UpdateType type) {
 		if (type == UpdateType.TWEET) {
-			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());
+			ObservableList<Account> accountList = FXCollections.observableArrayList(superController.getDataByAccount());		
 			if (accountList.isEmpty()) {
 				table.setItems(null);
 			} else {
 				table.setItems(accountList);
 			}	
 		} else if (type == UpdateType.LOCATION) {
-			//addLocationColumns();
+			addLocationColumns();
 		}
 	}
 	
@@ -50,8 +51,9 @@ public class ContentTableController extends OutputElement implements Initializab
 		super.initialize(location, resources);
 		superController.subscribe(this);
 		
+		data = FXCollections.observableArrayList();
+		
 		addAccountsColumn();
-		addTweetsColumn();
 		addRetweetsColumn();
 		addFollowerColumn();
 	}
@@ -60,40 +62,12 @@ public class ContentTableController extends OutputElement implements Initializab
 	 * Adds a column containing the names of the accounts to the table.
 	 */
 	private void addAccountsColumn() {
-		TableColumn<Account, String> accountsColumn = new TableColumn<Account, String>("Accounts");		
-		accountsColumn.setCellValueFactory(new PropertyValueFactory<Account, String>("name"));		
+		TableColumn<InternAccount, String> accountsColumn = new TableColumn<InternAccount, String>("Accounts");		
+		accountsColumn.setCellValueFactory(new PropertyValueFactory<InternAccount, String>("name"));		
 		table.getColumns().add(accountsColumn);
 	}
 	
 	
-	// TODO: tweets spalte rausschmeissen
-	/**
-	 * Adds a column containing the number of tweets that an account sent to the table.
-	 */
-	private void addTweetsColumn() {
-		TableColumn<Account, Integer> tweetsColumn = new TableColumn<Account, Integer>("Tweets");		
-		
-		tweetsColumn.setCellValueFactory(
-				new Callback<TableColumn.CellDataFeatures<Account, Integer>, ObservableValue<Integer>>() {
-
-			@Override
-			public ObservableValue<Integer> call(CellDataFeatures<Account, Integer> account) {
-				int tweetNumber = 0;
-				// TODO: remove test print
-				System.out.println("account.getName = " + account.getValue().getName());
-				System.out.println("account.getTweets.size = " + account.getValue().getTweets().size());
-				System.out.println("account.getCounter = " + account.getValue().getTweets().get(0).getCounter());
-				
-				if (account.getValue() != null) {
-					tweetNumber = account.getValue().getTweets().get(0).getCounter();					
-				} 				
-				return new SimpleIntegerProperty(tweetNumber).asObject();
-			}
-			
-		});		
-		
-		table.getColumns().add(tweetsColumn);
-	}
 	
 	/**
 	 * Adds columns containing the number of retweets per country
@@ -101,6 +75,8 @@ public class ContentTableController extends OutputElement implements Initializab
 	 */
 	private void addRetweetsColumn() {
 		retweetColumn = new TableColumn<>("Retweets");
+		
+		TableColumn<InternAccount, Integer> sumColumn = new TableColumn<>()
 		
 		// TODO: only less than ideal solution, because retweets aren't given country-wise
 		retweetColumn.setCellValueFactory(
