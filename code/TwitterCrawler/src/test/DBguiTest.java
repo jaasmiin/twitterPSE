@@ -74,23 +74,23 @@ public class DBguiTest {
         assertEquals(1, c.getChilds().size());
     }
 
-    @Test
-    public void test1GetAccountId() {
-        int result = dbg.getAccountId("Irgendwas");
-        assertEquals(-1, result);
-    }
-
-    @Test
-    public void test2GetAccountId() {
-        int result = dbg.getAccountId("Tester0");
-        assertEquals(1, result);
-    }
-
-    @Test
-    public void test3GetAccountId() {
-        int result = dbg.getAccountId("Tester3");
-        assertEquals(4, result);
-    }
+    // @Test
+    // public void test1GetAccountId() {
+    // int result = dbg.getAccountId("Irgendwas");
+    // assertEquals(-1, result);
+    // }
+    //
+    // @Test
+    // public void test2GetAccountId() {
+    // int result = dbg.getAccountId("Tester0");
+    // assertEquals(1, result);
+    // }
+    //
+    // @Test
+    // public void test3GetAccountId() {
+    // int result = dbg.getAccountId("Tester3");
+    // assertEquals(4, result);
+    // }
 
     @Test
     public void test1GetAccounts() {

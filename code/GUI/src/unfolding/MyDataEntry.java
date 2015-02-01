@@ -4,6 +4,7 @@ package unfolding;
 /**
  * 
  * @author Lidia
+ * @version 1.0
  *
  */
 

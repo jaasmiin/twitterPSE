@@ -56,7 +56,7 @@ public class DBcategorizerTest {
         list = dbc.getNonCategorized();
         assertEquals(5, list.size());
         for (int i = 0; i < list.size(); i++) {
-            assertEquals(0, list.get(i).getCategoryIds().length);
+            assertEquals(0, list.get(i).getCategoryIds().size());
         }
     }
 
