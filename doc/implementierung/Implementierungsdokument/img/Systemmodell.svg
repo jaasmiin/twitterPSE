@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   version="1.1"
+   width="210mm"
+   height="297mm"
+   id="svg2">
+  <defs
+     id="defs4">
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow2Mstart"
+       style="overflow:visible">
+      <path
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(0.6,0.6)"
+         id="path3900"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round" />
+    </marker>
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow2Mend"
+       style="overflow:visible">
+      <path
+         d="M 8.7185878,4.0337352 -2.2072895,0.01601326 8.7185884,-4.0017078 c -1.7454984,2.3720609 -1.7354408,5.6174519 -6e-7,8.035443 z"
+         transform="scale(-0.6,-0.6)"
+         id="path3903"
+         style="fill-rule:evenodd;stroke-width:0.625;stroke-linejoin:round" />
+    </marker>
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow1Send"
+       style="overflow:visible">
+      <path
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         transform="matrix(-0.2,0,0,-0.2,-1.2,0)"
+         id="path3891"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" />
+    </marker>
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow1Lend"
+       style="overflow:visible">
+      <path
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         id="path3879"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" />
+    </marker>
+    <marker
+       refX="0"
+       refY="0"
+       orient="auto"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 z"
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         id="path3876"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt" />
+    </marker>
+  </defs>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1">
+    <g
+       id="g7504">
+      <g
+         transform="translate(-57.064376,-5.2888938)"
+         id="g3816">
+        <rect
+           width="61.667057"
+           height="17.685736"
+           x="102.22389"
+           y="509.06271"
+           id="rect3759"
+           style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+        <text
+           x="105.77787"
+           y="522.91614"
+           id="text3761"
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+             x="105.77787"
+             y="522.91614"
+             id="tspan3763">Crawler</tspan></text>
+      </g>
+      <g
+         id="g3831">
+        <text
+           x="123.87145"
+           y="590.27991"
+           id="text3755"
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+             x="123.87145"
+             y="590.27991"
+             id="tspan3757"
+             style="font-weight:normal;-inkscape-font-specification:Sans">Datenbank</tspan></text>
+        <rect
+           width="79.602501"
+           height="17.805962"
+           x="123.041"
+           y="576.64478"
+           id="rect3759-4"
+           style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      </g>
+      <g
+         transform="translate(-9.1859728,-26.444467)"
+         id="g3826">
+        <text
+           x="229.37096"
+           y="544.9068"
+           id="text3769"
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+             x="229.37096"
+             y="544.9068"
+             id="tspan3771">GUI</tspan></text>
+        <rect
+           width="28.370653"
+           height="16.679417"
+           x="227.99033"
+           y="531.2782"
+           id="rect3759-8"
+           style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      </g>
+      <g
+         transform="translate(-105.77787,-37.578979)"
+         id="g3821">
+        <text
+           x="216.84464"
+           y="514.56525"
+           id="text3765"
+           xml:space="preserve"
+           style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+             x="216.84464"
+             y="514.56525"
+             id="tspan3767">Kategorisierer</tspan></text>
+        <rect
+           width="102.27419"
+           height="17.373539"
+           x="215.53447"
+           y="501.28546"
+           id="rect3759-4-1"
+           style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0" />
+      </g>
+      <path
+         d="m 86.523482,521.45956 65.716748,55.18522"
+         id="path3836"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:none;marker-end:url(#Arrow2Mend)" />
+      <path
+         d="m 161.04328,481.08002 1.64566,95.56476"
+         id="path3838"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Mend)" />
+      <path
+         d="M 224.90658,521.51315 171.4713,576.64478"
+         id="path3840"
+         style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Mstart);marker-end:none" />
+      <path
+         d="m 234.92764,521.51315 -53.43528,55.13163"
+         id="path3842"
+         style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker-end:url(#Arrow2Mend)" />
+      <text
+         x="419.58795"
+         y="336.56244"
+         transform="matrix(0.76915298,0.6390647,-0.6390647,0.76915298,0,0)"
+         id="text3844"
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+           x="419.58795"
+           y="336.56244"
+           id="tspan3846"
+           style="font-size:6px">Auslesen von</tspan><tspan
+           x="419.58795"
+           y="344.06244"
+           id="tspan3848"
+           style="font-size:6px">Twitter-Accounts,</tspan></text>
+      <text
+         x="413.54327"
+         y="347.58557"
+         transform="matrix(0.76215792,0.64739116,-0.64739116,0.76215792,0,0)"
+         id="text3850"
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+           x="413.54327"
+           y="347.58557"
+           id="tspan3852"
+           style="font-size:6px">Tweets und Retweets</tspan></text>
+      <text
+         x="162.00716"
+         y="491.18274"
+         id="text3854"
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+           x="162.00716"
+           y="491.18274"
+           id="tspan3856"
+           style="font-size:6px">Kategorisieren</tspan><tspan
+           x="162.00716"
+           y="498.68274"
+           id="tspan3858"
+           style="font-size:6px">neuer Accounts</tspan></text>
+      <text
+         x="-278.97217"
+         y="515.41815"
+         transform="matrix(0.69759518,-0.71649213,0.71649213,0.69759518,0,0)"
+         id="text3860"
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+           x="-278.97217"
+           y="515.41815"
+           id="tspan3862"
+           style="font-size:6px">Visualisierung und</tspan><tspan
+           x="-278.97217"
+           y="522.91815"
+           id="tspan3864"
+           style="font-size:6px">Analyse der Daten</tspan></text>
+      <text
+         x="-280.40292"
+         y="533.53278"
+         transform="matrix(0.68193257,-0.73141505,0.73141505,0.68193257,0,0)"
+         id="text3866"
+         xml:space="preserve"
+         style="font-size:14px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"><tspan
+           x="-280.40292"
+           y="533.53278"
+           id="tspan3868"
+           style="font-size:6px">Eintragen weiterer</tspan><tspan
+           x="-280.40292"
+           y="541.03278"
+           id="tspan3870"
+           style="font-size:6px">Accounts</tspan></text>
+    </g>
+  </g>
+</svg>
