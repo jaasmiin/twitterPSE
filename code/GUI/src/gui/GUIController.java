@@ -50,7 +50,6 @@ import util.LoggerUtil;
  * on data changes.
  * 
  * @author Maximilian Awiszus and Paul Jungeblut
- * @version 1.0
  * 
  */
 
@@ -499,9 +498,9 @@ public class GUIController extends Application implements Initializable {
     }
 
     /**
-     * Creates a category tree containing all Categories given in 'CategoryIds'
+     * Creates a category tree containing all Categories given in 'categoryIds'
      * 
-     * @param CategoryIds
+     * @param categoryIds ids of categories
      * @return root of the created tree, null if CategoryIds contains invalid Id
      *         or has length 0
      */
@@ -793,7 +792,7 @@ public class GUIController extends Application implements Initializable {
     /**
      * Set the detail information.
      * 
-     * @param detailInfo
+     * @param detailInfo which should be set
      */
     public void setMapDetailInformation(MyDataEntry detailInfo) {
         mapDetailInformation = detailInfo;
@@ -865,7 +864,7 @@ public class GUIController extends Application implements Initializable {
      * 
      * @return HashMap with location code and the sum of retweets as integer.
      */
-    public HashMap<String, Integer> getSumOfRetweetsPerLocation() {
+    private HashMap<String, Integer> getSumOfRetweetsPerLocation() {
         return db.getAllRetweetsPerLocation();
     }
 

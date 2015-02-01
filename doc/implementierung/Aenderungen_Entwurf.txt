@@ -1,4 +1,50 @@
-SelectionOfQuery
+gui
+---
+GUIController:
+ extends Application implements Initializable (beides JavaFX)
+ - getAccount(int id)
+ - close()
+ - addUserToWatch(twitter4j.User user, int locationID)
+ - getCategory(int id)
+ - getCategory(String text) => getCategoryRoot(String text)
+ - getCategoryRoot(int[] categoryIDs)
+ - getSummedData() => getDataByLocation()
+ - getDataByAccount()
+ - getDisplayValueProperty()
+ - getLocations()
+ - getMapDatailInformation
+ - getSelectedAccounts()
+ - getSelectedCategories()
+ - getSelectedLocations()
+ - isConnected()
+ - isReady()
+ - main()
+ - setCategory(int accountID, int categoryID) 
+ - setDateRange(boolean dateRange)  
+ - setMapDetailInformation(MyDataEntry detailInfo)
+ - setSelectedAccount(int id, boolean selected) 
+ - setSelectedCategory(int id, boolean selected)  
+ - setSelectedCategory(java.util.Set<java.lang.Integer> ids, boolean selected
+ - setSelectedLocation(int id, boolean selected)
+GUIView
+ - lstInfo (GUIElement, keine Methode)
+InfoRunnable
+ - Zum einzigen von Informationen auf der GUI
+Labels
+ - Zentrale ablage aller Beschrieftungen
+Util
+ - Klasse, die, in der GUI benötigte, Funktionen bereitstellt
+RunnableParameter
+ - Runnable, dem man bei Initialisierung einen Wert/Paramter mitgeben kann
+ 
+gui.selectionOfQuery
+----------------
  - Aufteilung in Selected- und SelectionController
-table
+SelectionOfQueryController
+ extends Application implements Initializable (beides JavaFX)
+
+gui.table
+-----
  - neue package-private Klasse InternAccount zur schnelleren Berechnung
+
+ 

@@ -6,9 +6,8 @@ import java.util.ResourceBundle;
 import javafx.fxml.Initializable;
 
 /**
- * 
- * @author
- * @version 1.0
+ * Superclass for a GUIElement containing the UpdateTypes.
+ * @author Maximilian Awiszus
  * 
  */
 public abstract class GUIElement implements Initializable {
@@ -16,9 +15,8 @@ public abstract class GUIElement implements Initializable {
     protected GUIController superController;
 
     /**
-     * 
-     * @author
-     * @version 1.0
+     * Type of update which is called on each GUIElement.
+     * @author Maximilian Awiszus
      * 
      */
     public static enum UpdateType {
