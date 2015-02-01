@@ -20,7 +20,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import gui.InputElement;
+import gui.Labels;
 import gui.RunnableParameter;
+import gui.Util;
 
 public class SelectionOfQueryController extends InputElement implements EventHandler<Event>, Initializable {
 	
