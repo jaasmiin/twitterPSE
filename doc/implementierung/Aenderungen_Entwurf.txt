@@ -41,7 +41,7 @@ gui.selectionOfQuery
 ----------------
  - Aufteilung in Selected- und SelectionController
 SelectionOfQueryController
- extends Application implements Initializable (beides JavaFX)
+ implements EventHandler<Event>, Initializable
 
 gui.table
 -----
