@@ -58,7 +58,8 @@ public class MyUnfoldingMap extends PApplet {
     	this.superController = controller;
 	}
 
-    public void setup() {  //check size of map
+    @Override
+	public void setup() {  //check size of map
         size(900, 600);
         smooth();
         
@@ -96,7 +97,8 @@ public class MyUnfoldingMap extends PApplet {
     	return currentMap;
     }
     
-    public void draw() {
+    @Override
+	public void draw() {
         //switchProvider();
         currentMap.draw();
     }
@@ -169,7 +171,7 @@ public class MyUnfoldingMap extends PApplet {
                 
                 MyDataEntry edit = dataEntriesMap.get(id);
                 
-                edit.setValue((double) -1);
+                edit.setValue(-1);
                 dataEntriesMap.put(id, edit);
             }
             setValues.clear();
