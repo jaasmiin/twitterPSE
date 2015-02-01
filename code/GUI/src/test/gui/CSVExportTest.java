@@ -7,9 +7,8 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 import mysql.AccessData;
 import mysql.DBgui;
-
 import util.LoggerUtil;
-import export.CSVExport;
+import gui.csvExport.CSVExportController;
 
 /**
  * 
@@ -50,7 +49,7 @@ public class CSVExportTest extends Application {
             e.printStackTrace();
         }
 
-        CSVExport.exportAsCSV(dbg.getAccounts("bara"), dbg.getLocations(),
+        CSVExportController.exportAsCSV(dbg.getAccounts("bara"), dbg.getLocations(),
                 stage);
         dbg.disconnect();
     }

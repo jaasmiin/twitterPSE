@@ -43,4 +43,8 @@ public class Labels {
     protected static final String DB_CONNECTING_ERROR = "Error, could not connect to database.";
     protected static final String NO_LOGIN_DATA_FOUND_ERROR = "Error, could not find login data.";
     protected static final String DB_CONNECTED = "Connected to databse.";
+	public static final String EXPORT = "Export...";
+	public static final String FILE = "File";
+	public static final String EXPORTING = "Exporting...";
+	public static final String EXPORTED = "Exported.";
 }

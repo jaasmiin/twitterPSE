@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Menu mnemonicParsing="false" fx:id="mnFile" text="File" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="gui.csvExport.CSVExportController">
+  <items>
+    <MenuItem fx:id="mniExport" mnemonicParsing="false" text="Export..." />
+  </items>
+</Menu>

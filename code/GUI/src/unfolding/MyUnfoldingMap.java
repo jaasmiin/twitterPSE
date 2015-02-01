@@ -15,6 +15,7 @@ import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
 import de.fhpotsdam.unfolding.marker.Marker;
+import de.fhpotsdam.unfolding.providers.Google;
 import de.fhpotsdam.unfolding.utils.MapUtils;
 
 /**
@@ -29,7 +30,7 @@ public class MyUnfoldingMap extends PApplet {
      */
     private static final long serialVersionUID = 1L;
     private UnfoldingMap map1;
-    //private UnfoldingMap map2;
+    private UnfoldingMap map2;
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
@@ -64,19 +65,20 @@ public class MyUnfoldingMap extends PApplet {
         smooth();
         
         map1 = new UnfoldingMap(this, P2D);
-        //map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
+        map2 = new UnfoldingMap(this, new Google.GoogleMapProvider());
         
         currentMap = map1;
 
         currentMap.zoomLevel(1);
         currentMap.setZoomRange(2, 4);
         currentMap.setBackgroundColor(140);
-        MapUtils.createDefaultEventDispatcher(this, currentMap);
+        MapUtils.createDefaultEventDispatcher(this, map1, map2);
         
       //Load country polygons
         List<Feature> countries = GeoJSONReader.loadData(this,"countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);
-        currentMap.addMarkers(countryMarker);
+        map1.addMarkers(countryMarker);
+        map2.addMarkers(countryMarker);
         resetMarkers();
         
         dataEntriesMap = loadCountriesFromCSV("countries.csv");
@@ -99,7 +101,7 @@ public class MyUnfoldingMap extends PApplet {
     
     @Override
 	public void draw() {
-        //switchProvider();
+        switchProvider();
         currentMap.draw();
     }
     
@@ -147,7 +149,12 @@ public class MyUnfoldingMap extends PApplet {
                 float transpa = Float.parseFloat(transparency.toString());
                 float t = map(transpa, 0, maxValue, 50, 255);
                 
-                m.setColor(color(38,192,38, t));
+                if(currentMap == map1) {
+                    m.setColor(color(38,192,38, t));
+                }
+                if(currentMap == map2) {
+                    m.setColor(color(204,0,0, t));
+                }
    
             } else {
                 // value doesn't exist
@@ -193,18 +200,20 @@ public class MyUnfoldingMap extends PApplet {
         }
         shadeCountries();
     }    
-//    /**
-//     * Switches provider of the map
-//     * By pressing '1' an '2'
-//     */
-//    public void switchProvider() {
-//        if(key == '1') {
-//            currentMap = map1;
-//        }
-//        else if (key == '2') {
-//            currentMap = map2;
-//        }
-//    }
+    /**
+     * Switches provider of the map
+     * By pressing '1' an '2'
+     */
+    public void switchProvider() {
+        if(key == '1') {
+            currentMap = map1;
+            shadeCountries();
+        }
+        else if (key == '2') {
+            currentMap = map2;
+            shadeCountries();
+        }
+    }
     
     
 /**

@@ -28,7 +28,6 @@ public class StandardMapDialog extends JDialog {
 		map = new MyUnfoldingMap(superController);
 		add(map);
 		map.init();
-		setVisible(true);
 	}
 
 	public void update(UpdateType type) {
@@ -62,9 +61,6 @@ public class StandardMapDialog extends JDialog {
 			map.update(calculatedData);
 			map.redraw();
 
-			// TODO: repaint pane
-			// TODO: Get calculated data from somewhere
-			// map.update(); insert new data
 			break;
 		case GUI_STARTED:
 		    map.resetMarkers();

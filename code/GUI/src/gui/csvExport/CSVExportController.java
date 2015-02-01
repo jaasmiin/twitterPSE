@@ -1,13 +1,23 @@
-package export;
+package gui.csvExport;
+
+import gui.InputElement;
+import gui.Labels;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -18,11 +28,15 @@ import mysql.result.Retweets;
 /**
  * class provides method to export data into a csv file
  * 
- * @author Holger Ebhart
+ * @author Holger Ebhart and Maximilian Awiszus
  * @version 1.0
  * 
  */
-public class CSVExport {
+public class CSVExportController extends InputElement implements Initializable {
+    @FXML
+    private MenuItem mnFile;
+    @FXML
+    private MenuItem mniExport;
 
     /**
      * exports the current data into a csv file
@@ -53,6 +67,7 @@ public class CSVExport {
         fc.getExtensionFilters().add(ef);
         fc.setTitle("Speichern unter...");
 
+        // get file path
         String path = fc.showSaveDialog(stage).getAbsolutePath();
         if (path != null) {
             if (!path.endsWith(".csv")) {
@@ -72,13 +87,17 @@ public class CSVExport {
             return;
         }
         BufferedWriter writer = new BufferedWriter(w);
+
+        // write file line per line
         for (String[] x : string) {
+            // build line
             String line = x[0];
             for (int i = 1; i < x.length; i++) {
-                line += "," + x[i];
+                line += "," + (x[i] == null ? "0" : x[i]);
             }
 
             try {
+                // write line
                 writer.append(line);
                 writer.newLine();
             } catch (IOException e) {
@@ -96,17 +115,20 @@ public class CSVExport {
 
         HashMap<String, Integer> h = new HashMap<String, Integer>();
 
+        // write header information
         String[][] file = new String[accounts.size() + 1][locations.size() + 3];
         file[0][0] = "Accountname";
         file[0][1] = "Country";
         file[0][2] = "Follower";
         int i = 3;
         for (Location l : locations) {
-            file[0][i] = l.toString();
+            file[0][i] = gui.Util.getUppercaseStartAndRestLowerCase(l
+                    .toString());
             h.put(l.getLocationCode(), i);
             i++;
         }
 
+        // write data into String field
         int j = 1;
         for (Account a : accounts) {
             file[j][0] = a.getName();
@@ -122,5 +144,27 @@ public class CSVExport {
         }
 
         return file;
+    }
+
+    @Override
+    public void update(UpdateType type) {
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        super.initialize(location, resources);
+        superController.subscribe(this);
+        mnFile.setText(Labels.FILE);
+        mniExport.setText(Labels.EXPORT);
+        mniExport.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                superController.setInfo(Labels.EXPORTING);
+                exportAsCSV(superController.getDataByAccount(),
+                        superController.getLocations(),
+                        superController.getStage());
+                superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
+            }
+        });
     }
 }
