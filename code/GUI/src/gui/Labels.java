@@ -36,6 +36,10 @@ public class Labels {
     public static final String DATA_LOADING = "Loading data...";
     public static final String DATA_LOADED = "Data loaded.";
     public static final String ERROR_NO_FILTER_SELECTED = "Can not load data. Please select minimum one filter.";
+    public static final String TOTAL = "Total";
+    public static final String FOLLOWER = "Follower";
+    public static final String RETWEETS = "Retweets";
+    
     protected static final String DB_CONNECTING_ERROR = "Error, could not connect to database.";
     protected static final String NO_LOGIN_DATA_FOUND_ERROR = "Error, could not find login data.";
     protected static final String DB_CONNECTED = "Connected to databse.";

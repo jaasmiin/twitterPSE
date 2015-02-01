@@ -17,19 +17,24 @@ class InternAccount {
 	/**
 	 * The name of this account.
 	 */
-	String accountName;
+	private String accountName;
 	
 	/**
 	 * The number of followers of this account.
 	 */
-	int follower;
+	private int follower;
+	
+	/**
+	 * The sum of retweets to tweets of this account in all locations.
+	 */
+	private int totalRetweets;
 	
 	/**
 	 * This HashMap maps the locationCode of a retweets object
 	 * to it's counter value, which contains the sum of 
 	 * retweets to tweets of this account in that location. 
 	 */
-	HashMap<String, Integer> retweetsPerLocation;
+	private HashMap<String, Integer> retweetsPerLocation;
 	
 	
 	/**
@@ -43,13 +48,16 @@ class InternAccount {
 	InternAccount(String accountName, int follower, List<Retweets> retweetList) {
 		this.accountName = accountName;
 		this.follower = follower;
+		this.totalRetweets = 0;
 		
 		// optimize number of rehashs
 		double initialCapacity = retweetList.size() * (1 / 0.75);
 		retweetsPerLocation = new HashMap<>((int) initialCapacity);
 		
 		for (Retweets r : retweetList) {
-			retweetsPerLocation.put(r.getLocationCode(), r.getCounter());
+			int counter = r.getCounter();
+			totalRetweets += counter;
+			retweetsPerLocation.put(r.getLocationCode(), counter);			
 		}
 	}
 
@@ -89,5 +97,13 @@ class InternAccount {
 		return result;
 	}
 
+	/**
+	 * Gets the total number of retweets to tweets of this account.
+	 * 
+	 * @return the total number of retweets to tweets of this account
+	 */
+	int getTotalRetweets() {
+		return totalRetweets;
+	}
 
 }
