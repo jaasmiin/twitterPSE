@@ -16,9 +16,9 @@ import mysql.AccessData;
  */
 public class CrawlerMain {
     private static Controller cntrl;
-    private final static String ERROR = "ERROR: A big error has occuered!"
+    private static final String ERROR = "ERROR: A big error has occuered!"
             + "The program will be shut down. Please check your input: ";
-    private final static String INPUT = "'[number-of-worker] [timeout] [hostname] [port] [database-name] [database-user] [database-password]'.";
+    private static final String INPUT = "'[number-of-worker] [timeout] [hostname] [port] [database-name] [database-user] [database-password]'.";
 
     /**
      * starts a crawler, that collects data from twitter
@@ -86,7 +86,6 @@ public class CrawlerMain {
             default:
                 System.out.println(" Error, could not find command '" + command
                         + "'.");
-                ;
             }
         }
 

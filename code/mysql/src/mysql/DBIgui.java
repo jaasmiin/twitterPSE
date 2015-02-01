@@ -33,14 +33,14 @@ public interface DBIgui {
      */
     public List<Location> getLocations();
 
-    /**
-     * Get id of account with accountName.
-     * 
-     * @param accountName
-     *            of the twitter account.
-     * @return id of the account or -1 if not found.
-     */
-    public int getAccountId(String accountName);
+    // /**
+    // * Get id of account with accountName.
+    // *
+    // * @param accountName
+    // * of the twitter account.
+    // * @return id of the account or -1 if not found.
+    // */
+    // public int getAccountId(String accountName);
 
     /**
      * returns the sum of all retweets for each location
@@ -70,7 +70,7 @@ public interface DBIgui {
      *             thrown if the sql-query couldn't be built
      */
     public List<Account> getAllData(List<Integer> categoryIDs,
-    		List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
+            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException;
 
     /**
@@ -94,9 +94,8 @@ public interface DBIgui {
      *             thrown if the sql-query couldn't be built
      */
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
-    		List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
+            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
             throws IllegalArgumentException, SQLException;
-
 
     /**
      * Return list of accounts which name contains search
@@ -141,5 +140,15 @@ public interface DBIgui {
      * @return true on success
      */
     public boolean setLocation(int accountId, int locationId);
+
+    /**
+     * returns the account behind the given datbase-id
+     * 
+     * @param id
+     *            the id of the account in the database as int
+     * @return the account behind the given datbase-id as Account (null if an
+     *         error occurs)
+     */
+    Account getAccount(int id);
 
 }

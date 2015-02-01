@@ -1,3 +1,4 @@
+
 package gui.standardMap;
 
 import gui.GUIController;
@@ -8,6 +9,7 @@ import java.util.Set;
 
 import javax.swing.JDialog;
 
+import unfolding.MyDataEntry;
 import unfolding.MyUnfoldingMap;
 import mysql.result.TweetsAndRetweets;
 
@@ -15,20 +17,20 @@ import mysql.result.TweetsAndRetweets;
 public class StandardMapDialog extends JDialog {
 	private GUIController superController;
 	private TweetsAndRetweets uneditedData;
-	private MyUnfoldingMap map = new MyUnfoldingMap();
-	private HashMap<String, Double> calculatedData;
+	private MyUnfoldingMap map;
+	private HashMap<String, MyDataEntry> calculatedData;
 
 	public StandardMapDialog(GUIController superController) {
 		this.superController = superController;
 		setSize(600, 400);
 		setTitle("Map");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		map = new MyUnfoldingMap(superController);
 		add(map);
 		map.init();
 		setVisible(true);
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	public void update(UpdateType type) {
 		switch (type) {
 		case CLOSE:
@@ -39,7 +41,7 @@ public class StandardMapDialog extends JDialog {
 		case TWEET:
 			uneditedData = superController.getDataByLocation();
 			HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
-			for (mysql.result.Retweets r : uneditedData.retweets) {
+			for (mysql.result.Retweets r : uneditedData.getRetweets()) {
 				int counter = r.getCounter();
 				String id = r.getLocationCode();
 				forCalc.put(id, counter);
@@ -76,3 +78,4 @@ public class StandardMapDialog extends JDialog {
 	}
 
 }
+

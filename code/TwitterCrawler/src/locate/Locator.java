@@ -18,7 +18,7 @@ import twitter4j.Place;
  */
 public class Locator {
 
-    private final static String DEFAULT_LOCATION = "0";
+    private static final String DEFAULT_LOCATION = "0";
     private HashMap<String, String> map;
     private Logger logger;
     private Formatter formatter;
@@ -31,25 +31,30 @@ public class Locator {
     private int reqWithGeoTag = 0;
     private int reqWithLocation = 0;
 
-   /**
-    * 
+    /**
+     * 
      * Initiates a new instance of 'Locator'
+     * 
+     * @param map
+     *            Reference to global HashMap to lookup already located
+     *            locations
+     * @param logger
+     *            Logger to log all remarkable events
+     * @throws IllegalArgumentException
+     *             Is thrown if map == null.
+     */
+    public Locator(HashMap<String, String> map, Logger logger)
+            throws IllegalArgumentException {
 
-    * @param map Reference to global HashMap to lookup already located locations
-    * @param logger Logger to log all remarkable events
-    * @throws IllegalArgumentException Is thrown if map == null.
-    */
-    public Locator(HashMap<String,String> map, Logger logger) throws IllegalArgumentException {
-    	
         this.logger = logger;
         formatter = new Formatter(logger);
-        if(map == null) {
-        	logger.severe("HashMap reference is null");
-        	throw new IllegalArgumentException("HashMap reference is null");
+        if (map == null) {
+            logger.severe("HashMap reference is null");
+            throw new IllegalArgumentException("HashMap reference is null");
         }
         this.map = map;
     }
-    
+
     /**
      * determine the country/location of given geo-coordinates
      * 
@@ -80,25 +85,26 @@ public class Locator {
     }
 
     /**
-     * tries to determine the country/location of a given name or word via HashMap
+     * tries to determine the country/location of a given name or word via
+     * HashMap
      * 
      * @param location
      *            the input name or word to determine the country/location as
      *            String
-
+     * 
      * @return the code of the country/location on success and "0" otherwise as
      *         String
      */
     private String getLocation(String location, String timezone) {
-    	String result = DEFAULT_LOCATION;
-    	location = formatter.formatString(location);
-    	timezone = formatter.formatString(timezone);
-    	String query = location + "#" + timezone;
-    	if(map.containsKey(query)) {
-    		result = map.get(query);
-    	}
-    	return result;
-    	
+        String result = DEFAULT_LOCATION;
+        location = formatter.formatString(location);
+        timezone = formatter.formatString(timezone);
+        String query = location + "#" + timezone;
+        if (map.containsKey(query)) {
+            result = map.get(query);
+        }
+        return result;
+
     }
 
     /**
@@ -114,8 +120,9 @@ public class Locator {
      *            String containing information about the timezone of a 'tweet'
      * @return countrycode if 'Tweet' could be located, "0" otherwise
      */
-    public String locate(Place place, GeoLocation geotag, String location, String timezone) {
-   
+    public String locate(Place place, GeoLocation geotag, String location,
+            String timezone) {
+
         String result = DEFAULT_LOCATION;
 
         // statistics
@@ -134,7 +141,7 @@ public class Locator {
 
             result = place.getCountryCode();
             if (!result.equals(DEFAULT_LOCATION)) {
-            	
+
                 numberOfPlaceLoc++;
             }
 
@@ -142,21 +149,21 @@ public class Locator {
 
             result = getLocation(geotag);
             if (!result.equals(DEFAULT_LOCATION)) {
-            	
+
                 numberOfGeoTagLoc++;
             }
 
         } else if (location != null) {
-            
-          result = getLocation(location,timezone);
-             if (!result.equals(DEFAULT_LOCATION)) {
-            	 
-            	 numberOfHashMapLoc++;
-             }
+
+            result = getLocation(location, timezone);
+            if (!result.equals(DEFAULT_LOCATION)) {
+
+                numberOfHashMapLoc++;
+            }
         }
-        
+
         if (!result.equals(DEFAULT_LOCATION)) {
-        	
+
             numberOfLocReq++;
         }
         return result;
@@ -168,10 +175,10 @@ public class Locator {
      * @return Content of the single values in the result array: 0: number of
      *         requests 1: number of successfully located requests (a
      *         countrycode could be returned) 2: number of requests located via
-     *         place-attribute 3: number of requests located via geotag 4: number of requests located
-     *         via hashmap 5: number of requests containing place-attribute 6:
-     *         number of requests containing geotag 7: number of request
-     *         containing location information
+     *         place-attribute 3: number of requests located via geotag 4:
+     *         number of requests located via hashmap 5: number of requests
+     *         containing place-attribute 6: number of requests containing
+     *         geotag 7: number of request containing location information
      */
     public int[] getStatistic() {
         int[] statistics = {numberOfReq, numberOfLocReq, numberOfPlaceLoc,

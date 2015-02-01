@@ -3,3 +3,4 @@ LogFile.log
 TestLog.log
 Statistic.log
 *.lck
+.checkstyle

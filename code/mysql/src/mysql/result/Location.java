@@ -32,17 +32,6 @@ public class Location extends Result {
     }
 
     /**
-     * Returns the name of the category
-     * 
-     * @return the name of the category as String
-     * @deprecated replaced by {@link #toString()}
-     */
-    @Deprecated
-	public String getName() {
-        return name;
-    }
-
-    /**
      * returns the parent location of this location
      * 
      * @return the parent location of this location as ResultLocation
@@ -56,7 +45,7 @@ public class Location extends Result {
      * 
      * @return the location code of the location (3 characters) as String
      */
-    public String getLocCode() {
+    public String getLocationCode() {
         return locCode;
     }
 

@@ -26,7 +26,7 @@ import twitter4j.User;
  */
 public class StatusProcessor implements RunnableListener {
 
-    private final static String DEFAULT_LOCATION = "0";
+    private static final String DEFAULT_LOCATION = "0";
     private boolean run = true;
     private DBcrawler dbc;
     private ConcurrentLinkedQueue<Status> queue;
@@ -51,6 +51,8 @@ public class StatusProcessor implements RunnableListener {
      *            the twitter-account-id's of the non verified accounts that
      *            should be tracked as ConcurrentMap<Long, Object>
      * @param locationHash
+     *            a hashmap that maps words to country-codes as HashMap<String,
+     *            String>
      * @param logger
      *            a global logger for the whole program as Logger
      * @param accessData

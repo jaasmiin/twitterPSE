@@ -1,18 +1,15 @@
+
 package unfolding;
 
-/**
- * 
- */
+import gui.GUIController;
 
-
-
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
 import unfolding.MyDataEntry;
-
 import processing.core.PApplet;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
@@ -36,6 +33,7 @@ public class MyUnfoldingMap extends PApplet {
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
+    private GUIController superController;
     
     /**
      * List of countryIds which are colored in the map
@@ -54,9 +52,10 @@ public class MyUnfoldingMap extends PApplet {
      */
     private float maxValue = 0;
     
-    public MyUnfoldingMap() {
+    public MyUnfoldingMap(GUIController controller) {
     	super();
     	this.setSize(900, 600);
+    	this.superController = controller;
 	}
 
     @Override
@@ -103,6 +102,30 @@ public class MyUnfoldingMap extends PApplet {
         //switchProvider();
         currentMap.draw();
     }
+    
+    /**
+     * called when a mouse click is noticed
+     * 
+     * tries to get the country clicked on and calls handler
+     * @param e the event object (not needed, parameter specified by Interface)
+     */
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        float x = mouseX;
+        float y = mouseY;
+        
+        Marker country = currentMap.getFirstHitMarker(x, y);
+        if (country != null) {
+            String countryId = country.getId();
+            String char2Code = countryIdTrans.get(countryId);  //3 char Ländercode in 2 char umwandeln
+            MyDataEntry location = dataEntriesMap.get(char2Code);
+            if (location != null) {
+                System.out.println(location.getCountryName() + " " + char2Code + " " + location.getRetweetsLand() + " " + location.getRetweetsLandFiltered());
+            }
+            // notify controller about new information;
+            superController.setMapDetailInformation(location);
+        }
+    }
 
     /**
      * Shades countrys dependent on their relative frequency of tweets
@@ -139,9 +162,9 @@ public class MyUnfoldingMap extends PApplet {
      * Updates new values to be visualized on the map.
      * 
      * @param changedEntries
-     *            String array containing country id and new value of it
+     *            HashMap containing country name, display value and other data for hover effect
      */
-    public void update(HashMap<String, Double> changedEntries) {
+    public void update(HashMap<String, MyDataEntry> changedEntries) {
 
         if (!setValues.isEmpty()) {
             for (String id : setValues) {
@@ -154,17 +177,18 @@ public class MyUnfoldingMap extends PApplet {
             setValues.clear();
         }
 
-        for(Entry<String, Double> e: changedEntries.entrySet()) {
-            
+        for(Entry<String, MyDataEntry> e: changedEntries.entrySet()) {
             MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
             if(newEntry != null) {
-                newEntry.setValue(e.getValue());
+                newEntry.setValue(e.getValue().getValue());
+                newEntry.setRetweetsLand(e.getValue().getRetweetsLand());
+                newEntry.setRetweetsLandFiltered(e.getValue().getRetweetsLandFiltered());
                 dataEntriesMap.put(e.getKey(), newEntry);
                 setValues.add(e.getKey());
             }
 
-            if(Float.parseFloat(e.getValue().toString()) > maxValue) {
-                maxValue = Float.parseFloat(e.getValue().toString());
+            if(Float.parseFloat(e.getValue().getValue().toString()) > maxValue) {
+                maxValue = Float.parseFloat(e.getValue().getValue().toString());
             }
         }
         shadeCountries();
@@ -223,3 +247,4 @@ public class MyUnfoldingMap extends PApplet {
     
 
 }
+

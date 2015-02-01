@@ -12,6 +12,7 @@ import twitter4j.User;
  * Class that provides necessary Methods to get access to the TwitterSearchAPI
  * 
  * @author Matthias
+ * @version 1.0
  * 
  */
 public class TwitterAccess {
