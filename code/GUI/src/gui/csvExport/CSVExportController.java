@@ -1,13 +1,23 @@
-package export;
+package gui.csvExport;
+
+import gui.InputElement;
+import gui.Labels;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -18,12 +28,14 @@ import mysql.result.Retweets;
 /**
  * class provides method to export data into a csv file
  * 
- * @author Holger Ebhart
- * @version 1.0
+ * @author Holger Ebhart and Maximilian Awiszus
  * 
  */
-public class CSVExport {
-
+public class CSVExportController extends InputElement implements Initializable {
+	@FXML
+	private MenuItem mnFile;
+	@FXML
+	private MenuItem mniExport;
     /**
      * exports the current data into a csv file
      * 
@@ -123,4 +135,24 @@ public class CSVExport {
 
         return file;
     }
+
+	@Override
+	public void update(UpdateType type) {}
+	
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		super.initialize(location, resources);
+		superController.subscribe(this);
+		mnFile.setText(Labels.FILE);
+		mniExport.setText(Labels.EXPORT);
+		mniExport.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				superController.setInfo(Labels.EXPORTING);
+				exportAsCSV(superController.getDataByAccount(),
+						superController.getLocations(), superController.getStage());
+				superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
+			}
+		});
+	}
 }

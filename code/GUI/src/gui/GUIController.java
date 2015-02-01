@@ -61,6 +61,7 @@ public class GUIController extends Application implements Initializable {
     private static GUIController instance = null;
     private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
     private DBgui db;
+    private Stage stage;
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -111,11 +112,12 @@ public class GUIController extends Application implements Initializable {
 		if (parent != null) {
 		    Scene scene = new Scene(parent, 800, 600);
 		    scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		    primaryStage.setTitle(Labels.PSE_TWITTER);
-		    primaryStage.setMinHeight(500);
-		    primaryStage.setMinWidth(600);
-		    primaryStage.setScene(scene);
-		    primaryStage.show();
+		    stage = primaryStage;
+		    stage.setTitle(Labels.PSE_TWITTER);
+		    stage.setMinHeight(500);
+		    stage.setMinWidth(600);
+		    stage.setScene(scene);
+		    stage.show();
 		    scene.getWindow().setOnCloseRequest(
 		            new EventHandler<WindowEvent>() {
 		                @Override
@@ -397,12 +399,12 @@ public class GUIController extends Application implements Initializable {
      * @param info
      *            which should be displayed
      */
-    private void setInfo(final String info) {
-        Platform.runLater(new Runnable() {
+    public void setInfo(String info) {
+        Platform.runLater(new RunnableParameter<String>(info) {
             @Override
             public void run() {
-                lstInfo.getItems().removeAll(info);
-                lstInfo.getItems().add(info);
+                lstInfo.getItems().removeAll(parameter);
+                lstInfo.getItems().add(parameter);
             }
         });
     }
@@ -416,14 +418,15 @@ public class GUIController extends Application implements Initializable {
      * @param oldInfo
      *            which should be removed
      */
-    private void setInfo(final String info, final String oldInfo) {
-        Platform.runLater(new Runnable() {
+    public void setInfo(String info, String oldInfo) {
+    	String[] infos = {info, oldInfo};
+        Platform.runLater(new RunnableParameter<String[]>(infos) {
             @Override
             public void run() {
-                lstInfo.getItems().remove(oldInfo);
-                lstInfo.getItems().removeAll(info);
-                lstInfo.getItems().add(info);
-                Platform.runLater(new InfoRunnable(lstInfo, info));
+                lstInfo.getItems().remove(parameter[1]);
+                lstInfo.getItems().removeAll(parameter[0]);
+                lstInfo.getItems().add(parameter[0]);
+                Platform.runLater(new InfoRunnable(lstInfo, parameter[0]));
             }
         });
     }
@@ -698,7 +701,15 @@ public class GUIController extends Application implements Initializable {
         }
         return selectedCategoriesList;
     }
-
+    
+    /**
+     * Get the primary stage.
+     * @return primary stage
+     */
+    public Stage getStage() {
+    	return stage;
+    }
+    
     /**
      * Get list of selected locations.
      * 

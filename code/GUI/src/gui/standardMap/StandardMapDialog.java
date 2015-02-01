@@ -28,7 +28,6 @@ public class StandardMapDialog extends JDialog {
 		map = new MyUnfoldingMap(superController);
 		add(map);
 		map.init();
-		setVisible(true);
 	}
 
 	public void update(UpdateType type) {

@@ -30,7 +30,6 @@ public class TimeSliderDialog extends JDialog {
 		map = new MyUnfoldingMap(superController);
 		add(map);
 		map.init();
-		setVisible(true);
 	}
 	/**
 	 * updates the map
