@@ -1,0 +1,21 @@
+﻿mysql
+--------
+mysql
+	- vergleiche Interfaces DBIgui, DBIcrawler und DBIcategorizer für Änderungen
+	- DBConnection 	+ boolean isConnected()
+			# executeStatmentUpdate(Statement stmt) executes an update on the database
+			# closeResult(Result res) closes a mysql-result
+			# closeStatement(Statement stmt) closes a mysql-statement
+	- protected Methoden um Exceptions zu protokollieren
+
+mysql.result
+	- TweetsAndRetweets Listen private mit gettern und settern
+	- Category mit List of childs und entsprechend getChilds():List<Category> und addChild(Category c)
+	- Account mit neuer addCategory(int id) Methode und anstatt Categorys zu halten hält Account nur eine Liste von CategoryIds
+	- Account mit neuen Methoden um Tweets und Retweets hinzuzufügen
+
+util
+	- Klasse LoggerUtil mit static Method getLogger(String filename):Logger liefert einen logger zum Protokollieren
+	- Klasse Util mit Methode um String zu prüfen checkString(String word, int maxLength, String defaultValue):String und checkURL(String url):String
+
+ 

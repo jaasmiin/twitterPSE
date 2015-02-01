@@ -1,0 +1,17 @@
+﻿crawler
+--------
+locate
+	- extra Klassen für Lokalisierung über WebDienst (WebServiceLocator implements RunnableListener) und per place / geotag / hashmap (Locator)
+	- Klasse LocateStatus um Accounts und Retweets in der Queue zum Lokalisieren zu speichern
+	- Klasse Formatter um url zu formattieren
+
+main
+	- Controller erstellt zweite Queue für Objekte zum Lokalisieren und gibt Referenz and WebServiceLocators und StatusProcessors
+	- Controller erstellt WebServiceLocatorThreads und kontrolliert diese
+	- Controller kontrolliert zweite Queue
+	- Controller schreibt Statistik
+
+	- StatusProcessor versucht Accounts und Retweets sofort zu lokalisieren (place, geotag, hashmap)
+	- StatusProcessor schreibt in DB und in Queue zum lokalisieren
+
+ 
