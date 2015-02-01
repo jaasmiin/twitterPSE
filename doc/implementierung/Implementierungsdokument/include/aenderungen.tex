@@ -1,7 +1,7 @@
 In diesem Abschnitt werden die Änderungen gegenüber dem Entwurf beschrieben.
 \section{Änderungen an der Datenbank}
 	  \subsection{(mysql)}
-	In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne weitere Methoden hinzugefügt, um Daten unter einem speziellen Gesichtpunkt bei der Datenbank anzufragen. Weitere kleinere Änderungen sind im Folgenden aufgelistet:
+	Auch in diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne weitere Methoden hinzugefügt, um Daten unter einem speziellen Gesichtpunkt bei der Datenbank anzufragen. Weitere kleinere Änderungen sind im Folgenden aufgelistet:
 	\begin{description}
 		\item [DBConnection] 
 		\begin{description}
@@ -15,7 +15,26 @@ In diesem Abschnitt werden die Änderungen gegenüber dem Entwurf beschrieben.
 	Hier wurden nur einige Getter- und Setter-Methoden für die einzelnen Klassen bzw. ihre Attribute hinzugefügt, bzw. deren interne Struktur (z.B. Liste statt Array) leicht modifiziert.
 
 \section{Änderungen am Crawler}
-Am Crawler musste  in Bezug auf die im Entwurf festgelegte Programmlogik ein großer Teil angepasst werden.
+Am Crawler musste  in Bezug auf die im Entwurf festgelegte Programmlogik ein großer Teil angepasst werden. Diese Umstellung des Entwurfs wurden durch die im ersten Entwurf zu ineffiziente Lokalisierung der Tweets, Retweets und Accounts nötig. Der ursprüngliche Entwurf sieht vor, dass die von Twitter gelieferten Statusobjekte (Tweets,Retweets) in mehreren Warteschlangen einsortiert werden und diese von einer Instanz der Klasse 'Locator' lokalisiert werden. Der 'Locator' ruft dazu einen Webservice auf, der im Erfolgsfall den Ländercode des entsprechenden Statusobjekts zurücklieferte. Da ein Aufruf des Webservices  deutlich länger als eine eine Sekunde benötigt, und auch das Aufrufen des Webservice von mehreren parallel arbeitenden Threads nur bedingt schneller Ergebnisse liefert, musste hier der Entwurf überarbeitet werden.
+Eine wesentliche Änderung besteht darin, dass die Ergebnisse der Lokalisierung gespeichert werden. Dazu wird die Ortinformation des Statusobjekts und der vom Webservice zugeordnete Ländercode in der einer Hashtabelle gespeichert und der Inhalt dieser Hashtabelle regelmäßig in die Datenbank geschrieben. So können schon einmal abgefragte Ortsinformationen ohne den zeitaufwendigen Umweg über den Webdienst lokalisiert werden. 
+Weiterhin sieht die jetzige Implementierung vor, dass die vom Twitter-Stream gelesenen Statusojekte in eine Warteschlange geschrieben werde, aus welcher sieh parallel von mehreren Worker-Threads entnommen werden. Diese prüfen, ob die Ortsinformation des Statusobjekts schon in der Hashtabelle vorhanden ist. Im Erfolgsfall wird das Statusobjekt sofort in die Datenbank geschrieben. Andernfalls wierd es in eine  Warteschlange weitergereicht, aus welchem mehrere Lokalisierer-Threads die Objekte entnehmen und dem Webservice zur Lokalisierung senden.
+Das folgende Sequenzdiagramm verdeutlicht noch einmal den Ablauf des Vorgangs:
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/categorizerSequence}
+	\caption{Sequenzdiagramm Crawler}
+	\label{fig:Crawler}
+\end{figure}
+
+Neben dem 'Crawler' wurde auch der 'Locator' bzw. das Paket 'locate' etwas umstrukturiert, er besteht nun aus zwei (Haupt-)Klassen, welche einmal die Anfragen mittels Hashtabelle und  Anfragen an den Webservice kapseln, sowie zwei weiteren (Hilfs-)Klassen. Diese sind im folgenden Klassendiagramm dargestellt.
+ \begin{figure}[h!]
+ 	\centering
+ 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/Locator}
+ 	\caption{Klassendiagramm locate}
+ 	\label{fig:locate}
+ \end{figure}
+
+ 
 
 \section{Änderungen am Kategorisierer}
 
@@ -36,7 +55,7 @@ Die Grobstruktur des Entwurfs blieb jedoch erhalten, wie das folgende Paketdiagr
 	\begin{description}
 		\item [GUIController] 
 		\quad 
-		In der Hauptkontroller-Klasse sind einige Methoden hinzugekommen. Größtenteils waren diese im Entwurf schon angedacht nur noch nicht hinreichend konkret geplant worden:
+		In der Hauptkontroller-Klasse sind einige Methoden hinzugekommen. Größtenteils waren diese im Entwurf schon angedacht nur noch nicht hinreichend konkret geplant worden, die Änderungen im GUIController werden ausführlicher als für den Rest der (Unter-)Pakete besprochen, da es sich um die zentrale Klasse der GUI handelt.
 		\begin{description}
 			\item[getAccount(int)] liefert Account von DB zurück.
 			\item[close()] beendet Programm.
@@ -73,6 +92,13 @@ Die Grobstruktur des Entwurfs blieb jedoch erhalten, wie das folgende Paketdiagr
 		\item[InfoRunnable] 
 		\quad
 		Zusammen mit der gerade geschriebenen Klasse, wird mit der neu hinzugekommenen InfoRunnable ein Thread gestartet, der Nachrichten wie 'Verbinde mit Datenbank ...', 'Lade Daten' für eine begrenzte Zeit anzeigt.	
+		Die folgende Grafik zeigt das Klassendiagramm des 'GUIControllers' zusammen mit verwandten Klassen. Allerdings sind die Klassen nicht mit all ihren Methoden und Attributen aufgeführt.
+		\begin{figure}[h!]
+			\centering
+			\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIKlassendiagramm}
+			\caption{Klassendiagramm der GUI}
+			\label{fig:GUI}
+		\end{figure}
 	\end{description}
 		Im Folgenden werden die Änderungen in den Subpaketen von 'gui' beschrieben.
 		\subsubsection{databaseOpts}
