@@ -105,6 +105,7 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	@FXML
 	@Override
 	public void handle(Event event) {
+		// TODO: in thread öffnen
 		if (event instanceof MouseEvent) {
 			MouseEvent mouse = (MouseEvent) event;
 			if (event.getSource().equals(lstSelectedAccounts)) {				

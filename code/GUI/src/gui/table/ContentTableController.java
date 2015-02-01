@@ -65,6 +65,8 @@ public class ContentTableController extends OutputElement implements Initializab
 		table.getColumns().add(accountsColumn);
 	}
 	
+	
+	// TODO: tweets spalte rausschmeissen
 	/**
 	 * Adds a column containing the number of tweets that an account sent to the table.
 	 */
