@@ -82,11 +82,13 @@ public class TimeSliderMapController extends OutputElement implements Initializa
 			if(event.getSource().equals(date_SliderMap_startDate)) {
 				// set start date
 				LocalDate start = date_SliderMap_startDate.getValue();
+				System.out.println(start);
 				
 				
 			}
 			if(event.getSource().equals(date_SliderMap_endDate)) {
 				LocalDate end = date_SliderMap_endDate.getValue();
+				System.out.println(end);
 			}
 			
 		}
