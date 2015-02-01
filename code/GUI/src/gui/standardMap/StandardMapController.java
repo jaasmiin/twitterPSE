@@ -11,6 +11,7 @@ import gui.OutputElement;
 /**
  * Controls the standardMap and the DetailedInformation dialog
  * @author Matthias
+ * @version 1.0
  *
  */
 public class StandardMapController extends OutputElement implements Initializable {
