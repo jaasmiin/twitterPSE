@@ -1,10 +1,11 @@
 package test.gui;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.List;
 
 import gui.GUIController;
+import gui.GUIElement;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
@@ -66,26 +67,26 @@ public class GUIControllerTest {
         while (!c.getChilds().isEmpty()) {
             c = c.getChilds().get(0);
         }
-        assert (c.toString().contains("Plotitics"));
+        assertTrue(c.toString().contains("Plotitics"));
     }
 
     @Test
     public void testGetAccounts() {
         List<Account> list = guiController.getAccounts("Barack");
-        assert (list.get(0).toString().equals("Barach Obama"));
+        assertTrue(list.get(0).toString().equals("Barack Obama"));
     }
 
     @Test
     public void testGetLocations() {
         List<Location> list = guiController.getLocations();
-        assert (list.size() > 0);
+        assertTrue(list.size() > 0);
     }
 
     @Test
     public void testSelectCategory() {
         Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
         guiController.setSelectedCategory(c.getId(), true);
-        assert (guiController.getSelectedCategories().contains(c));
+        assertTrue(guiController.getSelectedCategories().contains(c));
     }
 
     @Test
@@ -93,7 +94,7 @@ public class GUIControllerTest {
         Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
         guiController.setSelectedCategory(c.getId(), true);
         guiController.setSelectedCategory(c.getId(), false);
-        assert (!guiController.getSelectedCategories().contains(c));
+        assertTrue(!guiController.getSelectedCategories().contains(c));
     }
 
     @Test
@@ -101,7 +102,7 @@ public class GUIControllerTest {
         List<Location> list = guiController.getLocations();
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 true);
-        assert (guiController.getSelectedLocations().contains(list.get(list
+        assertTrue(guiController.getSelectedLocations().contains(list.get(list
                 .size() - 1)));
     }
 
@@ -111,11 +112,11 @@ public class GUIControllerTest {
         System.out.println(list.size());
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 true);
-        assert (guiController.getSelectedLocations().contains(list.get(list
+        assertTrue(guiController.getSelectedLocations().contains(list.get(list
                 .size() - 1)));
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 false);
-        assert (!guiController.getSelectedLocations().contains(
+        assertTrue(!guiController.getSelectedLocations().contains(
                 list.get(list.size() - 1)));
     }
 
@@ -124,7 +125,7 @@ public class GUIControllerTest {
         List<Account> list = guiController.getAccounts("Barack");
         Account a = list.get(0);
         guiController.setSelectedAccount(a.getId(), true);
-        assert (guiController.getSelectedAccounts().contains(a));
+        assertTrue(guiController.getSelectedAccounts().contains(a));
     }
 
     @Test
@@ -132,7 +133,7 @@ public class GUIControllerTest {
         Account a = guiController.getAccounts("Obama").get(0);
         guiController.setSelectedAccount(a.getId(), true);
         guiController.setSelectedAccount(a.getId(), false);
-        assert (guiController.getSelectedAccounts().contains(a));
+        assertFalse(guiController.getSelectedAccounts().contains(a));
     }
 
     @Test
@@ -140,36 +141,28 @@ public class GUIControllerTest {
         Account a = guiController.getAccounts("Obama").get(0);
         guiController.setSelectedAccount(a.getId(), true);
         TweetsAndRetweets tar = guiController.getDataByLocation();
-        assert (tar.getRetweets().size() > 1);
+        assertTrue(tar.getRetweets().size() > 1);
     }
 
-    @Test
-    public void testGetErrorMessage() {
-        fail("Not yet implemented");
-    }
 
     @Test
-    public void testSetDateRange() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testAddAccountToWatch() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testSetCategory() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testSetLocation() {
-        fail("Not yet implemented");
-    }
-
-    @Test
-    public void testSubscribe() {
-        fail("Not yet implemented");
+    public void testSubscribe() throws InterruptedException {
+    	class TestGUIElement extends GUIElement {
+    		private boolean updated = false;
+			@Override
+			public void update(UpdateType type) {
+				if (type == UpdateType.CATEGORY_SELECTION) {
+					updated = true;
+				}
+			}
+			public boolean isUpdated() {
+				return updated;
+			}
+    		
+    	}
+    	TestGUIElement e = new TestGUIElement();
+        guiController.subscribe(e);
+        guiController.setSelectedCategory(12, true);
+        assertTrue(e.isUpdated());
     }
 }

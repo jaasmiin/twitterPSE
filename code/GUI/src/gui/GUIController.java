@@ -60,8 +60,8 @@ public class GUIController extends Application implements Initializable {
     public Category categoryRoot;
 
     private static GUIController instance = null;
-    private static ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
-    private static DBgui db;
+    private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
+    private DBgui db;
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -95,34 +95,37 @@ public class GUIController extends Application implements Initializable {
      */
     public GUIController() {
         super();
-        instance = this; // TODO: JavaFX creates two instances of GUIController?
-        System.out.println("public GUIController()");
+        instance = this;
     }
 
     @Override
     public void start(final Stage primaryStage) {
-        try {
-            Parent parent = FXMLLoader.load(GUIController.class
-                    .getResource("GUIView.fxml"));
-            Scene scene = new Scene(parent, 800, 600);
-            scene.getStylesheets().add(
-                    getClass().getResource("application.css").toExternalForm());
-            primaryStage.setTitle(Labels.PSE_TWITTER);
-            primaryStage.setMinHeight(500);
-            primaryStage.setMinWidth(600);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-            scene.getWindow().setOnCloseRequest(
-                    new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent event) {
-                            event.consume();
-                            close();
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("GUIView.fxml"));
+		fxmlLoader.setController(this);
+		Parent parent = null;
+		try {
+			parent = fxmlLoader.load();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (parent != null) {
+		    Scene scene = new Scene(parent, 800, 600);
+		    scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+		    primaryStage.setTitle(Labels.PSE_TWITTER);
+		    primaryStage.setMinHeight(500);
+		    primaryStage.setMinWidth(600);
+		    primaryStage.setScene(scene);
+		    primaryStage.show();
+		    scene.getWindow().setOnCloseRequest(
+		            new EventHandler<WindowEvent>() {
+		                @Override
+		                public void handle(WindowEvent event) {
+		                    event.consume();
+		                    close();
+		                }
+		            });
+		}
     }
 
     /**
@@ -132,9 +135,9 @@ public class GUIController extends Application implements Initializable {
     public void close() {
         update(UpdateType.CLOSE);
         if (db != null && db.isConnected()) {
-            System.out.println(Labels.DB_CONNECTION_CLOSING);
+        	setInfo(Labels.DB_CONNECTION_CLOSING);
             db.disconnect();
-            System.out.println(Labels.DB_CONNECTION_CLOSED);
+            setInfo(Labels.DB_CONNECTION_CLOSED, Labels.DB_CONNECTION_CLOSING);
         }
         Platform.exit();
     }
