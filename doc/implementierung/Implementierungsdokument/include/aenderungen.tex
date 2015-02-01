@@ -1,10 +1,121 @@
 In diesem Abschnitt werden die Änderungen gegenüber dem Entwurf beschrieben.
 \section{Änderungen an der Datenbank}
+	  \subsection{(mysql)}
+	In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne weitere Methoden hinzugefügt, um Daten unter einem speziellen Gesichtpunkt bei der Datenbank anzufragen. Weitere kleinere Änderungen sind im Folgenden aufgelistet:
+	\begin{description}
+		\item [DBConnection] 
+		\begin{description}
+			\item[executeStatmentUpdate(Statement)] führt ein 'Update' in der DB durch.
+			\item[closeResult(Result)] schließt ein mysql-result
+			\item[closeStatement(Statement)] schließt ein mysql-statement
+		\end{description}
+	\end{description}
+	
+	\subsubsection{result}
+	Hier wurden nur einige Getter- und Setter-Methoden für die einzelnen Klassen bzw. ihre Attribute hinzugefügt, bzw. deren interne Struktur (z.B. Liste statt Array) leicht modifiziert.
 
 \section{Änderungen am Crawler}
+Am Crawler musste  in Bezug auf die im Entwurf festgelegte Programmlogik ein großer Teil angepasst werden.
 
 \section{Änderungen am Kategorisierer}
 
 \section{Änderungen an der GUI}
-
-In Bezug zu den anderen Komponenten wurden an der GUI am meisten Änderungen zum Entwurf vorgenommen, dies lag vor allem
+ An der GUI wurden einige Änderungen zum Entwurf vorgenommen, dies lag u.A. an einer Vielzahl von Details, welche während der Entwurfsphase noch nicht bekannt oder bewusst auf die konkrete Implementierung verschoben wurden. 
+Die Grobstruktur des Entwurfs blieb jedoch erhalten, wie das folgende Paketdiagramm (\ref{fig:GUI}) zeigt.
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
+	\caption{Paketdiagramm der GUI}
+	\label{fig:GUI}
+\end{figure}
+	Eine wichtige Änderung in Bezug auf das Gesamtpaket 'gui' ist, dass es sich bei den 'View' - Klassen, welche die Darstellung der grafischen Komponenten beinhalten, um XML Dateien handelt. Dies war im Entwurf so nicht vermerkt, allerdings implizit angedacht. Die  im Entwurf beabsichtigten Idee der Trennung von Darstellung und Programmlogik wird dadurch noch stärker erfüllt, da die XML-Dateien keinerlei Programmlogik enthalten. Desweiteren existiert in jedem Unterpaket von 'gui' nicht nur eine XML-Datei mit Darstellungslogik, sondern u.U. mehrere, da so teilweise größere grafische Komponenten in einzelne XML-Dateien gekapselt werden können.
+	
+	Allgemein gilt, dass im folgenden nur 'wichtige' Änderungen dokumentiert werden.
+\subsection{Änderungen im Paket gui}
+	Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurden, welche unmittelbar im Paket 'gui' angesiedelt sind.
+	\begin{description}
+		\item [GUIController] 
+		\quad 
+		In der Hauptkontroller-Klasse sind einige Methoden hinzugekommen. Größtenteils waren diese im Entwurf schon angedacht nur noch nicht hinreichend konkret geplant worden:
+		\begin{description}
+			\item[getAccount(int)] liefert Account von DB zurück.
+			\item[close()] beendet Programm.
+			\item[addUserToWatch(twitter4j.User, int)] fügt Twitter-Account zur Datenbank hinzu.
+			\item[getCategory(int)] liefert Kategorie von Datenbank
+			\item[getCategory(String)] liefert Kategorie von Datenbank (nach Zeichenkette im Namen)
+			\item[getCategoryRoot(int\text{[]})] baut Baum aus Kategorie-Items auf
+			\item[getSummedData()] liefert alle Daten von Datenbank zu einer Suchanfrage
+			\item[getDataByAccount()] liefert Daten aufbereitet nach Account
+			\item[getDisplayValueProperty()] 'Berechnungsformel' liefert relativen Wert zum Einfärben der Karte
+			\item[getLocations()] liefert Orte von DB zurück
+			\item[getMapDatailInformation()] liefert Detailinformationen zu Orten, auf welche geklickt wird
+			\item[getSelectedAccounts()] liefert in Query ausgwählte Accounts
+			\item[getSelectedCategories()] lieft in Query ausgewählte Kategorien
+			\item[getSelectedLocations()] liefert in Query auswählte Orte
+			\item[isConnected()] indiziert ob Verbindung zu DB besteht
+			\item[isReady()]
+			\item[main()] startet Programm
+			\item[setCategory(int, int)] fügt Kategorie zu DB hinzu
+			\item[setMapDetailInformation(MyDataEntry)] setzt Detailinformationen zu Orten, auf welche geklickt wird
+			\item[setSelectedAccount(int, boolean)] fügt Account zu Query hinzu
+			\item[setSelectedCategory(int, boolean)] fügt Kategorie zu Query hinzu
+			\item[setSelectedLocation(int, boolean)] fügt Ort zu Query hinzu
+		\end{description}
+		\item [SelectionHashList]
+		\quad
+		Diese neu hinzugekommene Klasse stellt  eine Ergänzung zum Entwurf dar, welche aus Gründen der Effizienz gewählt wurde. Mit implemtiert eine Hashstruktur, über die mittels Getter- und Settermethoden entschieden werden kann, ob eine Kategorie oder ein Account für ein Query an die Datenbank ausgewählt ist, bzw. diese zu einem Query hinzuzufügen.
+		\item [Labels] 
+		\quad
+		Diese Klasse enthält zentral alle Beschriftungen, welche in der GUI verwendet werden.
+		\item [RunnableParameter] 
+		\quad 
+		Neu hinzugekommene Klasse, die das Interface 'Runnable' so implementiert, dass dem Runnable ein Parameterübergeben werden kann.
+		\item[InfoRunnable] 
+		\quad
+		Zusammen mit der gerade geschriebenen Klasse, wird mit der neu hinzugekommenen InfoRunnable ein Thread gestartet, der Nachrichten wie 'Verbinde mit Datenbank ...', 'Lade Daten' für eine begrenzte Zeit anzeigt.	
+	\end{description}
+		Im Folgenden werden die Änderungen in den Subpaketen von 'gui' beschrieben.
+		\subsubsection{databaseOpts}
+		In diesem Paket wurde, wie oben vermerkt, die XML-Datei für den grafischen Inhalt in 4 Separate XML Dateien aufgeteilt, um die Lesbarkeit und Übersichtlichkeit zu erhöhen.
+		Weiter wurden in 'DatabaseOptController' einige Methoden und innere Klassen hinzugefügt:
+		\begin{description}
+			\item[DatabaseOptController] \quad
+			
+			\begin{description}
+				\item[intialize]
+				 \quad
+				Diese Methode wird aufgerufen, wenn die GUI gestartet wird. Hier werden alle grafischen Elemente mit den jeweiligen EventHandler verknüpft.
+				\item[MyAcctionEventHandler]
+				\item[MyLocEventHandler, MyAccEventHandler, MyCatEventHandler] 
+				\quad
+				Behandelt alle Events die auf den verschiedenen grafischen Elementen aufgerufen werden.
+			\end{description}
+		\end{description}
+	
+		Desweiteren wurden einige private Hilfmethoden hinzugefügt, die beispielsweise einen Baum aus Kategorien aufbauen.
+		
+		\subsubsection{table}
+		
+		Diese Paket blieb relativ unverändert, lediglich die Hilfsklasse 'InternAccount' ist aus Gründen der Effizienzsteigerung hinzugekommen.
+		
+		\subsubsection{standardMap}
+		
+		In diesem Paket ergaben sich einige Änderungen. Diese waren durch die relative Inkompatibilität des verwendeten Map-Frameworks 'unfolding' mit 'javafx'. Daher musste eine die Klasse 'StandardMapDialog' hinzugefügt werden:
+		\begin{description}
+			\item[StandardMapDialog] \quad Diese Klasse erbt von JFrame einem Java Swing-Typ, da nur in Java Swing das verwendete Map-Framework fehlerfrei dargestellt werden kann. Sie enthält unter anderem eine Referenz auf den 'GUIController' und auf eine Instanz von 'MyUnfoldingMap'.
+			\begin{description}
+				\item[update()] diese Methode wird aktualisiert die auf der Karte dargestellten Daten. Die Daten werden vom 'GUIController' bezogen und an die eigentliche Karte in 'MyUnfoldingMap' weitergereicht.
+			\end{description}
+		\end{description}
+		
+		\subsubsection{timeSliderMap}
+		Die im Paket 'standardMap' gemachten Änderungen waren hier im selben Maße nötig.
+		\subsubsection{unfolding} 
+		In diesem Paket wurden nur geringfügige Änderungen durchgeführt.
+		\begin{description}
+			\item[MyUnfoldingMap]
+				\begin{description}
+					\item[mouseClicked(MouseEvent)] Methode berechnet zu jedem Klick auf die Karte, das angeklickte Land und liefert Informationen zum jeweiligen Retweet-Verhalten.
+				\end{description}
+		\end{description}
+	
