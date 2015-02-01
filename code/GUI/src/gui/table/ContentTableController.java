@@ -179,6 +179,4 @@ public class ContentTableController extends OutputElement implements Initializab
 		table.getColumns().add(followerColumn);
 	}
 	
-	
-
 }

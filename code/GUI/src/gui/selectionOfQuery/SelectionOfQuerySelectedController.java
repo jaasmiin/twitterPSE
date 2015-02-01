@@ -86,7 +86,6 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 		superController.subscribe(this);		
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void update(UpdateType type) {
 		switch (type) {
@@ -99,7 +98,9 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 			case LOCATION_SELECTION:
 				updateSelectedLocation(superController.getSelectedLocations());
 				break;
-		}
+			default : 
+				// do nothing
+		}					
 	}
 
 	@FXML
