@@ -1,0 +1,4 @@
+SelectionOfQuery
+ - Aufteilung in Selected- und SelectionController
+table
+ - neue package-private Klasse InternAccount zur schnelleren Berechnung
