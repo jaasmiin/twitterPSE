@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 import mysql.result.Account;
 import mysql.result.Location;
-import mysql.result.Retweets;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -25,14 +24,33 @@ import gui.OutputElement;
 /**
  * This class presents raw-data in a table.
  * 
+ * The format looks like this:
+ * 
+ * Account | Follower |               Retweets
+ *         |          | Total | ... | Germany | ... other locations
+ * ----------------------------------------------------------------
+ *  KIT    |   20     |  60   | ... |  51     | ...
+ * 
+ * 
  * @author Philipp
  *
  */
 public class ContentTableController extends OutputElement implements Initializable {
 	
+	/**
+	 * The table that is displayed on screen.
+	 */
 	@FXML
     private TableView<InternAccount> table;
+	
+	/**
+	 * The column containing the numbers of retweets.
+	 */
 	private TableColumn<InternAccount, Integer> retweetColumn;
+	
+	/**
+	 * The List containing the data to be displayed in the table.
+	 */
 	private ObservableList<InternAccount> data;
 	
 	@Override
