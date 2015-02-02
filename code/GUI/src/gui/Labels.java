@@ -76,6 +76,7 @@ public class Labels {
 	
 	public static final String DBOPT_ACC_ADDACCOUNT = "Add account";
 	public static final String DBOPT_ACC_TWITTERACCOUNTS = "Twitter accounts:";
+	public static final String STANDMAP_CONFIRM = "Confirm";
 	
 
 	
