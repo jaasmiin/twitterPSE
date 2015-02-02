@@ -25,7 +25,7 @@ public class StandardMapDialog extends JDialog {
 		setSize(600, 400);
 		setTitle("Map");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		map = new MyUnfoldingMap(superController);
+		map = map.getSingleton(superController);
 		add(map);
 		map.init();
 	}
@@ -63,13 +63,13 @@ public class StandardMapDialog extends JDialog {
 
 			break;
 		case GUI_STARTED:
-		    map.resetMarkers();
+		    map.update(new HashMap<String, MyDataEntry>());
 			map.redraw();
 			setVisible(true);
 			break;
 		
 		default:
-		    map.resetMarkers();
+		    map.update(new HashMap<String, MyDataEntry>());
 		}
 	}
 

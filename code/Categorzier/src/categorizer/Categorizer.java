@@ -13,12 +13,14 @@ import mysql.result.Account;
  * @author Paul Jungeblut
  */
 public class Categorizer {
-    //the db connection
+    /**
+     * the database connection
+     */
     private DBcategorizer db;
     
     /**
      * initializes the categorizer by storing the database connection
-     * and opening the mysql connection
+     * and opening the MySQL connection
      * 
      * @param db the database connection, must not be null
      */
@@ -56,7 +58,7 @@ public class Categorizer {
             	continue;
             }
             if (url == null) url = "someStupidSequenceThatDoesNotOccur";
-            //second condition should lower the number of false positives with to may matches
+            //second condition should lower the number of false positives with to many matches
             if (name == null || name.length() < 8) name = "someStupidSequenceThatDoesNotOccur";
             url = normalizeUrl(url);
             name = normalizeName(name);

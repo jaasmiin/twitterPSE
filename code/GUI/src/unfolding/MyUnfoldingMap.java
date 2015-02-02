@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import unfolding.MyDataEntry;
 import processing.core.PApplet;
+import de.fhpotsdam.unfolding.Map;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
@@ -29,6 +30,9 @@ public class MyUnfoldingMap extends PApplet {
      * default serial version uid
      */
     private static final long serialVersionUID = 1L;
+    
+    private MyUnfoldingMap singleton;
+    
     private UnfoldingMap map1;
     private UnfoldingMap map2;
     private UnfoldingMap currentMap;
@@ -53,7 +57,18 @@ public class MyUnfoldingMap extends PApplet {
      */
     private float maxValue = 0;
     
-    public MyUnfoldingMap(GUIController controller) {
+    /**
+     * Returns Singleton.
+     * @param controller GuiController
+     */
+    public MyUnfoldingMap getSingleton(GUIController controller){
+        if(singleton == null) {
+            singleton = new MyUnfoldingMap(controller);
+        }
+        return singleton;
+    }
+    
+    private MyUnfoldingMap(GUIController controller) {
     	super();
     	this.setSize(900, 600);
     	this.superController = controller;
@@ -69,9 +84,10 @@ public class MyUnfoldingMap extends PApplet {
         
         currentMap = map1;
 
-        currentMap.zoomLevel(1);
+        currentMap.zoomLevel(0);
         currentMap.setZoomRange(2, 4);
         currentMap.setBackgroundColor(140);
+
         MapUtils.createDefaultEventDispatcher(this, map1, map2);
         
       //Load country polygons
@@ -172,7 +188,7 @@ public class MyUnfoldingMap extends PApplet {
      *            HashMap containing country name, display value and other data for hover effect
      */
     public void update(HashMap<String, MyDataEntry> changedEntries) {
-
+        resetMarkers();
         if (!setValues.isEmpty()) {
             for (String id : setValues) {
                 
@@ -246,7 +262,7 @@ public class MyUnfoldingMap extends PApplet {
     /**
      * Resets all colored markers
      */
-    public void resetMarkers() {
+    private void resetMarkers() {
         for(Marker m : countryMarker) {
             m.setColor(color(173,173,173,50));
             m.setStrokeColor(color(241, 241, 241, 50));
