@@ -42,9 +42,6 @@ public class TimeSliderMapController extends OutputElement implements
         super.initialize(location, resources);
         superController.subscribe(this);
 
-        // acitvate daterange option
-        superController.setDateRange(true);
-
         dialog = new TimeSliderDialog(superController);
 
         // set DatePicker on Action
