@@ -32,6 +32,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import gui.InputElement;
+import gui.Labels;
 
 
 public class DatabaseOptController extends InputElement implements Initializable {
@@ -58,6 +59,10 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private ListView<Account> list_Cat_tab1;
 	@FXML 
 	private Button b_Cat_tab1;
+	@FXML
+	private Label l_Cat_tab1_selectedAcc;
+	@FXML
+	private Label l_Cat_tab1_AccDB;
 	// tab2
 	@FXML
 	private TextField txtField_Cat_tab2;
@@ -72,11 +77,17 @@ public class DatabaseOptController extends InputElement implements Initializable
 	@FXML
 	private Button b_Cat_tab2_entfernen;
 	@FXML
-	private TreeView trv_Cat_tab2_oldCats;
+	private TreeView<Category> trv_Cat_tab2_oldCats;
 	@FXML
 	private Label l_Cat_tab2_selectedAccount;
 	@FXML 
 	private Label l_Cat_tab2_success;
+	@FXML
+	private Label l_Cat_tab2_oldCats;
+	@FXML
+	private Label l_Cat_tab2_selectedCat;
+	@FXML
+	private Label l_Cat_tab2_searchCat;
 	//####################### Add/Change Location#########################
 	@FXML
 	private TabPane tabPane_Loc;
@@ -100,12 +111,17 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private Button b_Loc_tab2_fertig;
 	@FXML 
 	private Button b_Loc_tab2_zurueck;
-	@FXML
-	private Button b_Loc_tab2_entfernen;
+
 	@FXML
 	private Label l_Loc_tab2_selectedAccount;
 	@FXML
 	private Label l_Loc_tab2_currentPlace;
+	@FXML
+	private Label l_Loc_tab2_Account;
+	@FXML
+	private Label l_Loc_tab2_currentPlaceDescription;
+	@FXML
+	private Label l_Loc_tab2_currentAccountDescription;
 	//################################# Add Account ########################
 	@FXML
 	private TabPane tabPane_Acc;
@@ -121,6 +137,10 @@ public class DatabaseOptController extends InputElement implements Initializable
 	private Button b_Acc_tab1_hinzufuegen;
 	@FXML
 	private Button b_Acc_tab1_suchen;
+	@FXML
+	private Label l_Acc_searchAccount;
+	@FXML
+	private Label l_Acc_twitterAccounts;
 	
 	
 	private Account account;
@@ -135,12 +155,60 @@ public class DatabaseOptController extends InputElement implements Initializable
 	public void update(UpdateType type) {
 		// TODO Auto-generated method stub
 	}
-
-	
+	/**
+	 * sets labels in menu dialog
+	 */
+	private void setLabelsMenu() {
+		addCat.setText(Labels.DBOPT_CATEGORY);
+		addLoc.setText(Labels.DBOPT_LOCATION);
+		addAcount.setText(Labels.DBOPT_ACCOUNT);;
+	}
+	/**
+	 * sets labels in add category dialog
+	 */
+	private void setLabelsCat() {
+		tab_Cat_tab2.setText(Labels.DBOPT_CAT_SELECTCAT);
+		tab_Cat_tab1.setText(Labels.DBOPT_SELECTACCOUNT);
+		b_Cat_tab1.setText(Labels.DBOPT_CONTINUE);
+		b_Cat_tab2_fertig.setText(Labels.DBOPT_ADD);
+		b_Cat_tab2_zurueck.setText(Labels.DBOPT_BACK);
+		b_Cat_tab2_entfernen.setText(Labels.DBOPT_REMOVE);
+		l_Cat_tab2_selectedAccount.setText(Labels.DBOPT_SELECTEDACCOUNT);
+		l_Cat_tab1_selectedAcc.setText(Labels.DBOPT_SELECTACCOUNT);
+		l_Cat_tab1_AccDB.setText(Labels.DBOPT_ACCOUNTLIST);
+		l_Cat_tab2_oldCats.setText(Labels.DBOPT_CAT_OLDCAT);
+		l_Cat_tab2_selectedCat.setText(Labels.DOPT_CAT_SELECTEDCAT);
+		l_Cat_tab2_searchCat.setText(Labels.DBOPT_CAT_SEARCHCAT);
+	}
+	/**
+	 * sets labels in add loc dialog
+	 */
+	private void setLabelsLoc() {
+		tab_Loc_tab1.setText(Labels.DBOPT_SELECTACCOUNT);
+		tab_Loc_tab2.setText(Labels.DBOPT__LOC_SELECTLOCATION);
+		b_Loc_tab1.setText(Labels.DBOPT_CONTINUE);
+		b_Loc_tab2_fertig.setText(Labels.DBOPT_LOC_CHANGE);
+		b_Loc_tab2_zurueck.setText(Labels.DBOPT_BACK);
+		l_Loc_tab2_selectedAccount.setText(Labels.DBOPT_SELECTACCOUNT);;
+		l_Loc_tab2_currentPlaceDescription.setText(Labels.DPOPT_CURRENTPLACE);
+		l_Loc_tab2_currentAccountDescription.setText(Labels.DBOPT_SELECTEDACCOUNT);
+	}
+	/**
+	 * sets labels in add account dialog
+	 */
+	public void setLabelsAcc() {
+		tab_Acc_tab1.setText(Labels.DBOPT_ACC_ADDACCOUNT);
+		b_Acc_tab1_hinzufuegen.setText(Labels.DBOPT_ADD);
+		b_Acc_tab1_suchen.setText(Labels.DBOPT_SEARCH);
+		l_Acc_searchAccount.setText(Labels.DBOPT_SEARCHACCOUNT);
+		l_Acc_twitterAccounts.setText(Labels.DBOPT_ACC_TWITTERACCOUNTS);
+		b_Acc_tab1_schliessen.setText(Labels.DBOPT_CLOSE);
+	}
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		if(addCat != null) {
+			setLabelsMenu();
 			addCat.setOnAction(new MyActionEventHandler());
 			addLoc.setOnAction(new MyActionEventHandler());
 			addAcount.setOnAction(new MyActionEventHandler());
@@ -149,6 +217,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 		
 		//popUp add new category
 		if(tabPane_Cat != null) {
+			setLabelsCat();
 			tab_Cat_tab2.setDisable(true);
 			txtField_Cat_tab1.setOnKeyReleased(new MyCatEventHandler());
 			list_Cat_tab1.setOnMouseClicked(new MyCatEventHandler());
@@ -170,6 +239,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 		
 		//popUp add/change location
 		if(tabPane_Loc != null) {
+			setLabelsLoc();
 			tab_Loc_tab2.setDisable(true);
 			txtField_Loc_tab1.setOnKeyReleased(new MyLocEventHandler());
 			list_Loc_tab1.setOnMouseClicked(new MyLocEventHandler());
@@ -189,6 +259,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 		}
 		// popUp add user
 		if (tabPane_Acc != null) {
+			setLabelsAcc();
 			b_Acc_tab1_suchen.setOnMousePressed(new MyAccEventHandler());
 			b_Acc_tab1_hinzufuegen.setOnMouseClicked(new MyAccEventHandler());
 			b_Acc_tab1_schliessen.setOnMouseClicked(new MyAccEventHandler());
@@ -353,9 +424,12 @@ public class DatabaseOptController extends InputElement implements Initializable
 					System.out.println("an error occured!");
 					return;
 				}
+				// print message
+				superController.setInfo(Labels.DBOPT_INPROCESS);
 				System.out.println(account.getId() + "    " + selectedItem.getValue().getId());
 			    superController.setLocation(account.getId(), selectedItem.getValue().getId());
-			
+			    // print message
+			    superController.setInfo(Labels.DBOPT_UPDATED, Labels.DBOPT_INPROCESS);
 			}
 			
 			if(event.getSource().equals(b_Loc_tab2_zurueck)) {
@@ -445,8 +519,9 @@ public class DatabaseOptController extends InputElement implements Initializable
 				else {
 					trv_Cat_tab2_oldCats.setRoot(null);
 				}
-				// set label to show the selected account
+				// set label to show the selected account and expand first item of treeView
 				l_Cat_tab2_selectedAccount.setText(account.getName());
+				trv_Cat_tab2.setRoot(updateCategory(superController.getCategoryRoot("")));
 				
 				
 			
@@ -478,6 +553,11 @@ public class DatabaseOptController extends InputElement implements Initializable
 				if (event instanceof MouseEvent) {
 					MouseEvent mouse = (MouseEvent) event;
 					if (mouse.getClickCount() == 2) {
+						
+						if (trv_Cat_tab2.getSelectionModel().getSelectedItem() == null)  {
+							// no real item selected, just click event
+							return;
+						}
 						Category cat = trv_Cat_tab2.getSelectionModel().getSelectedItem().getValue();
 						trv_Cat_tab2.getSelectionModel().clearSelection();
 						
@@ -505,12 +585,17 @@ public class DatabaseOptController extends InputElement implements Initializable
 			if(event.getSource().equals(b_Cat_tab2_fertig)) {
 				// add selected Categories to database
 			
-	
+				// print message
+				superController.setInfo(Labels.DBOPT_INPROCESS);
+				
+				//add categories
 				for(Category cat : list_Cat_tab2.getItems()) {
 					superController.setCategory(account.getId(), cat.getId());
 					System.out.println("2");
 				}	
-			
+				
+				// print message
+				superController.setInfo(Labels.DBOPT_UPDATED, Labels.DBOPT_INPROCESS);
 				
 				
 			}
@@ -533,7 +618,7 @@ public class DatabaseOptController extends InputElement implements Initializable
 		private TreeItem<Category> updateCategory(Category rootCategory) {
 			
 			TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
-			rootItem.setExpanded(false);
+			rootItem.setExpanded(true);
 			updateCategoryRec(rootCategory, rootItem);
 			return rootItem;
 			
@@ -580,12 +665,19 @@ public class DatabaseOptController extends InputElement implements Initializable
 			}
 			if(event.getSource().equals(b_Acc_tab1_hinzufuegen)) {
 				// add account/user to database
+				
 				UserContainer userC = list_Acc_tab1.getSelectionModel().getSelectedItem();
 				System.out.println("hinzugefuegen:   " + userC.getUser().getURL());
 				
+				// print message
+				superController.setInfo(Labels.DBOPT_INPROCESS);
+				
+			    
 				superController.addUserToWatch(userC.getUser(), DEFAULT_LOCATION);
 				System.out.println(userC.getUser().getName() + "    " + userC.getUser().getScreenName());
-				System.out.println("hinzugefuegt");
+				
+				// print message 
+				superController.setInfo(Labels.DBOPT_UPDATED, Labels.DBOPT_INPROCESS);
 				
 				
 			}
