@@ -1,1 +1,54 @@
 \section{Tests}
+
+Im folgenden werden die Tests, welche durchgeführt wurden beschrieben. Statistiken über die Häufigkeit und das Ergebnis der Durchführung werden nicht angegeben, da bei Fehlschlagen eines Testfalls, der zugrunde liegende Fehler gesucht und behoben wurde. Über diesen Vorgang wurden allerdings keine Statistiken geführt.
+
+\subsection{GUI}
+
+Im Bereich der GUI wurden einige JUnit-Testfälle geschrieben, die hauptsächlich den Bereich des GUIControllers betreffen:
+\begin{description}
+	\item[testGetCategories] lade Kategorie aus Datenbank
+	\item[testGetAccounts] lade Account aus Datenbank
+	\item[...]
+	\item[testSelectAccounts] wählen einen Account für den nächsten Query aus
+	\item[testDeselectAccounts] entferne einen Account aus dem Query
+	\item[...]
+	\item[testGetDataByLocation] liefere alle geladenen Retweets nach Ländern sortiert
+	\item[testSubscribe] anmelden beim GUIController
+\end{description}
+
+Diese Testfälle decken die Basisfunktionalität des GUIControllers ab. In den Unterpaketen des Pakets gui wurde größtenteils von Hand getestet, da  hierbei hauptsächlich die richtige Behandlung von "`Events'" getestet werden muss, hierbei allerdings automatisierte Test schwer umzusetzen sind.
+
+
+\subsection{Crawler}
+
+Der Crawler wurde nicht mit automatisierten JUnit-Tests geprüft, stattdessen wurde hier sehr intensiv mittels Mitprotokollieren des Progammablaufs auf dem Server gearbeitet. Da hier das Hauptproblem vor allem die Effizienz war.
+
+\subsection{mysql}
+
+In diesem Paket wurde sehr viel mit JUnit-Test gearbeitet, diese werden im folgenden exemplarisch dargestellt. Alle Tests wurden auf einer Datenbank mit Testdaten durchgeführt.
+\subsubsection{DBcategorizer}
+\quad
+\begin{description}
+	\item[testGetNonCategorized] liefere nicht kategorisierte Accounts zurück
+	\item[testAddCategoryToAccount] füge Kategorie zu Account hinzu
+	\item[...]
+\end{description}
+\subsubsection{DBcrawler}
+\begin{description}
+	\item[testGetAccounts] frage Accounts aus Datenbank an
+	\item[testGetNonVerifiedAccounts] frage nicht verifizierten Accounts an
+	\item[testAddDay] fügt Datum hinzu
+	\item[testAddAccount] füge Account hinzu
+	\item[...]
+	\item[testAddRetweet] füge Retweet hinzu
+	\item[...]	
+\end{description}
+\subsubsection{DBgui}
+\begin{description}
+	\item [testGetAccounts] lade Accounts aus der Datenbank
+	\item [...]
+\end{description}
+\quad
+
+
+
