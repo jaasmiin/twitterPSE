@@ -7,7 +7,7 @@ In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne we
 \begin{itemize}
 	\item \lstinline{DBConnection}
 	\begin{description}
-		\item[executeStatmentUpdate(Statement)] führt ein 'Update' in der DB durch.
+		\item[executeStatmentUpdate(Statement)] führt ein "`Update"' in der DB durch.
 		\item[closeResult(Result)] schließt ein mysql-result
 		\item[closeStatement(Statement)] schließt ein mysql-statement
 	\end{description}
@@ -17,20 +17,20 @@ In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne we
 Hier wurden nur einige Getter- und Setter-Methoden für die einzelnen Klassen bzw. ihre Attribute hinzugefügt, bzw. deren interne Struktur (z.B. Liste statt Array) leicht modifiziert.
 
 \section{Änderungen am Crawler}
-Am Crawler musste in Bezug auf die im Entwurf festgelegte Programmlogik ein großer Teil angepasst werden. Diese Umstellung des Entwurfs wurden durch die im ersten Entwurf zu ineffiziente Lokalisierung der Tweets, Retweets und Accounts nötig. Der ursprüngliche Entwurf sieht vor, dass die von Twitter gelieferten Statusobjekte (Tweets und Retweets) in mehrere Warteschlangen einsortiert werden und diese von einer Instanz der Klasse 'Locator' lokalisiert werden. Der 'Locator' ruft dazu einen Webservice auf, der im Erfolgsfall den Ländercode des entsprechenden Statusobjekts zurücklieferte. Da ein Aufruf des Webservices deutlich länger als eine Sekunde benötigt, und auch das Aufrufen des Webservice von mehreren parallel arbeitenden Threads nur bedingt schnellerd Ergebnisse liefert, musste hier der Entwurf überarbeitet werden.
+Am Crawler musste in Bezug auf die im Entwurf festgelegte Programmlogik ein großer Teil angepasst werden. Diese Umstellung des Entwurfs wurden durch die im ersten Entwurf zu ineffiziente Lokalisierung der Tweets, Retweets und Accounts nötig. Der ursprüngliche Entwurf sieht vor, dass die von Twitter gelieferten Statusobjekte (Tweets und Retweets) in mehrere Warteschlangen einsortiert werden und diese von einer Instanz der Klasse "`Locator"' lokalisiert werden. Der "`Locator"' ruft dazu einen Webservice auf, der im Erfolgsfall den Ländercode des entsprechenden Statusobjekts zurücklieferte. Da ein Aufruf des Webservices deutlich länger als eine Sekunde benötigt, und auch das Aufrufen des Webservice von mehreren parallel arbeitenden Threads nur bedingt schnellere Ergebnisse liefert, musste hier der Entwurf überarbeitet werden.
 
 Eine wesentliche Änderung besteht darin, dass die Ergebnisse der Lokalisierung gespeichert werden. Dazu wird die Ortsinformation des Statusobjekts und der vom Webservice zugeordnete Ländercode in einer Hashtabelle gespeichert. Der Inhalt dieser Hashtabelle wird regelmäßig in die Datenbank geschrieben. So können schon einmal abgefragte Ortsinformationen ohne den zeitaufwendigen Umweg über den Webdienst lokalisiert werden. 
-Weiterhin sieht die jetzige Implementierung vor, dass die vom Twitter-Stream gelesenen Statusojekte in eine Warteschlange geschrieben werde, aus welcher sie parallel von mehreren Worker-Threads entnommen werden. Diese prüfen, ob die Ortsinformation des Statusobjekts schon in der Hashtabelle vorhanden ist. Im Erfolgsfall wird das Statusobjekt sofort in die Datenbank geschrieben. Andernfalls wierd es in eine  Warteschlange weitergereicht, aus welchem mehrere Lokalisierer-Threads die Objekte entnehmen und dem Webservice zur Lokalisierung senden.
+Weiterhin sieht die jetzige Implementierung vor, dass die vom Twitter-Stream gelesenen Statusojekte in eine Warteschlange geschrieben werde, aus welcher sie parallel von mehreren Worker-Threads entnommen werden. Diese prüfen, ob die Ortsinformation des Statusobjekts schon in der Hashtabelle vorhanden ist. Im Erfolgsfall wird das Statusobjekt sofort in die Datenbank geschrieben. Andernfalls wird es in eine  Warteschlange weitergereicht, aus welchem mehrere Lokalisierer-Threads die Objekte entnehmen und dem Webservice zur Lokalisierung senden.
 
 Das folgende Sequenzdiagramm verdeutlicht noch einmal den Ablauf des Vorgangs:
-\begin{figure}[H] %TODO: falsches Bild, Matthias
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/crawler_process_sequence}
 	\caption{Klassendiagramm Crawler}
 	\label{fig:Crawler}
 \end{figure}
 
-Neben dem 'Crawler' wurde auch der 'Locator' bzw. das Paket 'locate' etwas umstrukturiert, er besteht nun aus zwei (Haupt-)Klassen, welche einmal die Anfragen mittels Hashtabelle und Anfragen an den Webservice kapseln, sowie zwei weiteren (Hilfs-)Klassen. Diese sind im folgenden Klassendiagramm dargestellt.
+Neben dem "`Crawler"' wurde auch der "`Locator"' bzw. das Paket "`locate"' etwas umstrukturiert, er besteht nun aus zwei (Haupt-)Klassen, welche einmal die Anfragen mittels Hashtabelle und Anfragen an den Webservice kapseln, sowie zwei weiteren (Hilfs-)Klassen. Diese sind im folgenden Klassendiagramm dargestellt.
  \begin{figure}[H]
  	\centering
  	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/Locator}
@@ -46,11 +46,12 @@ Im folgenden Sequenzdiagramm ist der neue Ablauf des Kategorisierers dargestellt
 	\caption{Sequenzdiagramm Crawler}
 	\label{fig:Crawler}
 \end{figure}
-gegenüber dem Entwurf sind die Methode \lstinline{normalizeUrl()} und \lstinline{normalizeName()} hinzugekommen.
+Gegenüber dem Entwurf sind die Methode \lstinline{normalizeUrl()} und \lstinline{normalizeName()} hinzugekommen.
 \begin{itemize}
-	\item \lstinline{normalizeUrl()} arbeitet mit der vom Twitteraccount angebenen URL. Es werden das Slash (```/''') am Ende sowie Präfixe der Form \url{http://}, \url{https://} und/oder \url{www.} entfernt.
+	\item \lstinline{normalizeUrl()} arbeitet mit der vom Twitteraccount angebenen URL. Es werden das Slash ("`/"') am Ende sowie Präfixe der Form \url{http://}, \url{https://} und/oder \url{www.} entfernt.
 	\item \lstinline{normalizeName()} ersetzt Leerzeichen sowie Unterstriche im Benutzernamen durch ```\%'''. Diese sind das Wildcard-Zeichen in MySQL. Der so resultierende String wird zur Erhöhung der Trefferzahl in den URLs der \lstinline{page} Tabelle gesucht. Diese enthält alle URLs der DMOZ-Datenbank.
 \end{itemize}
+Auf diese Weise konnten bislang über 5000 Accounts kategorisiert werden.
 
 \section{Änderungen an der GUI}
 An der GUI wurden einige Änderungen zum Entwurf vorgenommen, dies lag u.A. an einer Vielzahl von Details, welche während der Entwurfsphase noch nicht bekannt waren oder bewusst auf die konkrete Implementierung verschoben wurden. 
@@ -62,12 +63,12 @@ Die Grobstruktur des Entwurfs blieb jedoch erhalten, wie das folgende Paketdiagr
 	\label{fig:GUI}
 \end{figure}
 
-Eine wichtige Änderung in Bezug auf das Gesamtpaket 'gui' ist, dass es sich bei den 'View' - Klassen, welche die Darstellung der grafischen Komponenten beinhalten, um XML Dateien handelt. Dies war im Entwurf so nicht vermerkt, allerdings implizit angedacht. Die im Entwurf beabsichtigten Idee der Trennung von Darstellung und Programmlogik wird dadurch noch stärker erfüllt, da die XML-Dateien keinerlei Programmlogik enthalten. Desweiteren existiert in jedem Unterpaket von 'gui' nicht nur eine XML-Datei mit Darstellungslogik, sondern u.U. mehrere, da so teilweise größere grafische Komponenten in einzelne XML-Dateien gekapselt werden können.
+Eine wichtige Änderung in Bezug auf das Gesamtpaket 'gui' ist, dass es sich bei den 'View' - Klassen, welche die Darstellung der grafischen Komponenten beinhalten, um XML Dateien handelt. Dies war im Entwurf so nicht vermerkt, allerdings implizit angedacht. Die im Entwurf beabsichtigten Idee der Trennung von Darstellung und Programmlogik wird dadurch erfüllt, da die XML-Dateien keinerlei Programmlogik enthalten. Desweiteren existiert in jedem Unterpaket von 'gui' nicht nur eine XML-Datei mit Darstellungslogik, sondern u.U. mehrere, da so teilweise größere grafische Komponenten in einzelne XML-Dateien gekapselt werden können.
 	
-Allgemein gilt, dass im Folgenden nur ```wichtige''' Änderungen dokumentiert sind.
+Allgemein gilt, dass im Folgenden nur "`wichtige"' Änderungen dokumentiert sind.
 
 \subsection{Änderungen im Paket gui}
-Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurden, welche unmittelbar im Paket 'gui' angesiedelt sind.
+Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurden, welche unmittelbar im Paket "`gui"' angesiedelt sind.
 \begin{itemize}
 	\item \lstinline{GUIController}
 	\quad 
@@ -81,7 +82,7 @@ Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurde
 		\item[getCategoryRoot(int\text{[]})] baut Baum aus Kategorie-Items auf
 		\item[getSummedData()] liefert alle Daten von Datenbank zu einer Suchanfrage
 		\item[getDataByAccount()] liefert Daten aufbereitet nach Account
-		\item[getDisplayValueProperty()] 'Berechnungsformel' liefert relativen Wert zum Einfärben der Karte
+		\item[getDisplayValueProperty()] "`Berechnungsformel"' liefert relativen Wert zum Einfärben der Karte
 		\item[getLocations()] liefert Orte von DB zurück
 		\item[getMapDatailInformation()] liefert Detailinformationen zu Orten, auf welche geklickt wird
 		\item[getSelectedAccounts()] liefert in Query ausgwählte Accounts
@@ -117,10 +118,10 @@ Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurde
 	\end{figure}
 \end{itemize}
 
-Im Folgenden werden die Änderungen in den Subpaketen von 'gui' beschrieben.
+Im Folgenden werden die Änderungen in den Subpaketen von "`gui"' beschrieben.
 
 \subsubsection{databaseOpts}
-In diesem Paket wurde, wie oben vermerkt, die XML-Datei für den grafischen Inhalt in 4 Separate XML Dateien aufgeteilt, um die Lesbarkeit und Übersichtlichkeit zu erhöhen.
+In diesem Paket wurde, wie oben vermerkt, die XML-Datei für den grafischen Inhalt in vier separate XML Dateien aufgeteilt, um die Lesbarkeit und Übersichtlichkeit zu erhöhen.
 
 
 Weiter wurden in 'DatabaseOptController' einige Methoden und innere Klassen hinzugefügt:
@@ -138,24 +139,24 @@ Weiter wurden in 'DatabaseOptController' einige Methoden und innere Klassen hinz
 	\end{description}
 \end{itemize}
 	
-Desweiteren wurden einige private Hilfmethoden hinzugefügt, die beispielsweise einen Baum aus Kategorien aufbauen.
+Desweiteren wurden einige private Hilfsmethoden hinzugefügt, die beispielsweise einen Baum aus Kategorien aufbauen.
 
 \subsubsection{table}
-Diese Paket blieb relativ unverändert, lediglich die Hilfsklasse 'InternAccount' ist aus Gründen der Effizienzsteigerung hinzugekommen.
+Diese Paket blieb relativ unverändert, lediglich die Hilfsklasse "`InternAccount"' ist aus Gründen der Effizienzsteigerung hinzugekommen.
 		
 \subsubsection{standardMap}
-In diesem Paket ergaben sich einige Änderungen. Diese waren durch die relative Inkompatibilität des verwendeten Map-Frameworks 'unfolding' mit 'javafx'. Daher musste eine die Klasse 'StandardMapDialog' hinzugefügt werden:
+In diesem Paket ergaben sich einige Änderungen. Diese waren durch die relative Inkompatibilität des verwendeten Map-Frameworks "`unfolding"' mit "`javafx"'. Daher musste eine die Klasse "`StandardMapDialog"' hinzugefügt werden:
 \begin{itemize}
 	\item \lstinline{StandardMapDialog}
 	\quad
-	Diese Klasse erbt von JFrame einem Java Swing-Typ, da nur in Java Swing das verwendete Map-Framework fehlerfrei dargestellt werden kann. Sie enthält unter anderem eine Referenz auf den 'GUIController' und auf eine Instanz von 'MyUnfoldingMap'.
+	Diese Klasse erbt von JFrame einem Java Swing-Typ, da nur in Java Swing das verwendete Map-Framework fehlerfrei dargestellt werden kann. Sie enthält unter anderem eine Referenz auf den "`GUIController"' und auf eine Instanz von "`MyUnfoldingMap"'.
 	\begin{description}
-		\item[update()] diese Methode wird aktualisiert die auf der Karte dargestellten Daten. Die Daten werden vom 'GUIController' bezogen und an die eigentliche Karte in 'MyUnfoldingMap' weitergereicht.
+		\item[update()] diese Methode wird aktualisiert die auf der Karte dargestellten Daten. Die Daten werden vom "`GUIController"' bezogen und an die eigentliche Karte in "`MyUnfoldingMap"' weitergereicht.
 	\end{description}
 \end{itemize}
 		
 \subsubsection{timeSliderMap}
-Die im Paket 'standardMap' gemachten Änderungen waren hier im selben Maße nötig.
+Die im Paket "`standardMap"' gemachten Änderungen waren hier im selben Maße nötig.
 
 \subsubsection{unfolding} 
 In diesem Paket wurden nur geringfügige Änderungen durchgeführt.
