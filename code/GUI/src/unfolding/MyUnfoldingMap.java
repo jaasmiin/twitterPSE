@@ -31,14 +31,14 @@ public class MyUnfoldingMap extends PApplet {
      */
     private static final long serialVersionUID = 1L;
     
-    private MyUnfoldingMap singleton;
+    private static final MyUnfoldingMap singleton = new MyUnfoldingMap();
     
     private UnfoldingMap map1;
     private UnfoldingMap map2;
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
-    private GUIController superController;
+    private static GUIController superController;
     
     /**
      * List of countryIds which are colored in the map
@@ -61,18 +61,21 @@ public class MyUnfoldingMap extends PApplet {
      * Returns Singleton.
      * @param controller GuiController
      */
-    public MyUnfoldingMap getSingleton(GUIController controller){
-        if(singleton == null) {
-            singleton = new MyUnfoldingMap(controller);
+    public static MyUnfoldingMap getInstance(GUIController controller){
+        if(singleton.superController == null) {
+            singleton.superController = controller;
         }
         return singleton;
     }
     
-    private MyUnfoldingMap(GUIController controller) {
+    private MyUnfoldingMap() {
     	super();
     	this.setSize(900, 600);
-    	this.superController = controller;
 	}
+    
+    public void setController(GUIController controller){
+        superController = controller;
+    }
 
     @Override
 	public void setup() {  //check size of map
