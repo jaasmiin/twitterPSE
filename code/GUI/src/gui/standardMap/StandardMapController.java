@@ -1,13 +1,18 @@
 package gui.standardMap;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import unfolding.MyDataEntry;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.DatePicker;
 import javafx.scene.text.Text;
 import gui.OutputElement;
+
 /**
  * Controls the standardMap and the DetailedInformation dialog
  * @author Matthias
@@ -21,7 +26,13 @@ public class StandardMapController extends OutputElement implements Initializabl
 	private Text txt_StandMap_retweetsQuery;
 	@FXML
 	private Text txt_StandMap_retweetsTotal;
+	@FXML
+	private DatePicker date_SliderMap_startDate;
+	@FXML
+	private DatePicker date_SliderMap_endDate;
 	
+	private LocalDate start;
+    private LocalDate end;
 	private StandardMapDialog dialog;
 
     @Override
@@ -29,6 +40,17 @@ public class StandardMapController extends OutputElement implements Initializabl
         super.initialize(location, resources);
         superController.subscribe(this);
     	dialog = new StandardMapDialog(superController);
+    	
+    	date_SliderMap_endDate = new DatePicker();
+    	date_SliderMap_startDate = new DatePicker();
+    	
+    	// set DatePicker on Action
+        date_SliderMap_startDate.setOnAction(new MyActionHandler());
+        date_SliderMap_endDate.setOnAction(new MyActionHandler());
+        
+        // set default value for dateRange
+        start = LocalDate.MAX;
+        end = LocalDate.MIN;
     }   
  
    @Override
@@ -44,8 +66,34 @@ public class StandardMapController extends OutputElement implements Initializabl
 		   
 	   }
 	   else {
-		   dialog.update(type);
+	       dialog.update(type, date_SliderMap_startDate.getValue(), date_SliderMap_endDate.getValue());
 	   }
     } 
+
+   /**
+    * handles all Action events in this class
+    * 
+    * @author Matthias
+    * 
+    */
+   private class MyActionHandler implements EventHandler<ActionEvent> {
+
+       @Override
+       public void handle(ActionEvent event) {
+
+           if (event.getSource().equals(date_SliderMap_startDate)) {
+               // set start date
+               LocalDate start = date_SliderMap_startDate.getValue();
+               System.out.println(start);
+
+           }
+           if (event.getSource().equals(date_SliderMap_endDate)) {
+               LocalDate end = date_SliderMap_endDate.getValue();
+               System.out.println(end);
+           }
+
+       }
+
+   }
 
 }
