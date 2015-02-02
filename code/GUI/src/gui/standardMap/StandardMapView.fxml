@@ -54,5 +54,7 @@
             <Font size="13.0" />
          </font>
       </Text>
+      <DatePicker fx:id="date_SliderMap_startDate" />
+      <DatePicker fx:id="date_SliderMap_endDate" GridPane.columnIndex="1" />
    </children>
 </GridPane>
