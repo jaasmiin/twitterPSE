@@ -66,8 +66,12 @@ public class Categorizer {
             //find and insert each category
             List<Integer> categories = db.getCategoriesForAccount(url, name);
             for (Integer category : categories) {
-            	System.out.println("     Category: " + category);
-                db.addCategoryToAccount(account.getId(), category.intValue());
+                //get upwards in the category tree
+                do {
+                	System.out.println("     Category: " + category);
+                    db.addCategoryToAccount(account.getId(), category.intValue());
+                    category = db.getParentId(category);
+                } while (category != 0 && category != -1);
             }
             
             //could not find a category
