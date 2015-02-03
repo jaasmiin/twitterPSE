@@ -28,7 +28,7 @@ import mysql.result.TweetsAndRetweets;
  * 
  */
 public class DBgui extends DBConnection implements DBIgui {
-    
+
     /**
      * configure the connection to the database
      * 
@@ -449,11 +449,19 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
-            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
-            throws IllegalArgumentException, SQLException {
-        Statement stmt = createBasicStatement(categoryIDs, locationIDs,
-                accountIDs);
-        return getTweetSum(stmt, byDates);
+            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
+
+        Statement stmt;
+        TweetsAndRetweets ret = new TweetsAndRetweets();
+        try {
+            stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
+            ret = getTweetSum(stmt, byDates);
+        } catch (SQLException  e) {
+            logger.warning("SQL-Exception by gatSumData: " + e.getMessage());
+        }catch (IllegalArgumentException e){
+        }
+        
+        return ret;
     }
 
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
@@ -568,6 +576,7 @@ public class DBgui extends DBConnection implements DBIgui {
             ret = getTweetSumPerAccount(stmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatAllData: " + e.getMessage());
+        }catch (IllegalArgumentException e){
         }
 
         return ret;
@@ -607,7 +616,6 @@ public class DBgui extends DBConnection implements DBIgui {
     private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {
 
         HashMap<Integer, Account> accounts = getAccounts(stmt);
-        System.out.println("Accounts: " + accounts.size());
 
         String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets "
                 + "JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";
