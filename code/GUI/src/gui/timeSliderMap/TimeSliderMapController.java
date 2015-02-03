@@ -42,9 +42,6 @@ public class TimeSliderMapController extends OutputElement implements
         super.initialize(location, resources);
         superController.subscribe(this);
 
-        // acitvate daterange option
-        superController.setDateRange(true);
-
         dialog = new TimeSliderDialog(superController);
 
         // set DatePicker on Action
@@ -69,7 +66,7 @@ public class TimeSliderMapController extends OutputElement implements
                     .getRetweetsLand()));
 
         } else {
-            dialog.update(type, start, end);
+            dialog.update(type, date_SliderMap_startDate.getValue(), date_SliderMap_endDate.getValue());
         }
     }
 

@@ -21,7 +21,7 @@ public abstract class GUIElement implements Initializable {
      */
     public static enum UpdateType {
         TWEET, CATEGORY, LOCATION, ACCOUNT, ERROR, 
-        CATEGORY_SELECTION, LOCATION_SELECTION, ACCOUNT_SELECTION, CLOSE, GUI_STARTED, MAP_DETAIL_INFORMATION
+        CATEGORY_SELECTION, LOCATION_SELECTION, ACCOUNT_SELECTION, CLOSE, GUI_STARTED, MAP_DETAIL_INFORMATION, TWEET_BY_DATE
     };
 
     public abstract void update(UpdateType type);

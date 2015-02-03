@@ -263,7 +263,7 @@
 			<property name="scope" value="package" />
 			<!-- <property name="excludeScope" value=""/> ! -->
 			<property name="authorFormat" value="" />
-			<property name="versionFormat" value="" />
+			<!-- <property name="versionFormat" value="" /> -->
 			<property name="allowMissingParamTags" value="false" />
 			<property name="allowUnknownTags" value="false" />
 			<property name="tokens" value="INTERFACE_DEF, CLASS_DEF" />
@@ -273,7 +273,7 @@
 		<!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocMethod ! -->
 		<module name="JavadocMethod">
 			<property name="scope" value="package" />
-			<!-- <property name="excludeScope" value=""/> ! -->
+			 <!-- <property name="excludeScope" value=""/> -->
 			<property name="allowUndeclaredRTE" value="false" />
 			<property name="allowThrowsTagsForSubclasses" value="false" />
 			<property name="allowMissingParamTags" value="false" />

@@ -11,9 +11,9 @@
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <TextField fx:id="txtField_Acc_tab1" layoutX="14.0" layoutY="60.0" />
-                  <Label layoutX="14.0" layoutY="23.0" text="Suche Account" />
+                  <Label fx:id="l_Acc_searchAccount" layoutX="14.0" layoutY="23.0" text="Suche Account" />
                   <ListView fx:id="list_Acc_tab1" layoutX="300.0" layoutY="60.0" prefHeight="256.0" prefWidth="272.0" />
-                  <Label layoutX="300.0" layoutY="23.0" text="Twitter Accounts" />
+                  <Label fx:id="l_Acc_twitterAccounts" layoutX="300.0" layoutY="23.0" text="Twitter Accounts" />
                   <Button fx:id="b_Acc_tab1_schliessen" layoutX="507.0" layoutY="316.0" mnemonicParsing="false" text="Weiter" />
                   <Button fx:id="b_Acc_tab1_hinzufuegen" layoutX="395.0" layoutY="316.0" mnemonicParsing="false" text="hinzufügen" />
                   <Button fx:id="b_Acc_tab1_suchen" layoutX="14.0" layoutY="106.0" mnemonicParsing="false" text="Suchen" />

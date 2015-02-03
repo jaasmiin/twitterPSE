@@ -63,7 +63,6 @@ public class WebServiceLocator implements RunnableListener {
         run = true;
         this.logger = logger;
         this.locateQueue = locateQueue;
-        formatter = new Formatter(logger);
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
@@ -140,8 +139,8 @@ public class WebServiceLocator implements RunnableListener {
 
     private void locateRetweet(LocateStatus retweet) {
 
-        String location = formatter.formatString(retweet.getLocation());
-        String timezone = formatter.formatString(retweet.getTimeZone());
+        String location = Formatter.formatString(retweet.getLocation(), logger);
+        String timezone = Formatter.formatString(retweet.getTimeZone(), logger);
         String countryCode = DEFAULT_LOCATION;
 
         // update counter
@@ -159,8 +158,8 @@ public class WebServiceLocator implements RunnableListener {
     private void locateAccount(User user, Date createdAt, boolean tweet) {
 
         String countryCode = DEFAULT_LOCATION;
-        String timezone = formatter.formatString(user.getTimeZone());
-        String location = formatter.formatString(user.getLocation());
+        String timezone = Formatter.formatString(user.getTimeZone(), logger);
+        String location = Formatter.formatString(user.getLocation(), logger);
 
         // update counter
         countQuery++;

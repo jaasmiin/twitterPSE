@@ -74,11 +74,12 @@ public class GUIController extends Application implements Initializable {
     private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
     private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
     private List<Account> dataByAccount = new ArrayList<Account>();
-
+    private TweetsAndRetweets dataByLocationAndDate = new TweetsAndRetweets();
+    private List<Account> dataByAccountAndDate = new ArrayList<Account>();
+    
     private HashSet<Integer> selectedCategories = new HashSet<Integer>();
     private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 
-    private boolean dateRange = false;
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
 
@@ -350,9 +351,13 @@ public class GUIController extends Application implements Initializable {
             boolean success = true;
             try {
                 dataByLocation = db.getSumOfData(allSelectedCategories,
-                        selectedLocations, selectedAccounts, dateRange);
+                        selectedLocations, selectedAccounts, false);
                 dataByAccount = db.getAllData(allSelectedCategories,
-                        selectedLocations, selectedAccounts, dateRange);
+                        selectedLocations, selectedAccounts, false);
+                dataByLocationAndDate = db.getSumOfData(allSelectedCategories,
+                        selectedLocations, selectedAccounts, true);
+                dataByAccountAndDate = db.getAllData(allSelectedCategories,
+                        selectedLocations, selectedAccounts, true);
             } catch (IllegalArgumentException e) {
                 success = false;
                 setInfo(Labels.DB_CONNECTION_ERROR, info);
@@ -360,12 +365,16 @@ public class GUIController extends Application implements Initializable {
             if (success) {
                 setInfo(Labels.DATA_LOADED, info);
                 update(UpdateType.TWEET);
+                update(UpdateType.TWEET_BY_DATE);
             }
         } else {
             dataByLocation = new TweetsAndRetweets();
             dataByAccount = new ArrayList<Account>();
+            dataByLocationAndDate = new TweetsAndRetweets();
+            dataByAccountAndDate = new ArrayList<Account>();
             setInfo(Labels.ERROR_NO_FILTER_SELECTED, info);
             update(UpdateType.TWEET);
+            update(UpdateType.TWEET_BY_DATE);
         }
     }
 
@@ -729,6 +738,15 @@ public class GUIController extends Application implements Initializable {
     }
 
     /**
+     * Get data grouped by account and date.
+     * 
+     * @return data grouped by account or null
+     */
+    public List<Account> getDataByAccountAndDate() {
+        return dataByAccountAndDate;
+    }
+    
+    /**
      * Get data grouped by location.
      * 
      * @return data grouped by location or null
@@ -737,6 +755,15 @@ public class GUIController extends Application implements Initializable {
         return dataByLocation;
     }
 
+    /**
+     * Get data grouped by location and date.
+     * 
+     * @return data grouped by location or null
+     */
+    public TweetsAndRetweets getDataByLocationAndDate() {
+        return dataByLocationAndDate;
+    }
+    
     /**
      * Get the account by id. Only accounts which are cached in the
      * GUIController are available meaning accounts displayed in
@@ -775,17 +802,6 @@ public class GUIController extends Application implements Initializable {
      */
     public Location getLocation(Integer id) {
         return locations.getElement(id);
-    }
-
-    /**
-     * Set if date information should be included in data got from
-     * getDataByAccount and getDataByLocation
-     * 
-     * @param dateRange
-     *            is true if date should be included, false otherwise
-     */
-    public void setDateRange(boolean dateRange) {
-        this.dateRange = dateRange;
     }
 
     /**

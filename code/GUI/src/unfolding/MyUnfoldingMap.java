@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import unfolding.MyDataEntry;
 import processing.core.PApplet;
+import de.fhpotsdam.unfolding.Map;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
@@ -29,12 +31,15 @@ public class MyUnfoldingMap extends PApplet {
      * default serial version uid
      */
     private static final long serialVersionUID = 1L;
+    
+    private static final MyUnfoldingMap singleton = new MyUnfoldingMap();
+    
     private UnfoldingMap map1;
     private UnfoldingMap map2;
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
-    private GUIController superController;
+    private static GUIController superController;
     
     /**
      * List of countryIds which are colored in the map
@@ -53,11 +58,25 @@ public class MyUnfoldingMap extends PApplet {
      */
     private float maxValue = 0;
     
-    public MyUnfoldingMap(GUIController controller) {
+    /**
+     * Returns Singleton.
+     * @param controller GuiController
+     */
+    public static MyUnfoldingMap getInstance(GUIController controller){
+        if(singleton.superController == null) {
+            singleton.superController = controller;
+        }
+        return singleton;
+    }
+    
+    private MyUnfoldingMap() {
     	super();
     	this.setSize(900, 600);
-    	this.superController = controller;
 	}
+    
+    public void setController(GUIController controller){
+        superController = controller;
+    }
 
     @Override
 	public void setup() {  //check size of map
@@ -69,9 +88,10 @@ public class MyUnfoldingMap extends PApplet {
         
         currentMap = map1;
 
-        currentMap.zoomLevel(1);
+        currentMap.zoomLevel(0);
         currentMap.setZoomRange(2, 4);
         currentMap.setBackgroundColor(140);
+
         MapUtils.createDefaultEventDispatcher(this, map1, map2);
         
       //Load country polygons
@@ -172,18 +192,19 @@ public class MyUnfoldingMap extends PApplet {
      *            HashMap containing country name, display value and other data for hover effect
      */
     public void update(HashMap<String, MyDataEntry> changedEntries) {
-
+        resetMarkers();
         if (!setValues.isEmpty()) {
             for (String id : setValues) {
                 
                 MyDataEntry edit = dataEntriesMap.get(id);
                 
                 edit.setValue(-1);
+                edit.setRetweetsLandFiltered(-1);
                 dataEntriesMap.put(id, edit);
             }
             setValues.clear();
         }
-
+  
         for(Entry<String, MyDataEntry> e: changedEntries.entrySet()) {
             MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
             if(newEntry != null) {
@@ -192,12 +213,14 @@ public class MyUnfoldingMap extends PApplet {
                 newEntry.setRetweetsLandFiltered(e.getValue().getRetweetsLandFiltered());
                 dataEntriesMap.put(e.getKey(), newEntry);
                 setValues.add(e.getKey());
+                System.out.println(newEntry.getCountryId2Chars() + "  unfolding  " + newEntry.getRetweetsLandFiltered());
             }
 
             if(Float.parseFloat(e.getValue().getValue().toString()) > maxValue) {
                 maxValue = Float.parseFloat(e.getValue().getValue().toString());
             }
         }
+       
         shadeCountries();
     }    
     /**
@@ -246,7 +269,7 @@ public class MyUnfoldingMap extends PApplet {
     /**
      * Resets all colored markers
      */
-    public void resetMarkers() {
+    private void resetMarkers() {
         for(Marker m : countryMarker) {
             m.setColor(color(173,173,173,50));
             m.setStrokeColor(color(241, 241, 241, 50));

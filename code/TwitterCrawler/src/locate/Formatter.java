@@ -13,17 +13,7 @@ import java.util.logging.Logger;
  * 
  */
 public class Formatter {
-    private Logger logger;
 
-    /**
-     * create a new Formatter to format urls
-     * 
-     * @param logger
-     *            a logger to log exception, ... as Logger
-     */
-    public Formatter(Logger logger) {
-        this.logger = logger;
-    }
 
     /**
      * formats input string to a suitable WEBSERVICE access format. E.g. all
@@ -31,9 +21,10 @@ public class Formatter {
      * 
      * @param unformattedStr
      *            input string
+     * @param Logger logger to protocol exceptional behavior
      * @return formatted string
      */
-    public String formatString(String unformattedStr) {
+    public  static String formatString(String unformattedStr, Logger logger) {
 
         if (unformattedStr != null) {
             unformattedStr = unformattedStr.replace(' ', '+');

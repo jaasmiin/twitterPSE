@@ -21,7 +21,6 @@ public class Locator {
     private static final String DEFAULT_LOCATION = "0";
     private HashMap<String, String> map;
     private Logger logger;
-    private Formatter formatter;
     private int numberOfReq = 0;
     private int numberOfLocReq = 0;
     private int numberOfPlaceLoc = 0;
@@ -47,7 +46,6 @@ public class Locator {
             throws IllegalArgumentException {
 
         this.logger = logger;
-        formatter = new Formatter(logger);
         if (map == null) {
             logger.severe("HashMap reference is null");
             throw new IllegalArgumentException("HashMap reference is null");
@@ -97,8 +95,8 @@ public class Locator {
      */
     private String getLocation(String location, String timezone) {
         String result = DEFAULT_LOCATION;
-        location = formatter.formatString(location);
-        timezone = formatter.formatString(timezone);
+        location = Formatter.formatString(location, logger);
+        timezone = Formatter.formatString(timezone, logger);
         String query = location + "#" + timezone;
         if (map.containsKey(query)) {
             result = map.get(query);
