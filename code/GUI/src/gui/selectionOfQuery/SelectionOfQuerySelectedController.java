@@ -1,5 +1,6 @@
 package gui.selectionOfQuery;
 
+import gui.Labels;
 import gui.OutputElement;
 
 import java.net.URL;
@@ -13,6 +14,7 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.MouseEvent;
 
@@ -42,6 +44,24 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 */
 	@FXML
 	private ListView<Account> lstSelectedAccounts;
+	
+	/**
+	 * This label describes ListView lstSelectedAccounts.
+	 */
+    @FXML
+    private Label lblAccounts;
+
+    /**
+     * This label describes ListView lstSelectedLocations.
+     */
+    @FXML
+    private Label lblLocations;
+
+    /**
+     * This label describes ListView lstSelectedCategories.
+     */
+    @FXML
+    private Label lblCategories;
 	
 	
 	/**
@@ -83,7 +103,11 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
-		superController.subscribe(this);		
+		superController.subscribe(this);
+		
+		lblAccounts.setText(Labels.ACCOUNTS);
+		lblLocations.setText(Labels.LOCATIONS);
+		lblCategories.setText(Labels.CATEGORIES);
 	}
 
 	@Override

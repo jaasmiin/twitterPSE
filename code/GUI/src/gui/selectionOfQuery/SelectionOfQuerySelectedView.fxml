@@ -26,13 +26,13 @@
                </GridPane.margin></ListView>
             <ListView fx:id="lstSelectedLocations" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#handle" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <ListView fx:id="lstSelectedAccounts" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#handle" orientation="HORIZONTAL" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Kategorien:">
+            <Label fx:id="lblCategories">
                <GridPane.margin>
                   <Insets right="5.0" />
                </GridPane.margin></Label>
-            <Label text="Orte:" GridPane.rowIndex="1">
+            <Label fx:id="lblLocations" GridPane.rowIndex="1">
             </Label>
-            <Label text="Accounts:" GridPane.rowIndex="2">
+            <Label fx:id="lblAccounts" GridPane.rowIndex="2">
             </Label>
          </children>
       </GridPane>
