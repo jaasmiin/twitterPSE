@@ -38,7 +38,6 @@ public class StandardMapDialog extends JDialog {
 		setTitle("Map");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		map = MyUnfoldingMap.getInstance(superController);
-		System.out.println();
 		add(map);
 		map.init();
 	}
@@ -49,7 +48,8 @@ public class StandardMapDialog extends JDialog {
      * @param start start date of range of the query
      * @param end end date of range of the query
      */
-    public void update(UpdateType type, LocalDate start, LocalDate end) {
+    @SuppressWarnings("incomplete-switch")
+	public void update(UpdateType type, LocalDate start, LocalDate end) {
 		switch (type) {
 		case CLOSE:
 			if (map != null) {
@@ -115,9 +115,6 @@ public class StandardMapDialog extends JDialog {
 			map.redraw();
 			setVisible(true);
 			break;
-		
-		default:
-		    map.update(new HashMap<String, MyDataEntry>());
 		}
 	}
     /**
