@@ -94,48 +94,30 @@ Eine wichtige Änderung in Bezug auf das Gesamtpaket 'gui' ist, dass es sich bei
 Allgemein gilt, dass im Folgenden nur "`wichtige"' Änderungen dokumentiert sind.
 
 \subsection{Änderungen im Paket gui}
-Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurden, welche unmittelbar im Paket "`gui"' angesiedelt sind.
+Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurden, welche unmittelbar im Paket \emph{gui} angesiedelt sind.
 \begin{itemize}
-	\item \lstinline{GUIController}
+	\item \textbf{\lstinline{GUIController}}
 	\quad 
 	In der Hauptkontroller-Klasse sind einige Methoden hinzugekommen. Größtenteils waren diese im Entwurf schon angedacht nur noch nicht hinreichend konkret geplant worden. Die Änderungen im GUIController werden ausführlicher als für den Rest der (Unter-)Pakete besprochen, da es sich um die zentrale Klasse der GUI handelt.
 	\begin{description}
-		\item[getAccount(int)] liefert Account von DB zurück.
-		\item[close()] beendet Programm.
-		\item[addUserToWatch(twitter4j.User, int)] fügt Twitter-Account zur Datenbank hinzu.
-		\item[getCategory(int)] liefert Kategorie von Datenbank
-		\item[getCategory(String)] liefert Kategorie von Datenbank (nach Zeichenkette im Namen)
-		\item[getCategoryRoot(int\text{[]})] baut Baum aus Kategorie-Items auf
-		\item[getSummedData()] liefert alle Daten von Datenbank zu einer Suchanfrage
-		\item[getDataByAccount()] liefert Daten aufbereitet nach Account
+		\item[getAccount(int), getCategory(int)] liefert den Accoun bzw. die Kategorie mit übergebener ID von der DB zurück.
+		\item[getCategory(String)] liefert die Kategorien von der Datenbank, die die Zeichenkette im Namen enthalten.
+		\item[getDataByAccount()] liefert Daten gruppiert nach Accounts.
+		\item[getDataByAccountDate(), getDataByLocationDate()] liefert Daten gruppiert nach Account bzw. Ort und Datum der enthaltenen Retweets.
 		\item[getDisplayValueProperty()] "`Berechnungsformel"' liefert relativen Wert zum Einfärben der Karte
-		\item[getLocations()] liefert Orte von DB zurück
-		\item[getMapDatailInformation()] liefert Detailinformationen zu Orten, auf welche geklickt wird
-		\item[getSelectedAccounts()] liefert in Query ausgwählte Accounts
-		\item[getSelectedCategories()] lieft in Query ausgewählte Kategorien
-		\item[getSelectedLocations()] liefert in Query auswählte Orte
-		\item[isConnected()] indiziert ob Verbindung zu DB besteht
-		\item[isReady()]
-		\item[main()] startet Programm
-		\item[setCategory(int, int)] fügt Kategorie zu DB hinzu
+		\item[getSelectedAccounts(), getSelectedCategories(), getSelectedLocations()] liefert in Query auswählte Accounts, Orte bzw Kategorien.
+		\item[getMapDatailInformation()] liefert Detailinformationen zu Orten, auf welche geklickt wird.
 		\item[setMapDetailInformation(MyDataEntry)] setzt Detailinformationen zu Orten, auf welche geklickt wird
-		\item[setSelectedAccount(int, boolean)] fügt Account zu Query hinzu
-		\item[setSelectedCategory(int, boolean)] fügt Kategorie zu Query hinzu
-		\item[setSelectedLocation(int, boolean)] fügt Ort zu Query hinzu
+		\item[setSelectedAccount(int, boolean)] fügt Account zu Query hinzu (diese Methode gibt es auch entsprchend für Orte und Kategorien).
+		\item[setCategory(int, int)] fügt Kategorie zu einem Account in der DB hinzu.
+		\item[addUserToWatch(twitter4j.User, int)] fügt Twitter-Account zur Datenbank hinzu.
 	\end{description}
-	\item \lstinline{SelectionHashList}
-	\quad
-	Diese neu hinzugekommene Klasse stellt  eine Ergänzung zum Entwurf dar, welche aus Gründen der Effizienz gewählt wurde. Mit implemtiert wird eine Hashstruktur, über die mittels Getter- und Settermethoden entschieden werden kann, ob eine Kategorie oder ein Account für ein Query an die Datenbank ausgewählt ist, bzw. diese zu einem Query hinzuzufügen.
-	\item \lstinline{Labels}
-	\quad
-	\item \lstinline{RunnableParameter}
-	\quad 
-	Diese Klasse enthält zentral alle Beschriftungen, welche in der GUI verwendet werden.
-	Neu hinzugekommene Klasse, die das Interface 'Runnable' so implementiert, dass dem Runnable ein Parameterübergeben werden kann.
-	\item \lstinline{InfoRunnable}
-	\quad
-	Zusammen mit der gerade geschriebenen Klasse, wird mit der neu hinzugekommenen InfoRunnable ein Thread gestartet, der Nachrichten wie 'Verbinde mit Datenbank ...', 'Lade Daten' für eine begrenzte Zeit anzeigt.	
-	Die folgende Grafik zeigt das Klassendiagramm des 'GUIControllers' zusammen mit verwandten Klassen. Allerdings sind die Klassen nicht mit all ihren Methoden und Attributen aufgeführt.
+	\item \textbf{\lstinline{SelectionHashList}}\quad
+	ist eine neue Klasse, welche aus Gründen der Effizienz zu den im Entwurf vorhaden Klassen hinzugefügt wurde. Implemtiert wird eine Hashstruktur, über die mittels Getter- und Settermethoden entschieden werden kann, ob eine Kategorie oder ein Account für ein Query an die Datenbank ausgewählt ist, bzw. diese zu einem Query hinzuzufügen.
+	\item \textbf{\lstinline{Labels}}\quad enthält alle in der GUI verwendeten \emph{Strings} um so bspw. eine leichte Änderung der Sprache der gesamten Anwendung zu ermöglichen.
+	\item \textbf{\lstinline{RunnableParameter}} ermöglicht es einem Runnable einen Paramter zu übergeben und auf diesen in der Ausführung der Methode \emph{run()} zuzugreifen.
+	\item \textbf{\lstinline{InfoRunnable}} \quad Zusammen mit der gerade geschriebenen Klasse, wird mit der neu hinzugekommenen InfoRunnable ein Thread gestartet, der Nachrichten wie "Verbinde mit Datenbank ...", "Lade Daten" für eine begrenzte Zeit anzeigt.	
+	Die folgende Grafik zeigt das Klassendiagramm des \emph{GUIControllers} zusammen mit verwandten Klassen. Allerdings sind die Klassen nicht mit all ihren Methoden und Attributen aufgeführt.
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIKlassendiagramm}
@@ -144,7 +126,7 @@ Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurde
 	\end{figure}
 \end{itemize}
 
-Im Folgenden werden die Änderungen in den Subpaketen von "`gui"' beschrieben.
+Im Folgenden werden die Änderungen in den Subpaketen von \emph{gui} beschrieben.
 
 \subsection{databaseOpts}
 In diesem Paket wurde, wie oben vermerkt, die FXML-Datei für den grafischen Inhalt in vier separate FXML Dateien aufgeteilt, um die Lesbarkeit und Übersichtlichkeit zu erhöhen.
