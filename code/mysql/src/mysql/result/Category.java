@@ -7,7 +7,6 @@ import java.util.List;
  * store the categories of an account
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public class Category extends Result {
@@ -36,6 +35,8 @@ public class Category extends Result {
         super(id);
         childs = new ArrayList<Category>();
         this.parent = parentId;
+
+        // check for max length of name, because of database limit
         if (name.length() > MAX_LENGTH) {
             name = name.substring(0, MAX_LENGTH - 1);
         }

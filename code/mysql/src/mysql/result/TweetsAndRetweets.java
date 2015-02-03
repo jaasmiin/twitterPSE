@@ -8,7 +8,6 @@ import java.util.List;
  * one Object
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class TweetsAndRetweets {

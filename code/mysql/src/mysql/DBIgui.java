@@ -14,7 +14,6 @@ import mysql.result.TweetsAndRetweets;
  * interface for modifying some data from a database (with restrictions)
  * 
  * @author Maximilian Awiszus, Holger Ebhart
- * @version 1.1
  * 
  */
 public interface DBIgui {
@@ -32,15 +31,6 @@ public interface DBIgui {
      * @return a list of locations.
      */
     public List<Location> getLocations();
-
-    // /**
-    // * Get id of account with accountName.
-    // *
-    // * @param accountName
-    // * of the twitter account.
-    // * @return id of the account or -1 if not found.
-    // */
-    // public int getAccountId(String accountName);
 
     /**
      * returns the sum of all retweets for each location

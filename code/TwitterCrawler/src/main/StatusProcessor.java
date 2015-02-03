@@ -21,7 +21,6 @@ import twitter4j.User;
  * database
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public class StatusProcessor implements RunnableListener {
@@ -87,11 +86,13 @@ public class StatusProcessor implements RunnableListener {
      */
     public void run() {
 
+     // check weather a connection to the database has been established or not
         if (dbc == null) {
             logger.severe("A StatusProcessor couldn't been started: No database connection!");
             return;
         }
 
+     // open new connection to database
         try {
             dbc.connect();
         } catch (SQLException e) {
@@ -100,6 +101,7 @@ public class StatusProcessor implements RunnableListener {
         }
 
         Status status;
+        // work till the program will be shut down
         while (run) {
 
             try {
@@ -109,8 +111,10 @@ public class StatusProcessor implements RunnableListener {
                 // e.getMessage());
             }
 
+            // work until the queue is empty
             while (!queue.isEmpty()) {
 
+                // try to enqueue an element to work on it
                 status = null;
                 try {
                     status = queue.poll();

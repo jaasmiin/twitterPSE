@@ -4,19 +4,17 @@ Im folgenden werden die Tests, welche durchgeführt wurden beschrieben. Statisti
 
 \subsection{GUI}
 
-Im Bereich der GUI wurden einige JUnit-Testfälle geschrieben, die hauptsächlich den Bereich des GUIControllers betreffen:
+Im Bereich der GUI wurden einige JUnit-Testfälle geschrieben, die hauptsächlich den Bereich des \emph{GUIControllers} betreffen:
 \begin{description}
-	\item[testGetCategories] lade Kategorie aus Datenbank
-	\item[testGetAccounts] lade Account aus Datenbank
-	\item[...]
-	\item[testSelectAccounts] wählen einen Account für den nächsten Query aus
-	\item[testDeselectAccounts] entferne einen Account aus dem Query
-	\item[...]
+	\item[testGetCategories, testGetAccounts] läd Kategorien bzw. Accounts aus der Datenbank.
+	\item[testSelectAccounts] wählt einen Account\footnotemark[1] für den nächsten Query aus.
+	\item[testDeselectAccounts] entfernt einen Account\footnotemark[1] aus dem Query.
 	\item[testGetDataByLocation] liefere alle geladenen Retweets nach Ländern sortiert
-	\item[testSubscribe] anmelden beim GUIController
+	\item[testSubscribe] anmelden beim \emph{GUIController}
+\footnotetext[1]{Diese Testmethode existiert auch für Orte und Kategorien.}
 \end{description}
 
-Diese Testfälle decken die Basisfunktionalität des GUIControllers ab. In den Unterpaketen des Pakets gui wurde größtenteils von Hand getestet, da  hierbei hauptsächlich die richtige Behandlung von "`Events'" getestet werden muss, hierbei allerdings automatisierte Test schwer umzusetzen sind.
+Diese Testfälle decken die Basisfunktionalität des \emph{GUIControllers} ab. In den Unterpaketen des Pakets \emph{gui} wurde größtenteils von Hand getestet, da  hierbei hauptsächlich die richtige Behandlung von \emph{Events} getestet werden muss, hierbei allerdings automatisierte Test schwer umzusetzen sind.
 
 
 \subsection{Crawler}

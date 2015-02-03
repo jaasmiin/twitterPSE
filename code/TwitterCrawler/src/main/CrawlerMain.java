@@ -11,10 +11,10 @@ import mysql.AccessData;
  * multiple threads
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class CrawlerMain {
+
     private static Controller cntrl;
     private static final String ERROR = "ERROR: A big error has occuered!"
             + "The program will be shut down. Please check your input: ";
@@ -34,11 +34,14 @@ public class CrawlerMain {
      */
     public static void main(String[] args) {
 
+        // validate user-input
         // only numbers from 0-9
         if (args.length > 6 && args[0].matches("[0-9]+")
                 && args[1].matches("[0-9]+") && args[3].matches("[0-9]+")
                 && args[2].length() > 0 && args[4].length() > 0
                 && args[5].length() > 0 && args[6].length() > 0) {
+
+            // initialize main-component
             try {
                 cntrl = new Controller(Integer.parseInt(args[1]),
                         new AccessData(args[2], args[3], args[4], args[5],
@@ -47,6 +50,8 @@ public class CrawlerMain {
                 System.out.println(ERROR + INPUT);
                 return;
             }
+
+            // start main-component
             cntrl.start();
             userInput();
         } else {
@@ -59,20 +64,32 @@ public class CrawlerMain {
         }
     }
 
+    /**
+     * provide a possibility for the user to get informations about the current
+     * state and to shut down or kill the program
+     */
     private static void userInput() {
+
+        // read user-input from terminal
         BufferedReader console = new BufferedReader(new InputStreamReader(
                 System.in));
+
+        // process user-input
         String command = "";
         while (!command.equals("exit") && !command.equals("kill")) {
             System.out.print("crawler> ");
+
             do {
                 try {
+                    // wait for next user input
                     command = console.readLine();
                 } catch (IOException e) {
                     System.out
                             .println(" Error, problem with reading user input.");
                 }
             } while (command == null || command == "");
+
+            // delegate user request to responsible component
             switch (command) {
             case "status":
                 System.out.println(cntrl.toString());
@@ -89,6 +106,7 @@ public class CrawlerMain {
             }
         }
 
+        // shut down or kill the program
         cntrl.shutdown(command.equals("kill"));
         System.exit(0);
     }
