@@ -26,7 +26,7 @@ public class MyDataEntry {
     private int retweetsLandFiltered;
     
     public MyDataEntry() {
-        this(-1, "", -1, -1);
+        this(-1, "", 0, 0);
     }
     
     public MyDataEntry(double value, String countryName, int retweetsLand, int retweetsLandFiltered) {
