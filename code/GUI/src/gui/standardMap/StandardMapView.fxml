@@ -59,5 +59,6 @@
       <DatePicker fx:id="date_SliderMap_startDate" />
       <DatePicker fx:id="date_SliderMap_endDate" GridPane.columnIndex="1" />
       <Button fx:id="b_StandMap_confirm" mnemonicParsing="false" text="Button" GridPane.columnIndex="2" />
+      <Button fx:id="b_StandMap_reset" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" />
    </children>
 </GridPane>
