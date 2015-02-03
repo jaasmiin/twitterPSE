@@ -1,5 +1,5 @@
-export
 gui
+gui.csvExport
 gui.databaseOptions
 gui.diffMap
 gui.search

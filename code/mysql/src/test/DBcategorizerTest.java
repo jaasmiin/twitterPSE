@@ -45,6 +45,7 @@ public class DBcategorizerTest {
                 | ClassNotFoundException | SQLException | SecurityException
                 | IOException e) {
             e.printStackTrace();
+            log.warning(e.getMessage());
         }
     }
 
@@ -148,7 +149,7 @@ public class DBcategorizerTest {
         try {
             DBtest t = new DBtest(access, log);
             t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
-            t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
+            t.sql("DELETE FROM accountCategory WHERE AccountId=1;");
             t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
             t.sql("DELETE FROM category WHERE Name = \"parent\";");
         } catch (InstantiationException | IllegalAccessException
@@ -159,6 +160,38 @@ public class DBcategorizerTest {
         assertTrue(res2);
         assertTrue(res3);
         assertEquals(4, list.size());
+    }
+
+    /**
+     * test getParentId with category top
+     */
+    @Test
+    public void test1GetParentId() {
+        assertEquals(0, dbc.getParentId(1));
+    }
+
+    /**
+     * test getParentId with invalid category
+     */
+    @Test
+    public void test2GetParentId() {
+        assertEquals(-1, dbc.getParentId(-5));
+    }
+
+    /**
+     * test getParentId
+     */
+    @Test
+    public void test3GetParentId() {
+        assertEquals(1, dbc.getParentId(5));
+    }
+
+    /**
+     * test getParentId
+     */
+    @Test
+    public void test4GetParentId() {
+        assertEquals(1, dbc.getParentId(8));
     }
 
     /**

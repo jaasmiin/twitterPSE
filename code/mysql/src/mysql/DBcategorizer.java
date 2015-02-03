@@ -172,4 +172,36 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         // execute query
         return executeStatementUpdate(stmt, false);
     }
+
+    @Override
+    public int getParentId(int id) {
+
+        // statement to get the parentId of a category
+        String sqlCommand = "SELECT ParentId FROM category WHERE Id=" + id
+                + ";";
+
+        // create and execute statement
+        ResultSet result = null;
+        Statement stmt = null;
+        try {
+            stmt = c.createStatement();
+            result = stmt.executeQuery(sqlCommand);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        }
+
+        int ret = -1;
+
+        // read result
+        try {
+            result.next();
+            ret = result.getInt(1);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        } finally {
+            closeResultAndStatement(stmt, result);
+        }
+
+        return ret;
+    }
 }
