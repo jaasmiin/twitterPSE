@@ -170,6 +170,7 @@ Desweiteren wurden einige private Hilfsmethoden hinzugefügt, die beispielsweise
 
 \subsection{table}
 Diese Paket blieb relativ unverändert, lediglich die Hilfsklasse "`InternAccount"' ist aus Gründen der Effizienzsteigerung hinzugekommen.
+Sie speichert nur für die Tabelle relevante Informationen des Account-Objektes und fügt dessen Liste von Retweets-Objekten in eine HashMap ein, damit die Tabelle die Daten schneller auslesen kann.
 		
 \subsection{standardMap}
 In diesem Paket ergaben sich einige Änderungen. Diese waren durch die relative Inkompatibilität des verwendeten Map-Frameworks "`unfolding"' mit "`JavaFX"'. Daher musste die Klasse "`StandardMapDialog"' als "`Swing-Adapter'" hinzugefügt werden. Weiterhin entschieden wir uns, sowohl  die "`StandardMap'" als auch die "`DateMap'" zu implementieren. Die "`StandardMap'" visualisiert alle vorhandenen Daten, in der "`DateMap'" können Anfangs - und Endpunkt der betrachteten Daten gewählt werden. Da die "`StandardMap'" somit einen Spezialfall der "`DateMap'" darstellt, haben wir uns entschieden, beide Pakete unter dem Namen "`StandardMap'" zu verschmelzen. Durch diese Entscheidung musste nur die "`update'" Methode geringfügig verändert werden.
