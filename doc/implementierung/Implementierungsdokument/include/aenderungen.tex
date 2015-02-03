@@ -173,13 +173,13 @@ Diese Paket blieb relativ unverändert, lediglich die Hilfsklasse "`InternAccoun
 Sie speichert nur für die Tabelle relevante Informationen des Account-Objektes und fügt dessen Liste von Retweets-Objekten in eine HashMap ein, damit die Tabelle die Daten schneller auslesen kann.
 		
 \subsection{standardMap}
-In diesem Paket ergaben sich einige Änderungen. Diese waren durch die relative Inkompatibilität des verwendeten Map-Frameworks "`unfolding"' mit "`JavaFX"'. Daher musste die Klasse "`StandardMapDialog"' als "`Swing-Adapter'" hinzugefügt werden. Weiterhin entschieden wir uns, sowohl  die "`StandardMap'" als auch die "`DateMap'" zu implementieren. Die "`StandardMap'" visualisiert alle vorhandenen Daten, in der "`DateMap'" können Anfangs - und Endpunkt der betrachteten Daten gewählt werden. Da die "`StandardMap'" somit einen Spezialfall der "`DateMap'" darstellt, haben wir uns entschieden, beide Pakete unter dem Namen "`StandardMap'" zu verschmelzen. Durch diese Entscheidung musste nur die "`update'" Methode geringfügig verändert werden.
+In diesem Paket ergaben sich einige Änderungen. Diese waren durch die relative Inkompatibilität des verwendeten Map-Frameworks "`unfolding"' mit "`JavaFX"'. Daher musste die Klasse "`StandardMapDialog"' als "`Swing-Adapter"' hinzugefügt werden. Weiterhin entschieden wir uns, sowohl  die "`StandardMap"' als auch die "`DateMap"' zu implementieren. Die "`StandardMap"' visualisiert alle vorhandenen Daten, in der "`DateMap"' können Anfangs - und Endpunkt der betrachteten Daten gewählt werden. Da die "`StandardMap"' somit einen Spezialfall der "`DateMap"' darstellt, haben wir uns entschieden, beide Pakete unter dem Namen "`StandardMap"' zu verschmelzen. Durch diese Entscheidung musste nur die "`update"' Methode geringfügig verändert werden.
 \begin{itemize}
 	\item \lstinline{StandardMapDialog}
 	\quad
 	Diese Klasse erbt von JFrame einem  Swing-Typ, da nur in Swing das verwendete Map-Framework fehlerfrei dargestellt werden kann. Sie enthält unter anderem eine Referenz auf den "`GUIController"' und auf eine Instanz von "`MyUnfoldingMap"'.
 	\begin{description}
-		\item[update()] diese Methode aktualisiert die auf der Karte dargestellten Daten. Die Daten werden vom "`GUIController"' bezogen und an die eigentliche Karte in "`MyUnfoldingMap"' weitergereicht. Start und Endzeitpunkt werden gesetzt, falls alle bisher gesammelten Daten in die Berechnung mit einfließen sollen, wird der Startzeitpunkt auf einen Zeitpunkt vor Beginn des Mitlesens des Twitter-Streams gesetzt.
+		\item[update()] diese Methode aktualisiert die auf der Karte dargestellten Daten. Die Daten werden vom "`GUIController"' bezogen und an die eigentliche Karte in "`MyUnfoldingMap"' weitergereicht. Werden Start und Endzeitpunkt gesetzt, so werden nur die Daten aus dieser Zeitspanne in die Berechnung miteinbezogen. Sollen alle bisher gesammelten Daten in die Berechnung mit einfließen, wird der Startzeitpunkt auf einen Zeitpunkt vor Beginn des Mitlesens des Twitter-Streams gesetzt.
 	\end{description}
 \end{itemize}
 		
@@ -192,6 +192,7 @@ Die Klasse "`MyUnfoldingMap'" wurde als Singleton implementiert, da für alle bi
 	\begin{description}
 			\item[getSingleton()] liefert eine Instanz der Klasse zurück
 			\item[mouseClicked(MouseEvent)] Methode berechnet zu jedem Klick auf die Karte, das angeklickte Land und liefert Informationen zum jeweiligen Retweet-Verhalten.
+			\item[switchProvider()] Wechselt die Ansicht der Karte zwischen der normalen Kartendarstellung und der GoogleMap Kartendarstellung.
 	\end{description}
 \end{description}
 	

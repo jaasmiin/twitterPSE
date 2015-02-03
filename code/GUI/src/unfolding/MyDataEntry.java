@@ -25,10 +25,20 @@ public class MyDataEntry {
      */
     private int retweetsLandFiltered;
     
+    /**
+     * Constructor.
+     */
     public MyDataEntry() {
-        this(-1, "", -1, -1);
+        this(-1, "", 0, 0);
     }
     
+    /**
+     * Constructor setting the specified parameters.
+     * @param value (relative) of the country
+     * @param countryName
+     * @param retweetsLand
+     * @param retweetsLandFiltered
+     */
     public MyDataEntry(double value, String countryName, int retweetsLand, int retweetsLandFiltered) {
         this.value = value;
         this.countryName = countryName;
@@ -36,34 +46,66 @@ public class MyDataEntry {
         this.retweetsLandFiltered = retweetsLandFiltered;
     }
     
+    /**
+     * Returns name of the country
+     * @return countryName
+     */
     public String getCountryName() {
         return countryName;
     }
     
+    /**
+     * Sets the name of the country
+     * @param countryName name of the country
+     */
     public void setCountryName(String countryName) {
         this.countryName = countryName;
     }
 
+    /**
+     * Returns country id (3 chars)
+     * @return countryId3Chars
+     */
     public String getCountryId3Chars() {
         return countryId3Chars;
     }
     
+    /**
+     * Returns country id (2 chars)
+     * @return countryId2Chars
+     */
     public String getCountryId2Chars() {
         return countryId2Chars;
     }
 
+    /**
+     * Sets 3 char country id
+     * @param countryId 3 char id of the country
+     */
     public void setCountryId3Chars(String countryId) {
         this.countryId3Chars = countryId;
     }
     
+    /**
+     * Sets 2 char country id
+     * @param countryId 2 char id of the country
+     */
     public void setCountryId2Chars(String countryId) {
         this.countryId2Chars = countryId;
     }
 
+    /**
+     * Returns (relative) value of the MyDataEntry
+     * @return value of MyDataEntry
+     */
     public Double getValue() {
         return value;
     }
 
+    /**
+     * Sets the value of the MyDataEntry
+     * @param d value to be set
+     */
     public void setValue(double d) {
         this.value = d;
     }

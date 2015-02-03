@@ -8,11 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import unfolding.MyDataEntry;
 import processing.core.PApplet;
-import de.fhpotsdam.unfolding.Map;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.data.Feature;
 import de.fhpotsdam.unfolding.data.GeoJSONReader;
@@ -61,9 +59,10 @@ public class MyUnfoldingMap extends PApplet {
     /**
      * Returns Singleton.
      * @param controller GuiController
+     * @return Instance of MyUnfoldingMap
      */
-    public static MyUnfoldingMap getInstance(GUIController controller){
-        if(singleton.superController == null) {
+    public static MyUnfoldingMap getInstance(GUIController controller) {
+        if (singleton.superController == null) {
             singleton.superController = controller;
         }
         return singleton;
@@ -74,7 +73,11 @@ public class MyUnfoldingMap extends PApplet {
     	this.setSize(900, 600);
 	}
     
-    public void setController(GUIController controller){
+    /**
+     * Sets GUIController
+     * @param controller GUIController
+     */
+    public void setController(GUIController controller) {
         superController = controller;
     }
 
@@ -88,14 +91,18 @@ public class MyUnfoldingMap extends PApplet {
         
         currentMap = map1;
 
-        currentMap.zoomLevel(0);
-        currentMap.setZoomRange(2, 4);
-        currentMap.setBackgroundColor(140);
+        map1.zoomLevel(0);
+        map1.setZoomRange(2, 4);
+        map1.setBackgroundColor(140);
+        
+        map2.zoomLevel(0);
+        map2.setZoomRange(2, 4);
+        map2.setBackgroundColor(140);
 
         MapUtils.createDefaultEventDispatcher(this, map1, map2);
         
       //Load country polygons
-        List<Feature> countries = GeoJSONReader.loadData(this,"countries.geo.json");
+        List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
         countryMarker = MapUtils.createSimpleMarkers(countries);
         map1.addMarkers(countryMarker);
         map2.addMarkers(countryMarker);
@@ -115,6 +122,10 @@ public class MyUnfoldingMap extends PApplet {
 
     }
     
+    /**
+     * Returns the current map
+     * @return current map
+     */
     public UnfoldingMap getMap() {
     	return currentMap;
     }
@@ -142,7 +153,8 @@ public class MyUnfoldingMap extends PApplet {
             String char2Code = countryIdTrans.get(countryId);  //3 char Ländercode in 2 char umwandeln
             MyDataEntry location = dataEntriesMap.get(char2Code);
             if (location != null) {
-                System.out.println(location.getCountryName() + " " + char2Code + " " + location.getRetweetsLand() + " " + location.getRetweetsLandFiltered());
+                System.out.println(location.getCountryName() + " " + char2Code + " " 
+            + location.getRetweetsLand() + " " + location.getRetweetsLandFiltered()); 
             }
             // notify controller about new information;
             superController.setMapDetailInformation(location);
@@ -169,16 +181,16 @@ public class MyUnfoldingMap extends PApplet {
                 float transpa = Float.parseFloat(transparency.toString());
                 float t = map(transpa, 0, maxValue, 50, 255);
                 
-                if(currentMap == map1) {
-                    m.setColor(color(38,192,38, t));
+                if (currentMap == map1) {
+                    m.setColor(color(38, 192, 38, t));
                 }
-                if(currentMap == map2) {
-                    m.setColor(color(204,0,0, t));
+                if (currentMap == map2) {
+                    m.setColor(color(204, 0, 0, t));
                 }
    
             } else {
                 // value doesn't exist
-                m.setColor(color(173,173,173,50));
+                m.setColor(color(173, 173, 173, 50));
             }
 
         }
@@ -205,9 +217,9 @@ public class MyUnfoldingMap extends PApplet {
             setValues.clear();
         }
   
-        for(Entry<String, MyDataEntry> e: changedEntries.entrySet()) {
+        for (Entry<String, MyDataEntry> e: changedEntries.entrySet()) {
             MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
-            if(newEntry != null) {
+            if (newEntry != null) {
                 newEntry.setValue(e.getValue().getValue());
                 newEntry.setRetweetsLand(e.getValue().getRetweetsLand());
                 newEntry.setRetweetsLandFiltered(e.getValue().getRetweetsLandFiltered());
@@ -216,7 +228,7 @@ public class MyUnfoldingMap extends PApplet {
                 System.out.println(newEntry.getCountryId2Chars() + "  unfolding  " + newEntry.getRetweetsLandFiltered());
             }
 
-            if(Float.parseFloat(e.getValue().getValue().toString()) > maxValue) {
+            if (Float.parseFloat(e.getValue().getValue().toString()) > maxValue) {
                 maxValue = Float.parseFloat(e.getValue().getValue().toString());
             }
         }
@@ -228,7 +240,7 @@ public class MyUnfoldingMap extends PApplet {
      * By pressing '1' an '2'
      */
     public void switchProvider() {
-        if(key == '1') {
+        if (key == '1') {
             currentMap = map1;
             shadeCountries();
         }
@@ -270,8 +282,8 @@ public class MyUnfoldingMap extends PApplet {
      * Resets all colored markers
      */
     private void resetMarkers() {
-        for(Marker m : countryMarker) {
-            m.setColor(color(173,173,173,50));
+        for (Marker m : countryMarker) {
+            m.setColor(color(173, 173, 173, 50));
             m.setStrokeColor(color(241, 241, 241, 50));
             m.setStrokeWeight(1);
         }

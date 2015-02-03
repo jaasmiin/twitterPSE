@@ -5,8 +5,6 @@ import gui.GUIController;
 import gui.GUIElement.UpdateType;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.chrono.ChronoLocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
@@ -17,6 +15,12 @@ import unfolding.MyDataEntry;
 import unfolding.MyUnfoldingMap;
 import mysql.result.TweetsAndRetweets;
 
+/**
+ * Sets up the Dialog window containing the map
+ * @author Lidia
+ * @version 1.0
+ *
+ */
 @SuppressWarnings("serial")
 public class StandardMapDialog extends JDialog {
 	private GUIController superController;
@@ -24,6 +28,10 @@ public class StandardMapDialog extends JDialog {
 	private MyUnfoldingMap map;
 	private HashMap<String, MyDataEntry> calculatedData;
 
+	/**
+	 * Constructor.
+	 * @param superController GUIController
+	 */
 	public StandardMapDialog(GUIController superController) {
 		this.superController = superController;
 		setSize(600, 400);
@@ -71,10 +79,10 @@ public class StandardMapDialog extends JDialog {
 				LocalDate test = buildLocalDate(r.getDate());
 				System.out.println("                                                                               " + test);
               //Check if Tweet/Retweet-objct Date is in the needed interval
-                if(inRange(start, end, test)) {
+                if (inRange(start, end, test)) {
                     
                     //Check if counter for location is already in the hashMap
-                    if(forCalc.containsKey(r.getLocationCode())){
+                    if (forCalc.containsKey(r.getLocationCode())) {
                         int count = forCalc.get(r.getLocationCode());
                         count += r.getCounter();
                         forCalc.put(r.getLocationCode(), count);
@@ -91,7 +99,7 @@ public class StandardMapDialog extends JDialog {
 			//	System.out.println(key + " - " + forCalc.get(key));
 			}
 			System.out.println("############################################################");
-			calculatedData = superController.getDisplayValuePerCountry(forCalc,1);
+			calculatedData = superController.getDisplayValuePerCountry(forCalc, 1);
 			
 		    keySet = calculatedData.keySet();
 			for (String key : keySet) {
@@ -117,7 +125,7 @@ public class StandardMapDialog extends JDialog {
      * @param input LocalDate
      * @return array with 0:Year 1:Month 3:Day null if invalid input
      */
-    private int[] convertLocalDateToInt(LocalDate date){
+    private int[] convertLocalDateToInt(LocalDate date) {
     	if (date == null) {
     		return null;
     	}
@@ -125,7 +133,7 @@ public class StandardMapDialog extends JDialog {
     	year = date.getYear();
     	month = date.getMonthValue();
     	day = date.getDayOfMonth();
-    	int[] result = {year,month,day};
+    	int[] result = {year, month, day};
     	return result;
     }
     /**
@@ -200,7 +208,7 @@ public class StandardMapDialog extends JDialog {
     		case 12: month = Month.DECEMBER; break;
     		default: return null; 
     	} */
-    	LocalDate locDate = LocalDate.of(result[0],result[1], result[2]);
+    	LocalDate locDate = LocalDate.of(result[0], result[1], result[2]);
     	return locDate;
     }
     
