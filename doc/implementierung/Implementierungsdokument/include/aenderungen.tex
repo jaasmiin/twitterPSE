@@ -72,12 +72,18 @@ Im folgenden Sequenzdiagramm ist der neue Ablauf des Kategorisierers dargestellt
 	\caption{Sequenzdiagramm Crawler}
 	\label{fig:Crawler}
 \end{figure}
-Gegenüber dem Entwurf sind die Methode \lstinline{normalizeUrl()} und \lstinline{normalizeName()} hinzugekommen.
+Gegenüber dem Entwurf sind die Methode \lstinline{normalizeUrl()}, \lstinline{normalizeName()} und die Aufrufe von \lstinline{getParentId()} hinzugekommen.
 \begin{itemize}
 	\item \lstinline{normalizeUrl()} arbeitet mit der vom Twitteraccount angebenen URL. Es werden das Slash ("`/"') am Ende sowie Präfixe der Form \url{http://}, \url{https://} und/oder \url{www.} entfernt.
 	\item \lstinline{normalizeName()} ersetzt Leerzeichen sowie Unterstriche im Benutzernamen durch "`\%"'. Dies ist das Wildcard-Zeichen in MySQL. Der so resultierende String wird zur Erhöhung der Trefferzahl in den URLs der \lstinline{page} Tabelle gesucht. Diese enthält alle URLs der DMOZ-Datenbank.
+	\item \lstinline{getParentId()} berechnet die direkte Vaterkategorie einer Kategorie. Damit wird der Kategorienbaum zur Wurzel hin durchlaufen und der Account wird in alle höheren Kategorien mit einsoritert. Dies ermöglicht effiziete Abfragen.
 \end{itemize}
 Auf diese Weise konnten bislang knapp 6000 Accounts kategorisiert werden.
+
+\subsection{Effizienz der Abfragen}
+Wie sich herausstellte, nahmen Abfragen mit sehr vielen Kategorien viel Zeit in Anspruch. Wählte man z.B. die Oberkategorie "`Top"' aus, flossen alle ~30.000 Kategorien in das SQL-Statement mit ein. Dies war notwendig, um alle Accounts zu bekommen, die in einer der ausgewählten Kategorien und Unterkategorien waren.
+
+Zur Lösung dieses Problems haben wir alle Accounts nicht nur in der für sie speziellsten Kategorie einsortiert, sonder auch in allen in der Hierarchie darüberliegenden. So müssen nur noch die CategoryIds in das SQL-Query einfließen, die auch wirklich gewählt wurden. Nicht mehr alle Kindkategorien.
 
 \section{Änderungen an der GUI}
 An der GUI wurden einige Änderungen zum Entwurf vorgenommen, dies lag u.A. an einer Vielzahl von Details, welche während der Entwurfsphase noch nicht bekannt waren. 
