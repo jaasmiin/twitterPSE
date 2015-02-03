@@ -3,10 +3,9 @@ package mysql.result;
 import java.util.Date;
 
 /**
- * store the retweets of a day
+ * store the retweets of a day or the total number of retweets
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public class Retweets extends Tweets {
 
@@ -45,6 +44,9 @@ public class Retweets extends Tweets {
      *            ths location code to set as String (max. 3 chars)
      */
     public void setLocationCode(String locationCode) {
+
+        // check if the length of the code is smaller then 3, because of
+        // database limit and because of ISO-Norm
         if (locationCode != null && locationCode.length() > 3) {
             this.locationCode = locationCode.substring(0, 3);
         } else {

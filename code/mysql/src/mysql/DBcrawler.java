@@ -19,7 +19,6 @@ import util.Util;
  * class to write data into a database
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public class DBcrawler extends DBConnection implements DBIcrawler {

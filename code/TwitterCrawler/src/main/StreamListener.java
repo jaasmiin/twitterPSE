@@ -14,7 +14,6 @@ import twitter4j.TwitterStreamFactory;
  * them
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class StreamListener implements RunnableListener {
@@ -43,6 +42,7 @@ public class StreamListener implements RunnableListener {
     @Override
     public void run() {
 
+        // default filter so that we got each status object
         String tracker[] = {"a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
                 "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v",
                 "w", "x", "y", "z", "#", "@" };
@@ -55,7 +55,7 @@ public class StreamListener implements RunnableListener {
      * starting the twitter stream
      * 
      * @param track
-     *            keywords to track
+     *            keywords to track as String[]
      */
     private void getStream(String[] track) {
 

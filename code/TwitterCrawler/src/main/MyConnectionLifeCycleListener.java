@@ -6,7 +6,6 @@ import twitter4j.ConnectionLifeCycleListener;
  * class to get notice of connection or disconnection to the twitter-stream-api
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public class MyConnectionLifeCycleListener implements
         ConnectionLifeCycleListener {

@@ -4,7 +4,6 @@ package mysql.result;
  * class to store the database-id's of the results
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public abstract class Result {
 
@@ -31,6 +30,6 @@ public abstract class Result {
 
     @Override
     public int hashCode() {
-    	return ((Integer) getId()).hashCode();
+        return ((Integer) getId()).hashCode();
     }
 }

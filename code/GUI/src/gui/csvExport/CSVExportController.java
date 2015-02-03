@@ -29,7 +29,6 @@ import mysql.result.Retweets;
  * class provides method to export data into a csv file
  * 
  * @author Holger Ebhart and Maximilian Awiszus
- * @version 1.0
  * 
  */
 public class CSVExportController extends InputElement implements Initializable {

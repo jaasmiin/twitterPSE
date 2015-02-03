@@ -8,7 +8,6 @@ import twitter4j.Status;
  * class stores the data to write a retweet/account into a database
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class LocateStatus {

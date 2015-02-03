@@ -8,7 +8,6 @@ import mysql.result.Account;
  * interface to the database for the categorizer
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public interface DBIcategorizer {
 
@@ -27,7 +26,8 @@ public interface DBIcategorizer {
      * @param url
      *            the url from twitter of the website of this account as String
      * @param name
-     *            the name of the twitter account, with wildcards instead of spaced
+     *            the name of the twitter account, with wildcards instead of
+     *            spaced
      * @return a list of categoryIds where an url match was successful as
      *         List<Integer>
      */

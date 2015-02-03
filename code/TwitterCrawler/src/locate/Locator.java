@@ -9,11 +9,13 @@ import org.geonames.WebService;
 
 import twitter4j.GeoLocation;
 import twitter4j.Place;
+import util.Util;
 
 /**
+ * class to locate accounts and retweets with twitter-informations, a geotag or
+ * by a hashtable
  * 
  * @author Matthias Schimek
- * @version 1.0
  * 
  */
 public class Locator {
@@ -95,8 +97,8 @@ public class Locator {
      */
     private String getLocation(String location, String timezone) {
         String result = DEFAULT_LOCATION;
-        location = Formatter.formatString(location, logger);
-        timezone = Formatter.formatString(timezone, logger);
+        location = Util.formatString(location, logger);
+        timezone = Util.formatString(timezone, logger);
         String query = location + "#" + timezone;
         if (map.containsKey(query)) {
             result = map.get(query);

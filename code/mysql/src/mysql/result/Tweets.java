@@ -3,10 +3,9 @@ package mysql.result;
 import java.util.Date;
 
 /**
- * store the tweets of a day
+ * store the tweets of a day or the total number of tweets
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class Tweets {
@@ -30,7 +29,8 @@ public class Tweets {
     /**
      * returns the date of the tweets
      * 
-     * @return the date of the tweets as Date
+     * @return the date of the tweets as Date (is null if the total number of
+     *         tweets is stored)
      */
     public Date getDate() {
         return date;

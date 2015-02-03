@@ -12,12 +12,13 @@ import mysql.DBcrawler;
  * class to get the non verified accounts that should be tracked
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public class AccountUpdate implements RunnableListener {
 
     private boolean run = true;
+    // global hashmap to track unverified accounts
     private ConcurrentHashMap<Long, Object> accounts;
+    // local hashset for speed up
     private HashSet<Long> myAccounts;
     private Logger logger;
     private DBcrawler reader;
@@ -38,9 +39,12 @@ public class AccountUpdate implements RunnableListener {
     public AccountUpdate(Logger logger,
             ConcurrentHashMap<Long, Object> accounts, AccessData accessData)
             throws SQLException {
+
         this.accounts = accounts;
         this.logger = logger;
         myAccounts = new HashSet<Long>();
+
+        // get new database connection
         try {
             reader = new DBcrawler(accessData, logger);
         } catch (InstantiationException | IllegalAccessException
@@ -69,6 +73,8 @@ public class AccountUpdate implements RunnableListener {
             long[] list = reader.getNonVerifiedAccounts();
             if (list != null) {
                 for (int i = 0; i < list.length; i++) {
+                    // only update global hashmap, if account is not in local
+                    // hashset
                     if (!myAccounts.contains(list[i])) {
                         myAccounts.add(list[i]);
                         accounts.put(list[i], new Object());
