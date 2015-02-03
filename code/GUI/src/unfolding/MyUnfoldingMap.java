@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import unfolding.MyDataEntry;
 import processing.core.PApplet;
@@ -198,11 +199,12 @@ public class MyUnfoldingMap extends PApplet {
                 MyDataEntry edit = dataEntriesMap.get(id);
                 
                 edit.setValue(-1);
+                edit.setRetweetsLandFiltered(-1);
                 dataEntriesMap.put(id, edit);
             }
             setValues.clear();
         }
-
+  
         for(Entry<String, MyDataEntry> e: changedEntries.entrySet()) {
             MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
             if(newEntry != null) {
@@ -211,12 +213,14 @@ public class MyUnfoldingMap extends PApplet {
                 newEntry.setRetweetsLandFiltered(e.getValue().getRetweetsLandFiltered());
                 dataEntriesMap.put(e.getKey(), newEntry);
                 setValues.add(e.getKey());
+                System.out.println(newEntry.getCountryId2Chars() + "  unfolding  " + newEntry.getRetweetsLandFiltered());
             }
 
             if(Float.parseFloat(e.getValue().getValue().toString()) > maxValue) {
                 maxValue = Float.parseFloat(e.getValue().getValue().toString());
             }
         }
+       
         shadeCountries();
     }    
     /**
