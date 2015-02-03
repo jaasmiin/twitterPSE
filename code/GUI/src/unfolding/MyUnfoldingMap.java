@@ -30,14 +30,15 @@ public class MyUnfoldingMap extends PApplet {
      */
     private static final long serialVersionUID = 1L;
     
-    private static final MyUnfoldingMap singleton = new MyUnfoldingMap();
+    private static final MyUnfoldingMap SINGLETON = new MyUnfoldingMap();
+    private static GUIController superController;
     
     private UnfoldingMap map1;
     private UnfoldingMap map2;
     private UnfoldingMap currentMap;
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
-    private static GUIController superController;
+    
     
     /**
      * List of countryIds which are colored in the map
@@ -62,10 +63,10 @@ public class MyUnfoldingMap extends PApplet {
      * @return Instance of MyUnfoldingMap
      */
     public static MyUnfoldingMap getInstance(GUIController controller) {
-        if (singleton.superController == null) {
-            singleton.superController = controller;
+        if (SINGLETON.superController == null) {
+            SINGLETON.superController = controller;
         }
-        return singleton;
+        return SINGLETON;
     }
     
     private MyUnfoldingMap() {

@@ -895,21 +895,27 @@ public class GUIController extends Application implements Initializable {
         return db.getAllRetweetsPerLocation();
     }
 
-	/**
-	 * calculates the displayed value per country
-	 * 
-	 * given: a category, country, accounts combination
-	 * calculates: 
-	 *  
-	 *   number of retweets for that combination in that country                      1
-	 *   -------------------------------------------------------  *  ------------------------------------ * scale
-	 *          number of retweets for that combination               number of retweets in that country
-	 * 
-	 * @param retweetsPerLocation number of retweets for each country in a category/country/accounts combination
-	 * @param scale the value in scale is multiplied with the calculated relative factor to point out differences, it has to be positive
-	 * @return the hashmap mapping countries to the number quantifying the 
-	 * retweet activity in this country or null if retweetsPerLocation contained invalid countrycode identifier, or scale is not positive
-	 */
+	    /**
+     * calculates the displayed value per country
+     * 
+     * given: a category, country, accounts combination calculates:
+     * 
+     *   number of retweets for that combination in that country                      1
+     *   -------------------------------------------------------  *  ------------------------------------ * scale
+     *          number of retweets for that combination               number of retweets in that country
+     * 
+     * 
+     * @param retweetsPerLocation
+     *            number of retweets for each country in a
+     *            category/country/accounts combination
+     * @param scale
+     *            the value in scale is multiplied with the calculated relative
+     *            factor to point out differences, it has to be positive
+     * @return the hashmap mapping countries to the number quantifying the
+     *         retweet activity in this country or null if retweetsPerLocation
+     *         contained invalid countrycode identifier, or scale is not
+     *         positive
+     */
 	public HashMap<String, MyDataEntry> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
 		if (scale <= 0.0000000000001) {
 			return null;

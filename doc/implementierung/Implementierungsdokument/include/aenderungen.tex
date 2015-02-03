@@ -13,9 +13,9 @@ In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne we
 \begin{itemize}
 	\item \lstinline{DBConnection}
 	\begin{description}
-		\item[executeStatmentUpdate(Statement)] führt ein "`Update"' in der DB durch.
-		\item[closeResult(Result)] schließt ein mysql-result
-		\item[closeStatement(Statement)] schließt ein mysql-statement
+		\item[executeStatmentUpdate(Statement)] führt ein 'Update'-Statement auf der DB aus.
+		\item[closeResult(Result)] schließt ein MySQL-Result.
+		\item[closeStatement(Statement)] schließt ein MySQL-Statement.
 	\end{description}
 			\item \lstinline{DBIcrawler}
 	\begin{description}
@@ -32,8 +32,8 @@ In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne we
 	\begin{description}
 		\item[getAccountId(String name):int] An Stelle dieser Methode tritt folgende Methode:
 		\item[getAccount(int id):Account] Diese Methode liefert eine vollständige Beschreibung des per id spezifizierten Accounts.
-		\item[getAllData(..., boolean byDate):List<Account>] Zusammenfassung der beiden folgenden Methoden in eine: getAllData und getAllDataWithDates
-		\item[getSumOfData(..., boolean byDate):TweetsAndRetweets] Zusammenfassung der beiden folgenden Methoden in eine: getSumOfData und getSumOfDataWithDates
+		\item[getAllData(..., boolean byDate):List<Account>] Zusammenfassung der beiden folgenden Methoden zu Einer: getAllData und getAllDataWithDates
+		\item[getSumOfData(..., boolean byDate):TweetsAndRetweets] Zusammenfassung der beiden folgenden Methoden zu Einer: getSumOfData und getSumOfDataWithDates
 		\item[getAccounts(String search):List<Account>] Durch den Parameter ist es nun möglich nicht mehr nur alle Accounts zu bekommen, sondern eine Suche nach bestimmten Accounts durchzuführen.
 		\item[getAllRetweetsPerLocation():HashMap] Zur Berechnung relativer Retweetwerte ist es möglich über diese Methode die Gesamtzahl aller in der Datenbank vorhandener Retweets pro Land auszulesen.
 	\end{description}

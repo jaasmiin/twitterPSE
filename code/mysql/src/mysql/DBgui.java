@@ -456,11 +456,11 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
             ret = getTweetSum(stmt, byDates);
-        } catch (SQLException  e) {
+        } catch (SQLException e) {
             logger.warning("SQL-Exception by gatSumData: " + e.getMessage());
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
         }
-        
+
         return ret;
     }
 
@@ -576,7 +576,7 @@ public class DBgui extends DBConnection implements DBIgui {
             ret = getTweetSumPerAccount(stmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatAllData: " + e.getMessage());
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
         }
 
         return ret;
