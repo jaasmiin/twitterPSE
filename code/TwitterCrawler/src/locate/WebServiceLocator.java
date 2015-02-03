@@ -20,14 +20,15 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import twitter4j.User;
+import util.Util;
 import main.RunnableListener;
 import mysql.AccessData;
 import mysql.DBcrawler;
 
 /**
+ * class to locate accounts and retweets by a webservice
  * 
  * @author Matthias Schimek, Holger Ebhart
- * @version 1.1
  * 
  */
 public class WebServiceLocator implements RunnableListener {
@@ -37,7 +38,6 @@ public class WebServiceLocator implements RunnableListener {
     private Logger logger;
     private ConcurrentLinkedQueue<LocateStatus> locateQueue;
     private DBcrawler dbc;
-    private Formatter formatter;
     private boolean run;
     private long countQuery = 0;
     private long countLocatedQuery = 0;
@@ -57,30 +57,34 @@ public class WebServiceLocator implements RunnableListener {
      *             thrown if it isn't possible to connect to the database
      */
     public WebServiceLocator(AccessData accessData, Logger logger,
-
-    ConcurrentLinkedQueue<LocateStatus> locateQueue)
+            ConcurrentLinkedQueue<LocateStatus> locateQueue)
             throws InstantiationException {
         run = true;
         this.logger = logger;
         this.locateQueue = locateQueue;
+
+        // get database connection
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
             dbc = null;
             logger.severe(e.getMessage() + "\n");
             throw new InstantiationException(
-                    "Not able to instantiate Databaseconnection.");
+                    "Not able to instantiate Database-connection.");
         }
     }
 
     @Override
     public void run() {
 
+        // check weather a connection to the database has been established or
+        // not
         if (dbc == null) {
             logger.severe("A WebServiceLocator couldn't been started: No database connection!");
             return;
         }
 
+        // open new connection to database
         try {
             dbc.connect();
         } catch (SQLException e) {
@@ -88,17 +92,23 @@ public class WebServiceLocator implements RunnableListener {
             return;
         }
 
+        // work till the program will be shut down
         while (run) {
 
+            // sleep if no elements are queued
             try {
                 Thread.sleep(50); // sleep for 0.05s
             } catch (InterruptedException e) {
                 // logger.info("WebServiceLocator interrupted\n" +
                 // e.getMessage());
             }
+
+            LocateStatus status;
+            // work until the queue is empty
             while (!locateQueue.isEmpty()) {
 
-                LocateStatus status = null;
+                // try to enqueue an element to locate it
+                status = null;
                 try {
                     status = locateQueue.poll();
                 } catch (Exception e) {
@@ -118,60 +128,61 @@ public class WebServiceLocator implements RunnableListener {
     private void locate(LocateStatus status) {
 
         if (status.getId() == -1) {
-            // add account
+            // locate and add account
             locateAccount(status.getStatus().getUser(), status.getStatus()
                     .getCreatedAt(), status.isTweet());
         } else {
-            // add account and retweet
+            // locate and add account and retweet
             if (!status.isAccountLocated()) {
-                // locate and add account
+                // locate and add account, so that the retweet to this account
+                // can be added
                 locateAccount(status.getStatus().getUser(), status.getStatus()
                         .getCreatedAt(), status.isTweet());
             }
+
             if (status.isRetweetLocated()) {
+                // add retweet to database
                 dbc.addRetweet(status.getId(), status.getLocation(),
                         status.getDate());
             } else {
-                locateRetweet(status);
+                // locate retweet and insert into database
+                String countryCode = startWebServiceCall(status.getLocation(),
+                        status.getTimeZone());
+                dbc.addRetweet(status.getId(), countryCode, status.getDate());
             }
         }
-    }
-
-    private void locateRetweet(LocateStatus retweet) {
-
-        String location = Formatter.formatString(retweet.getLocation(), logger);
-        String timezone = Formatter.formatString(retweet.getTimeZone(), logger);
-        String countryCode = DEFAULT_LOCATION;
-
-        // update counter
-        countQuery++;
-
-        countryCode = callWebservice(location, timezone);
-        if (!countryCode.equals(DEFAULT_LOCATION)) {
-            dbc.addLocationString(countryCode, location, timezone);
-            countLocatedQuery++;
-        }
-
-        dbc.addRetweet(retweet.getId(), countryCode, retweet.getDate());
     }
 
     private void locateAccount(User user, Date createdAt, boolean tweet) {
 
+        // locate Account
+        String countryCode = startWebServiceCall(user.getTimeZone(),
+                user.getLocation());
+
+        dbc.addAccount(user, countryCode, createdAt, tweet);
+
+    }
+
+    private String startWebServiceCall(String loc, String timeZone) {
+
+        // format Strings for webservice request
+        String location = Util.formatString(loc, logger);
+        String timezone = Util.formatString(timeZone, logger);
         String countryCode = DEFAULT_LOCATION;
-        String timezone = Formatter.formatString(user.getTimeZone(), logger);
-        String location = Formatter.formatString(user.getLocation(), logger);
 
         // update counter
         countQuery++;
 
+        // call webservice
         countryCode = callWebservice(location, timezone);
+        // check result
         if (!countryCode.equals(DEFAULT_LOCATION)) {
+            // add successful location into database to speed up localization
             dbc.addLocationString(countryCode, location, timezone);
             countLocatedQuery++;
         }
 
-        dbc.addAccount(user, countryCode, createdAt, tweet);
-
+        return countryCode;
     }
 
     /**

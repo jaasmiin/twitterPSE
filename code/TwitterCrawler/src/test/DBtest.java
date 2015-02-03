@@ -11,7 +11,6 @@ import mysql.DBConnection;
  * class to execute custom sql-queries on the database
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 class DBtest extends DBConnection {
 
@@ -44,6 +43,7 @@ class DBtest extends DBConnection {
      */
     public void sql(String sql) {
 
+        // try to connect to database
         try {
             connect();
         } catch (SQLException e1) {
@@ -52,11 +52,13 @@ class DBtest extends DBConnection {
 
         Statement s = null;
         try {
+            // execute the sql statement
             s = c.createStatement();
             s.executeUpdate(sql);
         } catch (SQLException e) {
             logger.warning("Couldn't execute sql query\n" + e.getMessage());
         } finally {
+            // close the sql statement
             if (s != null) {
                 try {
                     s.close();

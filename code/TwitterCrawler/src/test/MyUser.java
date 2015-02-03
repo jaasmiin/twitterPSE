@@ -11,7 +11,6 @@ import twitter4j.User;
  * class who implements twitter4j.user (necessary for testing)
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class MyUser implements User {

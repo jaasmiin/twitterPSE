@@ -14,7 +14,6 @@ import mysql.result.Account;
  * class to address a database with the categorizer
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public class DBcategorizer extends DBConnection implements DBIcategorizer {
@@ -128,6 +127,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         PreparedStatement stmt = null;
         runningRequest = true;
         try {
+            // prepare mysql statement
             stmt = c.prepareStatement("SELECT CategoryId FROM page WHERE Page LIKE ? OR Page LIKE ?;");
             stmt.setString(1, url + "%");
             stmt.setString(2, "%" + name + "%");
@@ -162,6 +162,7 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
         // create statment to set the categorized bit of the account to 1
         PreparedStatement stmt = null;
         try {
+            // prepare mysql statement
             stmt = c.prepareStatement("UPDATE accounts SET Categorized=1 WHERE Id=?;");
             stmt.setInt(1, accountId);
         } catch (SQLException e) {

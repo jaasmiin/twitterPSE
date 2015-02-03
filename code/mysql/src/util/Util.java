@@ -1,17 +1,19 @@
 package util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import mysql.result.Account;
 
 /**
  * class provides static utility methods
  * 
- * @author Holger Ebhart
- * @version 1.0
+ * @author Holger Ebhart, Matthias Schimek
  * 
  */
 public class Util {
@@ -29,12 +31,15 @@ public class Util {
      */
     public static String checkString(String word, int maxLength,
             String byDefault) {
+
         if (word == null) {
             return byDefault;
 
         } else {
+            // replace " and \
             String ret = word.replace("\\", "/");
             ret = ret.replace("\"", "\"\"");
+            // check for max. allowed length
             if (ret.length() > maxLength) {
                 ret = ret.substring(0, maxLength);
             }
@@ -75,6 +80,38 @@ public class Util {
             ret.add(it.next());
         }
         return ret;
+    }
+
+    /**
+     * method to format string to a suitable format for access to WEBSERVICES.
+     * 
+     * formats input string to a suitable WEBSERVICE access format. E.g. all
+     * '@', '&' are deleted and the input string is encoded in URL format.
+     * 
+     * @param unformattedStr
+     *            input string
+     * @param logger
+     *            logger to protocol exceptional behavior
+     * @return formatted string
+     */
+    public static String formatString(String unformattedStr, Logger logger) {
+
+        if (unformattedStr != null) {
+            unformattedStr = unformattedStr.replace(' ', '+');
+            unformattedStr = unformattedStr.replaceAll(",", "+");
+            unformattedStr = unformattedStr.replaceAll(
+                    "[.!#$%&'()*,/:;=?@\\[\\]]", "");
+        } else {
+            unformattedStr = "";
+        }
+        // build URL
+        try {
+            unformattedStr = URLEncoder.encode(unformattedStr, "UTF-8");
+
+        } catch (UnsupportedEncodingException e) {
+            logger.info("unsupported URL Encodign Exceptin" + e.getMessage());
+        }
+        return unformattedStr;
     }
 
 }

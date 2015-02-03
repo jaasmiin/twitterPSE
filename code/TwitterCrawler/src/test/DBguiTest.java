@@ -2,30 +2,27 @@ package test;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.FileHandler;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 import mysql.AccessData;
 import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.TweetsAndRetweets;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import util.LoggerUtil;
+
 /**
  * class to test the database-access of the gui
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public class DBguiTest {
@@ -35,9 +32,12 @@ public class DBguiTest {
     private Logger log;
     private AccessData access;
 
+    /**
+     * initialize this test-class
+     */
     public DBguiTest() {
         try {
-            log = getLogger();
+            log = LoggerUtil.getLogger("TestLog");
         } catch (SecurityException | IOException e) {
             e.printStackTrace();
         }
@@ -226,19 +226,6 @@ public class DBguiTest {
     public void tearDown() {
         removeTestData();
         dbg.disconnect();
-    }
-
-    private Logger getLogger() throws SecurityException, IOException {
-        Logger l = Logger.getLogger("logger");
-        new File("LogFile.log").createNewFile();
-        FileHandler fh = new FileHandler("TestLog.log", true);
-        SimpleFormatter formatter = new SimpleFormatter();
-        fh.setFormatter(formatter);
-        l.addHandler(fh);
-        // true: print output on console and into file
-        // false: only store output in logFile
-        l.setUseParentHandlers(false);
-        return l;
     }
 
     private void addTestData() {
