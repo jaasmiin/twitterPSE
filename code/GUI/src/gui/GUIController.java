@@ -2,11 +2,6 @@ package gui;
 
 import gui.GUIElement.UpdateType;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -18,7 +13,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
@@ -107,7 +101,6 @@ public class GUIController extends Application implements Initializable {
 		try {
 			parent = fxmlLoader.load();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if (parent != null) {
@@ -180,12 +173,7 @@ public class GUIController extends Application implements Initializable {
             boolean success = true;
             String info = Labels.DB_CONNECTING;
             setInfo(info);
-            AccessData accessData = null;
-            try {
-                accessData = getDBAccessData();
-            } catch (IOException e1) {
-                success = false;
-            }
+            AccessData accessData = new AccessData("172.22.214.133", "3306", "twitter", "gui", "272b28");
             if (success) {
                 try {
                     db = new DBgui(accessData, LoggerUtil.getLogger());
@@ -213,55 +201,6 @@ public class GUIController extends Application implements Initializable {
             }
         }
     };
-
-    private AccessData getDBAccessData() throws IOException {
-        String path = System.getenv("APPDATA")
-                + "\\KIT\\twitterPSE\\dblogin.txt";
-        if (!(new File(path)).isFile()) {
-            path = System.getenv("APPDATA") + "\\KIT";
-            File file = new File(path);
-            if (!file.isDirectory()) {
-                if (!file.mkdir()) {
-                    throw new IOException();
-                }
-            }
-            path += "\\twitterPSE";
-            file = new File(path);
-            if (!file.isDirectory()) {
-                if (!file.mkdir()) {
-                    throw new IOException();
-                }
-            }
-            path += "\\dblogin.txt";
-            file = new File(path);
-            if (!file.isFile()) {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                Scanner in = new Scanner(System.in);
-                System.out.print("Host: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Port: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Database: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Username: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Password: ");
-                writer.write(in.nextLine() + "\n");
-                in.close();
-                writer.close();
-            }
-
-        }
-        BufferedReader in = new BufferedReader(new FileReader(path));
-
-        String host = in.readLine();
-        String port = in.readLine();
-        String dbName = in.readLine();
-        String userName = in.readLine();
-        String password = in.readLine();
-        in.close();
-        return new AccessData(host, port, dbName, userName, password);
-    }
 
     private void reloadLocation() {
         String info = Labels.LOCATIONS_LOADING;
@@ -705,7 +644,7 @@ public class GUIController extends Application implements Initializable {
      */
     public List<Category> getSelectedCategories() {
         List<Category> selectedCategoriesList = new ArrayList<Category>();
-        for (Integer categoryID : selectedCategories) { // TODO: faster?
+        for (Integer categoryID : selectedCategories) {
             selectedCategoriesList.add(categories.get(categoryID));
         }
         return selectedCategoriesList;
@@ -775,10 +714,9 @@ public class GUIController extends Application implements Initializable {
      */
     public Account getAccount(Integer id) {
         Account a = accounts.getElement(id);
-        // if (a == null) {
-        // a = db.getAccount(id);
-        // }
-        // TODO: uncomment, if @Holger has programmed method.
+         if (a == null) {
+        	 a = db.getAccount(id);
+         }
         return a;
     }
 
