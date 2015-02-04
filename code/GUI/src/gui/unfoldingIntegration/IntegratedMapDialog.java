@@ -1,4 +1,4 @@
-package gui.standardMap;
+package gui.unfoldingIntegration;
 
 import gui.GUIController;
 import gui.GUIElement.UpdateType;
@@ -21,7 +21,7 @@ import mysql.result.TweetsAndRetweets;
  * 
  */
 @SuppressWarnings("serial")
-public class StandardMapDialog extends JDialog {
+public class IntegratedMapDialog extends JDialog {
     private GUIController superController;
     private TweetsAndRetweets uneditedData;
     private MyUnfoldingMap map;
@@ -33,23 +33,14 @@ public class StandardMapDialog extends JDialog {
      * @param superController
      *            GUIController
      */
-    public StandardMapDialog(GUIController superController) {
+    public IntegratedMapDialog(GUIController superController) {
         this.superController = superController;
-        this.setUndecorated(true);
+        setSize(600, 400);
+        setTitle("Map");
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         map = MyUnfoldingMap.getInstance(superController);
-        this.setSize(400, 400);
         add(map);
         map.init();
-    }
-    
-    public void setSize(int width, int height) {
-    	super.setSize(width, height);
-    	map.resize(width, height);	
-    }
-    
-    public void closeMap() {
-    	this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    	map.exit();
     }
 
     /**
@@ -65,6 +56,11 @@ public class StandardMapDialog extends JDialog {
     @SuppressWarnings("incomplete-switch")
     public void update(UpdateType type, LocalDate start, LocalDate end) {
         switch (type) {
+        case CLOSE:
+            if (map != null) {
+                map.exit();
+            }
+            break;
         case TWEET_BY_DATE:
             // System.out.println("LocalDate: " + start + "   -   " + end);
             // aggregate relevant data and check if dates are valid

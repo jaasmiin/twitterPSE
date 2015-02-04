@@ -22,15 +22,20 @@ import mysql.result.Location;
 import mysql.result.TweetsAndRetweets;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import twitter4j.User;
@@ -61,6 +66,8 @@ public class GUIController extends Application implements Initializable {
     private TextField txtSearch;
     @FXML
     private ListView<String> lstInfo;
+    @FXML
+    private Tab mapTab;
 
     private SelectionHashList<Location> locations = new SelectionHashList<Location>();
     private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
@@ -152,15 +159,63 @@ public class GUIController extends Application implements Initializable {
             stage.setMinWidth(600);
             stage.setScene(scene);
             stage.show();
-            scene.getWindow().setOnCloseRequest(
-                    new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent event) {
-                            event.consume();
-                            close();
-                        }
-                    });
+            
+            addWindowEventListener(scene.getWindow());
+            addSelectionHandler(mapTab);
         }
+    }
+    
+    /**
+     * Adds event listeners for closing and resizing a specific window.
+     * 
+     * @param w the window to add the event listener to
+     */
+    private void addWindowEventListener(Window w) {
+		ChangeListener<Number> windowEventListener = new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable,
+					Number oldValue, Number newValue) {
+				update(UpdateType.WINDOW_RESIZE);				
+			}
+			
+		};
+		
+		w.xProperty().addListener(windowEventListener);
+		w.yProperty().addListener(windowEventListener);
+		w.widthProperty().addListener(windowEventListener);
+		w.heightProperty().addListener(windowEventListener);
+		
+		w.setOnCloseRequest(new EventHandler<WindowEvent> () {
+
+			@Override
+			public void handle(WindowEvent event) {
+				event.consume();
+				update(UpdateType.CLOSE);
+			}
+			
+		});
+    }
+    
+    /**
+     * Calls update when a certain tab is selected.
+     * 
+     * @param tab the tab to add this handler to
+     */
+    private void addSelectionHandler(final Tab tab) {
+    	tab.setOnSelectionChanged(new EventHandler<Event>() {
+
+			@Override
+			public void handle(Event event) {
+				System.out.println("Selection changed");
+				if (tab.isSelected()) {
+					update(UpdateType.MAP_SELECTED);
+				} else {
+					update(UpdateType.MAP_UNSELECTED);
+				}				
+			}
+    		
+    	});
     }
 
     /**

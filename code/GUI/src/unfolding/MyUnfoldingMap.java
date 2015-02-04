@@ -63,8 +63,8 @@ public class MyUnfoldingMap extends PApplet {
      * @return Instance of MyUnfoldingMap
      */
     public static MyUnfoldingMap getInstance(GUIController controller) {
-        if (SINGLETON.superController == null) {
-            SINGLETON.superController = controller;
+        if (MyUnfoldingMap.superController == null) {
+            MyUnfoldingMap.superController = controller;
         }
         return SINGLETON;
     }
@@ -86,7 +86,8 @@ public class MyUnfoldingMap extends PApplet {
 
     @Override
     public void setup() { // check size of map
-        size(900, 600);
+        // TODO: check
+    	this.setSize(900, 600);
         smooth();
 
         map1 = new UnfoldingMap(this, P2D);

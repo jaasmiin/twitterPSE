@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Tab?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
   <columnConstraints>
     <ColumnConstraints hgrow="SOMETIMES"/>
@@ -32,7 +33,7 @@
         	<Insets left="5.0" />
         </GridPane.margin>
         <tabs>
-          <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" />
+          <!-- <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" /> -->
           <fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
           <!--<Tab closable="false" text="Karte (Differenz)">
             <content>
@@ -44,6 +45,11 @@
               <fx:include fx:id="timeSliderMap" source="../../src/gui/timeSliderMap/TimeSliderMapView.fxml" />
             </content>
           </Tab> -->
+          <Tab fx:id="mapTab" closable="false" text="Karte">
+          	<content>
+          		<fx:include fx:id="Integration" source="../../src/gui/unfoldingIntegration/IntegrationView.fxml" />
+          	</content>
+          </Tab> 
         </tabs>
       </TabPane>      
       <!-- <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />-->
