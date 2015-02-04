@@ -57,9 +57,9 @@ public class StandardMapDialog extends JDialog {
 			}
 			break;
 		case TWEET_BY_DATE:
-		    System.out.println("LocalDate: " + start + "   -   " + end);
+		    
 		 // aggregate relevant data and check if dates are valid
-            System.out.println();
+          
             if (start == null) {
                 start = LocalDate.MIN;
             }
@@ -77,7 +77,7 @@ public class StandardMapDialog extends JDialog {
 			for (mysql.result.Retweets r : uneditedData.getRetweets()) {
 				// convert date
 				LocalDate test = buildLocalDate(r.getDate());
-				System.out.println("                                                                               " + test);
+			//	System.out.println("                                                                               " + test);
               //Check if Tweet/Retweet-objct Date is in the needed interval
                 if (inRange(start, end, test)) {
                     
@@ -98,12 +98,12 @@ public class StandardMapDialog extends JDialog {
 			for (String key : keySet) {
 			//	System.out.println(key + " - " + forCalc.get(key));
 			}
-			System.out.println("############################################################");
+			//System.out.println("############################################################");
 			calculatedData = superController.getDisplayValuePerCountry(forCalc, 1);
 			
 		    keySet = calculatedData.keySet();
 			for (String key : keySet) {
-				System.out.println(key + " - " + calculatedData.get(key).getRetweetsLandFiltered());
+			//	System.out.println(key + " - " + calculatedData.get(key).getRetweetsLandFiltered());
 			}
 			
 			map.update(calculatedData);
