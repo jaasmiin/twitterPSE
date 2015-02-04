@@ -85,6 +85,7 @@ public class Labels {
 
 	public static final String DETAIL_INFORMATION = "Detail information";
 	public static final String TABLE = "Table";
+	
 
 
 }
