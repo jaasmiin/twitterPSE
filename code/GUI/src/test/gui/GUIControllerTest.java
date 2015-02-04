@@ -54,7 +54,9 @@ public class GUIControllerTest {
             guiController.setSelectedAccount(a.getId(), false);
         }
         for (Category c : cList) {
-            guiController.setSelectedCategory(c.getId(), false);
+        	if (c!= null) {
+        		guiController.setSelectedCategory(c.getId(), false);
+        	}
         }
         for (Location l : lList) {
             guiController.setSelectedLocation(l.getId(), false);
@@ -67,7 +69,7 @@ public class GUIControllerTest {
         while (!c.getChilds().isEmpty()) {
             c = c.getChilds().get(0);
         }
-        assertTrue(c.toString().contains("Plotitics"));
+        assertTrue(c.toString().contains("Politics"));
     }
 
     @Test
@@ -109,7 +111,6 @@ public class GUIControllerTest {
     @Test
     public void testDeselectLocation() {
         List<Location> list = guiController.getLocations();
-        System.out.println(list.size());
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 true);
         assertTrue(guiController.getSelectedLocations().contains(list.get(list
@@ -124,8 +125,15 @@ public class GUIControllerTest {
     public void testSelectAccount() {
         List<Account> list = guiController.getAccounts("Barack");
         Account a = list.get(0);
+        boolean found = false;
         guiController.setSelectedAccount(a.getId(), true);
-        assertTrue(guiController.getSelectedAccounts().contains(a));
+        for (Account b : guiController.getSelectedAccounts()) {
+        	if (b.equals(a)) {
+        		found = true;
+        		break;
+        	}
+        }
+        assertTrue(found);
     }
 
     @Test
@@ -162,7 +170,7 @@ public class GUIControllerTest {
     	}
     	TestGUIElement e = new TestGUIElement();
         guiController.subscribe(e);
-        guiController.setSelectedCategory(12, true);
+        guiController.setSelectedCategory(guiController.getCategoryRoot().getId(), true);
         assertTrue(e.isUpdated());
     }
 }
