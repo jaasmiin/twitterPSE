@@ -143,7 +143,7 @@ public class GUIController extends Application implements Initializable {
             e.printStackTrace();
         }
         if (parent != null) {
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent, 900, 600);
             scene.getStylesheets().add(
                     getClass().getResource("application.css").toExternalForm());
             stage = primaryStage;

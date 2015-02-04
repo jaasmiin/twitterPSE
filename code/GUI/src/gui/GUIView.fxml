@@ -24,7 +24,6 @@
           <!--<fx:include fx:id="help" source="../../src/gui/help/Help.fxml" /> -->
         </menus>
       </MenuBar>
-      
       <!-- <fx:include fx:id="search" source="../../src/gui/search/SearchView.fxml" GridPane.columnIndex="2" /> -->
       <fx:include fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" source="../../src/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" GridPane.columnSpan="3" GridPane.rowIndex="1" />
       <fx:include source="../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.columnIndex="0" GridPane.rowIndex="2" maxHeight="1.7976931348623157E308"/>
@@ -33,16 +32,8 @@
         	<Insets left="5.0" />
         </GridPane.margin>
         <tabs>
-         <Tab closable="false" text="Detail Information">
-            <content>
-              <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" />
-            </content>
-          </Tab>
-          <Tab closable="false" text="Tabelle">
-            <content>
-            	<fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
-            </content>
-          </Tab>
+          <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" />
+          <fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
           <!--<Tab closable="false" text="Karte (Differenz)">
             <content>
               <fx:include fx:id="diffMap" source="../../src/gui/diffMap/DiffMapView.fxml" />

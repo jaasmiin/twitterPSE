@@ -4,9 +4,12 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.table.ContentTableController">
-   <center>
-      <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
-   </center>
-</BorderPane>
+<Tab fx:id="tabTable" closable="false" text="Tabelle" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.table.ContentTableController">
+	<content>
+		<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+		   <center>
+		      <TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" BorderPane.alignment="CENTER" />
+		   </center>
+		</BorderPane>
+	</content>
+</Tab>
