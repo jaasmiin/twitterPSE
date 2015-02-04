@@ -212,8 +212,11 @@ public class DatabaseOptController extends InputElement implements
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
         
-        // set label
-        DBOPT_menu.setText(Labels.DBOPT_MENU);
+        if (DBOPT_menu != null) {
+        	// set label
+            DBOPT_menu.setText(Labels.DBOPT_MENU);
+        }
+        
         
         if (addCat != null) {
             setLabelsMenu();
@@ -458,6 +461,7 @@ public class DatabaseOptController extends InputElement implements
                 // print message
                 superController.setInfo(Labels.DBOPT_UPDATED,
                         Labels.DBOPT_INPROCESS);
+                dialogStage.close();
             }
 
             if (event.getSource().equals(b_Loc_tab2_zurueck)) {

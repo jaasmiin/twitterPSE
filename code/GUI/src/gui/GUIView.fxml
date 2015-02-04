@@ -21,7 +21,7 @@
         <menus>
           <fx:include fx:id="csvExport" source="../../src/gui/csvExport/CSVExportView.fxml" />
           <fx:include fx:id="databaseMenu" source="../../src/gui/databaseOptions/DatabaseOptView.fxml" />
-          <!--<fx:include fx:id="help" source="../../src/gui/help/Help.fxml" /> -->
+          <fx:include fx:id="help" source="../../src/gui/help/Help.fxml" />
         </menus>
       </MenuBar>
       
