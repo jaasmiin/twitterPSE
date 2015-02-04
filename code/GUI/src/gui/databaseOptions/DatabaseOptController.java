@@ -330,7 +330,10 @@ public class DatabaseOptController extends InputElement implements
     public void setCurrentStage(Stage stage) {
         dialogStage = stage;
     }
-
+    /**
+     * Setter for account attribute
+     * @param account account to be set
+     */
     public void setAccount(Account account) {
         this.account = account;
     }
