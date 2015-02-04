@@ -3,7 +3,6 @@ package gui.databaseOptions;
 import java.util.List;
 
 import twitter4j.ResponseList;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.User;
@@ -16,8 +15,6 @@ import twitter4j.User;
  * 
  */
 public class TwitterAccess {
-
-    private Twitter twitter;
 
     /**
      * delivers users that matches the query

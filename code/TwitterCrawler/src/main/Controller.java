@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
@@ -37,16 +36,18 @@ public class Controller extends Thread {
     private final int locatorThreadNum;
     private final int runtime;
 
+    // database access
     private AccessData accessData;
     private DBcrawler dbc;
     private Date dateForDB;
 
+    // buffer for data from twitter
     private ConcurrentLinkedQueue<Status> statusQueue;
+    // buffer for data to locate
     private ConcurrentLinkedQueue<LocateStatus> locateQueue;
 
     private HashMap<String, String> locationHash;
     private boolean run = true;
-    private Logger logger;
 
     private StreamListener streamListener;
     private Thread thrdStreamListener;
@@ -60,9 +61,11 @@ public class Controller extends Thread {
     private AccountUpdate accountUpdate;
     private Thread thrdAccountUpdate;
 
+    private Logger logger;
     private Logger statisticLogger;
 
     /**
+     * instantiate a new Controller
      * 
      * @param timeout
      *            the timeout in seconds (0 for infinity) as Integer
@@ -80,15 +83,18 @@ public class Controller extends Thread {
         // set number of locators relative to number of worker
         locatorThreadNum = workerThreadNum * 4;
 
+        // initialize dataset to be ready for start
         statusProcessor = new StatusProcessor[workerThreadNum];
         thrdStatusProcessor = new Thread[workerThreadNum];
 
         locator = new WebServiceLocator[locatorThreadNum];
         thrdLocator = new Thread[locatorThreadNum];
 
+        // prepare logger to log exceptions and informations
         statisticLogger = LoggerUtil.getLogger("Statistic");
         logger = LoggerUtil.getLogger();
 
+        // load drivers for database access/connection
         this.dbc = null;
         try {
             this.dbc = new DBcrawler(accessData, logger);
@@ -101,6 +107,8 @@ public class Controller extends Thread {
 
         this.accessData = accessData;
         runtime = timeout;
+
+        // prepare calendar to add dates into the database
         dateForDB = new Date();
         // add 800 days
         GregorianCalendar cal = new GregorianCalendar();
@@ -111,18 +119,18 @@ public class Controller extends Thread {
         statusQueue = new ConcurrentLinkedQueue<Status>();
         locateQueue = new ConcurrentLinkedQueue<LocateStatus>();
         locationHash = new HashMap<String, String>();
-
-        logger.info("Controller started");
     }
 
     @Override
     public void run() {
+
         // create thread to pull status from twitter:
         streamListener = new StreamListener(statusQueue, logger);
         thrdStreamListener = new Thread(streamListener);
         thrdStreamListener.start();
         logger.info("Crawler started");
 
+        // prepare HashMap to track unverified accounts from the database
         ConcurrentHashMap<Long, Object> hashSet = new ConcurrentHashMap<Long, Object>();
         try {
             accountUpdate = new AccountUpdate(logger, hashSet, accessData);
@@ -133,6 +141,8 @@ public class Controller extends Thread {
         thrdAccountUpdate = new Thread(accountUpdate);
         thrdAccountUpdate.start();
 
+        // get connection to database adn fill the HashMap with unverified
+        // accounts
         if (dbc != null) {
             try {
                 dbc.connect();
@@ -143,8 +153,9 @@ public class Controller extends Thread {
             }
         }
 
-        // create threads that extract informations of status and store them in
-        // the db
+        // create and start threads that extract informations of status and
+        // store them in
+        // the database (worker-threads)
         for (int i = 0; i < workerThreadNum; i++) {
             try {
                 statusProcessor[i] = new StatusProcessor(statusQueue,
@@ -160,6 +171,9 @@ public class Controller extends Thread {
         }
         logger.info("StatusProcessors started");
 
+        // create and start threads that call the WebService for location
+        // this locator-threads get their data from the locatequeue and write it
+        // directly into the database
         for (int i = 0; i < locatorThreadNum; i++) {
             try {
                 locator[i] = new WebServiceLocator(accessData, logger,
@@ -186,6 +200,7 @@ public class Controller extends Thread {
             }, runtime * 1000);
         }
 
+        // start control over the whole crawler
         limitQueue();
 
     }
@@ -201,34 +216,42 @@ public class Controller extends Thread {
 
         boolean success = true;
 
-        // send stop message
+        // send stop message to all threads and interrupt them if kill-flag is
+        // set
         run = false;
         streamListener.exit();
         // exit and interrupt AccountUpdate
         if (accountUpdate != null)
             accountUpdate.exit();
         thrdAccountUpdate.interrupt();
+
+        // exit worker-threads
         for (int i = 0; i < workerThreadNum; i++) {
             if (statusProcessor[i] != null) {
                 statusProcessor[i].exit();
             }
+            // interrupt them to finish work
             if (thrdStatusProcessor[i] != null) {
                 thrdStatusProcessor[i].interrupt();
             }
         }
+
+        // exit locator threads
         for (int i = 0; i < locatorThreadNum; i++) {
             if (locator[i] != null) {
                 locator[i].exit();
             }
+            // interrupt them if they are sleeping
             if (thrdLocator[i] != null) {
                 thrdLocator[i].interrupt();
             }
         }
 
-        // join/stop Controller
+        // stop Controller/this
         this.interrupt();
 
-        // join crawler
+        // join crawler thread
+        // wait till the crawler-thread has finished
         System.out.print("\n Terminating crawler..");
         try {
             thrdStreamListener.join();
@@ -241,7 +264,7 @@ public class Controller extends Thread {
             System.out.println(". done.");
         }
 
-        // join accountUpdate
+        // join accountUpdate thread
         success = true;
         System.out.print(" Terminating accountUpdate..");
         try {
@@ -258,11 +281,14 @@ public class Controller extends Thread {
         success = true;
         System.out.print(" Terminating status processors..");
 
+        // wait till queues are empty (than all the work is done)
         if (kill) {
+            // kill-flag is set, so reset the queues, so that there is no more
+            // work to do
             statusQueue.clear();
             locateQueue.clear();
         } else {
-            // waiting for empty queue
+            // waiting for empty queues
             while (getQueueSize() > 0) {
                 try {
                     sleep(100);
@@ -280,6 +306,7 @@ public class Controller extends Thread {
 
         if (success) {
             // join status processors
+            // wait untill each worker thread has finished
             for (int i = 0; i < workerThreadNum; ++i) {
                 try {
                     if (thrdStatusProcessor[i] != null) {
@@ -319,11 +346,16 @@ public class Controller extends Thread {
      * @return the max size of the statusQueue and the locateQueue as int
      */
     public int getQueueSize() {
+        // return the max size of the two buffer-queues
         return Math.max(locateQueue.size(), statusQueue.size());
     }
 
     @Override
     public String toString() {
+
+        // return the current state of the crawler as console-output
+
+        // count worker-threads, that are alive
         int threadsAlive = 0;
         for (int i = 0; i < thrdStatusProcessor.length; i++) {
             if (thrdStatusProcessor[i] != null
@@ -331,6 +363,8 @@ public class Controller extends Thread {
                 threadsAlive++;
             }
         }
+
+        // count locator-threads that are alive
         int threadsLocatorAlive = 0;
         for (int i = 0; i < thrdLocator.length; i++) {
             if (thrdLocator[i] != null && thrdLocator[i].isAlive()) {
@@ -353,6 +387,8 @@ public class Controller extends Thread {
     private void limitQueue() {
         int m = 0;
         int count = 0;
+
+        // limit queues and control the crawler till the program is shut down
         while (run) {
 
             if (m >= 3600) { // write statistic once an hour
@@ -361,25 +397,28 @@ public class Controller extends Thread {
             }
             m += INTERVAL;
 
-            if (count / 40000 == 1 || count / 40000 == 2) {
-                try {
-                    updateLocationHash();
-                } catch (SQLException e) {
-                    logger.warning("Database-connection failed! "
-                            + e.getMessage());
-                }
-            }
+            // // update locationHashMap twice a day
+            // if (count / 40000 == 1 || count / 40000 == 2) {
+            // try {
+            // updateLocationHash();
+            // } catch (SQLException e) {
+            // logger.warning("Database-connection failed! "
+            // + e.getMessage());
+            // }
+            // }
 
             if (count >= 86400) { // one day = 86400 seconds
                 count = 0;
 
-                // add a new date to the database
+                // add a new date to the database (once a day)
                 addDate();
             }
 
+            // limit the buffer queues
             limitQueue(statusQueue);
             limitQueue(locateQueue);
 
+            // wait
             try {
                 Thread.sleep(INTERVAL * 1000); // wait for INTERVAL seconds
             } catch (InterruptedException e) {
@@ -390,29 +429,37 @@ public class Controller extends Thread {
         }
     }
 
-    private void updateLocationHash() throws SQLException {
-        dbc.connect();
-        HashMap<String, String> temp = dbc.getLocationStrings();
-        dbc.disconnect();
-        Set<String> keys = temp.keySet();
-        for (String k : keys) {
-            if (!locationHash.containsKey(k)) {
-                locationHash.put(k, temp.get(k));
-            }
-        }
-
-    }
+    // private void updateLocationHash() throws SQLException {
+    // dbc.connect();
+    // HashMap<String, String> temp = dbc.getLocationStrings();
+    // dbc.disconnect();
+    // Set<String> keys = temp.keySet();
+    // for (String k : keys) {
+    // if (!locationHash.containsKey(k)) {
+    // locationHash.put(k, temp.get(k));
+    // }
+    // }
+    //
+    // }
 
     private void addDate() {
+
         try {
+            // connect to database
             dbc.connect();
+
+            // get date from calendar
             GregorianCalendar cal = new GregorianCalendar();
             cal.setTime(dateForDB);
+            // insert new date into database
             if (dbc.addDay(dateForDB)) {
+                // add a day on to the calendar
                 cal.add(Calendar.DATE, 1);
                 dateForDB = cal.getTime();
             }
+            // disconnect from database
             dbc.disconnect();
+
         } catch (SQLException e) {
             logger.info("A date couldn't be insert into the database: "
                     + e.getMessage());
@@ -421,8 +468,11 @@ public class Controller extends Thread {
 
     @SuppressWarnings("rawtypes")
     private void limitQueue(ConcurrentLinkedQueue queue) {
+
+        // check if queues has more elements than allowed
         if (queue.size() > MAX_SIZE) {
 
+            // remove elements till the buffer is half full
             for (int i = 0; i < MAX_SIZE / 2; i++) {
                 queue.poll();
             }
@@ -431,19 +481,29 @@ public class Controller extends Thread {
 
     private void writeStatistic() {
 
+        // write statistics about the received data and about the data that has
+        // been insert into the database
+
         String msg = "";
         msg += "Summe aller empfangener Status-Objekte: "
                 + streamListener.getCounter() + "\n";
+
+        // get informations about the data from the StatusProcessors and from
+        // the locators
         int[] sum = new int[9];
         for (int j = 0; j < sum.length; j++) {
             sum[j] = 0;
         }
+        // sum the data
         for (StatusProcessor sp : statusProcessor) {
             int[] temp = sp.getCounter();
             for (int i = 0; i < sum.length; i++) {
                 sum[i] += temp[i];
             }
         }
+
+        // get and sum the informations about the data from the
+        // WebServiceLocators
         int[] locate = new int[] {0, 0 };
         for (WebServiceLocator l : locator) {
             locate[0] += l.getStatistic()[0];
