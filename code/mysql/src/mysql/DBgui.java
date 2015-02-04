@@ -536,7 +536,7 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public HashMap<String, Integer> getAllRetweetsPerLocation() {
 
-        String sqlCommand = "SELECT COUNT(*), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
+        String sqlCommand = "SELECT SUM(Counter), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
 
         ResultSet res = null;
         Statement stmt = null;

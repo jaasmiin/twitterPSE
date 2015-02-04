@@ -47,7 +47,6 @@ import util.LoggerUtil;
  * 
  */
 
-
 public class GUIController extends Application implements Initializable {
 
     public Category categoryRoot;
@@ -70,7 +69,7 @@ public class GUIController extends Application implements Initializable {
     private List<Account> dataByAccount = new ArrayList<Account>();
     private TweetsAndRetweets dataByLocationAndDate = new TweetsAndRetweets();
     private List<Account> dataByAccountAndDate = new ArrayList<Account>();
-    
+
     private HashSet<Integer> selectedCategories = new HashSet<Integer>();
     private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 
@@ -95,32 +94,34 @@ public class GUIController extends Application implements Initializable {
 
     @Override
     public void start(final Stage primaryStage) {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("GUIView.fxml"));
-		fxmlLoader.setController(this);
-		Parent parent = null;
-		try {
-			parent = fxmlLoader.load();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		if (parent != null) {
-		    Scene scene = new Scene(parent, 800, 600);
-		    scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		    stage = primaryStage;
-		    stage.setTitle(Labels.PSE_TWITTER);
-		    stage.setMinHeight(500);
-		    stage.setMinWidth(600);
-		    stage.setScene(scene);
-		    stage.show();
-		    scene.getWindow().setOnCloseRequest(
-		            new EventHandler<WindowEvent>() {
-		                @Override
-		                public void handle(WindowEvent event) {
-		                    event.consume();
-		                    close();
-		                }
-		            });
-		}
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                "GUIView.fxml"));
+        fxmlLoader.setController(this);
+        Parent parent = null;
+        try {
+            parent = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (parent != null) {
+            Scene scene = new Scene(parent, 800, 600);
+            scene.getStylesheets().add(
+                    getClass().getResource("application.css").toExternalForm());
+            stage = primaryStage;
+            stage.setTitle(Labels.PSE_TWITTER);
+            stage.setMinHeight(500);
+            stage.setMinWidth(600);
+            stage.setScene(scene);
+            stage.show();
+            scene.getWindow().setOnCloseRequest(
+                    new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent event) {
+                            event.consume();
+                            close();
+                        }
+                    });
+        }
     }
 
     /**
@@ -130,7 +131,7 @@ public class GUIController extends Application implements Initializable {
     public void close() {
         update(UpdateType.CLOSE);
         if (db != null && db.isConnected()) {
-        	setInfo(Labels.DB_CONNECTION_CLOSING);
+            setInfo(Labels.DB_CONNECTION_CLOSING);
             db.disconnect();
             setInfo(Labels.DB_CONNECTION_CLOSED, Labels.DB_CONNECTION_CLOSING);
         }
@@ -173,7 +174,8 @@ public class GUIController extends Application implements Initializable {
             boolean success = true;
             String info = Labels.DB_CONNECTING;
             setInfo(info);
-            AccessData accessData = new AccessData("172.22.214.133", "3306", "twitter", "gui", "272b28");
+            AccessData accessData = new AccessData("172.22.214.133", "3306",
+                    "twitter", "gui", "272b28");
             if (success) {
                 try {
                     db = new DBgui(accessData, LoggerUtil.getLogger());
@@ -282,7 +284,10 @@ public class GUIController extends Application implements Initializable {
         }
         List<Integer> allSelectedCategories = new ArrayList<Integer>();
         for (Integer id : selectedCategories) {
-            allSelectedCategories.addAll(getSelectedChildCategories(id));
+            // allSelectedCategories.addAll(getSelectedChildCategories(id));
+            // changed data in database, so that each account is listed in each
+            // parent category
+            allSelectedCategories.add(id);
         }
 
         if (allSelectedCategories.size() + selectedLocations.size()
@@ -367,7 +372,7 @@ public class GUIController extends Application implements Initializable {
      *            which should be removed
      */
     public void setInfo(String info, String oldInfo) {
-    	String[] infos = {info, oldInfo};
+        String[] infos = {info, oldInfo };
         Platform.runLater(new RunnableParameter<String[]>(infos) {
             @Override
             public void run() {
@@ -451,7 +456,8 @@ public class GUIController extends Application implements Initializable {
     /**
      * Creates a category tree containing all Categories given in 'categoryIds'
      * 
-     * @param categoryIds ids of categories
+     * @param categoryIds
+     *            ids of categories
      * @return root of the created tree, null if CategoryIds contains invalid Id
      *         or has length 0
      */
@@ -649,15 +655,16 @@ public class GUIController extends Application implements Initializable {
         }
         return selectedCategoriesList;
     }
-    
+
     /**
      * Get the primary stage.
+     * 
      * @return primary stage
      */
     public Stage getStage() {
-    	return stage;
+        return stage;
     }
-    
+
     /**
      * Get list of selected locations.
      * 
@@ -684,7 +691,7 @@ public class GUIController extends Application implements Initializable {
     public List<Account> getDataByAccountAndDate() {
         return dataByAccountAndDate;
     }
-    
+
     /**
      * Get data grouped by location.
      * 
@@ -702,7 +709,7 @@ public class GUIController extends Application implements Initializable {
     public TweetsAndRetweets getDataByLocationAndDate() {
         return dataByLocationAndDate;
     }
-    
+
     /**
      * Get the account by id. Only accounts which are cached in the
      * GUIController are available meaning accounts displayed in
@@ -714,9 +721,9 @@ public class GUIController extends Application implements Initializable {
      */
     public Account getAccount(Integer id) {
         Account a = accounts.getElement(id);
-         if (a == null) {
-        	 a = db.getAccount(id);
-         }
+        if (a == null) {
+            a = db.getAccount(id);
+        }
         return a;
     }
 
@@ -757,7 +764,8 @@ public class GUIController extends Application implements Initializable {
     /**
      * Set the detail information.
      * 
-     * @param detailInfo which should be set
+     * @param detailInfo
+     *            which should be set
      */
     public void setMapDetailInformation(MyDataEntry detailInfo) {
         mapDetailInformation = detailInfo;
@@ -833,14 +841,15 @@ public class GUIController extends Application implements Initializable {
         return db.getAllRetweetsPerLocation();
     }
 
-	    /**
+    /**
      * calculates the displayed value per country
      * 
      * given: a category, country, accounts combination calculates:
      * 
-     *   number of retweets for that combination in that country                      1
-     *   -------------------------------------------------------  *  ------------------------------------ * scale
-     *          number of retweets for that combination               number of retweets in that country
+     * number of retweets for that combination in that country 1
+     * ------------------------------------------------------- *
+     * ------------------------------------ * scale number of retweets for that
+     * combination number of retweets in that country
      * 
      * 
      * @param retweetsPerLocation
@@ -854,35 +863,39 @@ public class GUIController extends Application implements Initializable {
      *         contained invalid countrycode identifier, or scale is not
      *         positive
      */
-	public HashMap<String, MyDataEntry> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
-		if (scale <= 0.0000000000001) {
-			return null;
-		}
-	    HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
-	    HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
-	    
-	    // calculate overall number of retweets in this special combination
-	    Set<String> keySet = retweetsPerLocation.keySet(); 
-	    int overallCounter = 0;
-	    for(String key : keySet) {
-	    	overallCounter += retweetsPerLocation.get(key);		
-	    }
-	   
-	    System.out.println("1/overall value: " + ((double)1) /overallCounter);
-	    
-	    // calculate relative value  
-	    for(String key : keySet) {
-	    	if (!totalNumberOfRetweets.containsKey(key)) {
-	    		System.out.println("ERROR");
-	    		return null;
-	    	}
-	    	double relativeValue = retweetsPerLocation.get(key) / ((double) overallCounter * totalNumberOfRetweets.get(key));
-	    	relativeValue *= scale;
-	    	result.put(key, new MyDataEntry(relativeValue, key, totalNumberOfRetweets.get(key), retweetsPerLocation.get(key)));
-	    }
-	    
-	    return result;
-	}
+    public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
+            HashMap<String, Integer> retweetsPerLocation, double scale) {
+        if (scale <= 0.0000000000001) {
+            return null;
+        }
+        HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
+        HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
 
+        // calculate overall number of retweets in this special combination
+        Set<String> keySet = retweetsPerLocation.keySet();
+        int overallCounter = 0;
+        for (String key : keySet) {
+            overallCounter += retweetsPerLocation.get(key);
+        }
+
+       // System.out.println("1/overall value: " + ((double) 1) / overallCounter);
+
+        // calculate relative value
+        for (String key : keySet) {
+            if (!totalNumberOfRetweets.containsKey(key)) {
+                System.out.println("ERROR");
+                return null;
+            }
+            double relativeValue = retweetsPerLocation.get(key)
+                    / ((double) overallCounter * totalNumberOfRetweets.get(key));
+            relativeValue *= scale;
+            result.put(
+                    key,
+                    new MyDataEntry(relativeValue, key, totalNumberOfRetweets
+                            .get(key), retweetsPerLocation.get(key)));
+        }
+
+        return result;
+    }
 
 }
