@@ -20,6 +20,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -36,7 +37,8 @@ import gui.Labels;
 
 public class DatabaseOptController extends InputElement implements
         Initializable {
-
+	@FXML
+	private Menu DBOPT_menu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -209,6 +211,10 @@ public class DatabaseOptController extends InputElement implements
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
+        
+        // set label
+        DBOPT_menu.setText(Labels.DBOPT_MENU);
+        
         if (addCat != null) {
             setLabelsMenu();
             addCat.setOnAction(new MyActionEventHandler());
@@ -287,10 +293,10 @@ public class DatabaseOptController extends InputElement implements
         TabPane page;
 
         try {
-            System.out.println(DatabaseOptController.this);
+           
             page = (TabPane) loader.load();
             dialogStage = new Stage();
-            System.out.println(loader.getController());
+            
             // give the controller in the newly created thread a reference to
             // the current stage;
             ((DatabaseOptController) loader.getController())
@@ -305,7 +311,7 @@ public class DatabaseOptController extends InputElement implements
             dialogStage.show();
         } catch (IOException e1) {
 
-            System.out.println("Unable to construct popUp");
+            //System.out.println("Unable to construct popUp");
             e1.printStackTrace();
         }
     }
@@ -334,7 +340,6 @@ public class DatabaseOptController extends InputElement implements
 
         @Override
         public void handle(ActionEvent event) {
-            // TODO Auto-generated method stub
             // select right handling for event
             if (event.getSource().equals(addCat)) {
                 // popUp for input-dialog add category
@@ -363,8 +368,8 @@ public class DatabaseOptController extends InputElement implements
 
         @Override
         public void handle(Event event) {
-            // ########################################## tab1
-            // ##############################
+            // ################################### tab1 ######################
+            
 
             if (event.getSource().equals(txtField_Loc_tab1)) {
                 // update listView of account
@@ -402,7 +407,7 @@ public class DatabaseOptController extends InputElement implements
                     return;
                 }
                 account = selectedAccount;
-                System.out.println(account.getName() + "   " + account.getId());
+               
                 // change tab
                 tab_Loc_tab1.setDisable(true);
                 tab_Loc_tab2.setDisable(false);
@@ -412,8 +417,8 @@ public class DatabaseOptController extends InputElement implements
                 updateLocation(superController.getLocations(""));
             }
 
-            // ################################# tab2
-            // ####################################
+            // ####################### tab2 ####################################
+            
 
             if (event.getSource().equals(txtField_Loc_tab2)) {
                 // update list of countries
@@ -427,7 +432,7 @@ public class DatabaseOptController extends InputElement implements
                             || k.getCode().equals(KeyCode.BACK_SPACE)) {
 
                         String input = txtField_Loc_tab2.getText();
-                        System.out.println("zweites suchfeld: " + input);
+                        
                         updateLocation(superController.getLocations(input));
                     }
                 }
@@ -448,8 +453,6 @@ public class DatabaseOptController extends InputElement implements
                 }
                 // print message
                 superController.setInfo(Labels.DBOPT_INPROCESS);
-                System.out.println(account.getId() + "    "
-                        + selectedItem.getValue().getId());
                 superController.setLocation(account.getId(), selectedItem
                         .getValue().getId());
                 // print message
@@ -468,7 +471,7 @@ public class DatabaseOptController extends InputElement implements
 
         private void updateLocation(List<Location> list) {
             TreeItem<Location> rootItem = new TreeItem<Location>(new Location(
-                    0, "Welt", "0000", null));
+                    0, "World", "0000", null));
             rootItem.setExpanded(false);
             for (Location location : list) {
                 rootItem.getChildren().add(new TreeItem<Location>(location));
@@ -504,11 +507,8 @@ public class DatabaseOptController extends InputElement implements
                             || k.getCode().equals(KeyCode.BACK_SPACE)) {
 
                         String input = txtField_Cat_tab1.getText();
-                        System.out.println(input);
                         // update list
-                        System.out.println(list_Cat_tab1.getItems().size());
                         list_Cat_tab1.getItems().clear();
-                        System.out.println(list_Cat_tab1.getItems().size());
                         for (Account a : superController.getAccounts(input)) {
                             list_Cat_tab1.getItems().add(a);
                         }
@@ -541,8 +541,8 @@ public class DatabaseOptController extends InputElement implements
                 for (int i = 0; i < categoryArr.length; i++) {
                     categoryArr[i] = categoryList.get(i);
                 }
-                System.out.println("ausgewählter account: " + account.getName()
-                        + " kategorien: " + account.getCategoryIds().size());
+                // System.out.println("ausgewählter account: " + account.getName()
+                //        + " kategorien: " + account.getCategoryIds().size());
                 Category rootCat = superController.getCategoryRoot(categoryArr);
                 // set new root item in treeView
                 if (rootCat != null) {
@@ -559,8 +559,8 @@ public class DatabaseOptController extends InputElement implements
 
             }
 
-            // ################################# tab2
-            // ####################################
+            // ########################### tab2  ###########################
+            
 
             if (event.getSource().equals(txtField_Cat_tab2)) {
                 // update TreeView of categories
@@ -574,7 +574,7 @@ public class DatabaseOptController extends InputElement implements
                             || k.getCode().equals(KeyCode.BACK_SPACE)) {
 
                         String input = txtField_Cat_tab2.getText();
-                        System.out.println("zweites suchfeld: " + input);
+                        //System.out.println("zweites suchfeld: " + input);
                         trv_Cat_tab2.setRoot(updateCategory(superController
                                 .getCategoryRoot(input)));
                     }
@@ -710,16 +710,16 @@ public class DatabaseOptController extends InputElement implements
 
                 UserContainer userC = list_Acc_tab1.getSelectionModel()
                         .getSelectedItem();
-                System.out.println("hinzugefuegen:   "
-                        + userC.getUser().getURL());
+                //System.out.println("hinzugefuegen:   "
+                      //  + userC.getUser().getURL());
 
                 // print message
                 superController.setInfo(Labels.DBOPT_INPROCESS);
 
                 superController.addUserToWatch(userC.getUser(),
                         DEFAULT_LOCATION);
-                System.out.println(userC.getUser().getName() + "    "
-                        + userC.getUser().getScreenName());
+                //System.out.println(userC.getUser().getName() + "    "
+                    //    + userC.getUser().getScreenName());
 
                 // print message
                 superController.setInfo(Labels.DBOPT_UPDATED,

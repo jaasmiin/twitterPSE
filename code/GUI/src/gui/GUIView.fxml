@@ -21,11 +21,11 @@
         <menus>
           <fx:include fx:id="csvExport" source="../../src/gui/csvExport/CSVExportView.fxml" />
           <fx:include fx:id="databaseMenu" source="../../src/gui/databaseOptions/DatabaseOptView.fxml" />
-          <fx:include fx:id="help" source="../../src/gui/help/Help.fxml" />
+          <!--<fx:include fx:id="help" source="../../src/gui/help/Help.fxml" /> -->
         </menus>
       </MenuBar>
       
-      <fx:include fx:id="search" source="../../src/gui/search/SearchView.fxml" GridPane.columnIndex="2" />
+      <!-- <fx:include fx:id="search" source="../../src/gui/search/SearchView.fxml" GridPane.columnIndex="2" /> -->
       <fx:include fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" source="../../src/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" GridPane.columnSpan="3" GridPane.rowIndex="1" />
       <fx:include source="../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.columnIndex="0" GridPane.rowIndex="2" maxHeight="1.7976931348623157E308"/>
       <TabPane tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
