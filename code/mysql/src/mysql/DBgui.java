@@ -58,6 +58,7 @@ public class DBgui extends DBConnection implements DBIgui {
                 + "LEFT JOIN accountCategory ac ON c.Id=ac.CategoryId "
                 + "ORDER By Name";
 
+        // execute query on database
         ResultSet res = null;
         Statement stmt = null;
         runningRequest = true;
@@ -75,11 +76,10 @@ public class DBgui extends DBConnection implements DBIgui {
         List<Category> categories = new ArrayList<Category>();
         try {
             while (res.next()) {
-                int parent = res.getInt("ParentId");
-                int id = res.getInt("Id");
+                // build the category and add her to the list
                 boolean used = res.getInt("AccountId") == 0 ? false : true;
-                Category c = new Category(id, res.getString("Name"), parent,
-                        used);
+                Category c = new Category(res.getInt("Id"),
+                        res.getString("Name"), res.getInt("ParentId"), used);
                 categories.add(c);
             }
         } catch (SQLException e) {
@@ -90,6 +90,7 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
+        // build the category tree with the categories from the list
         return getCategoryTree(categories);
     }
 
@@ -110,9 +111,11 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
+        // read all the locations from the sql-result
         List<Location> ret = new ArrayList<Location>();
         try {
             while (res.next()) {
+                // add the builded location to the return list
                 ret.add(new Location(res.getInt("Id"), res.getString("Name"),
                         res.getString("Code"), null));
             }
@@ -123,7 +126,7 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
-        assert (ret.size() == 249);
+        // assert (ret.size() == 249);
 
         return ret;
     }
@@ -146,12 +149,14 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
+        // check sql-result
         if (res == null)
             return new ArrayList<Account>();
 
         List<Account> ret = new ArrayList<Account>();
         try {
             while (res.next()) {
+                // build the accounts with the data from the sql-result
                 ret.add(new Account(res.getInt("Id"), res
                         .getLong("TwitterAccountId"), res
                         .getString("AccountName"), res.getBoolean("Verified"),
@@ -165,6 +170,7 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
 
+        // add the categories from the database to the accounts
         addCategories(ret);
 
         return ret;
