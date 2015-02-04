@@ -25,10 +25,10 @@ import mysql.result.TweetsAndRetweets;
  * class to modify the database restricted and to get data from the database
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public class DBgui extends DBConnection implements DBIgui {
+
     /**
      * configure the connection to the database
      * 
@@ -127,36 +127,6 @@ public class DBgui extends DBConnection implements DBIgui {
 
         return ret;
     }
-
-    // @Override
-    // public int getAccountId(String accountName) {
-    //
-    // PreparedStatement stmt = null;
-    // ResultSet res = null;
-    // runningRequest = true;
-    // try {
-    // stmt =
-    // c.prepareStatement("SELECT Id FROM accounts WHERE AccountName = ? LIMIT 1;");
-    // stmt.setString(1, accountName);
-    // res = stmt.executeQuery();
-    // } catch (SQLException e) {
-    // sqlExceptionLog(e, stmt);
-    // return -1;
-    // } finally {
-    // runningRequest = false;
-    // }
-    //
-    // int ret = -1;
-    // try {
-    // res.next();
-    // ret = res.getInt("Id");
-    // } catch (SQLException e) {
-    // ret = -1;
-    // } finally {
-    // closeResultAndStatement(stmt, res);
-    // }
-    // return ret;
-    // }
 
     @Override
     public List<Account> getAccounts(String search) {
@@ -477,310 +447,96 @@ public class DBgui extends DBConnection implements DBIgui {
         return topSort;
     }
 
-    // @Override
-    // public List<Account> getAllData(List<Integer> categoryIDs,
-    // List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
-    //
-    // // double t = System.currentTimeMillis();
-    //
-    // List<Account> accounts = new ArrayList<Account>();
-    //
-    // String sqlCommand =
-    // "SELECT a.Id AS AccountId, a.TwitterAccountId, a.AccountName, "
-    // + "a.Verified, a.URL, a.Follower, a.LocationId, ";
-    // if (byDate) {
-    // sqlCommand += "rd.Day AS Day, ";
-    // }
-    // sqlCommand +=
-    // "SUM(r.Counter) AS SumOfRetweets, SUM(t.Counter) AS SumOfTweets "
-    // + "FROM accounts a "
-    // + "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
-    // + "LEFT JOIN location al ON a.LocationId = al.Id "
-    // + "LEFT JOIN retweets r ON a.Id = r.AccountId "
-    // + "LEFT JOIN day rd ON r.DayId = rd.Id "
-    // + "LEFT JOIN tweets t ON a.Id = t.AccountId "
-    // + "LEFT JOIN day td ON t.DayId = td.Id ";
-    // if (!categoryIDs.isEmpty() || !locationIDs.isEmpty()
-    // || !accountIDs.isEmpty()) {
-    // sqlCommand += "WHERE ";
-    // if (!categoryIDs.isEmpty()) {
-    // sqlCommand += "ac.CategoryId IN (";
-    // for (Integer id : categoryIDs) {
-    // sqlCommand += id + ",";
-    // }
-    // sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-    // + ") "
-    // + sqlCommand.substring(sqlCommand.length(),
-    // sqlCommand.length());
-    // }
-    // if (!locationIDs.isEmpty()) {
-    // if (!categoryIDs.isEmpty()) {
-    // sqlCommand += "and ";
-    // }
-    // sqlCommand += "al.Id IN (";
-    // for (Integer id : locationIDs) {
-    // sqlCommand += id + ",";
-    // }
-    // sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-    // + ") "
-    // + sqlCommand.substring(sqlCommand.length(),
-    // sqlCommand.length());
-    // }
-    // if (!accountIDs.isEmpty()) {
-    // if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
-    // sqlCommand += "and ";
-    // }
-    // sqlCommand += "a.Id IN (";
-    // for (Integer id : accountIDs) {
-    // sqlCommand += id + ",";
-    // }
-    // sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-    // + ") "
-    // + sqlCommand.substring(sqlCommand.length(),
-    // sqlCommand.length());
-    // }
-    // }
-    // if (byDate) {
-    // sqlCommand += !categoryIDs.isEmpty() || !locationIDs.isEmpty()
-    // || !accountIDs.isEmpty() ? "WHERE " : "AND "
-    // + "rd.Id=td.Id ";
-    // }
-    // sqlCommand += "GROUP BY a.AccountName";
-    // if (byDate) {
-    // sqlCommand += ", rd.Day ";
-    // }
-    // sqlCommand += " ORDER BY SUM(r.Counter) DESC;";
-    // ResultSet rs = null;
-    // Statement stmt = null;
-    // runningRequest = true;
-    // try {
-    // stmt = c.createStatement();
-    // rs = stmt.executeQuery(sqlCommand);
-    // } catch (SQLException e) {
-    // sqlExceptionLog(e, stmt);
-    // return accounts;
-    // } finally {
-    // runningRequest = false;
-    // }
-    //
-    // try {
-    // while (rs.next()) {
-    // Account a = new Account(rs.getInt("AccountId"),
-    // rs.getLong("TwitterAccountId"),
-    // rs.getString("AccountName"), rs.getBoolean("Verified"),
-    // rs.getString("url"), rs.getInt("Follower"),
-    // rs.getInt("LocationId"));
-    // a.addRetweet(new Retweets(byDate ? rs.getDate("Day") : null, rs
-    // .getInt("SumOfRetweets"), rs.getInt("LocationId")));
-    // a.addTweet(new Tweets(byDate ? rs.getDate("Day") : null, rs
-    // .getInt("SumOfTweets")));
-    // accounts.add(a);
-    // }
-    // } catch (SQLException e) {
-    // sqlExceptionResultLog(e);
-    // return new ArrayList<Account>();
-    // } finally {
-    // closeResultAndStatement(stmt, rs);
-    // }
-    //
-    // // System.out.println("Time for a query: " + (System.currentTimeMillis()
-    // - t));
-    // //
-    // // for (Account x : accounts){
-    // // System.out.println("Number of Retweets per Account: " +
-    // x.getRetweets().size());
-    // // }
-    //
-    // return accounts;
-    // }
-
     @Override
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
-            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
-        TweetsAndRetweets tweetsAndRetweets = new TweetsAndRetweets();
-        tweetsAndRetweets.setRetweets(getRetweetSum(categoryIDs, locationIDs,
-                accountIDs, byDate));
-        tweetsAndRetweets.setTweets(getTweetSum(categoryIDs, locationIDs,
-                accountIDs, byDate));
-        return tweetsAndRetweets;
+            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
+
+        Statement stmt;
+        TweetsAndRetweets ret = new TweetsAndRetweets();
+        try {
+            stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
+            ret = getTweetSum(stmt, byDates);
+        } catch (SQLException e) {
+            logger.warning("SQL-Exception by gatSumData: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+        }
+
+        return ret;
     }
 
-    private List<Retweets> getRetweetSum(List<Integer> categoryIDs,
-            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
-        String sqlCommand = "SELECT rl.Id AS LocationId, rl.Code AS LocationCode, ";
-        if (byDate) {
-            sqlCommand += "rd.Day AS Day, ";
-        }
-        sqlCommand += "SUM(r.Counter) AS SumOfRetweets " + "FROM accounts a "
-                + "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
-                + "LEFT JOIN location al ON a.LocationId = al.Id "
-                + "INNER JOIN retweets r ON a.Id = r.AccountId "
-                + "LEFT JOIN day rd ON r.DayId = rd.Id "
-                + "LEFT JOIN location rl ON r.LocationId = rl.Id ";
-        if (!categoryIDs.isEmpty() || !locationIDs.isEmpty()
-                || !accountIDs.isEmpty()) {
-            sqlCommand += "WHERE ";
-            if (!categoryIDs.isEmpty()) {
-                sqlCommand += "ac.CategoryId IN (";
-                for (Integer id : categoryIDs) {
-                    sqlCommand += id + ",";
-                }
-                sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-                        + ") "
-                        + sqlCommand.substring(sqlCommand.length(),
-                                sqlCommand.length());
-            }
-            if (!locationIDs.isEmpty()) {
-                if (!categoryIDs.isEmpty()) {
-                    sqlCommand += "and ";
-                }
-                sqlCommand += "al.Id IN (";
-                for (Integer id : locationIDs) {
-                    sqlCommand += id + ",";
-                }
-                sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-                        + ") "
-                        + sqlCommand.substring(sqlCommand.length(),
-                                sqlCommand.length());
-            }
-            if (!accountIDs.isEmpty()) {
-                if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
-                    sqlCommand += "and ";
-                }
-                sqlCommand += "a.Id IN (";
-                for (Integer id : accountIDs) {
-                    sqlCommand += id + ",";
-                }
-                sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-                        + ") "
-                        + sqlCommand.substring(sqlCommand.length(),
-                                sqlCommand.length());
-            }
-        }
-        sqlCommand += "GROUP BY rl.Id";
-        if (byDate) {
-            sqlCommand += ", rd.Day ";
-        }
-        sqlCommand += " ORDER BY SUM(r.Counter) DESC;";
-        List<Retweets> retweets = new ArrayList<Retweets>();
-        ResultSet rs = null;
-        Statement stmt = null;
+    private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
+
+        String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
+        String b = "SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;";
+
+        ResultSet res = null;
         runningRequest = true;
         try {
-            stmt = c.createStatement();
-            rs = stmt.executeQuery(sqlCommand);
+            stmt.executeBatch();
+            res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            return retweets;
         } finally {
             runningRequest = false;
         }
+        List<Tweets> tweets = new ArrayList<Tweets>();
+        if (res != null) {
+            try {
+                while (res.next()) {
+                    tweets.add(new Tweets((byDate ? res.getDate("Day") : null),
+                            res.getInt(1)));
+                }
+            } catch (SQLException e) {
+                sqlExceptionResultLog(e);
+            } finally {
+                closeResult(res);
+            }
+        }
+        TweetsAndRetweets ret = new TweetsAndRetweets();
+        ret.setTweets(tweets);
+        ret.setRetweets(getRetweetSum(stmt, byDate));
+        return ret;
+    }
 
+    private List<Retweets> getRetweetSum(Statement stmt, boolean byDate) {
+
+        String a = "SELECT SUM(Counter), Code, Day FROM retweets "
+                + "JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id "
+                + "GROUP BY LocationId, DayId;";
+        String b = "SELECT SUM(Counter), Code FROM retweets "
+                + "JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
+
+        ResultSet res = null;
+        runningRequest = true;
         try {
-            while (rs.next()) {
-                Retweets r = new Retweets(byDate ? rs.getDate("Day") : null,
-                        rs.getInt("SumOfRetweets"),
-                        rs.getString("LocationCode"));
-                retweets.add(r);
+            res = stmt.executeQuery(byDate ? a : b);
+        } catch (SQLException e) {
+            sqlExceptionLog(e, stmt);
+        } finally {
+            runningRequest = false;
+        }
+        if (res == null)
+            return new ArrayList<Retweets>();
+        List<Retweets> ret = new ArrayList<Retweets>();
+        try {
+            while (res.next()) {
+                Retweets element = new Retweets((byDate ? res.getDate("Day")
+                        : null), res.getInt(1), res.getString("Code"));
+                ret.add(element);
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
             return new ArrayList<Retweets>();
         } finally {
-            closeResultAndStatement(stmt, rs);
+            closeResultAndStatement(stmt, res);
         }
-
-        return retweets;
-    }
-
-    private List<Tweets> getTweetSum(List<Integer> categoryIDs,
-            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDate) {
-        String sqlCommand = "SELECT SUM(t.Counter) AS SumOfTweets";
-        if (byDate) {
-            sqlCommand += ", rd.Day AS Day";
-        }
-        sqlCommand += " FROM accounts a "
-                + "LEFT JOIN accountCategory ac ON a.Id = ac.AccountId "
-                + "LEFT JOIN location al ON a.LocationId = al.Id "
-                + "INNER JOIN tweets t ON a.Id = t.AccountId "
-                + "LEFT JOIN day rd ON r.DayId = rd.Id ";
-        if (!categoryIDs.isEmpty() || !locationIDs.isEmpty()
-                || !accountIDs.isEmpty()) {
-            sqlCommand += "WHERE ";
-            if (!categoryIDs.isEmpty()) {
-                sqlCommand += "ac.CategoryId IN (";
-                for (Integer id : categoryIDs) {
-                    sqlCommand += id + ",";
-                }
-                sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-                        + ") "
-                        + sqlCommand.substring(sqlCommand.length(),
-                                sqlCommand.length());
-            }
-            if (!locationIDs.isEmpty()) {
-                if (!categoryIDs.isEmpty()) {
-                    sqlCommand += "and ";
-                }
-                sqlCommand += "al.Id IN (";
-                for (Integer id : locationIDs) {
-                    sqlCommand += id + ",";
-                }
-                sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-                        + ") "
-                        + sqlCommand.substring(sqlCommand.length(),
-                                sqlCommand.length());
-            }
-            if (!accountIDs.isEmpty()) {
-                if (!locationIDs.isEmpty() || !categoryIDs.isEmpty()) {
-                    sqlCommand += "and ";
-                }
-                sqlCommand += "a.Id IN (";
-                for (Integer id : accountIDs) {
-                    sqlCommand += id + ",";
-                }
-                sqlCommand = sqlCommand.substring(0, sqlCommand.length() - 1)
-                        + ") "
-                        + sqlCommand.substring(sqlCommand.length(),
-                                sqlCommand.length());
-            }
-        }
-        sqlCommand += ";";
-
-        List<Tweets> tweets = new ArrayList<Tweets>();
-        ResultSet rs = null;
-        Statement stmt = null;
-        runningRequest = true;
-        try {
-            stmt = c.createStatement();
-            rs = stmt.executeQuery(sqlCommand);
-        } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
-            return tweets;
-        } finally {
-            runningRequest = false;
-        }
-
-        try {
-            if (rs.next()) {
-                Tweets t = new Tweets(byDate ? rs.getDate("Day") : null,
-                        rs.getInt("SumOfRetweets"));
-                tweets.add(t);
-            }
-        } catch (SQLException e) {
-            sqlExceptionResultLog(e);
-            e.printStackTrace();
-            return new ArrayList<Tweets>();
-        } finally {
-            closeResultAndStatement(stmt, rs);
-        }
-
-        return tweets;
+        return ret;
     }
 
     @Override
     public HashMap<String, Integer> getAllRetweetsPerLocation() {
 
-        String sqlCommand = "SELECT COUNT(*), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
+        String sqlCommand = "SELECT SUM(Counter), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -820,6 +576,7 @@ public class DBgui extends DBConnection implements DBIgui {
             ret = getTweetSumPerAccount(stmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatAllData: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
         }
 
         return ret;
@@ -859,7 +616,6 @@ public class DBgui extends DBConnection implements DBIgui {
     private List<Account> getTweetSumPerAccount(Statement stmt, boolean byDate) {
 
         HashMap<Integer, Account> accounts = getAccounts(stmt);
-        System.out.println("Accounts: " + accounts.size());
 
         String a = "SELECT Counter, AccountName, tweets.AccountId, Day FROM tweets "
                 + "JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id JOIN accounts ON final.val=accounts.Id;";

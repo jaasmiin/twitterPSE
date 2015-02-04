@@ -1,10 +1,9 @@
 package main;
 
 /**
- * interface for listener that run in Threads
+ * interface for a listener that ran in a Thread
  * 
  * @author Holger Ebhart
- * @version 1.0
  * 
  */
 public interface RunnableListener extends Runnable {

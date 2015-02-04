@@ -10,7 +10,6 @@ import twitter4j.User;
  * interface for writing data into a database
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public interface DBIcrawler {
 

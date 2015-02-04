@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
  * class to connect to a MySQL database
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public abstract class DBConnection {
@@ -132,6 +131,7 @@ public abstract class DBConnection {
     protected boolean executeStatementUpdate(PreparedStatement stmt,
             boolean resultNotNull) {
 
+        // null check
         if (stmt == null) {
             return false;
         }
@@ -139,22 +139,17 @@ public abstract class DBConnection {
         runningRequest = true;
         boolean ret = false;
         try {
+            // execute statement and check result
             if (resultNotNull) {
                 ret = stmt.executeUpdate() != 0 ? true : false;
             } else {
                 ret = stmt.executeUpdate() >= 0 ? true : false;
             }
         } catch (SQLException e) {
-            // e.printStackTrace();
             sqlExceptionLog(e, stmt);
         } finally {
-            if (stmt != null) {
-                try {
-                    stmt.close();
-                } catch (SQLException e) {
-                    sqlExceptionLog(e);
-                }
-            }
+            // free resources
+            closeStatement(stmt);
             runningRequest = false;
         }
         return ret;

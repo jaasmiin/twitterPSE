@@ -9,7 +9,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.User;
 
 /**
- * Class that provides necessary Methods to get access to the TwitterSearchAPI
+ * Class that provides necessary methods to get access to the TwitterSearchAPI
  * 
  * @author Matthias
  * @version 1.0
@@ -38,8 +38,6 @@ public class TwitterAccess {
         return list;
     }
 
-    public static void main(String[] args) {
-        System.out.println(TwitterAccess.getUser("katy").get(0).getName());
-    }
+
 
 }

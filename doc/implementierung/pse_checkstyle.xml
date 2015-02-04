@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.1//EN" "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
 <module name="Checker">
+
 	<module name="FileLength">
 		<property name="max" value="1000" />
 		<property name="fileExtensions" value="" />
@@ -291,15 +294,6 @@
 		<module name="JavadocVariable">
 			<property name="scope" value="package" />
 			<!-- <property name="excludeScope" value=""/> ! -->
-		</module>
-
-	</module>
-	<module name="TreeWalker">
-
-		<!-- Ensure a class has a package declaration. ! -->
-		<!-- See http://checkstyle.sf.net/config_coding.html ! -->
-		<module name="PackageDeclaration">
-			<property name="ignoreDirectoryName" value="true" />
 		</module>
 
 	</module>

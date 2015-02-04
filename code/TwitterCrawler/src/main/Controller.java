@@ -23,7 +23,6 @@ import twitter4j.Status;
  * worker-threads, restarts also the crawler if it has been shut down
  * 
  * @author Holger Ebhart
- * @version 1.1
  * 
  */
 public class Controller extends Thread {

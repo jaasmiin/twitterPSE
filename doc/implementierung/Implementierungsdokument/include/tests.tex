@@ -1,22 +1,20 @@
 \section{Tests}
 
-Im folgenden werden die Tests, welche durchgeführt wurden beschrieben. Statistiken über die Häufigkeit und das Ergebnis der Durchführung werden nicht angegeben, da bei Fehlschlagen eines Testfalls, der zugrunde liegende Fehler gesucht und behoben wurde. Über diesen Vorgang wurden allerdings keine Statistiken geführt.
+Im Folgenden werden die Tests beschrieben, welche durchgeführt wurden. 
 
 \subsection{GUI}
 
-Im Bereich der GUI wurden einige JUnit-Testfälle geschrieben, die hauptsächlich den Bereich des GUIControllers betreffen:
+Im Bereich der GUI wurden einige JUnit-Testfälle geschrieben, die hauptsächlich den Bereich des \emph{GUIControllers} betreffen:
 \begin{description}
-	\item[testGetCategories] lade Kategorie aus Datenbank
-	\item[testGetAccounts] lade Account aus Datenbank
-	\item[...]
-	\item[testSelectAccounts] wählen einen Account für den nächsten Query aus
-	\item[testDeselectAccounts] entferne einen Account aus dem Query
-	\item[...]
-	\item[testGetDataByLocation] liefere alle geladenen Retweets nach Ländern sortiert
-	\item[testSubscribe] anmelden beim GUIController
+	\item[testGetCategories, testGetAccounts] Lädt Kategorien bzw. Accounts aus der Datenbank.
+	\item[testSelectAccounts] Wählt einen Account\footnotemark[1] für den nächsten Query aus.
+	\item[testDeselectAccounts] Entfernt einen Account\footnotemark[1] aus dem Query.
+	\item[testGetDataByLocation] Liefert alle geladenen Retweets nach Ländern sortiert.
+	\item[testSubscribe] Anmelden beim \emph{GUIController}
+\footnotetext[1]{Diese Testmethode existiert auch für Orte und Kategorien.}
 \end{description}
 
-Diese Testfälle decken die Basisfunktionalität des GUIControllers ab. In den Unterpaketen des Pakets gui wurde größtenteils von Hand getestet, da  hierbei hauptsächlich die richtige Behandlung von "`Events'" getestet werden muss, hierbei allerdings automatisierte Test schwer umzusetzen sind.
+Diese Testfälle decken die Basisfunktionalität des \emph{GUIControllers} ab. In den Unterpaketen des Pakets \emph{gui} wurde größtenteils von Hand getestet, da  hierbei hauptsächlich die richtige Behandlung von \emph{Events} getestet werden muss, hierbei allerdings automatisierte Test schwer umzusetzen sind.
 
 
 \subsection{Crawler}
@@ -25,27 +23,27 @@ Der Crawler wurde nicht mit automatisierten JUnit-Tests geprüft, stattdessen wu
 
 \subsection{mysql}
 
-In diesem Paket wurde sehr viel mit JUnit-Test gearbeitet, diese werden im folgenden exemplarisch dargestellt. Alle Tests wurden auf einer Datenbank mit Testdaten durchgeführt.
+In diesem Paket wurde sehr viel mit JUnit-Test gearbeitet, diese werden im Folgenden exemplarisch dargestellt. Alle Tests wurden auf einer Datenbank mit Testdaten durchgeführt.
 \subsubsection{DBcategorizer}
 \quad
 \begin{description}
-	\item[testGetNonCategorized] liefere nicht kategorisierte Accounts zurück
-	\item[testAddCategoryToAccount] füge Kategorie zu Account hinzu
+	\item[testGetNonCategorized] Liefer nicht kategorisierte Accounts zurück.
+	\item[testAddCategoryToAccount] Füge Kategorie zu Account hinzu.
 	\item[...]
 \end{description}
 \subsubsection{DBcrawler}
 \begin{description}
-	\item[testGetAccounts] frage Accounts aus Datenbank an
-	\item[testGetNonVerifiedAccounts] frage nicht verifizierten Accounts an
-	\item[testAddDay] fügt Datum hinzu
-	\item[testAddAccount] füge Account hinzu
+	\item[testGetNonVerifiedAccounts] Fragt nicht verifizierten Accounts an.
+	\item[testAddDay] Fügt Datum hinzu.
+	\item[testGetAccounts] Fragt Accounts aus Datenbank an.
+	\item[testAddAccount] Fügt Account hinzu.
 	\item[...]
-	\item[testAddRetweet] füge Retweet hinzu
+	\item[testAddRetweet] Fügt Retweet hinzu.
 	\item[...]	
 \end{description}
 \subsubsection{DBgui}
 \begin{description}
-	\item [testGetAccounts] lade Accounts aus der Datenbank
+	\item [testGetAccounts] Lädt Accounts aus der Datenbank.
 	\item [...]
 \end{description}
 \quad

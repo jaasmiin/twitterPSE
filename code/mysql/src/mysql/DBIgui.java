@@ -1,6 +1,5 @@
 package mysql;
 
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import mysql.result.TweetsAndRetweets;
  * interface for modifying some data from a database (with restrictions)
  * 
  * @author Maximilian Awiszus, Holger Ebhart
- * @version 1.1
  * 
  */
 public interface DBIgui {
@@ -32,15 +30,6 @@ public interface DBIgui {
      * @return a list of locations.
      */
     public List<Location> getLocations();
-
-    // /**
-    // * Get id of account with accountName.
-    // *
-    // * @param accountName
-    // * of the twitter account.
-    // * @return id of the account or -1 if not found.
-    // */
-    // public int getAccountId(String accountName);
 
     /**
      * returns the sum of all retweets for each location
@@ -70,8 +59,7 @@ public interface DBIgui {
      *             thrown if the sql-query couldn't be built
      */
     public List<Account> getAllData(List<Integer> categoryIDs,
-            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
-            throws IllegalArgumentException, SQLException;
+            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates);
 
     /**
      * returns the total number of tweets and retweets from all the accounts
@@ -94,8 +82,7 @@ public interface DBIgui {
      *             thrown if the sql-query couldn't be built
      */
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
-            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates)
-            throws IllegalArgumentException, SQLException;
+            List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates);
 
     /**
      * Return list of accounts which name contains search

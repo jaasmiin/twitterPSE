@@ -2,11 +2,6 @@ package gui;
 
 import gui.GUIElement.UpdateType;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -14,11 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
 
@@ -53,12 +45,12 @@ import util.LoggerUtil;
  * 
  */
 
-
 public class GUIController extends Application implements Initializable {
 
-    public Category categoryRoot;
-
     private static GUIController instance = null;
+    
+    private Category categoryRoot;
+
     private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
     private DBgui db;
     private Stage stage;
@@ -76,13 +68,61 @@ public class GUIController extends Application implements Initializable {
     private List<Account> dataByAccount = new ArrayList<Account>();
     private TweetsAndRetweets dataByLocationAndDate = new TweetsAndRetweets();
     private List<Account> dataByAccountAndDate = new ArrayList<Account>();
-    
+
     private HashSet<Integer> selectedCategories = new HashSet<Integer>();
     private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
 
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
 
+    private Runnable rnbInitDBConnection = new Runnable() {
+        @Override
+        public void run() {
+            boolean success = true;
+            String info = Labels.DB_CONNECTING;
+            setInfo(info);
+            AccessData accessData = new AccessData("172.22.214.133", "3306",
+                    "twitter", "gui", "272b28");
+            if (success) {
+                try {
+                    db = new DBgui(accessData, LoggerUtil.getLogger());
+                } catch (SecurityException | IOException
+                        | InstantiationException | IllegalAccessException
+                        | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    success = false;
+                }
+                if (success) {
+                    try {
+                        db.connect();
+                    } catch (SQLException e) {
+                        success = false;
+                    }
+                } else {
+                    setInfo(Labels.DB_CONNECTING_ERROR, info);
+                }
+            } else {
+                setInfo(Labels.NO_LOGIN_DATA_FOUND_ERROR, info);
+            }
+            if (success) {
+                setInfo(Labels.DB_CONNECTED, info);
+                reloadAll();
+            }
+        }
+    };
+    
+    /**
+     * Create a GUIController and set the singelton instance.
+     */
+    public GUIController() {
+        super();
+        instance = this;
+    }
+    
+    /**
+     * Get an instance of GUIController.
+     * @return instance of GUIController
+     */
     public static GUIController getInstance() {
         if (instance == null) {
             System.out.println("Fehler in GUIController getInstance(). "
@@ -91,43 +131,36 @@ public class GUIController extends Application implements Initializable {
         return instance;
     }
 
-    /**
-     * Create a GUIController and set the singelton instance.
-     */
-    public GUIController() {
-        super();
-        instance = this;
-    }
-
     @Override
     public void start(final Stage primaryStage) {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("GUIView.fxml"));
-		fxmlLoader.setController(this);
-		Parent parent = null;
-		try {
-			parent = fxmlLoader.load();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		if (parent != null) {
-		    Scene scene = new Scene(parent, 800, 600);
-		    scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
-		    stage = primaryStage;
-		    stage.setTitle(Labels.PSE_TWITTER);
-		    stage.setMinHeight(500);
-		    stage.setMinWidth(600);
-		    stage.setScene(scene);
-		    stage.show();
-		    scene.getWindow().setOnCloseRequest(
-		            new EventHandler<WindowEvent>() {
-		                @Override
-		                public void handle(WindowEvent event) {
-		                    event.consume();
-		                    close();
-		                }
-		            });
-		}
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(
+                "GUIView.fxml"));
+        fxmlLoader.setController(this);
+        Parent parent = null;
+        try {
+            parent = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if (parent != null) {
+            Scene scene = new Scene(parent, 900, 600);
+            scene.getStylesheets().add(
+                    getClass().getResource("application.css").toExternalForm());
+            stage = primaryStage;
+            stage.setTitle(Labels.PSE_TWITTER);
+            stage.setMinHeight(500);
+            stage.setMinWidth(600);
+            stage.setScene(scene);
+            stage.show();
+            scene.getWindow().setOnCloseRequest(
+                    new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent event) {
+                            event.consume();
+                            close();
+                        }
+                    });
+        }
     }
 
     /**
@@ -137,7 +170,7 @@ public class GUIController extends Application implements Initializable {
     public void close() {
         update(UpdateType.CLOSE);
         if (db != null && db.isConnected()) {
-        	setInfo(Labels.DB_CONNECTION_CLOSING);
+            setInfo(Labels.DB_CONNECTION_CLOSING);
             db.disconnect();
             setInfo(Labels.DB_CONNECTION_CLOSED, Labels.DB_CONNECTION_CLOSING);
         }
@@ -172,95 +205,6 @@ public class GUIController extends Application implements Initializable {
      */
     public static void main(String[] args) {
         launch();
-    }
-
-    private Runnable rnbInitDBConnection = new Runnable() {
-        @Override
-        public void run() {
-            boolean success = true;
-            String info = Labels.DB_CONNECTING;
-            setInfo(info);
-            AccessData accessData = null;
-            try {
-                accessData = getDBAccessData();
-            } catch (IOException e1) {
-                success = false;
-            }
-            if (success) {
-                try {
-                    db = new DBgui(accessData, LoggerUtil.getLogger());
-                } catch (SecurityException | IOException
-                        | InstantiationException | IllegalAccessException
-                        | ClassNotFoundException e) {
-                    e.printStackTrace();
-                    success = false;
-                }
-                if (success) {
-                    try {
-                        db.connect();
-                    } catch (SQLException e) {
-                        success = false;
-                    }
-                } else {
-                    setInfo(Labels.DB_CONNECTING_ERROR, info);
-                }
-            } else {
-                setInfo(Labels.NO_LOGIN_DATA_FOUND_ERROR, info);
-            }
-            if (success) {
-                setInfo(Labels.DB_CONNECTED, info);
-                reloadAll();
-            }
-        }
-    };
-
-    private AccessData getDBAccessData() throws IOException {
-        String path = System.getenv("APPDATA")
-                + "\\KIT\\twitterPSE\\dblogin.txt";
-        if (!(new File(path)).isFile()) {
-            path = System.getenv("APPDATA") + "\\KIT";
-            File file = new File(path);
-            if (!file.isDirectory()) {
-                if (!file.mkdir()) {
-                    throw new IOException();
-                }
-            }
-            path += "\\twitterPSE";
-            file = new File(path);
-            if (!file.isDirectory()) {
-                if (!file.mkdir()) {
-                    throw new IOException();
-                }
-            }
-            path += "\\dblogin.txt";
-            file = new File(path);
-            if (!file.isFile()) {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-                Scanner in = new Scanner(System.in);
-                System.out.print("Host: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Port: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Database: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Username: ");
-                writer.write(in.nextLine() + "\n");
-                System.out.print("Password: ");
-                writer.write(in.nextLine() + "\n");
-                in.close();
-                writer.close();
-            }
-
-        }
-        BufferedReader in = new BufferedReader(new FileReader(path));
-
-        String host = in.readLine();
-        String port = in.readLine();
-        String dbName = in.readLine();
-        String userName = in.readLine();
-        String password = in.readLine();
-        in.close();
-        return new AccessData(host, port, dbName, userName, password);
     }
 
     private void reloadLocation() {
@@ -308,28 +252,6 @@ public class GUIController extends Application implements Initializable {
         categories.put(category.getId(), category);
     }
 
-    /**
-     * Get all childs of a category recursively including own id.
-     * 
-     * @param id
-     *            of category
-     * @return a set of all childs including own id or a empty set if id could
-     *         not be found in categories HashMap
-     */
-    private Set<Integer> getSelectedChildCategories(int id) {
-        Set<Integer> idList = new HashSet<Integer>();
-        if (categories.containsKey(id)) {
-            Queue<Category> categories = new LinkedList<Category>();
-            categories.add(this.categories.get(id));
-            while (!categories.isEmpty()) {
-                Category category = categories.poll();
-                idList.add(category.getId());
-                categories.addAll(category.getChilds());
-            }
-        }
-        return idList;
-    }
-
     private void reloadData() {
         String info = Labels.DATA_LOADING;
         setInfo(info);
@@ -343,7 +265,10 @@ public class GUIController extends Application implements Initializable {
         }
         List<Integer> allSelectedCategories = new ArrayList<Integer>();
         for (Integer id : selectedCategories) {
-            allSelectedCategories.addAll(getSelectedChildCategories(id));
+            // allSelectedCategories.addAll(getSelectedChildCategories(id));
+            // changed data in database, so that each account is listed in each
+            // parent category
+            allSelectedCategories.add(id);
         }
 
         if (allSelectedCategories.size() + selectedLocations.size()
@@ -428,7 +353,7 @@ public class GUIController extends Application implements Initializable {
      *            which should be removed
      */
     public void setInfo(String info, String oldInfo) {
-    	String[] infos = {info, oldInfo};
+        String[] infos = {info, oldInfo };
         Platform.runLater(new RunnableParameter<String[]>(infos) {
             @Override
             public void run() {
@@ -512,7 +437,8 @@ public class GUIController extends Application implements Initializable {
     /**
      * Creates a category tree containing all Categories given in 'categoryIds'
      * 
-     * @param categoryIds ids of categories
+     * @param categoryIds
+     *            ids of categories
      * @return root of the created tree, null if CategoryIds contains invalid Id
      *         or has length 0
      */
@@ -705,20 +631,21 @@ public class GUIController extends Application implements Initializable {
      */
     public List<Category> getSelectedCategories() {
         List<Category> selectedCategoriesList = new ArrayList<Category>();
-        for (Integer categoryID : selectedCategories) { // TODO: faster?
+        for (Integer categoryID : selectedCategories) {
             selectedCategoriesList.add(categories.get(categoryID));
         }
         return selectedCategoriesList;
     }
-    
+
     /**
      * Get the primary stage.
+     * 
      * @return primary stage
      */
     public Stage getStage() {
-    	return stage;
+        return stage;
     }
-    
+
     /**
      * Get list of selected locations.
      * 
@@ -745,7 +672,7 @@ public class GUIController extends Application implements Initializable {
     public List<Account> getDataByAccountAndDate() {
         return dataByAccountAndDate;
     }
-    
+
     /**
      * Get data grouped by location.
      * 
@@ -763,7 +690,7 @@ public class GUIController extends Application implements Initializable {
     public TweetsAndRetweets getDataByLocationAndDate() {
         return dataByLocationAndDate;
     }
-    
+
     /**
      * Get the account by id. Only accounts which are cached in the
      * GUIController are available meaning accounts displayed in
@@ -775,10 +702,9 @@ public class GUIController extends Application implements Initializable {
      */
     public Account getAccount(Integer id) {
         Account a = accounts.getElement(id);
-        // if (a == null) {
-        // a = db.getAccount(id);
-        // }
-        // TODO: uncomment, if @Holger has programmed method.
+        if (a == null) {
+            a = db.getAccount(id);
+        }
         return a;
     }
 
@@ -819,7 +745,8 @@ public class GUIController extends Application implements Initializable {
     /**
      * Set the detail information.
      * 
-     * @param detailInfo which should be set
+     * @param detailInfo
+     *            which should be set
      */
     public void setMapDetailInformation(MyDataEntry detailInfo) {
         mapDetailInformation = detailInfo;
@@ -895,50 +822,62 @@ public class GUIController extends Application implements Initializable {
         return db.getAllRetweetsPerLocation();
     }
 
-	/**
-	 * calculates the displayed value per country
-	 * 
-	 * given: a category, country, accounts combination
-	 * calculates: 
-	 *  
-	 *   number of retweets for that combination in that country                      1
-	 *   -------------------------------------------------------  *  ------------------------------------ * scale
-	 *          number of retweets for that combination               number of retweets in that country
-	 * 
-	 * @param retweetsPerLocation number of retweets for each country in a category/country/accounts combination
-	 * @param scale the value in scale is multiplied with the calculated relative factor to point out differences, it has to be positive
-	 * @return the hashmap mapping countries to the number quantifying the 
-	 * retweet activity in this country or null if retweetsPerLocation contained invalid countrycode identifier, or scale is not positive
-	 */
-	public HashMap<String, MyDataEntry> getDisplayValuePerCountry( HashMap<String, Integer> retweetsPerLocation, double scale ) {
-		if (scale <= 0.0000000000001) {
-			return null;
-		}
-	    HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
-	    HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
-	    
-	    // calculate overall number of retweets in this special combination
-	    Set<String> keySet = retweetsPerLocation.keySet(); 
-	    int overallCounter = 0;
-	    for(String key : keySet) {
-	    	overallCounter += retweetsPerLocation.get(key);		
-	    }
-	   
-	    System.out.println("1/overall value: " + ((double)1) /overallCounter);
-	    
-	    // calculate relative value  
-	    for(String key : keySet) {
-	    	if (!totalNumberOfRetweets.containsKey(key)) {
-	    		System.out.println("ERROR");
-	    		return null;
-	    	}
-	    	double relativeValue = retweetsPerLocation.get(key) / ((double) overallCounter * totalNumberOfRetweets.get(key));
-	    	relativeValue *= scale;
-	    	result.put(key, new MyDataEntry(relativeValue, key, totalNumberOfRetweets.get(key), retweetsPerLocation.get(key)));
-	    }
-	    
-	    return result;
-	}
+    /**
+     * calculates the displayed value per country
+     * 
+     * given: a category, country, accounts combination calculates:
+     * 
+     * number of retweets for that combination in that country 1
+     * ------------------------------------------------------- *
+     * ------------------------------------ * scale number of retweets for that
+     * combination number of retweets in that country
+     * 
+     * 
+     * @param retweetsPerLocation
+     *            number of retweets for each country in a
+     *            category/country/accounts combination
+     * @param scale
+     *            the value in scale is multiplied with the calculated relative
+     *            factor to point out differences, it has to be positive
+     * @return the hashmap mapping countries to the number quantifying the
+     *         retweet activity in this country or null if retweetsPerLocation
+     *         contained invalid countrycode identifier, or scale is not
+     *         positive
+     */
+    public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
+            HashMap<String, Integer> retweetsPerLocation, double scale) {
+        if (scale <= 0.0000000000001) {
+            return null;
+        }
+        HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
+        HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
 
+        // calculate overall number of retweets in this special combination
+        Set<String> keySet = retweetsPerLocation.keySet();
+        int overallCounter = 0;
+        for (String key : keySet) {
+            overallCounter += retweetsPerLocation.get(key);
+        }
+
+        // System.out.println("1/overall value: " + ((double) 1) /
+        // overallCounter);
+
+        // calculate relative value
+        for (String key : keySet) {
+            if (!totalNumberOfRetweets.containsKey(key)) {
+                System.out.println("ERROR");
+                return null;
+            }
+            double relativeValue = retweetsPerLocation.get(key)
+                    / ((double) overallCounter * totalNumberOfRetweets.get(key));
+            relativeValue *= scale;
+            result.put(
+                    key,
+                    new MyDataEntry(relativeValue, key, totalNumberOfRetweets
+                            .get(key), retweetsPerLocation.get(key)));
+        }
+
+        return result;
+    }
 
 }

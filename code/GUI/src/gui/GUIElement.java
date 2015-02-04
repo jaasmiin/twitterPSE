@@ -11,7 +11,9 @@ import javafx.fxml.Initializable;
  * 
  */
 public abstract class GUIElement implements Initializable {
-
+	/**
+	 * Contains the supercontroller.
+	 */
     protected GUIController superController;
 
     /**
@@ -20,10 +22,34 @@ public abstract class GUIElement implements Initializable {
      * 
      */
     public static enum UpdateType {
-        TWEET, CATEGORY, LOCATION, ACCOUNT, ERROR, 
-        CATEGORY_SELECTION, LOCATION_SELECTION, ACCOUNT_SELECTION, CLOSE, GUI_STARTED, MAP_DETAIL_INFORMATION, TWEET_BY_DATE
+    	/** Data has changed */
+    	TWEET,
+    	/** Categories have changed */
+    	CATEGORY, 
+    	/** Locations have changed */
+        LOCATION,
+        /** Accounts have changed */
+        ACCOUNT,
+        /** A error has happened */
+        ERROR, 
+        /** Selection of categories has changed */
+        CATEGORY_SELECTION,
+        /** Selection of locations has changed */
+        LOCATION_SELECTION,
+        /** Selection of accounts has changed */
+        ACCOUNT_SELECTION,
+        /** The main application closes */
+        CLOSE, GUI_STARTED,
+        /** The map detail information has changed */
+        MAP_DETAIL_INFORMATION,
+        /** Data grouped by date has changed */
+        TWEET_BY_DATE
     };
 
+    /**
+     * Update the GUIElement.
+     * @param type of Update
+     */
     public abstract void update(UpdateType type);
 
     @Override

@@ -7,7 +7,6 @@ import java.util.List;
  * class to transmit and store the results from the database
  * 
  * @author Holger Ebhart
- * @version 1.0
  */
 public class Account extends Result {
 
