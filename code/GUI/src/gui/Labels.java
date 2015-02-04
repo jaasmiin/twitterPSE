@@ -78,8 +78,13 @@ public class Labels {
     protected static final String NO_LOGIN_DATA_FOUND_ERROR = "Error, could not find login data.";
     protected static final String DB_CONNECTED = "Connected to databse.";
 	public static final String DBOPT_MENU = "database";
+
 	
 	public static final String ABOUT_VERSION = "Version: 1.0";
 	public static final String ABOUT_AUTHORS = "Authors: Holger, Lidia, Maximilian,Matthias, Paul, Philipp";
+
+	public static final String DETAIL_INFORMATION = "Detail information";
+	public static final String TABLE = "Table";
+
 
 }

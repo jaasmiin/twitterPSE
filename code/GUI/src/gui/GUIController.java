@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
@@ -51,7 +49,7 @@ public class GUIController extends Application implements Initializable {
 
     private static GUIController instance = null;
     
-    public Category categoryRoot;
+    private Category categoryRoot;
 
     private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
     private DBgui db;
@@ -77,20 +75,60 @@ public class GUIController extends Application implements Initializable {
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
 
-    public static GUIController getInstance() {
-        if (instance == null) {
-            System.out.println("Fehler in GUIController getInstance(). "
-                    + "Application nicht gestartet. (instance == null).");
+    private Runnable rnbInitDBConnection = new Runnable() {
+        @Override
+        public void run() {
+            boolean success = true;
+            String info = Labels.DB_CONNECTING;
+            setInfo(info);
+            AccessData accessData = new AccessData("172.22.214.133", "3306",
+                    "twitter", "gui", "272b28");
+            if (success) {
+                try {
+                    db = new DBgui(accessData, LoggerUtil.getLogger());
+                } catch (SecurityException | IOException
+                        | InstantiationException | IllegalAccessException
+                        | ClassNotFoundException e) {
+                    e.printStackTrace();
+                    success = false;
+                }
+                if (success) {
+                    try {
+                        db.connect();
+                    } catch (SQLException e) {
+                        success = false;
+                    }
+                } else {
+                    setInfo(Labels.DB_CONNECTING_ERROR, info);
+                }
+            } else {
+                setInfo(Labels.NO_LOGIN_DATA_FOUND_ERROR, info);
+            }
+            if (success) {
+                setInfo(Labels.DB_CONNECTED, info);
+                reloadAll();
+            }
         }
-        return instance;
-    }
-
+    };
+    
     /**
      * Create a GUIController and set the singelton instance.
      */
     public GUIController() {
         super();
         instance = this;
+    }
+    
+    /**
+     * Get an instance of GUIController.
+     * @return instance of GUIController
+     */
+    public static GUIController getInstance() {
+        if (instance == null) {
+            System.out.println("Fehler in GUIController getInstance(). "
+                    + "Application nicht gestartet. (instance == null).");
+        }
+        return instance;
     }
 
     @Override
@@ -105,7 +143,7 @@ public class GUIController extends Application implements Initializable {
             e.printStackTrace();
         }
         if (parent != null) {
-            Scene scene = new Scene(parent, 800, 600);
+            Scene scene = new Scene(parent, 900, 600);
             scene.getStylesheets().add(
                     getClass().getResource("application.css").toExternalForm());
             stage = primaryStage;
@@ -169,42 +207,6 @@ public class GUIController extends Application implements Initializable {
         launch();
     }
 
-    private Runnable rnbInitDBConnection = new Runnable() {
-        @Override
-        public void run() {
-            boolean success = true;
-            String info = Labels.DB_CONNECTING;
-            setInfo(info);
-            AccessData accessData = new AccessData("172.22.214.133", "3306",
-                    "twitter", "gui", "272b28");
-            if (success) {
-                try {
-                    db = new DBgui(accessData, LoggerUtil.getLogger());
-                } catch (SecurityException | IOException
-                        | InstantiationException | IllegalAccessException
-                        | ClassNotFoundException e) {
-                    e.printStackTrace();
-                    success = false;
-                }
-                if (success) {
-                    try {
-                        db.connect();
-                    } catch (SQLException e) {
-                        success = false;
-                    }
-                } else {
-                    setInfo(Labels.DB_CONNECTING_ERROR, info);
-                }
-            } else {
-                setInfo(Labels.NO_LOGIN_DATA_FOUND_ERROR, info);
-            }
-            if (success) {
-                setInfo(Labels.DB_CONNECTED, info);
-                reloadAll();
-            }
-        }
-    };
-
     private void reloadLocation() {
         String info = Labels.LOCATIONS_LOADING;
         setInfo(info);
@@ -248,28 +250,6 @@ public class GUIController extends Application implements Initializable {
             reloadCategoryHashMapRec(child);
         }
         categories.put(category.getId(), category);
-    }
-
-    /**
-     * Get all childs of a category recursively including own id.
-     * 
-     * @param id
-     *            of category
-     * @return a set of all childs including own id or a empty set if id could
-     *         not be found in categories HashMap
-     */
-    private Set<Integer> getSelectedChildCategories(int id) {
-        Set<Integer> idList = new HashSet<Integer>();
-        if (categories.containsKey(id)) {
-            Queue<Category> categories = new LinkedList<Category>();
-            categories.add(this.categories.get(id));
-            while (!categories.isEmpty()) {
-                Category category = categories.poll();
-                idList.add(category.getId());
-                categories.addAll(category.getChilds());
-            }
-        }
-        return idList;
     }
 
     private void reloadData() {

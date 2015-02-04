@@ -13,6 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.CellDataFeatures;
@@ -36,6 +37,12 @@ import gui.OutputElement;
  *
  */
 public class ContentTableController extends OutputElement implements Initializable {
+	
+	/**
+	 * The tab in application of this view.
+	 */
+	@FXML
+	private Tab tabTable;
 	
 	/**
 	 * The table that is displayed on screen.
@@ -69,6 +76,8 @@ public class ContentTableController extends OutputElement implements Initializab
 		superController.subscribe(this);
 		
 		data = FXCollections.observableArrayList();
+		
+		tabTable.setText(Labels.TABLE);
 		
 		addAccountsColumn();
 		addFollowerColumn();

@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Tab;
 import javafx.scene.text.Text;
 import gui.Labels;
 import gui.OutputElement;
@@ -24,6 +25,8 @@ import gui.OutputElement;
  */
 public class StandardMapController extends OutputElement implements
         Initializable {
+	@FXML
+	private Tab tabStandardMap;
     @FXML
     private Text txt_StandMap_country;
     @FXML
@@ -60,7 +63,8 @@ public class StandardMapController extends OutputElement implements
         b_StandMap_confirm.setOnMouseClicked(new MyEventHandler());
         b_StandMap_reset.setText(Labels.STANDMAP_RESET);
         b_StandMap_reset.setOnMouseClicked(new MyEventHandler());
-
+        
+        tabStandardMap.setText(Labels.DETAIL_INFORMATION);
         // set default value for dateRange
         start = LocalDate.MAX;
         end = LocalDate.MIN;

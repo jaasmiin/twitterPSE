@@ -7,63 +7,66 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
-
-<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.standardMap.StandardMapController">
-  <columnConstraints>
-      <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
-    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="NEVER" />
-      <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
-  </columnConstraints>
-  <rowConstraints>
-      <RowConstraints vgrow="NEVER" />
-    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-    <RowConstraints vgrow="NEVER" />
-    <RowConstraints vgrow="NEVER" />
-  </rowConstraints>
-   <children>
-      <Text fx:id="lbl_StandMap_retweetsQuery" strokeType="OUTSIDE" strokeWidth="0.0" text="Retweets (in query):" visible="false" wrappingWidth="197.6708984375" GridPane.columnIndex="1" GridPane.rowIndex="2">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="lbl_StandMap_retweetsTotal" strokeType="OUTSIDE" strokeWidth="0.0" text="Retweets (total):" visible="false" wrappingWidth="200.89453125" GridPane.columnIndex="1" GridPane.rowIndex="3">
-         <font>
-            <Font size="20.0" />
-         </font>
-         <GridPane.margin>
-            <Insets top="10.0" />
-         </GridPane.margin>
-      </Text>
-      <Text fx:id="txt_StandMap_country" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="334.89453125" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1">
-         <font>
-            <Font name="System Bold" size="24.0" />
-         </font>
-         <GridPane.margin>
-            <Insets bottom="30.0" top="50.0" />
-         </GridPane.margin>
-      </Text>
-      <Text fx:id="txt_StandMap_retweetsQuery" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="198.89453125" GridPane.columnIndex="3" GridPane.rowIndex="2">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <Text fx:id="txt_StandMap_retweetsTotal" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="198.89453125" GridPane.columnIndex="3" GridPane.rowIndex="3">
-         <font>
-            <Font size="20.0" />
-         </font>
-      </Text>
-      <DatePicker fx:id="date_SliderMap_startDate" GridPane.columnIndex="1">
-         <GridPane.margin>
-            <Insets right="5.0" top="30.0" />
-         </GridPane.margin></DatePicker>
-      <DatePicker fx:id="date_SliderMap_endDate" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets right="5.0" />
-         </GridPane.margin></DatePicker>
-      <Button fx:id="b_StandMap_confirm" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
-      <Button fx:id="b_StandMap_reset" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
-   </children>
-</GridPane>
+<Tab fx:id="tabStandardMap" closable="false" text="Detail Information" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.standardMap.StandardMapController">
+	<content>
+		<GridPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0">
+		  <columnConstraints>
+		      <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
+		    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+		    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+		      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+		      <ColumnConstraints hgrow="NEVER" />
+		      <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
+		  </columnConstraints>
+		  <rowConstraints>
+		      <RowConstraints vgrow="NEVER" />
+		    <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
+		    <RowConstraints vgrow="NEVER" />
+		    <RowConstraints vgrow="NEVER" />
+		  </rowConstraints>
+		   <children>
+		      <Text fx:id="lbl_StandMap_retweetsQuery" strokeType="OUTSIDE" strokeWidth="0.0" text="Retweets (in query):" visible="false" wrappingWidth="197.6708984375" GridPane.columnIndex="1" GridPane.rowIndex="2">
+		         <font>
+		            <Font size="20.0" />
+		         </font>
+		      </Text>
+		      <Text fx:id="lbl_StandMap_retweetsTotal" strokeType="OUTSIDE" strokeWidth="0.0" text="Retweets (total):" visible="false" wrappingWidth="200.89453125" GridPane.columnIndex="1" GridPane.rowIndex="3">
+		         <font>
+		            <Font size="20.0" />
+		         </font>
+		         <GridPane.margin>
+		            <Insets top="10.0" />
+		         </GridPane.margin>
+		      </Text>
+		      <Text fx:id="txt_StandMap_country" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="334.89453125" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="1">
+		         <font>
+		            <Font name="System Bold" size="24.0" />
+		         </font>
+		         <GridPane.margin>
+		            <Insets bottom="30.0" top="50.0" />
+		         </GridPane.margin>
+		      </Text>
+		      <Text fx:id="txt_StandMap_retweetsQuery" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="198.89453125" GridPane.columnIndex="3" GridPane.rowIndex="2">
+		         <font>
+		            <Font size="20.0" />
+		         </font>
+		      </Text>
+		      <Text fx:id="txt_StandMap_retweetsTotal" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="198.89453125" GridPane.columnIndex="3" GridPane.rowIndex="3">
+		         <font>
+		            <Font size="20.0" />
+		         </font>
+		      </Text>
+		      <DatePicker fx:id="date_SliderMap_startDate" GridPane.columnIndex="1">
+		         <GridPane.margin>
+		            <Insets right="5.0" top="30.0" />
+		         </GridPane.margin></DatePicker>
+		      <DatePicker fx:id="date_SliderMap_endDate" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
+		         <GridPane.margin>
+		            <Insets right="5.0" />
+		         </GridPane.margin></DatePicker>
+		      <Button fx:id="b_StandMap_confirm" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
+		      <Button fx:id="b_StandMap_reset" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
+		   </children>
+		</GridPane>
+	</content>
+</Tab>
