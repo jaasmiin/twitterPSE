@@ -54,7 +54,6 @@ public class StandardMapDialog extends JDialog {
      *            end date of range of the query
      */
     @SuppressWarnings("incomplete-switch")
-<<<<<<< HEAD
     public void update(UpdateType type, LocalDate start, LocalDate end) {
         switch (type) {
         case CLOSE:
@@ -66,19 +65,6 @@ public class StandardMapDialog extends JDialog {
             // System.out.println("LocalDate: " + start + "   -   " + end);
             // aggregate relevant data and check if dates are valid
             // System.out.println();
-=======
-	public void update(UpdateType type, LocalDate start, LocalDate end) {
-		switch (type) {
-		case CLOSE:
-			if (map != null) {
-				map.exit();
-			}
-			break;
-		case TWEET_BY_DATE:
-		    
-		 // aggregate relevant data and check if dates are valid
-          
->>>>>>> origin/master
             if (start == null) {
                 start = LocalDate.MIN;
             }
@@ -87,7 +73,6 @@ public class StandardMapDialog extends JDialog {
             }
 
             uneditedData = superController.getDataByLocationAndDate();
-<<<<<<< HEAD
             HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
             for (mysql.result.Retweets r : uneditedData.getRetweets()) {
                 // convert date
@@ -95,14 +80,6 @@ public class StandardMapDialog extends JDialog {
                 // System.out.println("                                                                               "
                 // + test);
                 // Check if Tweet/Retweet-objct Date is in the needed interval
-=======
-			HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
-			for (mysql.result.Retweets r : uneditedData.getRetweets()) {
-				// convert date
-				LocalDate test = buildLocalDate(r.getDate());
-			//	System.out.println("                                                                               " + test);
-              //Check if Tweet/Retweet-objct Date is in the needed interval
->>>>>>> origin/master
                 if (inRange(start, end, test)) {
 
                     // Check if counter for location is already in the hashMap
@@ -116,7 +93,6 @@ public class StandardMapDialog extends JDialog {
                         forCalc.put(id, counter);
                     }
                 }
-<<<<<<< HEAD
             }
             Set<String> keySet = forCalc.keySet();
             // for (String key : keySet) {
@@ -141,35 +117,10 @@ public class StandardMapDialog extends JDialog {
             map.redraw();
             setVisible(true);
             break;
+        default:
         }
     }
 
-=======
-			}
-			Set<String> keySet = forCalc.keySet();
-			for (String key : keySet) {
-			//	System.out.println(key + " - " + forCalc.get(key));
-			}
-			//System.out.println("############################################################");
-			calculatedData = superController.getDisplayValuePerCountry(forCalc, 1);
-			
-		    keySet = calculatedData.keySet();
-			for (String key : keySet) {
-			//	System.out.println(key + " - " + calculatedData.get(key).getRetweetsLandFiltered());
-			}
-			
-			map.update(calculatedData);
-			map.redraw();
-
-			break;
-		case GUI_STARTED:
-		    map.update(new HashMap<String, MyDataEntry>());
-			map.redraw();
-			setVisible(true);
-			break;
-		}
-	}
->>>>>>> origin/master
     /**
      * converts LocalDate to int numbers
      * 

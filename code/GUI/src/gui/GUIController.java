@@ -49,9 +49,10 @@ import util.LoggerUtil;
 
 public class GUIController extends Application implements Initializable {
 
+    private static GUIController instance = null;
+    
     public Category categoryRoot;
 
-    private static GUIController instance = null;
     private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
     private DBgui db;
     private Stage stage;
@@ -878,7 +879,8 @@ public class GUIController extends Application implements Initializable {
             overallCounter += retweetsPerLocation.get(key);
         }
 
-       // System.out.println("1/overall value: " + ((double) 1) / overallCounter);
+        // System.out.println("1/overall value: " + ((double) 1) /
+        // overallCounter);
 
         // calculate relative value
         for (String key : keySet) {

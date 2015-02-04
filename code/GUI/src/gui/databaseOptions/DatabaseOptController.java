@@ -145,7 +145,7 @@ public class DatabaseOptController extends InputElement implements
 
     private Account account;
     private Stage dialogStage;
-    private final int DEFAULT_LOCATION = 1;
+    private static final int DEFAULT_LOCATION = 1;
     // Delay time for success messages
     private final int DELAY = 5000;
 
