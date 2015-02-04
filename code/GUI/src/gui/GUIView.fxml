@@ -17,7 +17,7 @@
     <RowConstraints fillHeight="false" vgrow="NEVER" />
   </rowConstraints>
    <children>
-      <MenuBar GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
+      <MenuBar GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
         <menus>
           <fx:include fx:id="csvExport" source="../../src/gui/csvExport/CSVExportView.fxml" />
           <fx:include fx:id="databaseMenu" source="../../src/gui/databaseOptions/DatabaseOptView.fxml" />
@@ -45,8 +45,7 @@
             </content>
           </Tab> -->
         </tabs>
-      </TabPane>      
-      <!-- <Label fx:id="lblInfo" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />-->
+      </TabPane>
       <ListView fx:id="lstInfo" maxHeight="30" disable="true" maxWidth="1.7976931348623157E308" minHeight="30" minWidth="-Infinity" GridPane.columnSpan="3" GridPane.halignment="LEFT" orientation="HORIZONTAL" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
    </children>
    <padding>
