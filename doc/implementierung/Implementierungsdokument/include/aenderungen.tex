@@ -129,9 +129,9 @@ Im Folgenden werden die Änderungen in den Subpaketen von \emph{gui} beschrieben
 In diesem Paket wurde, wie oben vermerkt, die FXML-Datei für den grafischen Inhalt in vier separate FXML Dateien aufgeteilt, um die Lesbarkeit und Übersichtlichkeit zu erhöhen.
 
 
-Weiter wurden in "`DatabaseOptController"' einige Methoden und innere Klassen hinzugefügt:
+Weiter wurden in "`DatabaseOptController"' einige Methoden und innere Klassen hinzugefügt, sowie zwei (Hilfs-)Klassen hinzugefügt:
 \begin{itemize}
-	\item \lstinline{DatabaseOptController}
+	\item \textbf{\lstinline{DatabaseOptController}}
 	\quad
 	\begin{description}
 		\item[intialize]
@@ -143,6 +143,8 @@ Weiter wurden in "`DatabaseOptController"' einige Methoden und innere Klassen hi
 			\item[MyAccEventHandler] Innere Klasse, um "`Events"' zu behandeln.
 			\item[MyCatEventHandler] Innere Klasse, um "`Events"' zu behandeln.
 		\end{description}
+	\item \textbf{\lstinline{UserContainer}} Klasse, welche ein Userobjekt umschließt.
+	\item \textbf{\lstinline{TwitterAccess}} Verbindung zur TwitterSearchAPI, um noch nicht in Datenbank enthaltene Accounts zu suchen.
 \end{itemize}
 	
 Desweiteren wurden einige private Hilfsmethoden hinzugefügt, die beispielsweise einen Baum aus Kategorien aufbauen.
