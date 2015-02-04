@@ -34,6 +34,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import gui.InputElement;
 import gui.Labels;
+import gui.Util;
 
 public class DatabaseOptController extends InputElement implements
         Initializable {
@@ -215,7 +216,7 @@ public class DatabaseOptController extends InputElement implements
 
         if (DBOPT_menu != null) {
             // set label
-            DBOPT_menu.setText(Labels.DBOPT_MENU);
+            DBOPT_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
 
         if (addCat != null) {

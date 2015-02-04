@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
@@ -31,12 +32,16 @@ public class HelpController extends GUIElement implements Initializable {
     private Text about_version;
     @FXML
     private Text about_authors;
-
+    @FXML
+    private Menu menu_help;
+    
     private Stage dialogStage;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
         if (help_about != null) {
+        	menu_help.setText(Labels.HELP);
+        	help_about.setText(Labels.ABOUT);
             help_about.setOnAction(new MyActionEventHandler());
         }
         if (about_version != null) {
