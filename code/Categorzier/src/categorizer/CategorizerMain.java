@@ -13,11 +13,13 @@ import mysql.DBcategorizer;
  * @author Paul Jungeblut
  */
 public class CategorizerMain {
+    
     public static void main(String[] args) {
-        AccessData accData = new AccessData(args[0], args[1], args[2], args[3], args[4]);
+        AccessData accData = new AccessData(args[0], args[1], args[2], args[3],
+                args[4]);
         Logger logger;
         DBcategorizer db;
-        
+
         try {
             logger = LoggerUtil.getLogger();
         } catch (IOException e) {
@@ -27,12 +29,14 @@ public class CategorizerMain {
 
         try {
             db = new DBcategorizer(accData, logger);
-        } catch(ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-            logger.warning("Could not establish a mysql connection: " + e.getMessage());
+        } catch (ClassNotFoundException | IllegalAccessException
+                | InstantiationException e) {
+            logger.warning("Could not establish a mysql connection: "
+                    + e.getMessage());
             return;
         }
 
-        //instantiate the categorizer
+        // instantiate the categorizer
         System.out.println("Starting categorizer:");
         Categorizer categorizer = new Categorizer(db);
         categorizer.start();
