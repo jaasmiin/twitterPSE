@@ -299,15 +299,6 @@
 	</module>
 	<module name="TreeWalker">
 
-		<!-- Ensure a class has a package declaration. ! -->
-		<!-- See http://checkstyle.sf.net/config_coding.html ! -->
-		<module name="PackageDeclaration">
-			<property name="ignoreDirectoryName" value="true" />
-		</module>
-
-	</module>
-	<module name="TreeWalker">
-
 		<!-- Checks visibility of class members. ! -->
 		<!-- See http://checkstyle.sf.net/config_design.html ! -->
 		<module name="VisibilityModifier">
