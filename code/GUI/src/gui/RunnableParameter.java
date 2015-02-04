@@ -7,6 +7,9 @@ package gui;
  * @param <T> type of parameter which can be passed by initialization
  */
 public abstract class RunnableParameter<T> implements Runnable {
+	/**
+	 * Paramerter which is set in the constructor.
+	 */
     protected T parameter;
 
     /**

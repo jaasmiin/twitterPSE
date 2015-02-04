@@ -34,16 +34,13 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import gui.InputElement;
 import gui.Labels;
+import gui.Util;
 
 public class DatabaseOptController extends InputElement implements
         Initializable {
-    
-    private static final int DEFAULT_LOCATION = 1;
-    // Delay time for success messages
-    // private final int DELAY = 5000;
-    
-	@FXML
-	private Menu DBOPT_menu;
+
+    @FXML
+    private Menu DBOPT_menu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -150,6 +147,9 @@ public class DatabaseOptController extends InputElement implements
 
     private Account account;
     private Stage dialogStage;
+    private static final int DEFAULT_LOCATION = 1;
+    // Delay time for success messages
+    private final int DELAY = 5000;
 
     @Override
     public void update(UpdateType type) {
@@ -213,13 +213,12 @@ public class DatabaseOptController extends InputElement implements
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
-        
+
         if (DBOPT_menu != null) {
-        	// set label
-            DBOPT_menu.setText(Labels.DBOPT_MENU);
+            // set label
+            DBOPT_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
-        
-        
+
         if (addCat != null) {
             setLabelsMenu();
             addCat.setOnAction(new MyActionEventHandler());
@@ -298,10 +297,10 @@ public class DatabaseOptController extends InputElement implements
         TabPane page;
 
         try {
-           
+
             page = (TabPane) loader.load();
             dialogStage = new Stage();
-            
+
             // give the controller in the newly created thread a reference to
             // the current stage;
             ((DatabaseOptController) loader.getController())
@@ -316,7 +315,7 @@ public class DatabaseOptController extends InputElement implements
             dialogStage.show();
         } catch (IOException e1) {
 
-            //System.out.println("Unable to construct popUp");
+            // System.out.println("Unable to construct popUp");
             e1.printStackTrace();
         }
     }
@@ -330,7 +329,12 @@ public class DatabaseOptController extends InputElement implements
     public void setCurrentStage(Stage stage) {
         dialogStage = stage;
     }
+    /**
 
+     * Setter for account attribute
+
+     * @param account account to be set
+     */
     public void setAccount(Account account) {
         this.account = account;
     }
@@ -374,7 +378,6 @@ public class DatabaseOptController extends InputElement implements
         @Override
         public void handle(Event event) {
             // ################################### tab1 ######################
-            
 
             if (event.getSource().equals(txtField_Loc_tab1)) {
                 // update listView of account
@@ -412,7 +415,7 @@ public class DatabaseOptController extends InputElement implements
                     return;
                 }
                 account = selectedAccount;
-               
+
                 // change tab
                 tab_Loc_tab1.setDisable(true);
                 tab_Loc_tab2.setDisable(false);
@@ -423,7 +426,6 @@ public class DatabaseOptController extends InputElement implements
             }
 
             // ####################### tab2 ####################################
-            
 
             if (event.getSource().equals(txtField_Loc_tab2)) {
                 // update list of countries
@@ -437,7 +439,7 @@ public class DatabaseOptController extends InputElement implements
                             || k.getCode().equals(KeyCode.BACK_SPACE)) {
 
                         String input = txtField_Loc_tab2.getText();
-                        
+
                         updateLocation(superController.getLocations(input));
                     }
                 }
@@ -547,8 +549,9 @@ public class DatabaseOptController extends InputElement implements
                 for (int i = 0; i < categoryArr.length; i++) {
                     categoryArr[i] = categoryList.get(i);
                 }
-                // System.out.println("ausgewählter account: " + account.getName()
-                //        + " kategorien: " + account.getCategoryIds().size());
+                // System.out.println("ausgewählter account: " +
+                // account.getName()
+                // + " kategorien: " + account.getCategoryIds().size());
                 Category rootCat = superController.getCategoryRoot(categoryArr);
                 // set new root item in treeView
                 if (rootCat != null) {
@@ -565,8 +568,7 @@ public class DatabaseOptController extends InputElement implements
 
             }
 
-            // ########################### tab2  ###########################
-            
+            // ########################### tab2 ###########################
 
             if (event.getSource().equals(txtField_Cat_tab2)) {
                 // update TreeView of categories
@@ -580,7 +582,7 @@ public class DatabaseOptController extends InputElement implements
                             || k.getCode().equals(KeyCode.BACK_SPACE)) {
 
                         String input = txtField_Cat_tab2.getText();
-                        //System.out.println("zweites suchfeld: " + input);
+                        // System.out.println("zweites suchfeld: " + input);
                         trv_Cat_tab2.setRoot(updateCategory(superController
                                 .getCategoryRoot(input)));
                     }
@@ -640,6 +642,7 @@ public class DatabaseOptController extends InputElement implements
                 // print message
                 superController.setInfo(Labels.DBOPT_UPDATED,
                         Labels.DBOPT_INPROCESS);
+                dialogStage.close();
 
             }
 
@@ -716,16 +719,16 @@ public class DatabaseOptController extends InputElement implements
 
                 UserContainer userC = list_Acc_tab1.getSelectionModel()
                         .getSelectedItem();
-                //System.out.println("hinzugefuegen:   "
-                      //  + userC.getUser().getURL());
+                // System.out.println("hinzugefuegen:   "
+                // + userC.getUser().getURL());
 
                 // print message
                 superController.setInfo(Labels.DBOPT_INPROCESS);
 
                 superController.addUserToWatch(userC.getUser(),
                         DEFAULT_LOCATION);
-                //System.out.println(userC.getUser().getName() + "    "
-                    //    + userC.getUser().getScreenName());
+                // System.out.println(userC.getUser().getName() + "    "
+                // + userC.getUser().getScreenName());
 
                 // print message
                 superController.setInfo(Labels.DBOPT_UPDATED,

@@ -4,6 +4,7 @@ In diesem Abschnitt werden die Änderungen gegenüber dem Entwurf beschrieben.
 
 \subsection{Datenbank}
 	\textbf{Datenbank-Layout}
+	\label{wordLocationTable}
 	\begin{description}
 		\item[wordLocation] Diese Tabelle enthält ein Mapping von Wörtern auf Länder. Einträge dieser Tabelle entsprechen erfolgreichen Lokalisierungsanfragen an den Webdienst. Mit der Tabelle wird die Lokalisierung  beschleunigt.
 	\end{description}
@@ -21,8 +22,8 @@ In diesem Paket gab es nur geringfügige Änderungen. Es wurden noch einzelne we
 	\begin{description}
 		\item[getCountryCodes()] Methode ist nun private, zwecks besserer Kapselung.
 		\item[containsAccount(long id)] Überprüfung ob ein Account schon in der Datenbank vorhanden ist, zwecks Effizienz.	
-		\item[addLocationString(String location, String word)] Methode um ein Mapping von einem Wort auf ein Land zu speichern.
-		\item[getLocationStrings()] Diese Methode liefert ein Mapping von Wörtern auf Länder als eine HashMap zurück, um die Effizienz der Lokalisierung von Accounts und Retweets zu verbessern.
+		\item[addLocationString(String location, String word)] Methode um ein Mapping von einem Wort auf ein Land zu speichern (siehe auch \cref{wordLocationTable}).
+		\item[getLocationStrings()] Diese Methode liefert ein Mapping von Wörtern auf Länder als eine HashMap zurück, um die Effizienz der Lokalisierung von Accounts und Retweets zu verbessern (siehe auch \cref{wordLocationTable}).
 	\end{description}
 		\item \lstinline{DBIcategorizer}
 	\begin{description}
@@ -76,7 +77,7 @@ Gegenüber dem Entwurf sind die Methode \lstinline{normalizeUrl()}, \lstinline{n
 \begin{itemize}
 	\item \lstinline{normalizeUrl()} arbeitet mit der vom Twitteraccount angebenen URL. Es werden das Slash ("`/"') am Ende sowie Präfixe der Form \url{http://}, \url{https://} und/oder \url{www.} entfernt.
 	\item \lstinline{normalizeName()} ersetzt Leerzeichen sowie Unterstriche im Benutzernamen durch "`\%"'. Dies ist das Wildcard-Zeichen in MySQL. Der so resultierende String wird zur Erhöhung der Trefferzahl in den URLs der \lstinline{page} Tabelle gesucht. Diese enthält alle URLs der DMOZ-Datenbank.
-	\item \lstinline{getParentId()} berechnet die direkte Vaterkategorie einer Kategorie. Damit wird der Kategorienbaum zur Wurzel hin durchlaufen und der Account wird in alle höheren Kategorien mit einsoritert. Dies ermöglicht effiziete Abfragen.
+	\item \lstinline{getParentId()} berechnet die direkte Vaterkategorie einer Kategorie. Damit wird der Kategorienbaum zur Wurzel hin durchlaufen und der Account wird in alle höheren Kategorien mit einsortiert. Dies ermöglicht effizientere Abfragen.
 \end{itemize}
 Auf diese Weise konnten bislang knapp 6000 Accounts kategorisiert werden.
 
@@ -88,14 +89,14 @@ Zur Lösung dieses Problems haben wir alle Accounts nicht nur in der für sie sp
 \section{Änderungen an der GUI}
 An der GUI wurden einige Änderungen zum Entwurf vorgenommen, dies lag u.A. an einer Vielzahl von Details, welche während der Entwurfsphase noch nicht bekannt waren. 
 Die Grobstruktur des Entwurfs blieb jedoch erhalten, wie das folgende Paketdiagramm (\ref{fig:GUI}) zeigt.
-\begin{figure}[h!]
+\begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio=true]{dia/GUIPackage}
 	\caption{Paketdiagramm der GUI}
 	\label{fig:GUI}
 \end{figure}
 
-Eine wichtige Änderung in Bezug auf das Gesamtpaket \emph{gui} ist, dass es sich bei den \emph{View}-Klassen, welche die Darstellung der grafischen Komponenten beinhalten, um FXML Dateien handelt. FXML ist eine auf der  XML basierende Sprache, um grafische Elemente in JavaFX zu beschreiben. Dies war im Entwurf so nicht vermerkt. Die im Entwurf beabsichtigte Idee der Trennung von Darstellung und Programmlogik wird dadurch erfüllt, da die FXML-Dateien keinerlei Programmlogik enthalten. Desweiteren existiert in jedem Unterpaket von \emph{gui} nicht nur eine FXML-Datei mit Darstellungslogik, sondern u.U. mehrere, da so teilweise größere grafische Komponenten in einzelnen FXML-Dateien gekapselt werden können.
+Eine wichtige Änderung in Bezug auf das Gesamtpaket \emph{gui} ist, dass es sich bei den \emph{View}-Klassen, welche die Darstellung der grafischen Komponenten beinhalten, um FXML Dateien handelt. FXML ist eine auf XML basierende Sprache, um grafische Elemente in JavaFX zu beschreiben. Dies war im Entwurf so nicht vermerkt. Die im Entwurf beabsichtigte Idee der Trennung von Darstellung und Programmlogik wird dadurch erfüllt, da die FXML-Dateien keinerlei Programmlogik enthalten. Desweiteren existiert in jedem Unterpaket von \emph{gui} nicht nur eine FXML-Datei mit Darstellungslogik, sondern u.U. mehrere, da so teilweise größere grafische Komponenten in einzelnen FXML-Dateien gekapselt werden können.
 
 \subsection{Änderungen im Paket \emph{gui}}
 Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurden, welche unmittelbar im Paket \emph{gui} angesiedelt sind.
@@ -117,8 +118,8 @@ Hier sollen die Änderungen beschrieben werden, die in Klassen vorgenommen wurde
 		\item[addUserToWatch(twitter4j.User, int)] Fügt Twitter-Account zur Datenbank hinzu.
 	\end{description}
 	\item \textbf{\lstinline{SelectionHashList}}\quad
-	Dies ist eine neue Klasse, welche aus Gründen der Effizienz zu den im Entwurf vorhaden Klassen hinzugefügt wurde. Implentiert wird eine Hashstruktur, über die mittels Getter- und Settermethoden entschieden werden kann, ob eine Kategorie oder ein Account für ein Query an die Datenbank ausgewählt ist, bzw. diese zu einem Query hinzugefügt werden kann.
-	\item \textbf{\lstinline{Labels}}\quad Enthält alle in der GUI verwendeten \emph{Strings} um so bspw. eine leichte Änderung der Sprache der gesamten Anwendung zu ermöglichen.
+	Dies ist eine neue Klasse, welche aus Gründen der Effizienz zu den im Entwurf vorhandenen Klassen hinzugefügt wurde. Implementiert wird eine Hashstruktur, über die mittels Getter- und Settermethoden entschieden werden kann, ob eine Kategorie oder ein Account für ein Query an die Datenbank ausgewählt ist, bzw. diese zu einem Query hinzugefügt werden kann.
+	\item \textbf{\lstinline{Labels}}\quad Enthält alle in der GUI verwendeten statischen \emph{Strings} um so bspw. eine leichte Änderung der Sprache der gesamten Anwendung zu ermöglichen.
 	\item \textbf{\lstinline{RunnableParameter}} Ermöglicht es einem Runnable einen Paramter zu übergeben und auf diesen in der Ausführung der Methode \emph{run()} zuzugreifen.
 	\item \textbf{\lstinline{InfoRunnable}} \quad Zusammen mit der gerade beschriebenen Klasse, wird mit der neu hinzugekommenen InfoRunnable ein Thread gestartet, der Nachrichten wie "`Connect to database ..."' oder "`Loading data..."' für eine begrenzte Zeit anzeigt.
 \end{itemize}
@@ -138,13 +139,13 @@ Weiter wurden in "`DatabaseOptController"' einige Methoden und innere Klassen hi
 		\quad
 		Diese Methode wird aufgerufen, wenn die GUI gestartet wird. Hier werden alle grafischen Elemente mit dem jeweiligen EventHandler verknüpft.
 	
-			\item[MyAcctionEventHandler] Innere Klasse, in ihr werden alle "`ActionEvent"' behandelt. 
+			\item[MyAcctionEventHandler] Innere Klasse, in ihr werden alle "`ActionEvents"' behandelt. 
 			\item[MyLocEventHandler] Innere Klasse, um "`Events"' zu behandeln.
 			\item[MyAccEventHandler] Innere Klasse, um "`Events"' zu behandeln.
 			\item[MyCatEventHandler] Innere Klasse, um "`Events"' zu behandeln.
 		\end{description}
 	\item \textbf{\lstinline{UserContainer}} Klasse, welche ein Userobjekt umschließt.
-	\item \textbf{\lstinline{TwitterAccess}} Verbindung zur TwitterSearchAPI, um noch nicht in Datenbank enthaltene Accounts zu suchen.
+	\item \textbf{\lstinline{TwitterAccess}} Verbindung zur TwitterSearchAPI, um nach noch nicht in der Datenbank vorhandenen Accounts zu suchen.
 \end{itemize}
 	
 Desweiteren wurden einige private Hilfsmethoden hinzugefügt, die beispielsweise einen Baum aus Kategorien aufbauen.
@@ -154,7 +155,7 @@ Dieses Paket blieb relativ unverändert. Lediglich die Hilfsklasse "`InternAccou
 Sie speichert nur für die Tabelle relevante Informationen des Account-Objektes und fügt dessen Liste von Retweets-Objekten in eine HashMap ein, damit die Tabelle die Daten schneller auslesen kann.
 		
 \subsection{standardMap}
-In diesem Paket ergaben sich einige Änderungen. Diese waren durch die Inkompatibilität des verwendeten Map-Frameworks "`unfolding"' mit "`JavaFX"'. Daher musste die Klasse "`StandardMapDialog"' als "`Swing-Adapter"' hinzugefügt werden. Weiterhin entschieden wir uns, sowohl  die "`StandardMap"' als auch die "`DateMap"' zu implementieren. Die "`StandardMap"' visualisiert alle vorhandenen Daten, in der "`DateMap"' können Anfangs - und Endpunkt der betrachteten Daten gewählt werden. Da die "`StandardMap"' somit einen Spezialfall der "`DateMap"' darstellt, haben wir uns entschieden, beide Pakete unter dem Namen "`StandardMap"' zu verschmelzen. Durch diese Entscheidung musste nur die "`update"' Methode geringfügig verändert werden.
+In diesem Paket ergaben sich einige Änderungen. Diese waren durch die Inkompatibilität des verwendeten Map-Frameworks "`unfolding"' mit "`JavaFX"' nötig. Daher musste die Klasse "`StandardMapDialog"' als "`Swing-Adapter"' hinzugefügt werden. Weiterhin entschieden wir uns, sowohl  die "`StandardMap"' als auch die "`DateMap"' zu implementieren. Die "`StandardMap"' visualisiert alle vorhandenen Daten, in der "`DateMap"' können Anfangs - und Endpunkt der betrachteten Daten gewählt werden. Da die "`StandardMap"' somit einen Spezialfall der "`DateMap"' darstellt, haben wir uns entschieden, beide Pakete unter dem Namen "`StandardMap"' zu verschmelzen. Durch diese Entscheidung musste nur die "`update"' Methode geringfügig verändert werden.
 \begin{itemize}
 	\item \lstinline{StandardMapDialog}
 	\quad

@@ -2,6 +2,7 @@ package gui.selectionOfQuery;
 
 import gui.Labels;
 import gui.OutputElement;
+import gui.Util;
 
 import java.net.URL;
 import java.util.List;
@@ -105,9 +106,9 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 		super.initialize(location, resources);
 		superController.subscribe(this);
 		
-		lblAccounts.setText(Labels.ACCOUNTS);
-		lblLocations.setText(Labels.LOCATIONS);
-		lblCategories.setText(Labels.CATEGORIES);
+		lblAccounts.setText(Util.getUppercaseStartAndRestLowerCase(Labels.ACCOUNTS));
+		lblLocations.setText(Util.getUppercaseStartAndRestLowerCase(Labels.LOCATIONS));
+		lblCategories.setText(Util.getUppercaseStartAndRestLowerCase(Labels.CATEGORIES));
 	}
 
 	@Override
