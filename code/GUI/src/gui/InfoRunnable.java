@@ -2,15 +2,29 @@ package gui;
 
 import javafx.application.Platform;
 import javafx.scene.control.ListView;
-
+/**
+ * Class to show an information on a ListView.
+ * @author Maximilian Awiszus
+ */
 public class InfoRunnable implements Runnable {
 	private String text;
 	private ListView<String> list;
 	private Integer delay;
+	/**
+	 * Create a new InfoRunnable.
+	 * @param list where the message should be displayed
+	 * @param text which should be set
+	 * @param delay in which the text is going to disappear
+	 */
 	public InfoRunnable(ListView<String> list, String text, Integer delay) {
 		this(list, text);
 		this.delay = delay;
 	}
+	/**
+	 * Create a new InfoRunnable.
+	 * @param list where the message should be displayed
+	 * @param text which should be set for 3s.
+	 */
 	public InfoRunnable(ListView<String> list, String text) {
 		super();
 		this.list = list;

@@ -23,7 +23,11 @@ import gui.InputElement;
 import gui.Labels;
 import gui.RunnableParameter;
 import gui.Util;
-
+/**
+ * Class where categories, locations and accounts can be selected out of a list.
+ * @author Maximilian Awiszus
+ *
+ */
 public class SelectionOfQueryController extends InputElement implements
         EventHandler<Event>, Initializable {
 
