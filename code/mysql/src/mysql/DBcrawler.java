@@ -47,20 +47,32 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             throws InstantiationException, IllegalAccessException,
             ClassNotFoundException, SQLException {
         super(accessData, logger);
+
+        // connect to database
         connect();
+
+        // fill hashtables to avoid double sql-queries
         locationHash = getCountryCodes();
         accountHash = getAccounts();
+
+        // disconnect from database
         disconnect();
     }
+
+    // IMPORTANT FOR MYSQL STATEMENTS
+    // always use a prepared statement if there are String-parameters in it to
+    // prevent sql-injection
 
     @Override
     public boolean[] addAccount(User user, String location, Date date,
             boolean tweet) {
 
+        // validate parameters
         if (user == null || date == null) {
             return new boolean[] {false, false, false };
         }
 
+        // normalize parameters
         long id = user.getId();
         String url = user.getURL();
         String name = user.getScreenName();
@@ -93,7 +105,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             result2 = insertAccount(id, name, user.isVerified(),
                     user.getFollowersCount(), location, url);
 
-            // add account to hashSet
+            // add account to hashSet, if it has been insert successful
             if (result2) {
                 accountHash.add(id);
             }
@@ -172,13 +184,17 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean[] addRetweet(long id, String location, Date date) {
 
+        // validate parameter
         if (date == null)
             return new boolean[] {false, false };
 
+        // normalize location-string
         location = Util.checkString(location, 3, DEFAULT_LOCATION);
 
+        // add location to the database
         boolean result1 = true;
         if (!addLocation(location, null)) {
+            // error by inserting location -> set location to default value
             location = DEFAULT_LOCATION;
             result1 = false;
         }
@@ -213,6 +229,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
      */
     private boolean addLocation(String code, String parent) {
 
+        // normalize parameters
         code = Util.checkString(code, 3, "0");
         parent = Util.checkString(parent, 3, null);
 
@@ -249,6 +266,8 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
         }
 
         boolean ret = executeStatementUpdate(stmt, false);
+
+        // on successful insert, put the location into the hashtable
         if (ret) {
             locationHash.add(code);
         }
@@ -285,9 +304,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             return new long[0];
         }
 
+        // read sql-result line per line
         Stack<Long> st = new Stack<Long>();
         try {
             while (res.next()) {
+                // push all the accountIds on top of the stack
                 st.push(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
@@ -297,6 +318,7 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             closeResultAndStatement(stmt, res);
         }
 
+        // convert the stack to an array of longs
         long[] ret = new long[st.size()];
         for (int i = 0; i < st.size(); i++) {
             ret[i] = st.pop();
@@ -323,9 +345,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             return new HashSet<String>();
         }
 
+        // read sql-result
         HashSet<String> ret = new HashSet<String>(100);
         try {
             while (res.next()) {
+                // add location codes in the hashset
                 ret.add(res.getString(1));
             }
         } catch (SQLException e) {
@@ -352,9 +376,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             return new HashSet<Long>();
         }
 
+        // read sql-result line per line
         HashSet<Long> ret = new HashSet<Long>(10000);
         try {
             while (res.next()) {
+                // add accountIds to the hashsets
                 ret.add(res.getLong("TwitterAccountId"));
             }
         } catch (SQLException e) {
@@ -381,9 +407,11 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
             return new HashMap<String, String>();
         }
 
+        // read sql-result
         HashMap<String, String> ret = new HashMap<String, String>(100000);
         try {
             while (res.next()) {
+                // put a matching of word and location in the hashmap
                 ret.put(res.getString("Word") + "#" + res.getString("TimeZone"),
                         res.getString("Location"));
             }
@@ -400,15 +428,18 @@ public class DBcrawler extends DBConnection implements DBIcrawler {
     @Override
     public boolean addLocationString(String code, String word, String timeZone) {
 
+        // validate and normalize all parameters
         timeZone = Util.checkString(timeZone, 200, "");
         code = Util.checkString(code, 3, null);
         word = Util.checkString(word, 250, null);
+        // validate normalized parameters
         if (word == null || code == null)
             return false;
 
         if (!addLocation(code, null))
             return false;
 
+        // prepare sql-statement
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO wordLocation (Word, TimeZone, Location) VALUES (?,?,?);");

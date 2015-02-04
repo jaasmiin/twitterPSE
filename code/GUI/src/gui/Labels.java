@@ -65,7 +65,7 @@ public class Labels {
     public static final String DOPT_CAT_SELECTEDCAT = "Selected category";
     public static final String DBOPT_CAT_SEARCHCAT = "Search category";
 
-    public static final String DBOPT__LOC_SELECTLOCATION = "Select Location";
+    public static final String DBOPT_LOC_SELECTLOCATION = "Select Location";
     public static final String DBOPT_LOC_CHANGE = "Change";
     public static final String DPOPT_CURRENTPLACE = "Current place:";
 

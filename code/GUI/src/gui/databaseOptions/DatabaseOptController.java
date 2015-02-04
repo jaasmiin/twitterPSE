@@ -37,6 +37,11 @@ import gui.Labels;
 
 public class DatabaseOptController extends InputElement implements
         Initializable {
+    
+    private static final int DEFAULT_LOCATION = 1;
+    // Delay time for success messages
+    // private final int DELAY = 5000;
+    
 	@FXML
 	private Menu DBOPT_menu;
     @FXML
@@ -145,9 +150,6 @@ public class DatabaseOptController extends InputElement implements
 
     private Account account;
     private Stage dialogStage;
-    private static final int DEFAULT_LOCATION = 1;
-    // Delay time for success messages
-    private final int DELAY = 5000;
 
     @Override
     public void update(UpdateType type) {
@@ -186,7 +188,7 @@ public class DatabaseOptController extends InputElement implements
      */
     private void setLabelsLoc() {
         tab_Loc_tab1.setText(Labels.DBOPT_SELECTACCOUNT);
-        tab_Loc_tab2.setText(Labels.DBOPT__LOC_SELECTLOCATION);
+        tab_Loc_tab2.setText(Labels.DBOPT_LOC_SELECTLOCATION);
         b_Loc_tab1.setText(Labels.DBOPT_CONTINUE);
         b_Loc_tab2_fertig.setText(Labels.DBOPT_LOC_CHANGE);
         b_Loc_tab2_zurueck.setText(Labels.DBOPT_BACK);

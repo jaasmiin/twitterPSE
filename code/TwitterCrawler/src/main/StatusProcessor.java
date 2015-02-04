@@ -64,11 +64,14 @@ public class StatusProcessor implements RunnableListener {
             ConcurrentHashMap<Long, Object> accountsToTrack,
             HashMap<String, String> locationHash, Logger logger,
             AccessData accessData) throws InstantiationException {
+
         this.queue = queue;
         this.locateQueue = locateQueue;
         this.logger = logger;
         this.nonVerAccounts = accountsToTrack;
         locator = new Locator(locationHash, this.logger);
+
+        // load drivers to cennect to database
         try {
             dbc = new DBcrawler(accessData, logger);
         } catch (IllegalAccessException | ClassNotFoundException | SQLException e) {
@@ -86,13 +89,14 @@ public class StatusProcessor implements RunnableListener {
      */
     public void run() {
 
-     // check weather a connection to the database has been established or not
+        // check weather a connection to the database has been established or
+        // not
         if (dbc == null) {
             logger.severe("A StatusProcessor couldn't been started: No database connection!");
             return;
         }
 
-     // open new connection to database
+        // open new connection to database
         try {
             dbc.connect();
         } catch (SQLException e) {
@@ -144,11 +148,13 @@ public class StatusProcessor implements RunnableListener {
 
         if (status.isRetweet()) {
 
+            // go through all retweets to top tweet
             Status retweet = status;
             Status tweet = status.getRetweetedStatus();
 
             while (tweet.isRetweet()) {
                 if (checkUser(tweet.getUser())) {
+
                     // addAccount
                     accountToDB(tweet, false);
                     added = true;
@@ -157,6 +163,8 @@ public class StatusProcessor implements RunnableListener {
                 tweet = tweet.getRetweetedStatus();
             }
 
+            // locate and add the first retweet on the tweet, if the user of the
+            // tweet is verified or should be tracked
             if (checkUser(tweet.getUser())) {
 
                 // add Retweet and Account
@@ -165,7 +173,9 @@ public class StatusProcessor implements RunnableListener {
                         retweet.getCreatedAt(), retweet.getUser().getTimeZone());
                 added = true;
             }
+
         } else if (checkUser(status.getUser())) {
+            // locate and insert account
             accountToDB(status, true);
             added = true;
         }
@@ -183,6 +193,9 @@ public class StatusProcessor implements RunnableListener {
      * @return true if the user should be added to the database, else false
      */
     private boolean checkUser(User user) {
+
+        // validate if user is verified or if it should be tracked (hashset
+        // lookup)
         if (user.isVerified()) {
             return true;
         } else if (nonVerAccounts.containsKey(user.getId())) {
@@ -203,17 +216,25 @@ public class StatusProcessor implements RunnableListener {
      */
     private void accountToDB(Status tweet, boolean isTweet) {
 
+        // add account only if it's not yet in the database
         if (!dbc.containsAccount(tweet.getUser().getId())) {
+
+            // try to locate account wothout webservice
             String loc = locator.locate(tweet.getPlace(),
                     tweet.getGeoLocation(), tweet.getUser().getLocation(),
                     tweet.getUser().getTimeZone());
+
+            // check if localization was successful
             if (loc.equals(DEFAULT_LOCATION)) {
+                // account has to been localized by the webservice
                 locateQueue.add(new LocateStatus(-1, null, null, null, tweet,
                         isTweet, false, false));
             } else {
+                // insert account into database
                 dbc.addAccount(tweet.getUser(), loc, tweet.getCreatedAt(),
                         isTweet);
             }
+
         }
 
     }
@@ -240,40 +261,68 @@ public class StatusProcessor implements RunnableListener {
     private void retweetToDB(Status tweet, GeoLocation geotag, String location,
             Place place, Date date, String timeZone) {
 
+        // try to locate the retweet without the webservice
         String loc = locator.locate(place, geotag, location, timeZone);
+
         if (loc.equals(DEFAULT_LOCATION)) {
 
-            // try to locate account
+            // retweet has to be localized by the webservice
+
+            // check account
             boolean isLocated = false;
+            // check ig the account is yet in the database
             if (dbc.containsAccount(tweet.getUser().getId())) {
                 isLocated = true;
             } else {
+
+                // try to locate account
                 String temp = locator.locate(tweet.getPlace(),
                         tweet.getGeoLocation(), tweet.getUser().getLocation(),
                         tweet.getUser().getTimeZone());
+
                 if (!temp.equals(DEFAULT_LOCATION)) {
+
+                    // account is located, so write him into the database
                     dbc.addAccount(tweet.getUser(), temp, tweet.getCreatedAt(),
                             false);
                     isLocated = true;
                 }
             }
 
+            // write the retweet and the account into the queue and tell weather
+            // the account is in the database yet or not
             locateQueue.add(new LocateStatus(tweet.getUser().getId(), date,
                     location, timeZone, tweet, false, isLocated, false));
+
         } else {
+
+            // retweet is located, so we only have to look for the account
 
             // try to locate account
             if (dbc.containsAccount(tweet.getUser().getId())) {
+
+                // account is in database, so write retweet in database
                 dbc.addRetweet(tweet.getUser().getId(), loc, date);
+
             } else {
+
+                // try to locate the account without the webservice
                 String temp = locator.locate(tweet.getPlace(),
                         tweet.getGeoLocation(), tweet.getUser().getLocation(),
                         tweet.getUser().getTimeZone());
+
                 if (!temp.equals(DEFAULT_LOCATION)) {
+
+                    // account has been located, so write account and retweet
+                    // into database
                     dbc.addAccount(tweet.getUser(), temp, tweet.getCreatedAt(),
                             false);
                     dbc.addRetweet(tweet.getUser().getId(), loc, date);
+
                 } else {
+
+                    // write retweet and account into queue to locate, but set
+                    // flag that the retweet is yet located
                     locateQueue.add(new LocateStatus(tweet.getUser().getId(),
                             date, loc, timeZone, tweet, false, false, true));
                 }
@@ -289,11 +338,16 @@ public class StatusProcessor implements RunnableListener {
      * @return the numbers for statistic as int[]
      */
     public int[] getCounter() {
+
+        // get locate-statistic from locator
         int[] temp = locator.getStatistic();
+        // create new array to return
         int[] ret = new int[temp.length + 1];
+        // copy the statistic-values from the locator
         for (int i = 0; i < temp.length; i++) {
             ret[i] = temp[i];
         }
+        // append own value about interesting status-objects
         ret[temp.length] = count;
         return ret;
     }

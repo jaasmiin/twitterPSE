@@ -48,10 +48,9 @@ import util.LoggerUtil;
 public class GUIController extends Application implements Initializable {
 
     private static GUIController instance = null;
-    
+
     private Category categoryRoot;
 
-    private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
     private DBgui db;
     private Stage stage;
 
@@ -61,6 +60,8 @@ public class GUIController extends Application implements Initializable {
     private TextField txtSearch;
     @FXML
     private ListView<String> lstInfo;
+
+    private ArrayList<GUIElement> guiElements = new ArrayList<GUIElement>();
 
     private SelectionHashList<Location> locations = new SelectionHashList<Location>();
     private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
@@ -76,6 +77,7 @@ public class GUIController extends Application implements Initializable {
     private MyDataEntry mapDetailInformation = null;
 
     private Runnable rnbInitDBConnection = new Runnable() {
+
         @Override
         public void run() {
             boolean success = true;
@@ -110,7 +112,7 @@ public class GUIController extends Application implements Initializable {
             }
         }
     };
-    
+
     /**
      * Create a GUIController and set the singelton instance.
      */
@@ -118,9 +120,10 @@ public class GUIController extends Application implements Initializable {
         super();
         instance = this;
     }
-    
+
     /**
      * Get an instance of GUIController.
+     * 
      * @return instance of GUIController
      */
     public static GUIController getInstance() {
