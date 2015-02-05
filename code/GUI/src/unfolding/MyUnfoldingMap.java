@@ -87,7 +87,7 @@ public class MyUnfoldingMap extends PApplet {
     @Override
     public void setup() { // check size of map
         // TODO: check
-    	this.setSize(900, 600);
+    	//this.setSize(900, 600);
         smooth();
 
         map1 = new UnfoldingMap(this, P2D);

@@ -37,7 +37,7 @@ public class StandardMapDialog extends JDialog {
         this.superController = superController;
         this.setUndecorated(true);
         map = MyUnfoldingMap.getInstance(superController);
-        this.setSize(400, 400);
+        this.setSize(600, 400);
         add(map);
         map.init();
     }
