@@ -43,6 +43,7 @@ public class Labels {
     public static final String FILE = "File";
     public static final String EXPORTING = "Exporting...";
     public static final String EXPORTED = "Exported.";
+    public static final String EXPORT_FAILED = "Export failed.";
 
     public static final String DBOPT_CATEGORY = "Add category";
     public static final String DBOPT_LOCATION = "Add/Change location";

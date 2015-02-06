@@ -194,11 +194,14 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
+        // check sql-result
         if (res == null)
             return null;
 
         Account ret = null;
         try {
+            // read account information from the sql-result and build an Account
+            // object
             res.next();
             ret = new Account(res.getInt("Id"),
                     res.getLong("TwitterAccountId"),
@@ -212,40 +215,20 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResult(res);
         }
 
-        // get the categories for the account
-        stmt = null;
-        res = null;
-        runningRequest = true;
-        try {
-            stmt = c.prepareStatement("SELECT CategoryId FROM accountCategory WHERE AccountId=?;");
-            stmt.setInt(1, id);
-            res = stmt.executeQuery();
-        } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
-        } finally {
-            runningRequest = false;
-        }
-
-        if (res == null)
-            return null;
-
-        try {
-            while (res.next()) {
-                ret.addCategoryId(res.getInt(1));
-            }
-        } catch (SQLException e) {
-            sqlExceptionResultLog(e);
-            return ret;
-        } finally {
-            closeResultAndStatement(stmt, res);
-        }
+        // use method addCategories
+        List<Account> temp = new ArrayList<Account>(1);
+        temp.add(ret);
+        addCategories(temp);
 
         return ret;
     }
 
     private void addCategories(List<Account> list) {
 
+        // validate parameter
         if (list.size() > 0) {
+
+            // build query with all the accountIds where you need the categories
             Iterator<Account> it = list.iterator();
             String query = "SELECT AccountId, CategoryId FROM accountCategory WHERE AccountId="
                     + it.next().getId();
@@ -254,6 +237,7 @@ public class DBgui extends DBConnection implements DBIgui {
             }
             query += ";";
 
+            // execute statement on database
             Statement stmt = null;
             ResultSet res = null;
             try {
@@ -265,6 +249,8 @@ public class DBgui extends DBConnection implements DBIgui {
             }
 
             try {
+                // read result and add the categories to the corresponding
+                // account
                 while (res.next()) {
                     for (Account temp : list) {
                         if (temp.getId() == res.getInt(1)) {
@@ -328,7 +314,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
     @Override
     public boolean addAccount(User user, int locationId) {
-        // prevent SQL-injection
+
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized)"
@@ -460,7 +446,9 @@ public class DBgui extends DBConnection implements DBIgui {
         Statement stmt;
         TweetsAndRetweets ret = new TweetsAndRetweets();
         try {
+            // build sql-statments
             stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
+            // execute sql-queries and receive result
             ret = getTweetSum(stmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatSumData: " + e.getMessage());
@@ -472,23 +460,30 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private TweetsAndRetweets getTweetSum(Statement stmt, boolean byDate) {
 
+        // provide statements to ask for all tweets or for the tweets per day
         String a = "SELECT SUM(Counter), Day FROM tweets JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id GROUP BY DayId;";
         String b = "SELECT SUM(Counter) FROM tweets JOIN final ON tweets.AccountId=final.val;";
 
         ResultSet res = null;
         runningRequest = true;
         try {
+            // execute the prepared statements to build a list of selected
+            // accounts in the database
             stmt.executeBatch();
+            // execute the select statement for the tweets
             res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         } finally {
             runningRequest = false;
         }
+
+        // read the result and add the tweets to a result list
         List<Tweets> tweets = new ArrayList<Tweets>();
         if (res != null) {
             try {
                 while (res.next()) {
+                    // build a Tweets object for this line of the sql-result
                     tweets.add(new Tweets((byDate ? res.getDate("Day") : null),
                             res.getInt(1)));
                 }
@@ -498,14 +493,19 @@ public class DBgui extends DBConnection implements DBIgui {
                 closeResult(res);
             }
         }
+
+        // build and set return values
         TweetsAndRetweets ret = new TweetsAndRetweets();
         ret.setTweets(tweets);
+        // set and get the requested retweets
         ret.setRetweets(getRetweetSum(stmt, byDate));
         return ret;
     }
 
     private List<Retweets> getRetweetSum(Statement stmt, boolean byDate) {
 
+        // provide statements to separate retweets by date or to sum over all
+        // dates
         String a = "SELECT SUM(Counter), Code, Day FROM retweets "
                 + "JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id "
                 + "GROUP BY LocationId, DayId;";
@@ -515,19 +515,28 @@ public class DBgui extends DBConnection implements DBIgui {
         ResultSet res = null;
         runningRequest = true;
         try {
+            // execute select-query on the database by using the temporary table
+            // with the selected accounts (created by the getTweets-Method
+            // below)
             res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         } finally {
             runningRequest = false;
         }
+
+        // check result
         if (res == null)
             return new ArrayList<Retweets>();
+
+        // read sql-result line per line
         List<Retweets> ret = new ArrayList<Retweets>();
         try {
             while (res.next()) {
+                // for each line in the result build a new Retweets-object
                 Retweets element = new Retweets((byDate ? res.getDate("Day")
                         : null), res.getInt(1), res.getString("Code"));
+                // add Retweets to the return list
                 ret.add(element);
             }
         } catch (SQLException e) {
@@ -542,12 +551,15 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public HashMap<String, Integer> getAllRetweetsPerLocation() {
 
+        // select the total number of retweets for each country
+
         String sqlCommand = "SELECT SUM(Counter), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
 
         ResultSet res = null;
         Statement stmt = null;
         runningRequest = true;
         try {
+            // create and execute sql-query
             stmt = c.createStatement();
             res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
@@ -557,9 +569,11 @@ public class DBgui extends DBConnection implements DBIgui {
             runningRequest = false;
         }
 
+        // read the sql-result line per line
         HashMap<String, Integer> ret = new HashMap<String, Integer>();
         try {
             while (res.next()) {
+                // write mapping between number and country into a hashmap
                 ret.put(res.getString("Code"), res.getInt(1));
             }
         } catch (SQLException e) {
@@ -570,6 +584,8 @@ public class DBgui extends DBConnection implements DBIgui {
         }
         return ret;
     }
+
+    // TODO add Comments below
 
     @Override
     public List<Account> getAllData(List<Integer> categoryIDs,

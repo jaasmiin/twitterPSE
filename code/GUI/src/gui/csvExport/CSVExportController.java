@@ -46,15 +46,17 @@ public class CSVExportController extends InputElement implements Initializable {
      *            a list of the available locations as List<Location>
      * @param stage
      *            the parent stage to show the save-file-dialog as final Stage
+     * @return true if the export was successful, else false
      */
-    public static void exportAsCSV(List<Account> accounts,
+    public static boolean exportAsCSV(List<Account> accounts,
             List<Location> locations, final Stage stage) {
         String path = getFilePath(stage);
         if (path == null)
-            return;
+            return false;
         File file = new File(path);
         String[][] string = buildFile(accounts, locations);
         writeFile(file, string);
+        return true;
     }
 
     private static String getFilePath(final Stage stage) {
@@ -66,11 +68,16 @@ public class CSVExportController extends InputElement implements Initializable {
         fc.getExtensionFilters().add(ef);
         fc.setTitle("Speichern unter...");
 
+        String path = null;
         // get file path
-        String path = fc.showSaveDialog(stage).getAbsolutePath();
-        if (path != null) {
-            if (!path.endsWith(".csv")) {
-                path = path + ".csv";
+        File file = fc.showSaveDialog(stage);
+        if (file != null) {
+
+            path = file.getAbsolutePath();
+            if (path != null) {
+                if (!path.endsWith(".csv")) {
+                    path = path + ".csv";
+                }
             }
         }
 
@@ -159,10 +166,13 @@ public class CSVExportController extends InputElement implements Initializable {
             @Override
             public void handle(ActionEvent event) {
                 superController.setInfo(Labels.EXPORTING);
-                exportAsCSV(superController.getDataByAccount(),
+                if (exportAsCSV(superController.getDataByAccount(),
                         superController.getLocations(),
-                        superController.getStage());
-                superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
+                        superController.getStage())) {
+                    superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
+                } else {
+                    superController.setInfo(Labels.EXPORT_FAILED, Labels.EXPORTING);
+                }
             }
         });
     }
