@@ -30,6 +30,8 @@ public class DBcategorizerTest {
     private Logger log;
     private AccessData access;
 
+    private DBtest dbt;
+
     /**
      * prepares a database-connection for the next test-case
      */
@@ -39,8 +41,15 @@ public class DBcategorizerTest {
             log = LoggerUtil.getLogger("TestLog");
             access = new AccessData("localhost", "3306", "twittertest", "root",
                     "root");
+
+            // start database-connection for the component to test
             dbc = new DBcategorizer(access, log);
             dbc.connect();
+
+            // start database-connection to execute customized queries
+            dbt = new DBtest(access, log);
+            dbt.connect();
+
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException | SQLException | SecurityException
                 | IOException e) {
@@ -63,6 +72,27 @@ public class DBcategorizerTest {
     }
 
     /**
+     * test if the right accounts where returned
+     */
+    @Test
+    public void testGetNonCategorizedAndSetCategorized() {
+
+        // set 2 accounts as categorized
+        assertTrue(dbc.setCategorized(1));
+        assertTrue(dbc.setCategorized(2));
+
+        List<Account> list = new ArrayList<Account>();
+        list = dbc.getNonCategorized();
+        assertEquals(3, list.size());
+        for (int i = 0; i < list.size(); i++) {
+            assertEquals(0, list.get(i).getCategoryIds().size());
+        }
+
+        // clean up database
+        dbt.executeQuery("UPDATE accounts SET Categorized=0 WHERE Id=1 OR Id=2;");
+    }
+
+    /**
      * test to add null
      */
     @Test
@@ -71,69 +101,58 @@ public class DBcategorizerTest {
     }
 
     /**
-     * test if categories where set right
+     * test to add null
      */
     @Test
     public void test2AddCategoryToAccount() {
-        boolean res = dbc.addCategoryToAccount(1, 1);
+        assertFalse(dbc.addCategoryToAccount(1, 0));
+    }
+
+    /**
+     * test if categories where set right
+     */
+    @Test
+    public void test3AddCategoryToAccount() {
+
+        assertTrue(dbc.addCategoryToAccount(1, 1));
         List<Account> list = dbc.getNonCategorized();
-        try {
-            DBtest t = new DBtest(access, log);
-            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
-            t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        assertTrue(res);
         assertEquals(4, list.size());
+
+        // clean up database
+        dbt.executeQuery("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+        dbt.executeQuery("DELETE FROM accountCategory WHERE AccountId=1;");
     }
 
     /**
      * test if categories where set right even if they were set twice
      */
     @Test
-    public void test3AddCategoryToAccount() {
+    public void test4AddCategoryToAccount() {
         // try to execute 3-times the same query
-        boolean res1 = dbc.addCategoryToAccount(1, 3);
-        boolean res2 = dbc.addCategoryToAccount(1, 3);
-        boolean res3 = dbc.addCategoryToAccount(1, 3);
+        assertTrue(dbc.addCategoryToAccount(1, 3));
+        assertTrue(dbc.addCategoryToAccount(1, 3));
+        assertTrue(dbc.addCategoryToAccount(1, 3));
         List<Account> list = dbc.getNonCategorized();
-        try {
-            DBtest t = new DBtest(access, log);
-            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
-            t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        assertTrue(res1);
-        assertTrue(res2);
-        assertTrue(res3);
         assertEquals(4, list.size());
+
+        // clean up database
+        dbt.executeQuery("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+        dbt.executeQuery(" DELETE FROM accountCategory WHERE AccountId=1;");
     }
 
     /**
      * test if categories with parents where set right
      */
     @Test
-    public void test4AddCategoryToAccount() {
-        boolean res = dbc.addCategoryToAccount(1, 8);
+    public void test5AddCategoryToAccount() {
+
+        assertTrue(dbc.addCategoryToAccount(1, 8));
         List<Account> list = dbc.getNonCategorized();
-        try {
-            DBtest t = new DBtest(access, log);
-            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
-            t.sql(" DELETE FROM accountCategory WHERE AccountId=1;");
-            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
-            t.sql("DELETE FROM category WHERE Name = \"parent\";");
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        assertTrue(res);
         assertEquals(4, list.size());
+
+        // clean up database
+        dbt.executeQuery("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+        dbt.executeQuery(" DELETE FROM accountCategory WHERE AccountId=1;");
     }
 
     /**
@@ -141,26 +160,19 @@ public class DBcategorizerTest {
      * multiple
      */
     @Test
-    public void test5AddCategoryToAccount() {
-        boolean res1 = dbc.addCategoryToAccount(1, 8);
-        boolean res2 = dbc.addCategoryToAccount(1, 8);
-        boolean res3 = dbc.addCategoryToAccount(1, 8);
+    public void test6AddCategoryToAccount() {
+        assertTrue(dbc.addCategoryToAccount(1, 8));
+        assertTrue(dbc.addCategoryToAccount(1, 8));
+        assertTrue(dbc.addCategoryToAccount(1, 8));
         List<Account> list = dbc.getNonCategorized();
-        try {
-            DBtest t = new DBtest(access, log);
-            t.sql("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
-            t.sql("DELETE FROM accountCategory WHERE AccountId=1;");
-            t.sql("DELETE FROM category WHERE (Name = \"testCP\" OR Name=\"parent\") AND Id > 8;");
-            t.sql("DELETE FROM category WHERE Name = \"parent\";");
-        } catch (InstantiationException | IllegalAccessException
-                | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        assertTrue(res1);
-        assertTrue(res2);
-        assertTrue(res3);
         assertEquals(4, list.size());
+
+        // clean up database
+        dbt.executeQuery("UPDATE accounts SET Categorized = 0 WHERE Id = 1;");
+        dbt.executeQuery("DELETE FROM accountCategory WHERE AccountId=1;");
     }
+
+    // TODO write testcases for getCategoriesForAccount
 
     /**
      * test getParentId with category top
@@ -191,7 +203,7 @@ public class DBcategorizerTest {
      */
     @Test
     public void test4GetParentId() {
-        assertEquals(1, dbc.getParentId(8));
+        assertEquals(2, dbc.getParentId(8));
     }
 
     /**
@@ -200,6 +212,7 @@ public class DBcategorizerTest {
     @After
     public void tearDown() {
         dbc.disconnect();
+        dbt.disconnect();
     }
 
 }

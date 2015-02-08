@@ -54,9 +54,9 @@ public class GUIControllerTest {
             guiController.setSelectedAccount(a.getId(), false);
         }
         for (Category c : cList) {
-        	if (c!= null) {
-        		guiController.setSelectedCategory(c.getId(), false);
-        	}
+            if (c != null) {
+                guiController.setSelectedCategory(c.getId(), false);
+            }
         }
         for (Location l : lList) {
             guiController.setSelectedLocation(l.getId(), false);
@@ -104,8 +104,8 @@ public class GUIControllerTest {
         List<Location> list = guiController.getLocations();
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 true);
-        assertTrue(guiController.getSelectedLocations().contains(list.get(list
-                .size() - 1)));
+        assertTrue(guiController.getSelectedLocations().contains(
+                list.get(list.size() - 1)));
     }
 
     @Test
@@ -113,8 +113,8 @@ public class GUIControllerTest {
         List<Location> list = guiController.getLocations();
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 true);
-        assertTrue(guiController.getSelectedLocations().contains(list.get(list
-                .size() - 1)));
+        assertTrue(guiController.getSelectedLocations().contains(
+                list.get(list.size() - 1)));
         guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
                 false);
         assertTrue(!guiController.getSelectedLocations().contains(
@@ -128,10 +128,10 @@ public class GUIControllerTest {
         boolean found = false;
         guiController.setSelectedAccount(a.getId(), true);
         for (Account b : guiController.getSelectedAccounts()) {
-        	if (b.equals(a)) {
-        		found = true;
-        		break;
-        	}
+            if (b.equals(a)) {
+                found = true;
+                break;
+            }
         }
         assertTrue(found);
     }
@@ -152,25 +152,27 @@ public class GUIControllerTest {
         assertTrue(tar.getRetweets().size() > 1);
     }
 
-
     @Test
     public void testSubscribe() throws InterruptedException {
-    	class TestGUIElement extends GUIElement {
-    		private boolean updated = false;
-			@Override
-			public void update(UpdateType type) {
-				if (type == UpdateType.CATEGORY_SELECTION) {
-					updated = true;
-				}
-			}
-			public boolean isUpdated() {
-				return updated;
-			}
-    		
-    	}
-    	TestGUIElement e = new TestGUIElement();
+        class TestGUIElement extends GUIElement {
+            private boolean updated = false;
+
+            @Override
+            public void update(UpdateType type) {
+                if (type == UpdateType.CATEGORY_SELECTION) {
+                    updated = true;
+                }
+            }
+
+            public boolean isUpdated() {
+                return updated;
+            }
+
+        }
+        TestGUIElement e = new TestGUIElement();
         guiController.subscribe(e);
-        guiController.setSelectedCategory(guiController.getCategoryRoot().getId(), true);
+        guiController.setSelectedCategory(guiController.getCategoryRoot()
+                .getId(), true);
         assertTrue(e.isUpdated());
     }
 }

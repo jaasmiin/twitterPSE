@@ -75,9 +75,9 @@ public class Labels {
     public static final String STANDMAP_CONFIRM = "Confirm";
     public static final String STANDMAP_RESET = "Reset";
 
-    protected static final String DB_CONNECTING_ERROR = "Error, could not connect to database.";
-    protected static final String NO_LOGIN_DATA_FOUND_ERROR = "Error, could not find login data.";
-    protected static final String DB_CONNECTED = "Connected to databse.";
+    public static final String DB_CONNECTING_ERROR = "Error, could not connect to database.";
+    public static final String NO_LOGIN_DATA_FOUND_ERROR = "Error, could not find login data.";
+    public static final String DB_CONNECTED = "Connected to databse.";
 	public static final String DBOPT_MENU = "database";
 
 	public static final String HELP = "Help";

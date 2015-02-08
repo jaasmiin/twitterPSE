@@ -30,7 +30,7 @@ import util.LoggerUtil;
 public class DBguiTest {
 
     private DBgui dbg;
-    private DBtest dbt;
+    // private DBtest dbt;
     private Logger log;
     private AccessData access;
 
@@ -64,12 +64,12 @@ public class DBguiTest {
                     "root");
             dbg = new DBgui(access, log);
             dbg.connect();
-            dbt = new DBtest(access, log);
+            // dbt = new DBtest(access, log);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-        addTestData();
+        // addTestData();
     }
 
     /**
@@ -211,32 +211,32 @@ public class DBguiTest {
      */
     @After
     public void tearDown() {
-        removeTestData();
+        // removeTestData();
         dbg.disconnect();
     }
 
-    private void addTestData() {
-        try {
-            dbt.connect();
-            dbt.sql("INSERT INTO tweets (AccountId,Counter,DayId) VALUES (3,3,1), (3,2,2), (2,1,3);");
-            dbt.sql("INSERT INTO retweets (AccountId,LocationId,Counter,DayId) VALUES (3,1,4,1), (3,1,3,2), (3,3,6,2), (2,3,4,2), (2,2,8,1);");
-            dbt.sql("INSERT INTO accountCategory (AccountId, CategoryId) VALUES (3,1);");
-            dbt.disconnect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void removeTestData() {
-        try {
-            dbt.connect();
-            dbt.sql("DELETE FROM tweets WHERE 1;");
-            dbt.sql("DELETE FROM retweets WHERE 1;");
-            dbt.sql("DELETE FROM accountCategory WHERE AccountId=3 AND CategoryId=1;");
-            dbt.disconnect();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    // private void addTestData() {
+    // try {
+    // dbt.connect();
+    // dbt.sql("INSERT INTO tweets (AccountId,Counter,DayId) VALUES (3,3,1), (3,2,2), (2,1,3);");
+    // dbt.sql("INSERT INTO retweets (AccountId,LocationId,Counter,DayId) VALUES (3,1,4,1), (3,1,3,2), (3,3,6,2), (2,3,4,2), (2,2,8,1);");
+    // dbt.sql("INSERT INTO accountCategory (AccountId, CategoryId) VALUES (3,1);");
+    // dbt.disconnect();
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
+    //
+    // private void removeTestData() {
+    // try {
+    // dbt.connect();
+    // dbt.sql("DELETE FROM tweets WHERE 1;");
+    // dbt.sql("DELETE FROM retweets WHERE 1;");
+    // dbt.sql("DELETE FROM accountCategory WHERE AccountId=3 AND CategoryId=1;");
+    // dbt.disconnect();
+    // } catch (SQLException e) {
+    // e.printStackTrace();
+    // }
+    // }
 
 }

@@ -136,8 +136,8 @@ INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (4, "testC2", 1);
 INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (5, "testC3", 1);
 INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (6, "testC4", 1);
 INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (7, "testC5", 1);
-INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (8, "testC6", 1);
-INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (9, "testC6", 2);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (8, "testC6", 2);
+INSERT INTO `category`(`Id`, `Name`, `ParentId`) VALUES (9, "testC7", 2);
 
 INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (0,"Tester0",1,0,8,"url",0);
 INSERT INTO `accounts`(`TwitterAccountId`, `AccountName`, `Verified`, `Follower`, `LocationId`, `URL`, `Categorized`) VALUES (1,"Tester1",1,1,1,"url",0);
@@ -153,3 +153,9 @@ INSERT INTO `day`(`Day`) VALUES ("2000-01-04");
 
 INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (2,1);
 INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (3,2);
+INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (3,1);
+INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (4,1);
+INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (5,2);
+
+INSERT INTO `tweets` (`AccountId`, `Counter`, `DayId`) VALUES (3,3,1), (3,2,2), (2,1,3);
+INSERT INTO `retweets` (`AccountId`, `LocationId`, `Counter`, `DayId`) VALUES (3,1,4,1), (3,1,3,2), (3,3,6,2), (2,3,4,2), (2,2,8,1);

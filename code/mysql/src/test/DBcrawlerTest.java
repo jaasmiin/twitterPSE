@@ -135,7 +135,7 @@ public class DBcrawlerTest {
     @Test
     public void testAddDay() {
         boolean res = dbc.addDay(date);
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res);
     }
@@ -161,9 +161,9 @@ public class DBcrawlerTest {
                 "location", "http://url", 11, true), null, date, false);
         HashSet<Long> h = dbc.getAccounts();
         long[] l = dbc.getNonVerifiedAccounts();
-        cleaner.sql("DELETE FROM tweets WHERE 1;");
-        cleaner.sql("DELETE FROM accounts WHERE TwitterAccountId = 111;");
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM tweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM accounts WHERE TwitterAccountId = 111;");
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res[0]);
         assertTrue(res[1]);
@@ -185,10 +185,10 @@ public class DBcrawlerTest {
                 "location", null, 11, false), null, date, true);
         HashSet<Long> h = dbc.getAccounts();
         long[] l = dbc.getNonVerifiedAccounts();
-        cleaner.sql("DELETE FROM tweets WHERE 1;");
-        cleaner.sql("DELETE FROM accounts WHERE TwitterAccountId = 111;");
-        cleaner.sql("DELETE FROM accounts WHERE TwitterAccountId = 999;");
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM tweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM accounts WHERE TwitterAccountId = 111;");
+        cleaner.executeQuery("DELETE FROM accounts WHERE TwitterAccountId = 999;");
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res1[0]);
         assertTrue(res1[1]);
@@ -214,10 +214,10 @@ public class DBcrawlerTest {
                 "location", "url", 11, true), null, date, false);
         HashSet<Long> h = dbc.getAccounts();
         long[] l = dbc.getNonVerifiedAccounts();
-        cleaner.sql("DELETE FROM tweets WHERE 1;");
-        cleaner.sql("DELETE FROM accounts WHERE TwitterAccountId = 111;");
-        cleaner.sql("DELETE FROM accounts WHERE TwitterAccountId = 999;");
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM tweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM accounts WHERE TwitterAccountId = 111;");
+        cleaner.executeQuery("DELETE FROM accounts WHERE TwitterAccountId = 999;");
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res1[0]);
         assertTrue(res1[1]);
@@ -255,7 +255,7 @@ public class DBcrawlerTest {
                 | InvocationTargetException e) {
             e.printStackTrace();
         }
-        cleaner.sql("DELETE FROM location WHERE code = \"TTT\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"TTT\";");
         assertTrue(res);
         assertTrue(h.contains("TTT"));
         assertEquals(9, h.size());
@@ -286,7 +286,7 @@ public class DBcrawlerTest {
             e.printStackTrace();
         }
 
-        cleaner.sql("DELETE FROM location WHERE code = \"000\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"000\";");
         assertTrue(res);
         assertTrue(h.contains("000"));
         assertEquals(9, h.size());
@@ -317,7 +317,7 @@ public class DBcrawlerTest {
             e.printStackTrace();
         }
 
-        cleaner.sql("DELETE FROM location WHERE code = \"000\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"000\";");
         assertTrue(res);
         assertTrue(h.contains("000"));
         assertEquals(9, h.size());
@@ -350,8 +350,8 @@ public class DBcrawlerTest {
             e.printStackTrace();
         }
 
-        cleaner.sql("DELETE FROM location WHERE code = \"000\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"ZZ\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"000\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"ZZ\";");
         assertTrue(res1);
         assertTrue(res2);
         assertTrue(h.contains("000"));
@@ -388,10 +388,10 @@ public class DBcrawlerTest {
             e.printStackTrace();
         }
 
-        cleaner.sql("DELETE FROM location WHERE code = \"PPP\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"ZZ\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"XXX\";");
-        cleaner.sql("DELETE FROM location WHERE code = \"ZZZ\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"PPP\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"ZZ\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"XXX\";");
+        cleaner.executeQuery("DELETE FROM location WHERE code = \"ZZZ\";");
         assertTrue(res1);
         assertTrue(res2);
         assertTrue(h.contains("PPP"));
@@ -407,7 +407,7 @@ public class DBcrawlerTest {
     @Test
     public void test1AddRetweet() {
         boolean[] res = dbc.addRetweet(9999, null, date);
-        cleaner.sql("DELETE FROM retweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM retweets WHERE 1;");
         assertTrue(res[0]);
         assertTrue(!res[1]);
     }
@@ -419,8 +419,8 @@ public class DBcrawlerTest {
     public void test2AddRetweet() {
         boolean res1 = dbc.addDay(date);
         boolean[] res2 = dbc.addRetweet(9999, null, date);
-        cleaner.sql("DELETE FROM retweets WHERE 1;");
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM retweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res1);
         assertTrue(res2[0]);
@@ -434,8 +434,8 @@ public class DBcrawlerTest {
     public void test3AddRetweet() {
         boolean res1 = dbc.addDay(date);
         boolean[] res2 = dbc.addRetweet(1, null, date);
-        cleaner.sql("DELETE FROM retweets WHERE 1;");
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM retweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res1);
         assertTrue(res2[0]);
@@ -449,8 +449,8 @@ public class DBcrawlerTest {
     public void test4AddRetweet() {
         boolean res1 = dbc.addDay(date);
         boolean[] res2 = dbc.addRetweet(1, "T3", date);
-        cleaner.sql("DELETE FROM retweets WHERE 1;");
-        cleaner.sql("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
+        cleaner.executeQuery("DELETE FROM retweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM day WHERE day = \"" + dateFormat.format(date)
                 + "\";");
         assertTrue(res1);
         assertTrue(res2[0]);
@@ -463,7 +463,7 @@ public class DBcrawlerTest {
     @Test
     public void test5AddRetweet() {
         boolean[] res2 = dbc.addRetweet(1, "T3", null);
-        cleaner.sql("DELETE FROM retweets WHERE 1;");
+        cleaner.executeQuery("DELETE FROM retweets WHERE 1;");
         assertTrue(!res2[0]);
         assertTrue(!res2[1]);
     }

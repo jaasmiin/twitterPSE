@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE suppressions PUBLIC
+    "-//Puppy Crawl//DTD Suppressions 1.1//EN"
+    "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
+
+<suppressions>
+	<suppress checks="JavadocStyle" files="${basedir}/src/gui/Labels.java"
+		lines="10-90" />
+	<suppress checks="JavadocVariable" files="${basedir}/src/gui/Labels.java"
+		lines="10-90" />
+	<suppress checks="JavadocType" files="${basedir}/src/gui/Labels.java"
+		lines="10-90" />
+	<suppress checks="VisibilityModifier" files="${basedir}/src/gui/Labels.java"
+		lines="10-90" />
+
+</suppressions>

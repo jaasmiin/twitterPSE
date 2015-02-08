@@ -32,6 +32,7 @@ import mysql.result.Retweets;
  * 
  */
 public class CSVExportController extends InputElement implements Initializable {
+
     @FXML
     private MenuItem mnFile;
     @FXML
@@ -128,9 +129,8 @@ public class CSVExportController extends InputElement implements Initializable {
         file[0][2] = "Follower";
         int i = 3;
         for (Location l : locations) {
-            file[0][i] = gui.Util.getUppercaseStartAndRestLowerCase(l
-                    .toString());
-            h.put(l.getLocationCode(), i);
+            file[0][i] = gui.Util.getUppercaseCountry(l.toString());
+            h.put((l.getLocationCode().equals("0") ? "-" : l.getLocationCode()), i);
             i++;
         }
 
@@ -171,7 +171,8 @@ public class CSVExportController extends InputElement implements Initializable {
                         superController.getStage())) {
                     superController.setInfo(Labels.EXPORTED, Labels.EXPORTING);
                 } else {
-                    superController.setInfo(Labels.EXPORT_FAILED, Labels.EXPORTING);
+                    superController.setInfo(Labels.EXPORT_FAILED,
+                            Labels.EXPORTING);
                 }
             }
         });

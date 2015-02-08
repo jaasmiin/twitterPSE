@@ -55,6 +55,11 @@ public class MyUnfoldingMap extends PApplet {
      */
     private float maxValue = 0;
 
+    private MyUnfoldingMap() {
+        super();
+        this.setSize(900, 600);
+    }
+
     /**
      * Returns Singleton.
      * 
@@ -67,11 +72,6 @@ public class MyUnfoldingMap extends PApplet {
             SINGLETON.superController = controller;
         }
         return SINGLETON;
-    }
-
-    private MyUnfoldingMap() {
-        super();
-        this.setSize(900, 600);
     }
 
     /**

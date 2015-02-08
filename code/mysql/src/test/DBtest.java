@@ -41,7 +41,7 @@ class DBtest extends DBConnection {
      * @param sql
      *            the complete sql command as String
      */
-    public void sql(String sql) {
+    public void executeQuery(String sql) { 
 
         // try to connect to database
         try {

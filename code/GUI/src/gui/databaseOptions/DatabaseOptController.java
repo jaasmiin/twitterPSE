@@ -36,11 +36,20 @@ import gui.InputElement;
 import gui.Labels;
 import gui.Util;
 
+/**
+ * 
+ * @author
+ *
+ */
 public class DatabaseOptController extends InputElement implements
         Initializable {
 
+    private static final int DEFAULT_LOCATION = 1;
+    // Delay time for success messages
+    private static final int DELAY = 5000;
+    
     @FXML
-    private Menu DBOPT_menu;
+    private Menu dbOpt_menu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -147,9 +156,6 @@ public class DatabaseOptController extends InputElement implements
 
     private Account account;
     private Stage dialogStage;
-    private static final int DEFAULT_LOCATION = 1;
-    // Delay time for success messages
-    private final int DELAY = 5000;
 
     @Override
     public void update(UpdateType type) {
@@ -214,9 +220,9 @@ public class DatabaseOptController extends InputElement implements
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
-        if (DBOPT_menu != null) {
+        if (dbOpt_menu != null) {
             // set label
-            DBOPT_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
+            dbOpt_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
 
         if (addCat != null) {
