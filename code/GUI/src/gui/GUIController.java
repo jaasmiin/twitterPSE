@@ -72,12 +72,12 @@ public class GUIController extends Application implements Initializable {
 
     private HashSet<Integer> selectedCategories = new HashSet<Integer>();
     private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
-
+    private Thread reloadDataThread = new Thread(); 
+    
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
 
     private Runnable rnbInitDBConnection = new Runnable() {
-
         @Override
         public void run() {
             boolean success = true;
@@ -113,6 +113,60 @@ public class GUIController extends Application implements Initializable {
         }
     };
 
+    private Runnable rnbReloadData = new Runnable() {
+		@Override
+		public void run() {
+			String info = Labels.DATA_LOADING;
+	        setInfo(info);
+	        List<Integer> selectedLocations = new ArrayList<Integer>();
+	        for (Location l : locations.getSelected()) {
+	            selectedLocations.add(l.getId());
+	        }
+	        List<Integer> selectedAccounts = new ArrayList<Integer>();
+	        for (Account a : accounts.getSelected()) {
+	            selectedAccounts.add(a.getId());
+	        }
+	        List<Integer> allSelectedCategories = new ArrayList<Integer>();
+	        for (Integer id : selectedCategories) {
+	            // allSelectedCategories.addAll(getSelectedChildCategories(id));
+	            // changed data in database, so that each account is listed in each
+	            // parent category
+	            allSelectedCategories.add(id);
+	        }
+
+	        if (allSelectedCategories.size() + selectedLocations.size()
+	                + selectedAccounts.size() >= 1) {
+	            boolean success = true;
+	            try {
+	                dataByLocation = db.getSumOfData(allSelectedCategories,
+	                        selectedLocations, selectedAccounts, false);
+	                dataByAccount = db.getAllData(allSelectedCategories,
+	                        selectedLocations, selectedAccounts, false);
+	                dataByLocationAndDate = db.getSumOfData(allSelectedCategories,
+	                        selectedLocations, selectedAccounts, true);
+	                dataByAccountAndDate = db.getAllData(allSelectedCategories,
+	                        selectedLocations, selectedAccounts, true);
+	            } catch (IllegalArgumentException e) {
+	                success = false;
+	                setInfo(Labels.DB_CONNECTION_ERROR, info);
+	            }
+	            if (success) {
+	                setInfo(Labels.DATA_LOADED, info);
+	                update(UpdateType.TWEET);
+	                update(UpdateType.TWEET_BY_DATE);
+	            }
+	        } else {
+	            dataByLocation = new TweetsAndRetweets();
+	            dataByAccount = new ArrayList<Account>();
+	            dataByLocationAndDate = new TweetsAndRetweets();
+	            dataByAccountAndDate = new ArrayList<Account>();
+	            setInfo(Labels.ERROR_NO_FILTER_SELECTED, info);
+	            update(UpdateType.TWEET);
+	            update(UpdateType.TWEET_BY_DATE);
+	        }
+		}
+	};
+	
     /**
      * Create a GUIController and set the singelton instance.
      */
@@ -256,56 +310,10 @@ public class GUIController extends Application implements Initializable {
     }
 
     private void reloadData() {
-        String info = Labels.DATA_LOADING;
-        setInfo(info);
-        List<Integer> selectedLocations = new ArrayList<Integer>();
-        for (Location l : locations.getSelected()) {
-            selectedLocations.add(l.getId());
-        }
-        List<Integer> selectedAccounts = new ArrayList<Integer>();
-        for (Account a : accounts.getSelected()) {
-            selectedAccounts.add(a.getId());
-        }
-        List<Integer> allSelectedCategories = new ArrayList<Integer>();
-        for (Integer id : selectedCategories) {
-            // allSelectedCategories.addAll(getSelectedChildCategories(id));
-            // changed data in database, so that each account is listed in each
-            // parent category
-            allSelectedCategories.add(id);
-        }
-
-        if (allSelectedCategories.size() + selectedLocations.size()
-                + selectedAccounts.size() >= 1) {
-            boolean success = true;
-            try {
-                dataByLocation = db.getSumOfData(allSelectedCategories,
-                        selectedLocations, selectedAccounts, false);
-                dataByAccount = db.getAllData(allSelectedCategories,
-                        selectedLocations, selectedAccounts, false);
-                dataByLocationAndDate = db.getSumOfData(allSelectedCategories,
-                        selectedLocations, selectedAccounts, true);
-                dataByAccountAndDate = db.getAllData(allSelectedCategories,
-                        selectedLocations, selectedAccounts, true);
-            } catch (IllegalArgumentException e) {
-                success = false;
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-            if (success) {
-                setInfo(Labels.DATA_LOADED, info);
-                update(UpdateType.TWEET);
-                update(UpdateType.TWEET_BY_DATE);
-            }
-        } else {
-            dataByLocation = new TweetsAndRetweets();
-            dataByAccount = new ArrayList<Account>();
-            dataByLocationAndDate = new TweetsAndRetweets();
-            dataByAccountAndDate = new ArrayList<Account>();
-            setInfo(Labels.ERROR_NO_FILTER_SELECTED, info);
-            update(UpdateType.TWEET);
-            update(UpdateType.TWEET_BY_DATE);
-        }
+		reloadDataThread = new Thread(rnbReloadData);
+    	reloadDataThread.start();
     }
-
+    
     /**
      * Reload accounts, categories and locations parallel from db.
      */
@@ -557,6 +565,7 @@ public class GUIController extends Application implements Initializable {
      */
     public void setSelectedAccount(int id, boolean selected) {
         if (accounts.setSelected(id, selected)) {
+        	reloadDataThread.interrupt();
             update(UpdateType.ACCOUNT_SELECTION);
             reloadData();
         }
@@ -572,11 +581,14 @@ public class GUIController extends Application implements Initializable {
      *            true if category should be selected, false otherwise
      */
     public void setSelectedCategory(Set<Integer> ids, boolean selected) {
-        for (Integer id : ids) {
-            setSelectedCategory(id, selected, false);
-        }
-        update(UpdateType.CATEGORY_SELECTION);
-        reloadData();
+    	synchronized (this) {
+	    	reloadDataThread.interrupt();
+	        for (Integer id : ids) {
+	        	setSelectedCategoryInList(id, selected);
+	        }
+	        update(UpdateType.CATEGORY_SELECTION);
+	        reloadData();
+    	}
     }
 
     /**
@@ -588,18 +600,19 @@ public class GUIController extends Application implements Initializable {
      *            is true if category should be selected, false otherwise
      */
     public void setSelectedCategory(int id, boolean selected) {
-        setSelectedCategory(id, selected, true);
+    	synchronized (this) {
+    		reloadDataThread.interrupt();
+        	setSelectedCategoryInList(id, selected);
+            update(UpdateType.CATEGORY_SELECTION);
+            reloadData();
+		}
     }
 
-    private void setSelectedCategory(int id, boolean selected, boolean update) {
+    private void setSelectedCategoryInList(int id, boolean selected) {
         if (selected) {
             selectedCategories.add(id);
         } else {
             selectedCategories.remove(id);
-        }
-        if (update) {
-            update(UpdateType.CATEGORY_SELECTION);
-            reloadData();
         }
     }
 
@@ -612,10 +625,13 @@ public class GUIController extends Application implements Initializable {
      *            is true if location should be selected, false otherwise
      */
     public void setSelectedLocation(int id, boolean selected) {
-        if (locations.setSelected(id, selected)) {
-            update(UpdateType.LOCATION_SELECTION);
-            reloadData();
-        }
+    	synchronized (this) {
+    		reloadDataThread.interrupt();
+    		if (locations.setSelected(id, selected)) {
+    			update(UpdateType.LOCATION_SELECTION);
+                reloadData();
+            }
+		}
     }
 
     /**
