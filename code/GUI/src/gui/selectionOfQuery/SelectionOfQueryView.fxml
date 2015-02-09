@@ -16,7 +16,7 @@
       <TextField fx:id="txtFilterSearch" onKeyReleased="#handle"/>
       <Accordion GridPane.rowIndex="1">
         <panes>
-          <TitledPane fx:id="tipCategory" animated="false" text="Kategorie" disable="true">
+          <TitledPane fx:id="tipCategory" onMouseClicked="#handle" animated="false" text="Kategorie" disable="true">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -25,7 +25,7 @@
                   </AnchorPane>
             </content>
           </TitledPane>
-          <TitledPane fx:id="tipLocation" animated="false" text="Ort" disable="true">
+          <TitledPane fx:id="tipLocation" onMouseClicked="#handle" animated="false" text="Ort" disable="true">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -34,7 +34,7 @@
                   </AnchorPane>
             </content>
           </TitledPane>
-          <TitledPane fx:id="tipAccount" animated="false" text="Account" disable="true">
+          <TitledPane fx:id="tipAccount" onMouseClicked="#handle" animated="false" text="Account" disable="true">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>

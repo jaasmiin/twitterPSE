@@ -102,64 +102,87 @@ public class SelectionOfQueryController extends InputElement implements
     @FXML
     @Override
     public void handle(Event e) {
-        if (e instanceof MouseEvent && ((MouseEvent) e).getClickCount() == 2) {
-            if (e.getSource().equals(trvCategory)) {
-                if (trvCategory.getSelectionModel().getSelectedItem() != null) {
-                    new Thread(new RunnableParameter<Integer>(trvCategory
-                            .getSelectionModel().getSelectedItem().getValue()
-                            .getId()) {
-                        @Override
-                        public void run() {
-                            superController
-                                    .setSelectedCategory(parameter, true);
-                        }
-                    }).start();
-                }
-            } else if (e.getSource().equals(trvLocation)) {
-                if (trvLocation.getSelectionModel().getSelectedItem() != null) {
-                    new Thread(new RunnableParameter<Integer>(trvLocation
-                            .getSelectionModel().getSelectedItem().getValue()
-                            .getId()) {
-                        @Override
-                        public void run() {
-                            superController
-                                    .setSelectedLocation(parameter, true);
-                        }
-                    }).start();
-
-                }
-            } else if (e.getSource().equals(lstAccount)) {
-                if (lstAccount.getSelectionModel().getSelectedItem() != null) {
-                    new Thread(new RunnableParameter<Integer>(lstAccount
-                            .getSelectionModel().getSelectedItem().getId()) {
-                        @Override
-                        public void run() {
-                            superController.setSelectedAccount(parameter, true);
-                        }
-                    }).start();
-                }
-            }
+        if (e instanceof MouseEvent) {
+        	MouseEvent me = (MouseEvent) e;
+        	if (me.getClickCount() == 2) {
+	            if (e.getSource().equals(trvCategory)) {
+	                if (trvCategory.getSelectionModel().getSelectedItem() != null) {
+	                    reloadCoategories();
+	                }
+	            } else if (e.getSource().equals(trvLocation)) {
+	                if (trvLocation.getSelectionModel().getSelectedItem() != null) {
+	                   reloadLocations();
+	                }
+	            } else if (e.getSource().equals(lstAccount)) {
+	                if (lstAccount.getSelectionModel().getSelectedItem() != null) {
+	                    reloadAccounts();
+	                }
+	            }
+        	} else if (me.getClickCount() == 1) { // TODO: source?
+        		if (me.getSource().equals(tipAccount) 
+        				|| me.getSource().equals(tipCategory)
+        				|| me.getSource().equals(tipLocation)) {
+        			reloadActiveList();
+        		}
+        	}
         } else if (e.getSource().equals(txtFilterSearch)) {
             if (e instanceof KeyEvent) {
                 KeyEvent k = (KeyEvent) e;
                 if (!k.getText().isEmpty()
                         || k.getCode().equals(KeyCode.DELETE)
                         || k.getCode().equals(KeyCode.BACK_SPACE)) {
-                    if (tipCategory.isExpanded()) {
-                        updateCategory(superController
-                                .getCategoryRoot(txtFilterSearch.getText()));
-                    } else if (tipAccount.isExpanded()) {
-                        updateAccounts(superController
-                                .getAccounts(txtFilterSearch.getText()));
-                    } else if (tipLocation.isExpanded()) {
-                        updateLocation(superController
-                                .getLocations(txtFilterSearch.getText()));
-                    }
+                    reloadActiveList();
                 }
             }
         }
     }
 
+    private void reloadAccounts() {
+    	new Thread(new RunnableParameter<Integer>(lstAccount
+                .getSelectionModel().getSelectedItem().getId()) {
+            @Override
+            public void run() {
+                superController.setSelectedAccount(parameter, true);
+            }
+        }).start();
+    }
+    
+    private void reloadActiveList() {
+    	if (tipCategory.isExpanded()) {
+            updateCategory(superController
+                    .getCategoryRoot(txtFilterSearch.getText()));
+        } else if (tipAccount.isExpanded()) {
+            updateAccounts(superController
+                    .getAccounts(txtFilterSearch.getText()));
+        } else if (tipLocation.isExpanded()) {
+            updateLocation(superController
+                    .getLocations(txtFilterSearch.getText()));
+        }
+    }
+    
+    private void reloadCoategories() {
+    	new Thread(new RunnableParameter<Integer>(trvCategory
+                .getSelectionModel().getSelectedItem().getValue()
+                .getId()) {
+            @Override
+            public void run() {
+                superController
+                        .setSelectedCategory(parameter, true);
+            }
+        }).start();
+    }
+    
+    private void reloadLocations() {
+    	 new Thread(new RunnableParameter<Integer>(trvLocation
+                 .getSelectionModel().getSelectedItem().getValue()
+                 .getId()) {
+             @Override
+             public void run() {
+                 superController.setSelectedLocation(parameter, true);
+             }
+         }).start();
+    }
+    
     private void setLabels() {
         tipAccount.setText(Util.getUppercaseStart(Labels.ACCOUNT));
         tipCategory.setText(Util.getUppercaseStart(Labels.CATEGORY));
