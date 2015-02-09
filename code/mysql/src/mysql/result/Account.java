@@ -8,7 +8,7 @@ import java.util.List;
  * 
  * @author Holger Ebhart
  */
-public class Account extends Result {
+public class Account extends Result implements Comparable<Account> {
 
     private String name;
     private String url;
@@ -266,10 +266,14 @@ public class Account extends Result {
     @Override
     public boolean equals(Object o) {
         boolean equal = false;
-        if (o != null && o.getClass() == this.getClass()) {
+        if (o != null && o instanceof Result) {
             equal = ((Result) o).getId() == getId();
         }
         return equal;
     }
 
+    @Override
+    public int compareTo(Account a) {
+        return Integer.compare(a.getFollower(), follower);
+    }
 }

@@ -16,6 +16,7 @@ public class Category extends Result {
     private String category;
     private int parent;
     private boolean used;
+    private int matchedAccounts;
 
     /**
      * store the categories of an account
@@ -54,13 +55,13 @@ public class Category extends Result {
     }
 
     /**
-     * Returns the name of the category
+     * Returns the name of the category with the number of matches
      * 
      * @return the name of the category as String
      */
     @Override
     public String toString() {
-        return category;
+        return category + " (" + matchedAccounts + ")";
     }
 
     /**
@@ -111,4 +112,25 @@ public class Category extends Result {
         }
         return equal;
     }
+
+    /**
+     * returns the number of Accounts that were inferior of this category
+     * 
+     * @return the number of Accounts that were inferior of this category as int
+     */
+    public int getMatchedAccounts() {
+        return matchedAccounts;
+    }
+
+    /**
+     * set the number of Accounts that were below this category
+     * 
+     * @param matchedAccounts
+     *            the number of Accounts that were inferior of this category as
+     *            int
+     */
+    public void setMatchedAccounts(int matchedAccounts) {
+        this.matchedAccounts = matchedAccounts;
+    }
+
 }

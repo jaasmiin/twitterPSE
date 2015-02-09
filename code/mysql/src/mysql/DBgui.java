@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -53,9 +54,10 @@ public class DBgui extends DBConnection implements DBIgui {
     public Category getCategories() {
 
         // get all categories from the database
-        String sqlCommand = "SELECT c.Id, Name, ParentId,  AccountId "
+        String sqlCommand = "SELECT Count(AccountId), c.Id, Name, ParentId,  AccountId "
                 + "FROM category c "
                 + "LEFT JOIN accountCategory ac ON c.Id=ac.CategoryId "
+                + "GROUP BY c.Id " // new
                 + "ORDER By Name";
 
         // execute query on database
@@ -80,6 +82,7 @@ public class DBgui extends DBConnection implements DBIgui {
                 boolean used = res.getInt("AccountId") == 0 ? false : true;
                 Category c = new Category(res.getInt("Id"),
                         res.getString("Name"), res.getInt("ParentId"), used);
+                c.setMatchedAccounts(res.getInt(1));
                 categories.add(c);
             }
         } catch (SQLException e) {
@@ -116,8 +119,9 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 // add the builded location to the return list
-                ret.add(new Location(res.getInt("Id"), res.getString("Name"),
-                        res.getString("Code"), null));
+                ret.add(new Location(res.getInt("Id"), Util
+                        .getUppercaseCountry(res.getString("Name")), res
+                        .getString("Code"), null));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -125,8 +129,6 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             closeResultAndStatement(stmt, res);
         }
-
-        // assert (ret.size() == 249);
 
         return ret;
     }
@@ -153,15 +155,16 @@ public class DBgui extends DBConnection implements DBIgui {
         if (res == null)
             return new ArrayList<Account>();
 
-        List<Account> ret = new ArrayList<Account>();
+        HashMap<Integer, Account> ret = new HashMap<Integer, Account>(100);
         try {
             while (res.next()) {
                 // build the accounts with the data from the sql-result
-                ret.add(new Account(res.getInt("Id"), res
-                        .getLong("TwitterAccountId"), res
-                        .getString("AccountName"), res.getBoolean("Verified"),
-                        res.getString("URL"), res.getInt("Follower"), res
-                                .getString("Code")));
+                int id = res.getInt("Id");
+                ret.put(id,
+                        new Account(id, res.getLong("TwitterAccountId"), res
+                                .getString("AccountName"), res
+                                .getBoolean("Verified"), res.getString("URL"),
+                                res.getInt("Follower"), res.getString("Code")));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -173,7 +176,10 @@ public class DBgui extends DBConnection implements DBIgui {
         // add the categories from the database to the accounts
         addCategories(ret);
 
-        return ret;
+        List<Account> list = Util.collectionToList(ret.values());
+        Collections.sort(list);
+
+        return list;
     }
 
     @Override
@@ -216,24 +222,24 @@ public class DBgui extends DBConnection implements DBIgui {
         }
 
         // use method addCategories
-        List<Account> temp = new ArrayList<Account>(1);
-        temp.add(ret);
+        HashMap<Integer, Account> temp = new HashMap<Integer, Account>(1);
+        temp.put(ret.getId(), ret);
         addCategories(temp);
 
         return ret;
     }
 
-    private void addCategories(List<Account> list) {
+    private void addCategories(HashMap<Integer, Account> list) {
 
         // validate parameter
         if (list.size() > 0) {
 
             // build query with all the accountIds where you need the categories
-            Iterator<Account> it = list.iterator();
+            Iterator<Integer> it = list.keySet().iterator();
             String query = "SELECT AccountId, CategoryId FROM accountCategory WHERE AccountId="
-                    + it.next().getId();
+                    + it.next();
             while (it.hasNext()) {
-                query += " OR AccountId=" + it.next().getId();
+                query += " OR AccountId=" + it.next();
             }
             query += ";";
 
@@ -252,10 +258,9 @@ public class DBgui extends DBConnection implements DBIgui {
                 // read result and add the categories to the corresponding
                 // account
                 while (res.next()) {
-                    for (Account temp : list) {
-                        if (temp.getId() == res.getInt(1)) {
-                            temp.addCategoryId(res.getInt(2));
-                        }
+                    int id = res.getInt(1);
+                    if (list.containsKey(id)) {
+                        list.get(id).addCategoryId(res.getInt(2));
                     }
                 }
             } catch (SQLException e) {

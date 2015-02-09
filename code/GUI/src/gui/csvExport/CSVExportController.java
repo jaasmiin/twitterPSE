@@ -129,7 +129,7 @@ public class CSVExportController extends InputElement implements Initializable {
         file[0][2] = "Follower";
         int i = 3;
         for (Location l : locations) {
-            file[0][i] = gui.Util.getUppercaseCountry(l.toString());
+            file[0][i] = l.toString();
             h.put((l.getLocationCode().equals("0") ? "-" : l.getLocationCode()), i);
             i++;
         }

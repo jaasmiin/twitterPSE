@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -30,7 +31,6 @@ import util.LoggerUtil;
 public class DBguiTest {
 
     private DBgui dbg;
-    // private DBtest dbt;
     private Logger log;
     private AccessData access;
 
@@ -59,17 +59,14 @@ public class DBguiTest {
     @Before
     public void setUp() {
         try {
-
             access = new AccessData("localhost", "3306", "twittertest", "root",
                     "root");
             dbg = new DBgui(access, log);
             dbg.connect();
-            // dbt = new DBtest(access, log);
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-        // addTestData();
     }
 
     /**
@@ -78,7 +75,7 @@ public class DBguiTest {
     @Test
     public void testGetLocations() {
         List<Location> l = dbg.getLocations();
-        // check parent
+
         assertEquals(8, l.size());
     }
 
@@ -88,9 +85,11 @@ public class DBguiTest {
     @Test
     public void testGetCategories() {
         Category c = dbg.getCategories();
-        // check parent
+
         assertEquals("ROOT", c.toString());
-        assertEquals(1, c.getChilds().size());
+        // check parent
+        assertEquals(7, c.getChilds().size());
+        assertEquals(2, c.getChilds().get(0).getChilds().size());
     }
 
     /**
@@ -207,36 +206,24 @@ public class DBguiTest {
     }
 
     /**
+     * test for right sum of retweets per country
+     */
+    @Test
+    public void testGetAllRetweetsPerCountry() {
+        HashMap<String, Integer> h = dbg.getAllRetweetsPerLocation();
+        // TODO
+        assertTrue(h.containsKey(""));
+        assertTrue(h.containsKey(""));
+        assertEquals(2, h.get("f"));
+        assertEquals(2, h.get("d"));
+    }
+
+    /**
      * disconnect from the database and clear the database
      */
     @After
     public void tearDown() {
-        // removeTestData();
         dbg.disconnect();
     }
-
-    // private void addTestData() {
-    // try {
-    // dbt.connect();
-    // dbt.sql("INSERT INTO tweets (AccountId,Counter,DayId) VALUES (3,3,1), (3,2,2), (2,1,3);");
-    // dbt.sql("INSERT INTO retweets (AccountId,LocationId,Counter,DayId) VALUES (3,1,4,1), (3,1,3,2), (3,3,6,2), (2,3,4,2), (2,2,8,1);");
-    // dbt.sql("INSERT INTO accountCategory (AccountId, CategoryId) VALUES (3,1);");
-    // dbt.disconnect();
-    // } catch (SQLException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    //
-    // private void removeTestData() {
-    // try {
-    // dbt.connect();
-    // dbt.sql("DELETE FROM tweets WHERE 1;");
-    // dbt.sql("DELETE FROM retweets WHERE 1;");
-    // dbt.sql("DELETE FROM accountCategory WHERE AccountId=3 AND CategoryId=1;");
-    // dbt.disconnect();
-    // } catch (SQLException e) {
-    // e.printStackTrace();
-    // }
-    // }
 
 }
