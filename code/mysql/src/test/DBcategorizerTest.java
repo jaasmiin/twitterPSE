@@ -76,11 +76,6 @@ public class DBcategorizerTest {
      */
     @Test
     public void testGetNonCategorizedAndSetCategorized() {
-
-        // set 2 accounts as categorized
-        assertTrue(dbc.setCategorized(1));
-        assertTrue(dbc.setCategorized(2));
-
         List<Account> list = new ArrayList<Account>();
         list = dbc.getNonCategorized();
         assertEquals(3, list.size());

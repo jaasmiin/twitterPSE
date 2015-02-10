@@ -46,13 +46,12 @@ public interface DBIcategorizer {
     public boolean addCategoryToAccount(int accountId, int categoryId);
 
     /**
-     * sets the categorized bit of the given account to 1
+     * returns the parentId of the category specified by id
      * 
-     * @param accountId
-     *            the database-id of the account where to set the categorized
-     *            bit
-     * @return true on success
+     * @param id
+     *            the id of the current Category as int
+     * 
+     * @return the parentId of the category specified by id as int (-1 in case of error)
      */
-    public boolean setCategorized(int accountId);
-
+    public int getParentId(int id);
 }
