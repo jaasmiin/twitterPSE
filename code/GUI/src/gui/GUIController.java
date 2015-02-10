@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
@@ -879,6 +880,7 @@ public class GUIController extends Application implements Initializable {
         }
 
         // calculate relative value
+        double minValue = Double.POSITIVE_INFINITY;
         for (String key : keySet) {
             if (!totalNumberOfRetweets.containsKey(key)) {
                 System.out.println("ERROR");
@@ -887,11 +889,18 @@ public class GUIController extends Application implements Initializable {
             double relativeValue = retweetsPerLocation.get(key)
                     / ((double) overallCounter * totalNumberOfRetweets.get(key));
             relativeValue *= scale;
-            relativeValue = Math.log(relativeValue);
+            minValue = Math.min(minValue, relativeValue);
+            
             result.put(
                     key,
                     new MyDataEntry(relativeValue, key, totalNumberOfRetweets
                             .get(key), retweetsPerLocation.get(key)));
+        }
+        
+        Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, MyDataEntry> entry = it.next();
+            entry.getValue().setValue(Math.log10(entry.getValue().getValue() + (1 - minValue)));
         }
 
         return result;

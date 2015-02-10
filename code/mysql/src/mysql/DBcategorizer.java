@@ -163,23 +163,6 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
     }
 
     @Override
-    public boolean setCategorized(int accountId) {
-
-        // create statment to set the categorized bit of the account to 1
-        PreparedStatement stmt = null;
-        try {
-            // prepare mysql statement
-            stmt = c.prepareStatement("UPDATE accounts SET Categorized=1 WHERE Id=?;");
-            stmt.setInt(1, accountId);
-        } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
-        }
-
-        // execute query
-        return executeStatementUpdate(stmt, false);
-    }
-
-    @Override
     public int getParentId(int id) {
 
         // statement to get the parentId of a category

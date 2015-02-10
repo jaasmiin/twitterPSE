@@ -182,7 +182,7 @@ public class MyUnfoldingMap extends PApplet {
             m.setStrokeColor(color(241, 241, 241, 50));
             m.setStrokeWeight(1);
 
-            if (dataEntry != null && dataEntry.getValue() != -1) {
+            if (dataEntry != null && dataEntry.getValue() != 0) {
                 // Take value as brightness
                 Double transparency = dataEntry.getValue();
                 float transpa = Float.parseFloat(transparency.toString());
@@ -217,8 +217,8 @@ public class MyUnfoldingMap extends PApplet {
 
                 MyDataEntry edit = dataEntriesMap.get(id);
 
-                edit.setValue(-1);
-                edit.setRetweetsLandFiltered(-1);
+                edit.setValue(0);
+                edit.setRetweetsLandFiltered(0);
                 dataEntriesMap.put(id, edit);
             }
             setValues.clear();
