@@ -29,7 +29,7 @@ public class MyDataEntry {
      * Constructor.
      */
     public MyDataEntry() {
-        this(-1, "", 0, 0);
+        this(0, "", 0, 0);
     }
     
     /**

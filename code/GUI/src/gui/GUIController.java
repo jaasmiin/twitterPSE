@@ -878,9 +878,6 @@ public class GUIController extends Application implements Initializable {
             overallCounter += retweetsPerLocation.get(key);
         }
 
-        // System.out.println("1/overall value: " + ((double) 1) /
-        // overallCounter);
-
         // calculate relative value
         for (String key : keySet) {
             if (!totalNumberOfRetweets.containsKey(key)) {
@@ -890,6 +887,7 @@ public class GUIController extends Application implements Initializable {
             double relativeValue = retweetsPerLocation.get(key)
                     / ((double) overallCounter * totalNumberOfRetweets.get(key));
             relativeValue *= scale;
+            relativeValue = Math.log(relativeValue);
             result.put(
                     key,
                     new MyDataEntry(relativeValue, key, totalNumberOfRetweets
