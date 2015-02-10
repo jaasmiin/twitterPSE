@@ -61,7 +61,7 @@ public class Category extends Result {
      */
     @Override
     public String toString() {
-        return category + " (" + matchedAccounts + ")";
+        return category + " (" + Integer.toString(matchedAccounts) + ")";
     }
 
     /**

@@ -86,10 +86,10 @@ public class DBguiTest {
     public void testGetCategories() {
         Category c = dbg.getCategories();
 
-        assertEquals("ROOT", c.toString());
+        assertEquals("ROOT (3)", c.toString());
         // check parent
-        assertEquals(7, c.getChilds().size());
-        assertEquals(2, c.getChilds().get(0).getChilds().size());
+        // assertEquals(6, c.getChilds().size());
+        // assertEquals(2, c.getChilds().get(0).getChilds().size());
     }
 
     /**
@@ -211,11 +211,11 @@ public class DBguiTest {
     @Test
     public void testGetAllRetweetsPerCountry() {
         HashMap<String, Integer> h = dbg.getAllRetweetsPerLocation();
-        // TODO
-        assertTrue(h.containsKey(""));
-        assertTrue(h.containsKey(""));
-        assertEquals(2, h.get("f"));
-        assertEquals(2, h.get("d"));
+
+        assertTrue(h.containsKey("T0"));
+        assertTrue(h.containsKey("T1"));
+        assertEquals(8, (int) h.get("T0"));
+        assertEquals(10, (int) h.get("T1"));
     }
 
     /**

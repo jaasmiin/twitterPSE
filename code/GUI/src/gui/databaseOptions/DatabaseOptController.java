@@ -38,7 +38,7 @@ import gui.Util;
 
 /**
  * 
- * @author
+ * @author Matthias Schimek
  *
  */
 public class DatabaseOptController extends InputElement implements

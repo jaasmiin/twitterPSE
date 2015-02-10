@@ -30,6 +30,8 @@ import mysql.result.TweetsAndRetweets;
  */
 public class DBgui extends DBConnection implements DBIgui {
 
+    // TODO catch Nullpointerexceptions
+
     /**
      * configure the connection to the database
      * 
@@ -538,6 +540,7 @@ public class DBgui extends DBConnection implements DBIgui {
         List<Retweets> ret = new ArrayList<Retweets>();
         try {
             while (res.next()) {
+                // TODO NullPointerException
                 // for each line in the result build a new Retweets-object
                 Retweets element = new Retweets((byDate ? res.getDate("Day")
                         : null), res.getInt(1), res.getString("Code"));

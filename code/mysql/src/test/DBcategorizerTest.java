@@ -172,7 +172,45 @@ public class DBcategorizerTest {
         dbt.executeQuery("DELETE FROM accountCategory WHERE AccountId=1;");
     }
 
-    // TODO write testcases for getCategoriesForAccount
+    /**
+     * test get categories for account by url with invalid parameters
+     */
+    @Test
+    public void test1GetCategoriesForAccount() {
+        List<Integer> list = dbc.getCategoriesForAccount(null, null);
+        assertEquals(0, list.size());
+    }
+
+    /**
+     * test get categories for account by url with invalid parameters
+     */
+    @Test
+    public void test2GetCategoriesForAccount() {
+        List<Integer> list = dbc.getCategoriesForAccount("", "");
+        assertEquals(0, list.size());
+    }
+
+    /**
+     * test get categories for account by url
+     */
+    @Test
+    public void test3GetCategoriesForAccount() {
+        List<Integer> list = dbc.getCategoriesForAccount("url", "Tester0");
+        assertEquals(3, list.size());
+        assertEquals(1, (int) list.get(0));
+        assertEquals(5, (int) list.get(1));
+        assertEquals(9, (int) list.get(2));
+    }
+
+    /**
+     * test get categories for account by url
+     */
+    @Test
+    public void test4GetCategoriesForAccount() {
+        List<Integer> list = dbc.getCategoriesForAccount("null", "Tester4");
+        assertEquals(1, list.size());
+        assertEquals(9, (int) list.get(0));
+    }
 
     /**
      * test getParentId with category top

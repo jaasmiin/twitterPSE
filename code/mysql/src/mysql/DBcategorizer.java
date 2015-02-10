@@ -119,6 +119,12 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
     @Override
     public List<Integer> getCategoriesForAccount(String url, String name) {
+
+        if (url == null || url.length() == 0 || name == null
+                || name.length() == 0) {
+            return new ArrayList<Integer>();
+        }
+
         // create list of category-Ids to return
         List<Integer> ret = new ArrayList<Integer>();
 

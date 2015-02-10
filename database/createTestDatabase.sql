@@ -159,3 +159,5 @@ INSERT INTO `accountcategory`(`AccountId`, `CategoryId`) VALUES (5,2);
 
 INSERT INTO `tweets` (`AccountId`, `Counter`, `DayId`) VALUES (3,3,1), (3,2,2), (2,1,3);
 INSERT INTO `retweets` (`AccountId`, `LocationId`, `Counter`, `DayId`) VALUES (3,1,4,1), (3,1,3,2), (3,3,6,2), (2,3,4,2), (2,2,8,1);
+
+INSERT INTO `page`(`Id`, `CategoryId`, `Page`) VALUES (1, 1, "url"), (2, 5, "url"), (3, 9, "url_Tester4");

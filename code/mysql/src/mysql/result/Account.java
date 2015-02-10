@@ -60,29 +60,29 @@ public class Account extends Result implements Comparable<Account> {
         this.retweets = retweets;
     }
 
-    /**
-     * create a new object to store a account-data
-     * 
-     * @param id
-     *            the id of the account in the database as int
-     * @param twitterId
-     *            the id of the twitter account as long
-     * @param name
-     *            the name of the account as String
-     * @param url
-     *            the official url of the account as String
-     * @param follower
-     *            the number of followers of the account as int
-     * @param locationCode
-     *            the location-code of the account as String
-     * @param categories
-     *            the category-id's of the account as List<Integer>
-     */
-    public Account(int id, long twitterId, String name, String url,
-            int follower, String locationCode, List<Integer> categories) {
-        this(id, twitterId, name, false, url, follower, locationCode,
-                categories, new ArrayList<Tweets>(), new ArrayList<Retweets>());
-    }
+    // /**
+    // * create a new object to store a account-data
+    // *
+    // * @param id
+    // * the id of the account in the database as int
+    // * @param twitterId
+    // * the id of the twitter account as long
+    // * @param name
+    // * the name of the account as String
+    // * @param url
+    // * the official url of the account as String
+    // * @param follower
+    // * the number of followers of the account as int
+    // * @param locationCode
+    // * the location-code of the account as String
+    // * @param categories
+    // * the category-id's of the account as List<Integer>
+    // */
+    // public Account(int id, long twitterId, String name, String url,
+    // int follower, String locationCode, List<Integer> categories) {
+    // this(id, twitterId, name, false, url, follower, locationCode,
+    // categories, new ArrayList<Tweets>(), new ArrayList<Retweets>());
+    // }
 
     /**
      * create a new object to store a account-data
