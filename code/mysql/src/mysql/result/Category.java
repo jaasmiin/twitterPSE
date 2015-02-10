@@ -44,7 +44,27 @@ public class Category extends Result {
         this.category = name;
         this.used = used;
     }
-
+    
+    /**
+     * store the categories of an account
+     * 
+     * @param id
+     *            the id of the category as int
+     * 
+     * @param name
+     *            the name of the category as String
+     * @param parentId
+     *            the parentId of this category as int (0 if root)
+     * @param used
+     *            true if this category is mapped at minimum to one account,
+     *            false otherwise
+     * @param matchedAccounts the number of Accounts that were inferior of this category
+     */
+    public Category(int id, String name, int parentId, boolean used, int matchedAccounts) {
+    	this(id, name, parentId, used);
+    	this.matchedAccounts = matchedAccounts;
+    }
+    
     /**
      * returns the parent-category
      * 
@@ -54,6 +74,14 @@ public class Category extends Result {
         return childs;
     }
 
+    /**
+     * Returns the name of the category.
+     * @return the name of the category as string
+     */
+    public String getText() {
+    	return category;
+    }
+    
     /**
      * Returns the name of the category with the number of matches
      * 

@@ -397,8 +397,8 @@ public class GUIController extends Application implements Initializable {
         HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
         Stack<Category> toVisit = new Stack<Category>();
         Category newRoot = new Category(categoryRoot.getId(),
-                categoryRoot.toString(), categoryRoot.getParentId(),
-                categoryRoot.isUsed());
+                categoryRoot.getText(), categoryRoot.getParentId(),
+                categoryRoot.isUsed(), categoryRoot.getMatchedAccounts());
         HashSet<Integer> foundCategories = new HashSet<Integer>();
 
         categories.put(categoryRoot.getId(), categoryRoot);
@@ -409,12 +409,13 @@ public class GUIController extends Application implements Initializable {
         while (!toVisit.isEmpty()) {
             Category category = toVisit.pop();
             categories.put(category.getId(),
-                    new Category(category.getId(), category.toString(),
-                            category.getParentId(), category.isUsed()));
+                    new Category(category.getId(), category.getText(),
+                            category.getParentId(), category.isUsed(),
+                            category.getMatchedAccounts()));
             for (Category child : category.getChilds()) {
                 toVisit.push(child);
             }
-            if (category.toString().toLowerCase().trim()
+            if (category.getText().toLowerCase().trim()
                     .contains(text.toLowerCase().trim())) {
                 foundCategories.add(category.getId());
             }
@@ -476,8 +477,8 @@ public class GUIController extends Application implements Initializable {
             }
             // create new category with old values but without childs
             currentCat = new Category(currentCat.getId(),
-                    currentCat.toString(), currentCat.getParentId(),
-                    currentCat.isUsed());
+                    currentCat.getText(), currentCat.getParentId(),
+                    currentCat.isUsed(), currentCat.getMatchedAccounts());
 
             tree.put(currentCat.getId(), currentCat);
 
@@ -488,8 +489,9 @@ public class GUIController extends Application implements Initializable {
                     return null;
                 }
                 // create new category with old values but without childs
-                parent = new Category(parent.getId(), parent.toString(),
-                        parent.getParentId(), parent.isUsed());
+                parent = new Category(parent.getId(), parent.getText(),
+                        parent.getParentId(), parent.isUsed(),
+                        parent.getMatchedAccounts());
 
                 if (tree.containsKey(parent.getId())) {
                     // look up parentId in the hashMap if found add currentCat
