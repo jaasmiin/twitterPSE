@@ -55,14 +55,4 @@ public interface DBIcategorizer {
      */
     public boolean setCategorized(int accountId);
 
-    /**
-     * returns the parentId of the category specified by id
-     * 
-     * @param id
-     *            the id of the current Category as int
-     * 
-     * @return the parentId of the category specified by id as int (-1 in case of error)
-     */
-    public int getParentId(int id);
-
 }

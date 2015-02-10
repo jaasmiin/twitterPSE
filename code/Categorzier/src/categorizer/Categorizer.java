@@ -81,8 +81,9 @@ public class Categorizer {
             }
 
             // could not find a category
+            // add Top-category, Id: 1
             if (categories.size() == 0) {
-                db.setCategorized(account.getId());
+                db.addCategoryToAccount(account.getId(), 1);
             }
         }
     }
