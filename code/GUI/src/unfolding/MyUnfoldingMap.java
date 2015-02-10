@@ -155,17 +155,15 @@ public class MyUnfoldingMap extends PApplet {
         Marker country = currentMap.getFirstHitMarker(x, y);
         if (country != null) {
             String countryId = country.getId();
-            String char2Code = countryIdTrans.get(countryId); // 3 char
-                                                              // Ländercode in 2
-                                                              // char umwandeln
+            if (countryId == null) return;
+            
+            // 3 char Ländercode in 2 char umwandeln
+            String char2Code = countryIdTrans.get(countryId);
+            if (char2Code == null) return;
+            
             MyDataEntry location = dataEntriesMap.get(char2Code);
-            // if (location != null) {
-            // System.out.println(location.getCountryName() + " " + char2Code +
-            // " "
-            // + location.getRetweetsLand() + " " +
-            // location.getRetweetsLandFiltered());
-            // }
-            // notify controller about new information;
+            if (location == null) return;
+            
             superController.setMapDetailInformation(location);
         }
     }
