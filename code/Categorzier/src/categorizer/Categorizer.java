@@ -56,7 +56,6 @@ public class Categorizer {
             String url = account.getUrl();
             String name = account.getName();
             if (url == null && name == null) {
-                db.setCategorized(account.getId());
                 continue;
             }
             if (url == null)
