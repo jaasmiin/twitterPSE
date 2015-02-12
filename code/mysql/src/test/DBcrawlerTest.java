@@ -30,6 +30,7 @@ import util.LoggerUtil;
  */
 public class DBcrawlerTest {
 
+    private static final String DB_NAME = "twittertest";
     private DBcrawler dbc;
     private Logger log;
     private AccessData access;
@@ -47,8 +48,7 @@ public class DBcrawlerTest {
      * initialize this test-class
      */
     public DBcrawlerTest() {
-        access = new AccessData("localhost", "3306", "twittertest", "root",
-                "root");
+        access = new AccessData("localhost", "3306", DB_NAME, "root", "root");
         dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     }
 
@@ -92,6 +92,14 @@ public class DBcrawlerTest {
         }
         parametersGetCountryCodes = new Object[0];
 
+    }
+
+    /**
+     * test to get the right database name
+     */
+    @Test
+    public void testGetName() {
+        assertEquals(DB_NAME, access.getName());
     }
 
     /**

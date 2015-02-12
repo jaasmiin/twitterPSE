@@ -82,8 +82,8 @@ public class Labels {
 
 	public static final String HELP = "Help";
 	public static final String ABOUT = "About";
-	public static final String ABOUT_VERSION = "Version: 1.0";
-	public static final String ABOUT_AUTHORS = "Authors: Holger, Lidia, Maximilian,Matthias, Paul, Philipp";
+	public static final String ABOUT_VERSION = "Version: 1.0 - 2015";
+	public static final String ABOUT_AUTHORS = "Authors: Holger, Lidia, Maximilian, Matthias, Paul, Philipp";
 
 	public static final String DETAIL_INFORMATION = "Detail information";
 	public static final String TABLE = "Table";

@@ -111,7 +111,8 @@ ALTER TABLE page ADD CONSTRAINT uc_page UNIQUE (CategoryId, Page);
 /* Indizes fuer effiziente Abfragen */
 CREATE INDEX idxCategoryId ON page(CategoryId);
 CREATE INDEX idxPage ON page(Page);
-CREATE INDEX idxAccountCategory ON accountCategory(CategoryId);
+CREATE INDEX idxAccountCategory1 ON accountCategory(CategoryId);
+CREATE INDEX idxAccountCategory2 ON accountCategory(AccountId);
 CREATE INDEX idxTweets1 ON tweets(AccountId);
 CREATE INDEX idxRetweets1 ON retweets(AccountId);
 CREATE INDEX idxAccounts ON accounts(AccountName);

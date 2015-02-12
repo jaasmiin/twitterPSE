@@ -78,7 +78,7 @@ public class DBcategorizerTest {
     public void testGetNonCategorizedAndSetCategorized() {
         List<Account> list = new ArrayList<Account>();
         list = dbc.getNonCategorized();
-        assertEquals(3, list.size());
+        assertEquals(5, list.size());
         for (int i = 0; i < list.size(); i++) {
             assertEquals(0, list.get(i).getCategoryIds().size());
         }

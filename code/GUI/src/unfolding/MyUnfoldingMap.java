@@ -23,7 +23,7 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
  * @author Lidia
  * 
  */
-public class MyUnfoldingMap extends PApplet {
+public final class MyUnfoldingMap extends PApplet {
 
     /**
      * default serial version uid
@@ -155,15 +155,18 @@ public class MyUnfoldingMap extends PApplet {
         Marker country = currentMap.getFirstHitMarker(x, y);
         if (country != null) {
             String countryId = country.getId();
-            if (countryId == null) return;
-            
+            if (countryId == null)
+                return;
+
             // 3 char Ländercode in 2 char umwandeln
             String char2Code = countryIdTrans.get(countryId);
-            if (char2Code == null) return;
-            
+            if (char2Code == null)
+                return;
+
             MyDataEntry location = dataEntriesMap.get(char2Code);
-            if (location == null) return;
-            
+            if (location == null)
+                return;
+
             superController.setMapDetailInformation(location);
         }
     }

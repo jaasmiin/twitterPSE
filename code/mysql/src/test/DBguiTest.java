@@ -219,6 +219,52 @@ public class DBguiTest {
     }
 
     /**
+     * test to get all data from a specified account (invalid parameters)
+     */
+    @Test
+    public void test1GetAccount() {
+        Account a = dbg.getAccount(0);
+        assertNull(a);
+    }
+
+    /**
+     * test to get all data from a specified account (invalid parameters)
+     */
+    @Test
+    public void test2GetAccount() {
+        Account a = dbg.getAccount(55);
+        assertNull(a);
+    }
+
+    /**
+     * test to get all data from a specified account
+     */
+    @Test
+    public void test3GetAccount() {
+        Account a = dbg.getAccount(4);
+        assertTrue(a.isVerified());
+        assertEquals("Tester3", a.getName());
+        assertEquals(3, a.getFollower());
+        assertEquals("url", a.getUrl());
+        assertEquals(1, a.getCategoryIds().size());
+        assertEquals(1, (int) a.getCategoryIds().get(0));
+    }
+
+    /**
+     * test to get all data from a specified account
+     */
+    @Test
+    public void test4GetAccount() {
+        Account a = dbg.getAccount(5);
+        assertTrue(a.isVerified());
+        assertEquals("Tester4", a.getName());
+        assertEquals(4, a.getFollower());
+        assertEquals("url", a.getUrl());
+        assertEquals(1, a.getCategoryIds().size());
+        assertEquals(2, (int) a.getCategoryIds().get(0));
+    }
+
+    /**
      * disconnect from the database and clear the database
      */
     @After

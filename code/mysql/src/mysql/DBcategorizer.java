@@ -193,4 +193,5 @@ public class DBcategorizer extends DBConnection implements DBIcategorizer {
 
         return ret;
     }
+
 }
