@@ -14,6 +14,8 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import mysql.AccessData;
 import mysql.DBgui;
@@ -74,6 +76,8 @@ public class GUIController extends Application implements Initializable {
     private HashSet<Integer> selectedCategories = new HashSet<Integer>();
     private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
     private Thread reloadDataThread = new Thread(); 
+    
+    private ExecutorService listLoaderPool = Executors.newCachedThreadPool();
     
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
@@ -139,14 +143,19 @@ public class GUIController extends Application implements Initializable {
 	                + selectedAccounts.size() >= 1) {
 	            boolean success = true;
 	            try {
+	            	System.out.println("db.getSumOfData");
 	                dataByLocation = db.getSumOfData(allSelectedCategories,
 	                        selectedLocations, selectedAccounts, false);
+	                System.out.println("db.getAllData");
 	                dataByAccount = db.getAllData(allSelectedCategories,
 	                        selectedLocations, selectedAccounts, false);
+	                System.out.println("db.getSumOfData");
 	                dataByLocationAndDate = db.getSumOfData(allSelectedCategories,
 	                        selectedLocations, selectedAccounts, true);
+	                System.out.println("db.getAllData");
 	                dataByAccountAndDate = db.getAllData(allSelectedCategories,
 	                        selectedLocations, selectedAccounts, true);
+	                System.out.println("ready.");
 	            } catch (IllegalArgumentException e) {
 	                success = false;
 	                setInfo(Labels.DB_CONNECTION_ERROR, info);
@@ -264,39 +273,52 @@ public class GUIController extends Application implements Initializable {
     public static void main(String[] args) {
         launch();
     }
-
-    private void reloadLocation() {
-        String info = Labels.LOCATIONS_LOADING;
-        setInfo(info);
-        locations.removeAll();
-        locations.updateAll(db.getLocations());
-        update(UpdateType.LOCATION);
-        setInfo(Labels.LOCATIONS_LOADED, info);
-    }
-
+    
     private void reloadAccounts() {
-        String info = Labels.ACCOUNTS_LOADING;
+    	String info = Labels.ACCOUNTS_LOADING;
         setInfo(info);
         accounts.removeAll();
         accounts.updateAll(db.getAccounts(accountSearchText));
         update(UpdateType.ACCOUNT);
         setInfo(Labels.ACCOUNTS_LOADED, info);
     }
+    
+    private Runnable rnbReloadLocation = new Runnable() {
+		@Override
+		public void run() {
+			String info = Labels.LOCATIONS_LOADING;
+	        setInfo(info);
+	        locations.removeAll();
+	        locations.updateAll(db.getLocations());
+	        update(UpdateType.LOCATION);
+	        setInfo(Labels.LOCATIONS_LOADED, info);
+		}
+	};
 
-    private void reloadCategories() {
-        String info = Labels.CATEGORIES_LOADING;
-        setInfo(info);
-        categoryRoot = db.getCategories();
-        if (categoryRoot != null) {
-            reloadCategoryHashMap();
-            update(UpdateType.CATEGORY);
-            setInfo(Labels.CATEGORIES_LOADED, info);
-        } else {
-            categoryRoot = new Category(0, Labels.ERROR, 0, false);
-            update(UpdateType.ERROR);
-            setInfo(Labels.DB_CONNECTION_ERROR, info);
-        }
-    }
+	private Runnable rnbReloadAccounts = new Runnable() {
+		@Override
+		public void run() {
+			reloadAccounts();
+		}
+	};
+
+    private Runnable rnbReloadCategories = new Runnable() {
+		@Override
+		public void run() {
+			String info = Labels.CATEGORIES_LOADING;
+	        setInfo(info);
+	        categoryRoot = db.getCategories();
+	        if (categoryRoot != null) {
+	            reloadCategoryHashMap();
+	            update(UpdateType.CATEGORY);
+	            setInfo(Labels.CATEGORIES_LOADED, info);
+	        } else {
+	            categoryRoot = new Category(0, Labels.ERROR, 0, false);
+	            update(UpdateType.ERROR);
+	            setInfo(Labels.DB_CONNECTION_ERROR, info);
+	        }	
+		}
+    };
 
     private void reloadCategoryHashMap() {
         categories.clear();
@@ -319,24 +341,9 @@ public class GUIController extends Application implements Initializable {
      * Reload accounts, categories and locations parallel from db.
      */
     private void reloadAll() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                reloadAccounts();
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                reloadCategories();
-            }
-        }).start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                reloadLocation();
-            }
-        }).start();
+    	listLoaderPool.execute(rnbReloadAccounts);
+    	listLoaderPool.execute(rnbReloadCategories);
+    	listLoaderPool.execute(rnbReloadLocation);
     }
 
     /**
