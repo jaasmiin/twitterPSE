@@ -153,11 +153,14 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 		// TODO: in thread öffnen
 		if (event instanceof MouseEvent) {
 			MouseEvent mouse = (MouseEvent) event;
-			if (event.getSource().equals(lstSelectedAccounts)) {				
+			if (event.getSource().equals(lstSelectedAccounts) 
+					&& !lstSelectedAccounts.getSelectionModel().isEmpty()) {				
 				handleUnselectAccount(mouse);
-			} else if (event.getSource().equals(lstSelectedCategories)) {
+			} else if (event.getSource().equals(lstSelectedCategories)
+					&& !lstSelectedCategories.getSelectionModel().isEmpty()) {
 				handleUnselectCategory(mouse);
-			} else if (event.getSource().equals(lstSelectedLocations)) {
+			} else if (event.getSource().equals(lstSelectedLocations)
+					&& !lstSelectedLocations.getSelectionModel().isEmpty()) {
 				handleUnselectLocation(mouse);
 			}			
 		}

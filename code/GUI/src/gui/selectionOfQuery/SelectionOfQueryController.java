@@ -49,7 +49,7 @@ public class SelectionOfQueryController extends InputElement implements
     @FXML
     private TitledPane tipCategory;
 
-    private ExecutorService threadPool = Executors.newWorkStealingPool();
+    private ExecutorService threadPool = Executors.newCachedThreadPool();
     
     private void updateAccounts(List<Account> accounts) {
     	Platform.runLater(new RunnableParameter<List<Account>>(accounts) {
@@ -183,7 +183,6 @@ public class SelectionOfQueryController extends InputElement implements
     }
     
     private void reloadCoategories() {
-    	System.out.println("start Runnable...");
     	threadPool.execute(new RunnableParameter<Integer>(trvCategory
                 .getSelectionModel().getSelectedItem().getValue()
                 .getId()) {
@@ -193,7 +192,6 @@ public class SelectionOfQueryController extends InputElement implements
                         .setSelectedCategory(parameter, true);
             }
         });
-    	System.out.println("Runnable started.");
     }
     
     private void reloadLocations() {

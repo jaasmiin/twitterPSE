@@ -634,12 +634,18 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedAccount(int id, boolean selected) {
 		if (accounts.setSelected(id, selected)) {
-			reloadDataThread.interrupt();
+			interruptReloadData();
 			update(UpdateType.ACCOUNT_SELECTION);
 			reloadData();
 		}
 	}
 
+	private void interruptReloadData() {
+		reloadDataThread.interrupt();
+		reloadDataPool.shutdownNow();
+		reloadDataPool = Executors.newCachedThreadPool();
+	}
+	
 	/**
 	 * Set if all categories in the list are selected or not. Update is called
 	 * after all categories are (de)selected.
@@ -651,7 +657,7 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedCategory(Set<Integer> ids, boolean selected) {
 		synchronized (this) {
-			reloadDataThread.interrupt();
+			interruptReloadData();
 			for (Integer id : ids) {
 				setSelectedCategoryInList(id, selected);
 			}
@@ -670,7 +676,7 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedCategory(int id, boolean selected) {
 		synchronized (this) {
-			reloadDataThread.interrupt();
+			interruptReloadData();
 			setSelectedCategoryInList(id, selected);
 			update(UpdateType.CATEGORY_SELECTION);
 			reloadData();
@@ -695,7 +701,7 @@ public class GUIController extends Application implements Initializable {
 	 */
 	public void setSelectedLocation(int id, boolean selected) {
 		synchronized (this) {
-			reloadDataThread.interrupt();
+			interruptReloadData();
 			if (locations.setSelected(id, selected)) {
 				update(UpdateType.LOCATION_SELECTION);
 				reloadData();
