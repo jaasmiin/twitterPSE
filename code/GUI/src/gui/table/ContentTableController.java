@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 
 import mysql.result.Account;
 import mysql.result.Location;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import gui.Labels;
 import gui.OutputElement;
+import gui.RunnableParameter;
 
 /**
  * This class presents raw-data in a table.
@@ -62,12 +64,17 @@ public class ContentTableController extends OutputElement implements Initializab
 	
 	@Override
 	public void update(UpdateType type) {
-		if (type == UpdateType.TWEET) {
-			fillData(superController.getDataByAccount());			
-			table.setItems(data);
-		} else if (type == UpdateType.LOCATION) {
-			addLocationColumns();
-		}
+		Platform.runLater(new RunnableParameter<UpdateType>(type) {
+			@Override
+			public void run() {
+				if (parameter == UpdateType.TWEET) {
+					fillData(superController.getDataByAccount());			
+					table.setItems(data);
+				} else if (parameter == UpdateType.LOCATION) {
+					addLocationColumns();
+				}
+			}
+		});
 	}
 	
 	@Override

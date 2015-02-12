@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import unfolding.MyDataEntry;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -46,8 +47,8 @@ public class StandardMapController extends OutputElement implements
     @FXML
     private Text lbl_StandMap_retweetsTotal;
 
-    private LocalDate start;
-    private LocalDate end;
+    private LocalDate start = null;
+    private LocalDate end = null;
     private StandardMapDialog dialog;
 
     @Override
@@ -65,29 +66,26 @@ public class StandardMapController extends OutputElement implements
         b_StandMap_reset.setOnMouseClicked(new MyEventHandler());
         
         tabStandardMap.setText(Labels.DETAIL_INFORMATION);
-        // set default value for dateRange
-        start = LocalDate.MAX;
-        end = LocalDate.MIN;
     }
 
     @Override
     public void update(UpdateType type) {
         if (type == UpdateType.MAP_DETAIL_INFORMATION) {
-            // update detailed information view
-            MyDataEntry entry = superController.getMapDetailInformation();
-            setVisible(true);
-            txt_StandMap_country.setText(entry.getCountryName());
-            txt_StandMap_retweetsQuery.setText(Integer.toString(entry
-                    .getRetweetsLandFiltered()));
-            txt_StandMap_retweetsTotal.setText(Integer.toString(entry
-                    .getRetweetsLand()));
-
+        	Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					// update detailed information view
+		            MyDataEntry entry = superController.getMapDetailInformation();
+		            setVisible(true);
+		            txt_StandMap_country.setText(entry.getCountryName());
+		            txt_StandMap_retweetsQuery.setText(Integer.toString(entry
+		                    .getRetweetsLandFiltered()));
+		            txt_StandMap_retweetsTotal.setText(Integer.toString(entry
+		                    .getRetweetsLand()));
+				}
+			});
         } else {
-            if (type == UpdateType.TWEET_BY_DATE) {
-                setVisible(false);
-            }
-            dialog.update(type, date_SliderMap_startDate.getValue(),
-                    date_SliderMap_endDate.getValue());
+            dialog.update(type, start, end);
         }
     }
 
@@ -112,12 +110,12 @@ public class StandardMapController extends OutputElement implements
 
             if (event.getSource().equals(date_SliderMap_startDate)) {
                 // set start date
-                LocalDate start = date_SliderMap_startDate.getValue();
+                start = date_SliderMap_startDate.getValue();
                 // System.out.println("Mein Start datum" + start);
 
             }
             if (event.getSource().equals(date_SliderMap_endDate)) {
-                LocalDate end = date_SliderMap_endDate.getValue();
+                end = date_SliderMap_endDate.getValue();
                 // System.out.println("Mein end datum" + end);
             }
 

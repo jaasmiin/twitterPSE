@@ -175,35 +175,37 @@ public final class MyUnfoldingMap extends PApplet {
      * Shades countrys dependent on their relative frequency of tweets
      */
     public void shadeCountries() {
-        for (Marker m : countryMarker) {
-            String countryId = m.getId();
-            String id = countryIdTrans.get(countryId);
-
-            MyDataEntry dataEntry = dataEntriesMap.get(id);
-
-            // Strokes
-            m.setStrokeColor(color(241, 241, 241, 50));
-            m.setStrokeWeight(1);
-
-            if (dataEntry != null && dataEntry.getValue() != 0) {
-                // Take value as brightness
-                Double transparency = dataEntry.getValue();
-                float transpa = Float.parseFloat(transparency.toString());
-                float t = map(transpa, 0, maxValue, 50, 255);
-
-                if (currentMap == map1) {
-                    m.setColor(color(38, 192, 38, t));
-                }
-                if (currentMap == map2) {
-                    m.setColor(color(204, 0, 0, t));
-                }
-
-            } else {
-                // value doesn't exist
-                m.setColor(color(173, 173, 173, 50));
-            }
-
-        }
+    	if (countryMarker != null) {
+	        for (Marker m : countryMarker) {
+	            String countryId = m.getId();
+	            String id = countryIdTrans.get(countryId);
+	
+	            MyDataEntry dataEntry = dataEntriesMap.get(id);
+	
+	            // Strokes
+	            m.setStrokeColor(color(241, 241, 241, 50));
+	            m.setStrokeWeight(1);
+	
+	            if (dataEntry != null && dataEntry.getValue() != 0) {
+	                // Take value as brightness
+	                Double transparency = dataEntry.getValue();
+	                float transpa = Float.parseFloat(transparency.toString());
+	                float t = map(transpa, 0, maxValue, 50, 255);
+	
+	                if (currentMap == map1) {
+	                    m.setColor(color(38, 192, 38, t));
+	                }
+	                if (currentMap == map2) {
+	                    m.setColor(color(204, 0, 0, t));
+	                }
+	
+	            } else {
+	                // value doesn't exist
+	                m.setColor(color(173, 173, 173, 50));
+	            }
+	
+	        }
+    	}
     }
 
     /**
@@ -215,7 +217,7 @@ public final class MyUnfoldingMap extends PApplet {
      */
     public void update(HashMap<String, MyDataEntry> changedEntries) {
         resetMarkers();
-        if (!setValues.isEmpty()) {
+        if (setValues != null && !setValues.isEmpty()) {
             for (String id : setValues) {
 
                 MyDataEntry edit = dataEntriesMap.get(id);
@@ -294,11 +296,13 @@ public final class MyUnfoldingMap extends PApplet {
      * Resets all colored markers
      */
     private void resetMarkers() {
-        for (Marker m : countryMarker) {
-            m.setColor(color(173, 173, 173, 50));
-            m.setStrokeColor(color(241, 241, 241, 50));
-            m.setStrokeWeight(1);
-        }
+    	if (countryMarker != null) {
+	        for (Marker m : countryMarker) {
+	            m.setColor(color(173, 173, 173, 50));
+	            m.setStrokeColor(color(241, 241, 241, 50));
+	            m.setStrokeWeight(1);
+	        }
+    	}
     }
 
 }

@@ -2,6 +2,7 @@ package gui.selectionOfQuery;
 
 import gui.Labels;
 import gui.OutputElement;
+import gui.RunnableParameter;
 import gui.Util;
 
 import java.net.URL;
@@ -11,6 +12,7 @@ import java.util.ResourceBundle;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -70,11 +72,17 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 * 
 	 * @param selectedCategories the list to display
 	 */
-	private void updateSelectedCategory(List<Category> selectedCategories) {		
-		lstSelectedCategories.getItems().clear();
-		for (Category c : selectedCategories) {
-			lstSelectedCategories.getItems().add(c);
-		}
+	private void updateSelectedCategory(List<Category> selectedCategories) {
+		Platform.runLater(new RunnableParameter<List<Category>>(selectedCategories) {
+			@Override
+			public void run() {
+				lstSelectedCategories.getItems().clear();
+				for (Category c : parameter) {
+					lstSelectedCategories.getItems().add(c);
+				}
+			}
+		});
+		
 	}
 	
 	/**
@@ -83,10 +91,16 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 * @param selectedAccounts the list to display
 	 */
 	private void updateSelectedAccount(List<Account> selectedAccounts) {
-		lstSelectedAccounts.getItems().clear();
-		for (Account a : selectedAccounts) {
-			lstSelectedAccounts.getItems().add(a);
-		}
+		Platform.runLater(new RunnableParameter<List<Account>>(selectedAccounts) {
+			@Override
+			public void run() {
+				lstSelectedAccounts.getItems().clear();
+				for (Account a : parameter) {
+					lstSelectedAccounts.getItems().add(a);
+				}
+			}
+		});
+		
 	}
 	
 	/**
@@ -95,10 +109,15 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 * @param selectedLocations the list to display
 	 */
 	private void updateSelectedLocation(List<Location> selectedLocations) {
-		lstSelectedLocations.getItems().clear();
-		for (Location l : selectedLocations) {
-			lstSelectedLocations.getItems().add(l);
-		}
+		Platform.runLater(new RunnableParameter<List<Location>>(selectedLocations) {
+			@Override
+			public void run() {
+				lstSelectedLocations.getItems().clear();
+				for (Location l : parameter) {
+					lstSelectedLocations.getItems().add(l);
+				}				
+			}
+		});
 	}
 
 	@Override
