@@ -195,6 +195,15 @@ public class GUIController extends Application implements Initializable {
 			}
 			
 		});
+		
+		w.setOnHiding(new EventHandler<WindowEvent>() {
+
+			@Override
+			public void handle(WindowEvent event) {
+				update(UpdateType.WINDOW_HIDING);				
+			}
+			
+		});
     }
     
     /**

@@ -35,12 +35,22 @@ public class IntegratedMapDialog extends JDialog {
      */
     public IntegratedMapDialog(GUIController superController) {
         this.superController = superController;
-        setSize(600, 400);
+        setSize(800, 600);
         setTitle("Map");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setUndecorated(true);
         map = MyUnfoldingMap.getInstance(superController);
         add(map);
         map.init();
+    }
+    
+    public void changeSize(int x, int y, int width, int height) {
+    	this.setBounds(x, y, width, height);
+    	map.setSize(width, height);
+    }
+    
+    public void closeMap() {
+    	map.exit();
     }
 
     /**

@@ -47,7 +47,8 @@ public abstract class GUIElement implements Initializable {
         /** The main application was resized */
         WINDOW_RESIZE,
         MAP_SELECTED,
-        MAP_UNSELECTED
+        MAP_UNSELECTED,
+        WINDOW_HIDING
     };
 
     /**
