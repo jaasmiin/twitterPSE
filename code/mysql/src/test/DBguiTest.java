@@ -30,6 +30,7 @@ import util.LoggerUtil;
  */
 public class DBguiTest {
 
+    private DBtest dbt;
     private DBgui dbg;
     private Logger log;
     private AccessData access;
@@ -42,6 +43,7 @@ public class DBguiTest {
      * initialize this test-class and prepare test-data
      */
     public DBguiTest() {
+
         try {
             log = LoggerUtil.getLogger("TestLog");
         } catch (SecurityException | IOException e) {
@@ -63,6 +65,10 @@ public class DBguiTest {
                     "root");
             dbg = new DBgui(access, log);
             dbg.connect();
+
+            dbt = new DBtest(access, log);
+            dbt.connect();
+
         } catch (InstantiationException | IllegalAccessException
                 | ClassNotFoundException | SQLException e) {
             e.printStackTrace();
@@ -265,11 +271,137 @@ public class DBguiTest {
     }
 
     /**
+     * test to update an invalid account
+     */
+    @Test
+    public void test1SetLocation() {
+        boolean res = dbg.setLocation(0, 2);
+        assertTrue(!res);
+    }
+
+    /**
+     * test to set invalid location
+     */
+    @Test
+    public void test2SetLocation() {
+        boolean res = dbg.setLocation(1, 0);
+        assertTrue(!res);
+    }
+
+    /**
+     * test to set invalid location
+     */
+    @Test
+    public void test3SetLocation() {
+        boolean res = dbg.setLocation(1, 888);
+        assertTrue(!res);
+    }
+
+    /**
+     * test to set location
+     */
+    @Test
+    public void test4SetLocation() {
+        boolean res = dbg.setLocation(2, 8);
+        Account a = dbg.getAccount(2);
+        dbt.executeQuery("UPDATE accounts SET LocationId=1 WHERE Id=2;");
+        assertTrue(res);
+        assertEquals("TP", a.getLocationCode());
+    }
+
+    /**
+     * test to set location
+     */
+    @Test
+    public void test5SetLocation() {
+        boolean res = dbg.setLocation(6, 7);
+        Account a = dbg.getAccount(6);
+        dbt.executeQuery("UPDATE accounts SET LocationId=8 WHERE Id=6;");
+        assertTrue(res);
+        assertEquals("T5", a.getLocationCode());
+    }
+
+    /**
+     * test to update an invalid account
+     */
+    @Test
+    public void test1SetCategory() {
+        boolean res = dbg.setCategory(0, 2);
+        assertTrue(!res);
+    }
+
+    /**
+     * test to set invalid category
+     */
+    @Test
+    public void test2SetCategory() {
+        boolean res = dbg.setCategory(1, 888);
+        assertTrue(!res);
+    }
+
+    /**
+     * test to set category
+     */
+    @Test
+    public void test3SetCategory() {
+        boolean res = dbg.setCategory(2, 8);
+        Account a = dbg.getAccount(2);
+        dbt.executeQuery("UPDATE accounts SET Categorized=0 WHERE Id=2;");
+        dbt.executeQuery("DELETE FROM accountCategory WHERE AccountId=2 AND CategoryId=8;");
+        assertTrue(res);
+        assertEquals(2, a.getCategoryIds().size());
+        assertEquals(1, (int) a.getCategoryIds().get(0));
+        assertEquals(8, (int) a.getCategoryIds().get(1));
+    }
+
+    /**
+     * test to set category
+     */
+    @Test
+    public void test4SetCategory() {
+        boolean res1 = dbg.setCategory(4, 1);
+        boolean res2 = dbg.setCategory(4, 6);
+        Account a = dbg.getAccount(4);
+        dbt.executeQuery("DELETE FROM accountCategory WHERE AccountId=4 AND CategoryId=6;");
+        assertTrue(res1);
+        assertTrue(res2);
+        assertEquals(2, a.getCategoryIds().size());
+        assertEquals(1, (int) a.getCategoryIds().get(0));
+        assertEquals(6, (int) a.getCategoryIds().get(1));
+    }
+
+    @Test
+    public void test1AddAccount() {
+
+    }
+
+    @Test
+    public void test2AddAccount() {
+
+    }
+
+    @Test
+    public void test3AddAccount() {
+
+    }
+
+    @Test
+    public void test4AddAccount() {
+
+    }
+
+    @Test
+    public void test5AddAccount() {
+
+    }
+
+    /**
      * disconnect from the database and clear the database
      */
     @After
     public void tearDown() {
         dbg.disconnect();
+        dbt.disconnect();
     }
 
 }

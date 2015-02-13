@@ -8,6 +8,7 @@ package gui;
  * 
  */
 public class Util {
+    
     /**
      * Get the text with big first letter.
      * 

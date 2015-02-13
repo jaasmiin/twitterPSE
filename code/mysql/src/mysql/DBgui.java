@@ -336,6 +336,10 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public boolean setLocation(int accountId, int locationId) {
 
+        if (accountId <= 0 || locationId <= 0) {
+            return false;
+        }
+
         // prevent SQL-injection
         PreparedStatement stmt = null;
         try {
@@ -475,7 +479,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
         return topSort;
     }
-    
+
     @Override
     public HashMap<String, Integer> getAllRetweetsPerLocation() {
 
@@ -665,11 +669,13 @@ public class DBgui extends DBConnection implements DBIgui {
 
         return ret;
     }
-    
 
     private HashMap<Integer, Account> getAccounts(Statement stmt) {
 
-        String query = "SELECT Id, AccountName, Follower FROM final LEFT JOIN accounts ON final.val=accounts.Id;"; // ORDER BY Id DESC;";
+        String query = "SELECT Id, AccountName, Follower FROM final LEFT JOIN accounts ON final.val=accounts.Id;"; // ORDER
+                                                                                                                   // BY
+                                                                                                                   // Id
+                                                                                                                   // DESC;";
         ResultSet res = null;
         runningRequest = true;
         try {
