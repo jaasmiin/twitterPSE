@@ -485,7 +485,7 @@ public class DatabaseOptController extends InputElement implements
 
         private void updateLocation(List<Location> list) {
             TreeItem<Location> rootItem = new TreeItem<Location>(new Location(
-                    0, "World", "0000", null));
+                    0, "World", "0000"));
             rootItem.setExpanded(false);
             for (Location location : list) {
                 rootItem.getChildren().add(new TreeItem<Location>(location));

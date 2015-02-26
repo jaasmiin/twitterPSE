@@ -93,7 +93,7 @@ public class SelectionOfQueryController extends InputElement implements
 			@Override
 			public void run() {
 				TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0,
-		                Util.getUppercaseStart(Labels.WORLD), "0000", null));
+		                Util.getUppercaseStart(Labels.WORLD), "0000"));
 		        rootItem.setExpanded(true);
 				for (Location location : parameter) {
 		            rootItem.getChildren().add(new TreeItem<Location>(location));

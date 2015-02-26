@@ -74,7 +74,13 @@ public class Util {
      * @return the converted collection as List<Account>
      */
     public static List<Account> collectionToList(Collection<Account> c) {
+
         List<Account> ret = new ArrayList<Account>();
+
+        if (c == null) {
+            return ret;
+        }
+
         Iterator<Account> it = c.iterator();
         while (it.hasNext()) {
             ret.add(it.next());
@@ -113,7 +119,7 @@ public class Util {
         }
         return unformattedStr;
     }
-    
+
     /**
      * returns the given text with tall names
      * 
@@ -123,12 +129,15 @@ public class Util {
      */
     public static String getUppercaseCountry(String text) {
 
-        if (text == null || text.length() < 1)
+        if (text == null)
             return text;
 
         if (text.startsWith(" ")) {
             text = text.substring(1);
         }
+
+        if (text.length() < 1)
+            return text;
 
         // try to make the chars of nones tall
 

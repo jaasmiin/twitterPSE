@@ -431,8 +431,6 @@ public class DBcrawlerTest {
         assertEquals(12, h.size());
     }
 
-    // TODO
-
     /**
      * test to add a retweet expected result: Retweet is not added
      */

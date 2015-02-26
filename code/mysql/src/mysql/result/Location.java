@@ -9,7 +9,11 @@ public class Location extends Result {
 
     private String name;
     private String locCode;
-    private Location parent;
+
+    // private Location parent;
+
+    // * @param parent
+    // * the parent location of this location as Location
 
     /**
      * store a location from the database
@@ -20,24 +24,24 @@ public class Location extends Result {
      *            the name of the location as String
      * @param locCode
      *            the code (3 characters) of the location (eg. GER) as String
-     * @param parent
-     *            the parent location of this location as ResultLocation
      */
-    public Location(int id, String name, String locCode, Location parent) {
+    public Location(int id, String name, String locCode) {
         super(id);
-        this.name = name;
-        this.locCode = locCode;
-        this.parent = parent;
+        this.name = name == null ? "" : name;
+        this.locCode = locCode == null ? "" : locCode;
+        // this.parent = parent;
     }
 
-    /**
-     * returns the parent location of this location
-     * 
-     * @return the parent location of this location as ResultLocation
-     */
-    public Location getParent() {
-        return parent;
-    }
+    // /**
+    // * returns the parent location of this location
+    // *
+    // * @return the parent location of this location as Location
+    // * @deprecated parent is never used (getParent() returns allways null)
+    // */
+    // @Deprecated
+    // public Location getParent() {
+    // return parent;
+    // }
 
     /**
      * returns the location code of the location (3 characters)
@@ -58,20 +62,20 @@ public class Location extends Result {
         return name.isEmpty() ? locCode : name;
     }
 
-    /**
-     * set the parent location of this location
-     * 
-     * @param parentLocation
-     *            the parent location as Location
-     */
-    public void setParent(Location parentLocation) {
-        parent = parentLocation;
-    }
+    // /**
+    // * set the parent location of this location
+    // *
+    // * @param parentLocation
+    // * the parent location as Location
+    // */
+    // public void setParent(Location parentLocation) {
+    // parent = parentLocation;
+    // }
 
     @Override
     public boolean equals(Object o) {
         boolean equal = false;
-        if (o != null && o.getClass() == this.getClass()) {
+        if (o != null && o instanceof Location) {
             equal = ((Result) o).getId() == getId();
         }
         return equal;

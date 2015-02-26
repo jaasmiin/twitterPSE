@@ -38,13 +38,13 @@ public class Category extends Result {
         this.parent = parentId;
 
         // check for max length of name, because of database limit
-        if (name.length() > MAX_LENGTH) {
-            name = name.substring(0, MAX_LENGTH - 1);
+        if (name != null && name.length() > MAX_LENGTH) {
+            name = name.substring(0, MAX_LENGTH);
         }
         this.category = name;
         this.used = used;
     }
-    
+
     /**
      * store the categories of an account
      * 
@@ -58,13 +58,15 @@ public class Category extends Result {
      * @param used
      *            true if this category is mapped at minimum to one account,
      *            false otherwise
-     * @param matchedAccounts the number of Accounts that were inferior of this category
+     * @param matchedAccounts
+     *            the number of Accounts that were inferior of this category
      */
-    public Category(int id, String name, int parentId, boolean used, int matchedAccounts) {
-    	this(id, name, parentId, used);
-    	this.matchedAccounts = matchedAccounts;
+    public Category(int id, String name, int parentId, boolean used,
+            int matchedAccounts) {
+        this(id, name, parentId, used);
+        this.matchedAccounts = matchedAccounts;
     }
-    
+
     /**
      * returns the parent-category
      * 
@@ -76,12 +78,13 @@ public class Category extends Result {
 
     /**
      * Returns the name of the category.
+     * 
      * @return the name of the category as string
      */
     public String getText() {
-    	return category;
+        return category;
     }
-    
+
     /**
      * Returns the name of the category with the number of matches
      * 
@@ -135,7 +138,7 @@ public class Category extends Result {
     @Override
     public boolean equals(Object o) {
         boolean equal = false;
-        if (o != null && o.getClass() == this.getClass()) {
+        if (o != null && o instanceof Category) {
             equal = ((Result) o).getId() == getId();
         }
         return equal;

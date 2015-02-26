@@ -14,6 +14,8 @@ import mysql.DBgui;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
+import mysql.result.Retweets;
+import mysql.result.Tweets;
 import mysql.result.TweetsAndRetweets;
 
 import org.junit.After;
@@ -36,6 +38,7 @@ public class DBguiTest {
     private AccessData access;
 
     // test data
+    private List<Integer> list23;
     private List<Integer> list1;
     private List<Integer> list0;
 
@@ -53,6 +56,10 @@ public class DBguiTest {
         list1 = new ArrayList<Integer>();
         list1.add(1);
         list0 = new ArrayList<Integer>();
+
+        list23 = new ArrayList<Integer>();
+        list23.add(2);
+        list23.add(3);
     }
 
     /**
@@ -83,6 +90,16 @@ public class DBguiTest {
         List<Location> l = dbg.getLocations();
 
         assertEquals(8, l.size());
+        Location a = l.get(0);
+        // test equals method
+        assertEquals(new Location(1, null, null), a);
+        assertEquals(1, a.getId());
+        assertEquals("0", a.getLocationCode());
+        assertEquals("Defaultlocation", a.toString());
+        a = l.get(7);
+        assertEquals(8, a.getId());
+        assertEquals("TP", a.getLocationCode());
+        assertEquals("Testparent", a.toString());
     }
 
     /**
@@ -92,10 +109,30 @@ public class DBguiTest {
     public void testGetCategories() {
         Category c = dbg.getCategories();
 
+        assertEquals("ROOT", c.getText());
         assertEquals("ROOT (3)", c.toString());
-        // check parent
-        // assertEquals(6, c.getChilds().size());
-        // assertEquals(2, c.getChilds().get(0).getChilds().size());
+
+        List<Category> l = c.getChilds();
+        assertEquals(6, l.size());
+
+        Category a = l.get(0);
+        assertEquals(0, a.getChilds().size());
+        assertTrue(a.equals(new Category(3, null, 0, false, 0)));
+        assertEquals(0, a.getMatchedAccounts());
+        assertEquals("testC1 (0)", a.toString());
+
+        a = l.get(5);
+        assertEquals(2, a.getChilds().size());
+        assertEquals(2, a.getMatchedAccounts());
+        assertEquals("testC0 (2)", a.toString());
+
+        // test to initialize a new Category
+        assertEquals(
+                "moreThan50CharsmoreThan50CharsmoreThan50CharsmoreT",
+                new Category(
+                        2,
+                        "moreThan50CharsmoreThan50CharsmoreThan50CharsmoreThan50Chars",
+                        0, false, 0).getText());
     }
 
     /**
@@ -122,9 +159,12 @@ public class DBguiTest {
      */
     @Test
     public void test3GetAccounts() {
-        List<Account> a = dbg.getAccounts("er0");
-        assertEquals(1, a.size());
-        assertEquals(a.get(0).getName(), "Tester0");
+        List<Account> l = dbg.getAccounts("er0");
+        assertEquals(1, l.size());
+        Account a = l.get(0);
+        assertEquals("Tester0", a.getName());
+        assertEquals("Tester0", a.toString());
+        assertEquals(new Account(1, null, 0), a);
     }
 
     /**
@@ -163,15 +203,96 @@ public class DBguiTest {
      * test for getting a sum of data
      */
     @Test
+    public void test3GetSumOfData() {
+        TweetsAndRetweets test = dbg.getSumOfData(list0, list0, list1, false);
+
+        assertEquals(1, test.getTweets().size());
+        assertEquals(0, test.getRetweets().size());
+    }
+
+    /**
+     * test for getting a sum of data
+     */
+    @Test
+    public void test4GetSumOfData() {
+        TweetsAndRetweets test = dbg.getSumOfData(list0, list0, list1, true);
+
+        assertEquals(0, test.getTweets().size());
+        assertEquals(0, test.getRetweets().size());
+    }
+
+    /**
+     * test for getting a sum of data
+     */
+    @Test
+    public void test5GetSumOfData() {
+        TweetsAndRetweets test = dbg
+                .getSumOfData(list23, list23, list23, false);
+
+        assertEquals(1, test.getTweets().size());
+        assertEquals(6, test.getTweets().get(0).getCounter());
+        assertNull(test.getTweets().get(0).getDate());
+
+        List<Retweets> l = test.getRetweets();
+        assertEquals(3, l.size());
+
+        Retweets r = l.get(0);
+        assertEquals(7, r.getCounter());
+        assertEquals("0", r.getLocationCode());
+        assertNull(r.getDate());
+
+        r = l.get(1);
+        assertEquals(8, r.getCounter());
+        assertEquals("T0", r.getLocationCode());
+        assertNull(r.getDate());
+
+        r = l.get(2);
+        assertEquals(10, r.getCounter());
+        assertEquals("T1", r.getLocationCode());
+        assertNull(r.getDate());
+    }
+
+    /**
+     * test for getting a sum of data
+     */
+    @Test
+    public void test6GetSumOfData() {
+        TweetsAndRetweets test = dbg.getSumOfData(list23, list1, list0, false);
+
+        assertEquals(1, test.getTweets().size());
+        assertEquals(5, test.getTweets().get(0).getCounter());
+        assertNull(test.getTweets().get(0).getDate());
+
+        List<Retweets> l = test.getRetweets();
+        assertEquals(2, l.size());
+
+        Retweets r = l.get(0);
+        assertEquals(7, r.getCounter());
+        assertEquals("0", r.getLocationCode());
+        assertNull(r.getDate());
+
+        r = l.get(1);
+        assertEquals(6, r.getCounter());
+        assertEquals("T1", r.getLocationCode());
+        assertNull(r.getDate());
+    }
+
+    /**
+     * test for getting a sum of data
+     */
+    @Test
     public void test2GetSumOfDataWithDates() {
         TweetsAndRetweets test = dbg.getSumOfData(list1, list1, list0, true);
 
-        assertEquals(3, test.getTweets().size());
-        assertEquals(3, test.getTweets().get(0).getCounter());
-        assertEquals(2, test.getTweets().get(1).getCounter());
-        assertEquals(1, test.getTweets().get(2).getCounter());
-        assertEquals(4, test.getRetweets().size());
-        assertEquals(10, test.getRetweets().get(3).getCounter());
+        List<Tweets> tweets = test.getTweets();
+        assertEquals(3, tweets.size());
+        assertEquals(3, tweets.get(0).getCounter());
+        assertEquals(2, tweets.get(1).getCounter());
+        assertEquals(1, tweets.get(2).getCounter());
+        List<Retweets> retweets = test.getRetweets();
+        assertEquals(4, retweets.size());
+        assertEquals(10, retweets.get(3).getCounter());
+        assertEquals("T1", retweets.get(3).getLocationCode());
     }
 
     /**
@@ -210,6 +331,8 @@ public class DBguiTest {
         assertEquals(2, res.get(0).getRetweets().size());
         assertEquals(2, res.get(1).getRetweets().size());
     }
+
+    // TODO add testcases for all data
 
     /**
      * test for right sum of retweets per country
@@ -370,28 +493,148 @@ public class DBguiTest {
         assertEquals(6, (int) a.getCategoryIds().get(1));
     }
 
+    /**
+     * test addAccount with invalid parameters
+     */
     @Test
     public void test1AddAccount() {
-
+        boolean res = dbg.addAccount(null, 1);
+        assertTrue(!res);
     }
 
+    /**
+     * test addAccount with invalid parameters
+     */
     @Test
     public void test2AddAccount() {
-
+        boolean res = dbg.addAccount(new MyUser(null, 0, null, null, null, 0,
+                false), 1);
+        assertTrue(res);
     }
 
+    /**
+     * test addAccount
+     */
     @Test
     public void test3AddAccount() {
+        boolean res = dbg.addAccount(new MyUser("Added", 1234, null, null,
+                null, 11, false), 6);
+        List<Account> l = dbg.getAccounts("Added");
+        dbt.executeQuery("DELETE FROM accounts WHERE AccountName=\"Added\";");
 
+        assertTrue(res);
+        assertEquals(1, l.size());
+        Account a = l.get(0);
+        assertEquals("Added", a.getName());
+        assertEquals(1234, a.getTwitterId());
+        assertTrue(!a.isVerified());
+        assertEquals(11, a.getFollower());
+        assertEquals("T4", a.getLocationCode());
+        assertNull(a.getUrl());
     }
 
+    /**
+     * test addAccount add two times the same account
+     */
     @Test
     public void test4AddAccount() {
+        boolean res1 = dbg.addAccount(new MyUser("Added", 1234, null, null,
+                null, 11, false), 1);
+        boolean res2 = dbg.addAccount(new MyUser("Added", 1234, null, null,
+                null, 11, false), 1);
+        List<Account> l = dbg.getAccounts("Added");
+        dbt.executeQuery("DELETE FROM accounts WHERE AccountName=\"Added\";");
 
+        assertTrue(res1);
+        assertTrue(res2);
+        assertEquals(1, l.size());
+        Account a = l.get(0);
+        assertEquals("Added", a.getName());
+        assertEquals(1234, a.getTwitterId());
+        assertTrue(!a.isVerified());
+        assertEquals(11, a.getFollower());
+        assertNull(a.getUrl());
     }
 
+    /**
+     * test addAccount
+     */
     @Test
     public void test5AddAccount() {
+        boolean res1 = dbg.addAccount(new MyUser("Added_1", 1234, null, null,
+                "url1", 1, false), 1);
+        boolean res2 = dbg.addAccount(new MyUser("Added_2", 123456, "timezone",
+                "location", "url", 2, true), 4);
+        List<Account> l = dbg.getAccounts("Added");
+        dbt.executeQuery("DELETE FROM accounts WHERE AccountName=\"Added_1\";");
+        dbt.executeQuery("DELETE FROM accounts WHERE AccountName=\"Added_2\";");
+
+        assertTrue(res1);
+        assertTrue(res2);
+
+        assertEquals(2, l.size());
+        Account a = l.get(0);
+        assertEquals("Added_2", a.getName());
+        assertEquals(123456, a.getTwitterId());
+        assertTrue(a.isVerified());
+        assertEquals(2, a.getFollower());
+        assertEquals("T2", a.getLocationCode());
+        assertEquals("url", a.getUrl());
+        a = l.get(1);
+        assertEquals("Added_1", a.getName());
+        assertEquals(1234, a.getTwitterId());
+        assertTrue(!a.isVerified());
+        assertEquals(1, a.getFollower());
+        assertEquals("0", a.getLocationCode());
+        assertEquals("url1", a.getUrl());
+    }
+
+    /**
+     * test to set invalid location-code
+     */
+    @Test
+    public void test1SetLocationCode() {
+        Retweets r = new Retweets(null, 0, null);
+        assertNull(r.getLocationCode());
+    }
+
+    /**
+     * test to set invalid location-code
+     */
+    @Test
+    public void test2SetLocationCode() {
+        Retweets r = new Retweets(null, 0, "ABCDEFG");
+        assertEquals("ABC", r.getLocationCode());
+    }
+
+    /**
+     * test to set location-code
+     */
+    @Test
+    public void test3SetLocationCode() {
+        Retweets r = new Retweets(null, 0, "AAA");
+        assertEquals("AAA", r.getLocationCode());
+    }
+
+    /**
+     * test to create an Account
+     */
+    @Test
+    public void testCreateAccount() {
+        Account a = new Account(999, "name", "url");
+        List<Retweets> list = new ArrayList<Retweets>();
+        a.setRetweets(list);
+
+        assertEquals(999, a.getId());
+        assertEquals("name", a.getName());
+        assertEquals("name", a.toString());
+        assertEquals("url", a.getUrl());
+        assertEquals(0, a.getFollower());
+        assertEquals(0, a.getTwitterId());
+        assertEquals(0, a.getTweets().size());
+        assertTrue(list == a.getRetweets());
+        assertEquals(0, a.getCategoryIds().size());
+        assertEquals("0", a.getLocationCode());
 
     }
 

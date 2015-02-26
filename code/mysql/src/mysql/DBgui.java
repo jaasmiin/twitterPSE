@@ -134,7 +134,7 @@ public class DBgui extends DBConnection implements DBIgui {
                 // 3 - Code
                 ret.add(new Location(res.getInt(1), Util
                         .getUppercaseCountry(res.getString(2)), res
-                        .getString(3), null));
+                        .getString(3)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -356,6 +356,9 @@ public class DBgui extends DBConnection implements DBIgui {
     @Override
     public boolean addAccount(User user, int locationId) {
 
+        if (user == null)
+            return false;
+
         PreparedStatement stmt = null;
         try {
             stmt = c.prepareStatement("INSERT IGNORE INTO accounts (TwitterAccountId, AccountName, Verified, Follower, LocationId, URL, Categorized)"
@@ -400,18 +403,19 @@ public class DBgui extends DBConnection implements DBIgui {
         while (it.hasNext()) {
             Category category = it.next();
 
-            if (category.isUsed()) {
-                int parentId = category.getParentId();
-                if (parentId == 0) {
-                    ret = category;
-                    continue;
-                }
-
-                int parentPosition = idx.get(parentId);
-                Category parent = categories.get(parentPosition);
-                parent.setUsed(true);
-                parent.addChild(category);
+            // build complete categories tree (with used and unused categories)
+            // if (category.isUsed()) {
+            int parentId = category.getParentId();
+            if (parentId == 0) {
+                ret = category;
+                continue;
             }
+
+            int parentPosition = idx.get(parentId);
+            Category parent = categories.get(parentPosition);
+            parent.setUsed(category.isUsed());
+            parent.addChild(category);
+            // }
         }
 
         return ret;
@@ -529,6 +533,7 @@ public class DBgui extends DBConnection implements DBIgui {
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
 
+        double t = System.currentTimeMillis();
         Statement stmt;
         TweetsAndRetweets ret = new TweetsAndRetweets();
         try {
@@ -540,6 +545,9 @@ public class DBgui extends DBConnection implements DBIgui {
             logger.warning("SQL-Exception by gatSumData: " + e.getMessage());
         } catch (IllegalArgumentException e) {
         }
+
+        System.out.println("Time to get summed data: "
+                + (System.currentTimeMillis() - t));
 
         return ret;
     }
