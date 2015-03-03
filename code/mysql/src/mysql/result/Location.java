@@ -10,11 +10,6 @@ public class Location extends Result {
     private String name;
     private String locCode;
 
-    // private Location parent;
-
-    // * @param parent
-    // * the parent location of this location as Location
-
     /**
      * store a location from the database
      * 
@@ -29,19 +24,7 @@ public class Location extends Result {
         super(id);
         this.name = name == null ? "" : name;
         this.locCode = locCode == null ? "" : locCode;
-        // this.parent = parent;
     }
-
-    // /**
-    // * returns the parent location of this location
-    // *
-    // * @return the parent location of this location as Location
-    // * @deprecated parent is never used (getParent() returns allways null)
-    // */
-    // @Deprecated
-    // public Location getParent() {
-    // return parent;
-    // }
 
     /**
      * returns the location code of the location (3 characters)
@@ -61,16 +44,6 @@ public class Location extends Result {
     public String toString() {
         return name.isEmpty() ? locCode : name;
     }
-
-    // /**
-    // * set the parent location of this location
-    // *
-    // * @param parentLocation
-    // * the parent location as Location
-    // */
-    // public void setParent(Location parentLocation) {
-    // parent = parentLocation;
-    // }
 
     @Override
     public boolean equals(Object o) {

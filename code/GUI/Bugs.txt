@@ -49,7 +49,14 @@ Caused by: java.lang.IllegalStateException: pipeline already created:com.sun.pri
 
 
 
-
+Exception in thread "Thread-37" java.lang.NullPointerException
+	at mysql.DBgui.getRetweetSumPerAccount(DBgui.java:676)
+	at mysql.DBgui.getTweetSumPerAccount(DBgui.java:649)
+	at mysql.DBgui.getAllData(DBgui.java:576)
+	at gui.GUIController.reloadData(GUIController.java:348)
+	at gui.GUIController.setSelectedAccount(GUIController.java:622)
+	at gui.selectionOfQuery.SelectionOfQueryController$3.run(SelectionOfQueryController.java:133)
+	at java.lang.Thread.run(Unknown Source)
 
 
 

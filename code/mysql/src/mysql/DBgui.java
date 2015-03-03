@@ -546,7 +546,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } catch (IllegalArgumentException e) {
         }
 
-        System.out.println("Time to get summed data: "
+        System.out.println("Zusammengefasste Daten: "
                 + (System.currentTimeMillis() - t));
 
         return ret;
@@ -656,23 +656,31 @@ public class DBgui extends DBConnection implements DBIgui {
         return ret;
     }
 
-    // TODO add Comments below
-
     @Override
     public List<Account> getAllData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
 
         double t = System.currentTimeMillis();
 
+        // to get all the data, we fist build the basic statement to put all the
+        // matching accounts into a list, then we select the data to describe
+        // the accounts. After transmitting the account-data, we select all the
+        // tweets per account and append this data to the account data. At last
+        // we select the retweets for the selected accounts and append this data
+        // also to the accounts
+
         Statement stmt;
         List<Account> ret = new ArrayList<Account>();
         try {
+            // build the statement to select all matching accounts
             stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
+            // retrieving data
             ret = getTweetSumPerAccount(stmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatAllData: " + e.getMessage());
         } catch (IllegalArgumentException e) {
         }
+
         System.out.println("GetAllData: " + (System.currentTimeMillis() - t));
 
         return ret;
@@ -680,13 +688,12 @@ public class DBgui extends DBConnection implements DBIgui {
 
     private HashMap<Integer, Account> getAccounts(Statement stmt) {
 
-        String query = "SELECT Id, AccountName, Follower FROM final LEFT JOIN accounts ON final.val=accounts.Id;"; // ORDER
-                                                                                                                   // BY
-                                                                                                                   // Id
-                                                                                                                   // DESC;";
+        // query to select all the matching accounts
+        String query = "SELECT Id, AccountName, Follower FROM final LEFT JOIN accounts ON final.val=accounts.Id ORDER BY Follower DESC;";
         ResultSet res = null;
         runningRequest = true;
         try {
+            // execute the querie on the database
             stmt.executeBatch();
             res = stmt.executeQuery(query);
         } catch (SQLException e) {
@@ -694,10 +701,13 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
+
+        // vaidate result
         if (res == null || Thread.interrupted()) {
             return new HashMap<Integer, Account>();
         }
 
+        // read the sql-result line per line
         HashMap<Integer, Account> ret = new HashMap<Integer, Account>();
         try {
             while (res.next()) {
@@ -723,10 +733,14 @@ public class DBgui extends DBConnection implements DBIgui {
 
         HashMap<Integer, Account> accounts = getAccounts(stmt);
 
+        // provide queries to get the data grouped by date or to get the whole
+        // data
         String a = "SELECT Counter, tweets.AccountId, Day FROM tweets "
                 + "JOIN final ON tweets.AccountId=final.val JOIN day ON tweets.DayId=day.Id;";
         String b = "SELECT SUM(Counter), tweets.AccountId FROM tweets "
                 + "JOIN final ON tweets.AccountId=final.val GROUP BY AccountId;";
+
+        // execute querie on the database
         ResultSet res = null;
         runningRequest = true;
         double t = System.currentTimeMillis();
@@ -740,11 +754,13 @@ public class DBgui extends DBConnection implements DBIgui {
         System.out.println("Datenbankquery für Tweets: "
                 + (System.currentTimeMillis() - t));
 
+        // validate sql-result
         if (res == null || Thread.interrupted())
             return Util.collectionToList(accounts.values());
 
         t = System.currentTimeMillis();
         try {
+            // read result line per line
             while (res.next()) {
                 // 1 - Counter / SUM(Counter)
                 // 2 - AccountId
@@ -765,24 +781,28 @@ public class DBgui extends DBConnection implements DBIgui {
         System.out.println("Java Verarbeitung Tweets: "
                 + (System.currentTimeMillis() - t));
 
-        // get retweets
+        // calculate the retweets for the complete result
         getRetweetSumPerAccount(stmt, byDate, accounts);
 
+        // convert the return value from HashMap to List
         return Util.collectionToList(accounts.values());
     }
 
     private void getRetweetSumPerAccount(Statement stmt, boolean byDate,
             HashMap<Integer, Account> ret) {
 
-        String a = "SELECT Counter, AccountId, Code, Day FROM retweets "
+        // provide the requests to get the data grouped by date or not
+        String queryByDates = "SELECT Counter, AccountId, Code, Day FROM retweets "
                 + "JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String b = "SELECT SUM(Counter), AccountId, Code FROM retweets "
+        String queryBasic = "SELECT SUM(Counter), AccountId, Code FROM retweets "
                 + "JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId, LocationId;";
+
+        // request the data from the database
         ResultSet res = null;
         double t = System.currentTimeMillis();
         try {
             runningRequest = true;
-            res = stmt.executeQuery(byDate ? a : b);
+            res = stmt.executeQuery(byDate ? queryByDates : queryBasic);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
         } finally {
@@ -791,20 +811,24 @@ public class DBgui extends DBConnection implements DBIgui {
         System.out.println("Datenbankquery für Retweets: "
                 + (System.currentTimeMillis() - t));
 
+        // validate the sql-result
         if (res == null || Thread.interrupted())
             return;
 
         t = System.currentTimeMillis();
         try {
+            // read result line per line
             while (res.next()) {
                 // 1 - Counter / SUM(Counter)
                 // 2 - AccountId
                 // 3 - Code
                 // 4 - Day (opt.)
                 int id = res.getInt(2);
+                // build for each line a new Retweets object
                 Retweets element = new Retweets(
                         (byDate ? res.getDate(4) : null), res.getInt(1),
                         res.getString(3));
+                // append the retweets-data to the data to return
                 ret.get(id).addRetweet(element);
             }
         } catch (SQLException e) {
@@ -821,13 +845,21 @@ public class DBgui extends DBConnection implements DBIgui {
     private Statement createBasicStatement(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs)
             throws SQLException {
+
+        // create a sql-query to select all the accounts that match the
+        // category-location combination or that where selected by hand
+        // add their id's to a new temporary table
+
+        // validate and classify input
         boolean categoryIsSet = categoryIDs != null && categoryIDs.size() > 0;
         boolean locationIsSet = locationIDs != null && locationIDs.size() > 0;
         boolean accountIsSet = accountIDs != null && accountIDs.size() > 0;
+        // validate input
         if (!categoryIsSet && !locationIsSet && !accountIsSet) {
             throw new IllegalArgumentException();
         }
 
+        // cast input from List to Array
         Integer[] categories = new Integer[categoryIDs.size()];
         categoryIDs.toArray(categories);
         Integer[] locations = new Integer[locationIDs.size()];
@@ -836,9 +868,13 @@ public class DBgui extends DBConnection implements DBIgui {
         accountIDs.toArray(accounts);
 
         Statement stmt = c.createStatement();
+        // create temporary table to staore the selected accounts
         stmt.addBatch("CREATE TEMPORARY TABLE IF NOT EXISTS final (val int PRIMARY KEY);");
         stmt.addBatch("TRUNCATE final;");
+
+        // add the selected categories and locations to the query
         if (!categoryIsSet && locationIsSet) {
+            // only locations are selected, so add them to the query
             String c = "INSERT IGNORE INTO final (val) SELECT Id FROM accounts WHERE (LocationId="
                     + locations[0];
             for (int i = 1; i < locations.length; i++) {
@@ -847,8 +883,10 @@ public class DBgui extends DBConnection implements DBIgui {
             c += ");";
             stmt.addBatch(c);
         } else if (categoryIsSet || locationIsSet) {
+            // locations and/or categories are selected
             String c = "INSERT IGNORE INTO final (val) "
                     + "SELECT accounts.Id FROM accountCategory JOIN accounts ON accountCategory.AccountId=accounts.Id WHERE ";
+            // add the selected categories to the query
             if (categoryIsSet) {
                 c += "(CategoryId=" + categories[0];
                 for (int i = 1; i < categories.length; i++) {
@@ -858,6 +896,7 @@ public class DBgui extends DBConnection implements DBIgui {
             if (categoryIsSet && locationIsSet) {
                 c += ") AND ";
             }
+            // add the selected locations to the query
             if (locationIsSet) {
                 c += "(LocationId=" + locations[0];
                 for (int i = 1; i < locations.length; i++) {
@@ -867,6 +906,8 @@ public class DBgui extends DBConnection implements DBIgui {
             c += ");";
             stmt.addBatch(c);
         }
+
+        // add the selected accounts to the query
         if (accountIsSet) {
             // add accounts
             String ca = "INSERT IGNORE INTO final (val) VALUES (" + accounts[0]
