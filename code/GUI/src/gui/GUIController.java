@@ -958,19 +958,19 @@ public class GUIController extends Application implements Initializable {
 		if (scale <= 0.0000000000001) {
 			return null;
 		}
+		
 		HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
 		
 		if (totalNumberOfRetweets == null) {
 		    totalNumberOfRetweets = getSumOfRetweetsPerLocation();
 		}
-
 		// calculate overall number of retweets in this special combination
 		Set<String> keySet = retweetsPerLocation.keySet();
 		int overallCounter = 0;
 		for (String key : keySet) {
 			overallCounter += retweetsPerLocation.get(key);
 		}
-
+		
 		// calculate relative value
 		double minValue = Double.POSITIVE_INFINITY;
 		for (String key : keySet) {
@@ -988,7 +988,6 @@ public class GUIController extends Application implements Initializable {
 					new MyDataEntry(relativeValue, key, totalNumberOfRetweets
 							.get(key), retweetsPerLocation.get(key)));
 		}
-
 		Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
 		while (it.hasNext()) {
 			Entry<String, MyDataEntry> entry = it.next();

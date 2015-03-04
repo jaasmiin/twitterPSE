@@ -45,8 +45,13 @@ public class Labels {
     public static final String EXPORTED = "Exported.";
     public static final String EXPORT_FAILED = "Export failed.";
 
+    public static final String DBOPT_POPUP_ADDACCOUNT = "Add account";
+    public static final String DBOPT_POPUP_EDITLOCATION = "Edit location";
+    public static final String DBOPT_POPUP_ADDCATEGORY = "Add category";
+    
+    public static final String DBOPT_NO_USER_SELECTED = "No user selected";
     public static final String DBOPT_CATEGORY = "Add category";
-    public static final String DBOPT_LOCATION = "Add/Change location";
+    public static final String DBOPT_LOCATION = "Edit location";
     public static final String DBOPT_ACCOUNT = "Add account";
     public static final String DBOPT_CLOSE = "Close";
     public static final String DBOPT_ADD = "Add";
@@ -65,9 +70,9 @@ public class Labels {
     public static final String DBOPT_CAT_OLDCAT = "Categories";
     public static final String DOPT_CAT_SELECTEDCAT = "Selected category";
     public static final String DBOPT_CAT_SEARCHCAT = "Search category";
-
+    
     public static final String DBOPT_LOC_SELECTLOCATION = "Select Location";
-    public static final String DBOPT_LOC_CHANGE = "Change";
+    public static final String DBOPT_LOC_CHANGE = "Finish";
     public static final String DPOPT_CURRENTPLACE = "Current place:";
 
     public static final String DBOPT_ACC_ADDACCOUNT = "Add account";
@@ -78,7 +83,7 @@ public class Labels {
     public static final String DB_CONNECTING_ERROR = "Error, could not connect to database.";
     public static final String NO_LOGIN_DATA_FOUND_ERROR = "Error, could not find login data.";
     public static final String DB_CONNECTED = "Connected to databse.";
-	public static final String DBOPT_MENU = "database";
+	public static final String DBOPT_MENU = "Database";
 
 	public static final String HELP = "Help";
 	public static final String ABOUT = "About";
@@ -87,4 +92,6 @@ public class Labels {
 
 	public static final String DETAIL_INFORMATION = "Detail information";
 	public static final String TABLE = "Table";
+   
+   
 }

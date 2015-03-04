@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_05"/>
 	<classpathentry kind="con" path="org.eclipse.fx.ide.jdt.core.JAVAFX_CONTAINER"/>
 	<classpathentry kind="lib" path="../../libs/twitter4j-4.0.2/lib/twitter4j-async-4.0.2.jar"/>
 	<classpathentry kind="lib" path="../../libs/twitter4j-4.0.2/lib/twitter4j-core-4.0.2.jar"/>
@@ -32,5 +31,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="../mysql/bin"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/mysql"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.8.0_31"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

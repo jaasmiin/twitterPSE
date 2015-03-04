@@ -73,6 +73,7 @@ public class StandardMapDialog extends JDialog {
 
             uneditedData = superController.getDataByLocationAndDate();
             HashMap<String, Integer> forCalc = new HashMap<String, Integer>();
+            
             for (mysql.result.Retweets r : uneditedData.getRetweets()) {
                 // convert date
                 LocalDate test = buildLocalDate(r.getDate());
@@ -93,20 +94,22 @@ public class StandardMapDialog extends JDialog {
                     }
                 }
             }
+            
             Set<String> keySet = forCalc.keySet();
             // for (String key : keySet) {
             // System.out.println(key + " - " + forCalc.get(key));
             // }
             // System.out.println("############################################################");
+            System.out.println("start: " + forCalc.size() + "   keySet" + keySet.size());
             calculatedData = superController.getDisplayValuePerCountry(forCalc,
                     1);
-
-            keySet = calculatedData.keySet();
+            System.out.println("end");
+            
             // for (String key : keySet) {
             // System.out.println(key + " - "
             // + calculatedData.get(key).getRetweetsLandFiltered());
             // }
-
+            
             map.update(calculatedData);
             map.redraw();
 
