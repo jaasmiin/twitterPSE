@@ -560,6 +560,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
         ResultSet res = null;
         runningRequest = true;
+        double t = System.currentTimeMillis();
         try {
             // execute the prepared statements to build a list of selected
             // accounts in the database
@@ -571,12 +572,15 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
+        System.out.println("Query für Tweets (summed): "
+                + (System.currentTimeMillis() - t));
 
         if (res == null || Thread.interrupted()) {
             return new TweetsAndRetweets();
         }
 
         // read the result and add the tweets to a result list
+        t = System.currentTimeMillis();
         List<Tweets> tweets = new ArrayList<Tweets>();
         if (res != null) {
             try {
@@ -594,6 +598,8 @@ public class DBgui extends DBConnection implements DBIgui {
             } finally {
                 closeResult(res);
             }
+            System.out.println("Java Verarbeitung Tweets (summed): "
+                    + (System.currentTimeMillis() - t));
         }
 
         // build and set return values
@@ -616,6 +622,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
         ResultSet res = null;
         runningRequest = true;
+        double t = System.currentTimeMillis();
         try {
             // execute select-query on the database by using the temporary table
             // with the selected accounts (created by the getTweets-Method
@@ -626,12 +633,15 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
+        System.out.println("Query für Retweets (summed): "
+                + (System.currentTimeMillis() - t));
 
         // check result
         if (res == null || Thread.interrupted())
             return new ArrayList<Retweets>();
 
         // read sql-result line per line
+        t = System.currentTimeMillis();
         List<Retweets> ret = new ArrayList<Retweets>();
         try {
             while (res.next()) {
@@ -653,6 +663,9 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             closeResultAndStatement(stmt, res);
         }
+        System.out.println("Java Verarbeitung Retweets (summed): "
+                + (System.currentTimeMillis() - t));
+
         return ret;
     }
 
@@ -681,7 +694,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } catch (IllegalArgumentException e) {
         }
 
-        System.out.println("GetAllData: " + (System.currentTimeMillis() - t));
+        System.out.println("Alle Daten: " + (System.currentTimeMillis() - t));
 
         return ret;
     }
@@ -689,9 +702,11 @@ public class DBgui extends DBConnection implements DBIgui {
     private HashMap<Integer, Account> getAccounts(Statement stmt) {
 
         // query to select all the matching accounts
-        String query = "SELECT Id, AccountName, Follower FROM final LEFT JOIN accounts ON final.val=accounts.Id ORDER BY Follower DESC;";
+        String query = "SELECT accounts.Id, AccountName, Follower, Code FROM "
+                + "final LEFT JOIN accounts ON final.val=accounts.Id JOIN location ON accounts.LocationId=location.Id ORDER BY Follower DESC;";
         ResultSet res = null;
         runningRequest = true;
+        double t = System.currentTimeMillis();
         try {
             // execute the querie on the database
             stmt.executeBatch();
@@ -701,6 +716,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
+        System.out.println("Query für Accounts: "
+                + (System.currentTimeMillis() - t));
 
         // vaidate result
         if (res == null || Thread.interrupted()) {
@@ -710,13 +727,15 @@ public class DBgui extends DBConnection implements DBIgui {
         // read the sql-result line per line
         HashMap<Integer, Account> ret = new HashMap<Integer, Account>();
         try {
+            
             while (res.next()) {
                 // 1 - Id
                 // 2 - AccountName
                 // 3 - Follower
+                // 4 - LocationCode
                 ret.put(res.getInt(1),
                         new Account(res.getInt(1), res.getString(2), res
-                                .getInt(3)));
+                                .getInt(3), res.getString(4)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -751,7 +770,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Datenbankquery für Tweets: "
+        System.out.println("Query für Tweets: "
                 + (System.currentTimeMillis() - t));
 
         // validate sql-result
@@ -808,7 +827,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Datenbankquery für Retweets: "
+        System.out.println("Query für Retweets: "
                 + (System.currentTimeMillis() - t));
 
         // validate the sql-result

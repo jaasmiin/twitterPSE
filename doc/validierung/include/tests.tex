@@ -3,23 +3,23 @@
 \begin{table}[h]
 \begin{tabular} {lcr}
 Bereich (Klasse / Package) & Überdeckung \\
-		\textbf{mysql} &  \\
-		AccessData & 100\% \\
-		DBConnection & 69\% \\
-		DBcategorizer & 68\% \\
-		DBcrawler & 79\% \\
-		DBgui & 73\% \\
-		\textbf{mysql.util} &  \\
-		LoggerUtil & 88\% \\
-		Util & 89\% \\
-		\textbf{mysql.result} &  \\
-		Account & 99\% \\
-		Category & 99\% \\
-		Location & 92\% \\
-		Result & 100\% \\
-		Retweets & 100\% \\
-		Tweets & 100\% \\
-		TweetsAndRetweets & 100\% \\
+	\textbf{mysql} &  \\
+		\hspace*{3mm}AccessData & 100\% \\
+		\hspace*{3mm}DBConnection & 69\% \\
+		\hspace*{3mm}DBcategorizer & 68\% \\
+		\hspace*{3mm}DBcrawler & 79\% \\
+		\hspace*{3mm}DBgui & 75\% \\
+	\textbf{mysql.util} &  \\
+		\hspace*{3mm}LoggerUtil & 88\% \\
+		\hspace*{3mm}Util & 89\% \\
+	\textbf{mysql.result} &  \\
+		\hspace*{3mm}Account & 99\% \\
+		\hspace*{3mm}Category & 99\% \\
+		\hspace*{3mm}Location & 92\% \\
+		\hspace*{3mm}Result & 100\% \\
+		\hspace*{3mm}Retweets & 100\% \\
+		\hspace*{3mm}Tweets & 100\% \\
+		\hspace*{3mm}TweetsAndRetweets & 100\% \\
 	\end{tabular}
 	\caption{Übersicht über die Testüberdeckung}
 \end{table}
@@ -29,7 +29,15 @@ Bereich (Klasse / Package) & Überdeckung \\
 \subsection{Bestehenden Account bearbeiten}
 
 \subsubsection{Kategorie zu einem Account hinzufügen}
-"`Data"' in der Menüleiste auswählen, zu Unterpunkt "`Add category"' wechseln $\to$ Account suchen,  z.B. "`KATY PERRY"' $\to$ Neue Kategorie aus Kategorienbaum auswählen, z.B. Top/Arts/Music. Durch Doppelklick hinzufügen. $\to$ Am Ende "`Finish"' drücken, um Vorgang abzuschließen.
+"`Data"' in der Menüleiste auswählen, zu Unterpunkt "`Add category"' wechseln $\to$ Account suchen,  z.B. \textit{KATY PERRY} $\to$ Neue Kategorie aus Kategorienbaum auswählen, z.B. \textit{Top/Arts/Music}. Durch Doppelklick hinzufügen. $\to$ Am Ende "`Finish"' drücken, um Vorgang abzuschließen.
 
 \subsubsection{Ort ändern/hinzufügen}
-"`Data"' in der Menüleiste auswählen, zu Unterpunkt "`Add/Change location "' wechseln $\to$ Account suchen,  z.B. "`KATY PERRY"' $\to$ Das aktuelle Land und eine Liste aller Länder werden angezeigt. $\to$ Wähle neues Land aus, z.B. "`United States of America"' $\to$ Drücke "`Change"'
+"`Data"' in der Menüleiste auswählen, zu Unterpunkt "`Add/Change location "' wechseln $\to$ Account suchen,  z.B. \textit{KATY PERRY} $\to$ Das aktuelle Land und eine Liste aller Länder werden angezeigt. $\to$ Wähle neues Land aus, z.B. \textit{United States of America} $\to$ Drücke "`Change"'
+
+\subsection{Export}
+Um die Exportfunktion zu testen, wurde folgende zwei Tests durchgeführt:
+\begin{itemize}
+\item Auswahl einer Kategorie (hier: \textit{World}) und eines Landes (hier: \textit{United States of America}). Nun wurde über "`File"' $\to$ "`Export..."' eine .csv Datei als Zieldatei ausgewählt und die Daten wurden exportiert.
+\item Auswahl von zwei Kategorien (hier: \textit{Software}, \textit{Technology}), zweier Länder (hier: \textit{Germany}, \textit{France}) und zusätzlich eines Accounts (hier: \textit{Qualcomm}). Nun wurde über "`File"' $\to$ "`Export"'... eine .csv Datei als Zieldatei ausgewählt und die Daten wurden exportiert.
+\end{itemize}
+Bei beiden Exporten wurde die exportierte Datei eingehend untersucht. Dabei wurden keine Abweichungen von der Spezifikation gefunden. Auch stimmen die exportierten Werte mit den original-Werten der Anwendung überein.

@@ -39,17 +39,17 @@ import gui.Util;
 /**
  * 
  * @author Matthias Schimek
- *
+ * 
  */
 public class DatabaseOptController extends InputElement implements
         Initializable {
 
     private static final int DEFAULT_LOCATION = 1;
     // Delay time for success messages
-    private static final int DELAY = 5000;
-    
+    // private static final int DELAY = 5000;
+
     @FXML
-    private Menu DBOPT_menu;
+    private Menu dbOPTmenu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -220,9 +220,10 @@ public class DatabaseOptController extends InputElement implements
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
-        if (DBOPT_menu != null) {
+        if (dbOPTmenu != null) {
             // set label
-            DBOPT_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
+            dbOPTmenu.setText(Util
+                    .getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
 
         if (addCat != null) {
@@ -335,11 +336,13 @@ public class DatabaseOptController extends InputElement implements
     public void setCurrentStage(Stage stage) {
         dialogStage = stage;
     }
+
     /**
-
+     * 
      * Setter for account attribute
-
-     * @param account account to be set
+     * 
+     * @param account
+     *            account to be set
      */
     public void setAccount(Account account) {
         this.account = account;
@@ -358,16 +361,19 @@ public class DatabaseOptController extends InputElement implements
             // select right handling for event
             if (event.getSource().equals(addCat)) {
                 // popUp for input-dialog add category
-                createPopUp("AddCategory.fxml", Labels.DBOPT_POPUP_ADDACCOUNT, null);
+                createPopUp("AddCategory.fxml", Labels.DBOPT_POPUP_ADDACCOUNT,
+                        null);
 
             }
             if (event.getSource().equals(addLoc)) {
                 // popUp for input-dialog change/add location
-                createPopUp("AddLocation.fxml", Labels.DBOPT_POPUP_EDITLOCATION, null);
+                createPopUp("AddLocation.fxml",
+                        Labels.DBOPT_POPUP_EDITLOCATION, null);
             }
             if (event.getSource().equals(addAcount)) {
                 // popUp for input dialog add account
-                createPopUp("AddAccount.fxml",Labels.DBOPT_POPUP_ADDCATEGORY, null);
+                createPopUp("AddAccount.fxml", Labels.DBOPT_POPUP_ADDCATEGORY,
+                        null);
             }
         }
     }
@@ -726,9 +732,7 @@ public class DatabaseOptController extends InputElement implements
 
                 UserContainer userC = list_Acc_tab1.getSelectionModel()
                         .getSelectedItem();
-                
-                
-                
+
                 if (userC != null) {
                     // user to add is selected
                     superController.setInfo(Labels.DBOPT_INPROCESS);
@@ -736,12 +740,12 @@ public class DatabaseOptController extends InputElement implements
                             DEFAULT_LOCATION);
                     superController.setInfo(Labels.DBOPT_UPDATED,
                             Labels.DBOPT_INPROCESS);
-                }
-                else {
+                } else {
                     // print message that no user is selected
                     superController.setInfo(Labels.DBOPT_NO_USER_SELECTED);
-                    superController.setInfo(Labels.DBOPT_NO_USER_SELECTED,Labels.DBOPT_NO_USER_SELECTED);
-                    
+                    superController.setInfo(Labels.DBOPT_NO_USER_SELECTED,
+                            Labels.DBOPT_NO_USER_SELECTED);
+
                 }
 
             }

@@ -100,7 +100,7 @@ public class CSVExportController extends InputElement implements Initializable {
             // build line
             String line = x[0];
             for (int i = 1; i < x.length; i++) {
-                line += "," + (x[i] == null ? "0" : x[i]);
+                line += "," + (x[i] == null ? "" : x[i]);
             }
 
             try {
@@ -130,7 +130,7 @@ public class CSVExportController extends InputElement implements Initializable {
         int i = 3;
         for (Location l : locations) {
             file[0][i] = l.toString();
-            h.put((l.getLocationCode().equals("0") ? "-" : l.getLocationCode()), i);
+            h.put((l.getLocationCode()), i);
             i++;
         }
 
@@ -138,7 +138,8 @@ public class CSVExportController extends InputElement implements Initializable {
         int j = 1;
         for (Account a : accounts) {
             file[j][0] = a.getName();
-            file[j][1] = a.getLocationCode();
+            file[j][1] = a.getLocationCode().equals("0") ? "-" : a
+                    .getLocationCode();
             file[j][2] = String.valueOf(a.getFollower());
 
             for (Retweets r : a.getRetweets()) {

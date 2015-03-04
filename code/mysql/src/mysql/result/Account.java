@@ -132,9 +132,11 @@ public class Account extends Result implements Comparable<Account> {
      *            the name of the account
      * @param follower
      *            the number of followers of the account as int
+     * @param locationCode
+     *            the location-code of the account as String
      */
-    public Account(int id, String name, int follower) {
-        this(id, 0, name, false, null, follower, "0");
+    public Account(int id, String name, int follower, String locationCode) {
+        this(id, 0, name, false, null, follower, locationCode);
     }
 
     /**

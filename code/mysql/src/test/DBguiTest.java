@@ -164,7 +164,7 @@ public class DBguiTest {
         Account a = l.get(0);
         assertEquals("Tester0", a.getName());
         assertEquals("Tester0", a.toString());
-        assertEquals(new Account(1, null, 0), a);
+        assertEquals(new Account(1, null, 0, null), a);
     }
 
     /**
@@ -332,7 +332,21 @@ public class DBguiTest {
         assertEquals(2, res.get(1).getRetweets().size());
     }
 
-    // TODO add testcases for all data
+    /**
+     * test for getting all data
+     */
+    @Test
+    public void test3GetAllData() {
+        List<Account> res = dbg.getAllData(list0, list1, list0, false);
+
+        assertEquals(2, res.size());
+        assertEquals(1, res.get(0).getTweets().size());
+        assertEquals(1, res.get(1).getTweets().size());
+        assertEquals(1, res.get(0).getTweets().get(0).getCounter());
+        assertEquals(5, res.get(1).getTweets().get(0).getCounter());
+        assertEquals(2, res.get(0).getRetweets().size());
+        assertEquals(2, res.get(1).getRetweets().size());
+    }
 
     /**
      * test for right sum of retweets per country

@@ -118,31 +118,31 @@ public class UtilTest {
     public void test3CollectionToList() {
         // ArrayList
         List<Account> t1 = new ArrayList<Account>();
-        t1.add(new Account(1, "name", 0));
+        t1.add(new Account(1, "name", 0, "0"));
         List<Account> l1 = Util.collectionToList(t1);
         assertEquals(1, l1.size());
         assertEquals(1, l1.get(0).getId());
         // HashSet
         HashSet<Account> t2 = new HashSet<Account>();
-        t2.add(new Account(1, "name", 0));
-        t2.add(new Account(2, "xyz", 10));
+        t2.add(new Account(1, "name", 0, "0"));
+        t2.add(new Account(2, "xyz", 10, null));
         List<Account> l2 = Util.collectionToList(t2);
         assertEquals(2, l2.size());
         assertEquals(1, l2.get(0).getId());
         assertEquals(2, l2.get(1).getId());
         // HashMap
         HashMap<Account, Object> t3 = new HashMap<Account, Object>();
-        t3.put(new Account(1, "name", 0), new Object());
-        t3.put(new Account(2, "name", 0), new Object());
+        t3.put(new Account(1, "name", 0, null), new Object());
+        t3.put(new Account(2, "name", 0, null), new Object());
         List<Account> l3 = Util.collectionToList(t3.keySet());
         assertEquals(2, l3.size());
         assertEquals(1, l3.get(0).getId());
         assertEquals(2, l3.get(1).getId());
         // Set
         Set<Account> t4 = new LinkedHashSet<Account>();
-        t4.add(new Account(1, "name1", 0));
-        t4.add(new Account(2, "name2", 0));
-        t4.add(new Account(3, "name3", 0));
+        t4.add(new Account(1, "name1", 0, null));
+        t4.add(new Account(2, "name2", 0, null));
+        t4.add(new Account(3, "name3", 0, null));
         List<Account> l4 = Util.collectionToList(t4);
         assertEquals(3, l4.size());
         assertEquals(1, l4.get(0).getId());

@@ -24,6 +24,7 @@ public class SelectionHashList<T> {
     private int selectedCounter;
     private int counter;
     private List<T> list = new List<T>() {
+        
         @Override
         public int size() {
             return counter;
