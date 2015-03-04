@@ -48,7 +48,8 @@ public abstract class GUIElement implements Initializable {
         WINDOW_RESIZE,
         MAP_SELECTED,
         MAP_UNSELECTED,
-        WINDOW_HIDING
+        WINDOW_HIDING,
+        WINDOW_FOCUS_CHANGED
     };
 
     /**

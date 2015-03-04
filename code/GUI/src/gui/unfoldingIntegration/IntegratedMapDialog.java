@@ -3,12 +3,14 @@ package gui.unfoldingIntegration;
 import gui.GUIController;
 import gui.GUIElement.UpdateType;
 
+import java.awt.Frame;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
 
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 
 import unfolding.MyDataEntry;
 import unfolding.MyUnfoldingMap;
@@ -34,7 +36,7 @@ public class IntegratedMapDialog extends JDialog {
      *            GUIController
      */
     public IntegratedMapDialog(GUIController superController) {
-        this.superController = superController;
+    	this.superController = superController;
         setSize(800, 600);
         setTitle("Map");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -52,7 +54,12 @@ public class IntegratedMapDialog extends JDialog {
     public void closeMap() {
     	map.exit();
     }
+    
+    public void toggleVisibility() {
+    	setVisible(!isVisible());
+    }
 
+    
     /**
      * updates the map
      * 

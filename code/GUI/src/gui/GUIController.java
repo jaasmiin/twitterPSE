@@ -196,14 +196,32 @@ public class GUIController extends Application implements Initializable {
 			
 		});
 		
+		// TODO: I think this is never called
 		w.setOnHiding(new EventHandler<WindowEvent>() {
 
 			@Override
 			public void handle(WindowEvent event) {
-				update(UpdateType.WINDOW_HIDING);				
+				update(UpdateType.WINDOW_HIDING);
+				System.out.println("Window hiding");
 			}
 			
 		});
+		
+		w.focusedProperty().addListener(new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable,
+					Boolean oldValue, Boolean newValue) {
+				update(UpdateType.WINDOW_FOCUS_CHANGED);
+				if (newValue) {
+					//System.out.println("Yes, i gained the focus!!!");					
+				} else {
+					//System.out.println("Hey, I lost my focus!!!");
+				}
+			}
+			
+		});
+	
     }
     
     /**

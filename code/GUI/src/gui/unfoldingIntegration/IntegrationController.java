@@ -24,11 +24,18 @@ public class IntegrationController extends OutputElement implements Initializabl
     private BorderPane mapPane;
     
     private IntegratedMapDialog mapApp;
+    
+    private boolean guiHasFocus;
+    private boolean oldGuiHasFocus;
         
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		superController.subscribe(this);
+		
+		//maybe set it to true as when gui starts, gui has focus
+		guiHasFocus = true;
+		oldGuiHasFocus = false;
 
 		mapApp = new IntegratedMapDialog(superController);
 		//mapApp.setVisible(false);
@@ -42,22 +49,31 @@ public class IntegrationController extends OutputElement implements Initializabl
 		switch (type) {
 		case GUI_STARTED : 
 			
-		case WINDOW_RESIZE : 
+		case WINDOW_RESIZE :
 			positionDialogue();
 			break;
 			
 		case MAP_SELECTED :
+			System.out.println("Map selected");
 			//mapApp.setVisible(true);
 			showDialogue(true);
 			break;
 			
 		case MAP_UNSELECTED :
+			System.out.println("Map unselected");
 			
 		case WINDOW_HIDING :
+			// TODO: maybe toggle instead of setting false
 			showDialogue(false);
 			break;
 			
+		// TODO: check if necessary
+		case WINDOW_FOCUS_CHANGED :
+			handleFocusChanged();
+			break;
+			
 		case CLOSE :
+			System.out.println("Gui closed");
 			mapApp.closeMap();
 			
 		default : 
@@ -65,6 +81,29 @@ public class IntegrationController extends OutputElement implements Initializabl
 		}
 		
 	}
+	
+	private void handleFocusChanged() {
+		oldGuiHasFocus = guiHasFocus;
+		//update if guiHasFocus, because focus changed
+		guiHasFocus = !guiHasFocus;
+		
+		boolean focusGained = !oldGuiHasFocus && guiHasFocus;
+		
+		try {
+			Thread.sleep(10);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("GUI focus: " + guiHasFocus + ", MAP focus: " + mapApp.hasFocus());
+		if (!(mapApp.hasFocus() || guiHasFocus)) {
+			showDialogue(false);
+			//mapApp.toBack();
+		} 
+	}
+	
+
 	
 	/**
 	 * This method positions the dialogue containing the map.
