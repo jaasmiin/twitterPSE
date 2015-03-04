@@ -87,7 +87,15 @@ public class Categorizer {
         }
     }
 
-    private String normalizeUrl(String url) {
+    /**
+     * normalizes an url that is given by the account
+     * 
+     * removes slash at the end and prefixes like http:// or www.
+     * 
+     * @param url the account url
+     * @return the normalized account url
+     */
+    static String normalizeUrl(String url) {
         // remove / at the end
         if (url.length() != 0 && url.charAt(url.length() - 1) == '/') {
             url = url.substring(0, url.length() - 1);
@@ -109,7 +117,16 @@ public class Categorizer {
         return url;
     }
 
-    private String normalizeName(String name) {
+    /**
+     * normalizes an account name
+     * 
+     * switches all characters to lowercase
+     * replaces whitespace characters and underscores with wildcard symbols
+     * 
+     * @param name the account name
+     * @return the normalized account name
+     */
+    static String normalizeName(String name) {
         // switch to lower case for case insensitive matching
         name = name.toLowerCase();
 
