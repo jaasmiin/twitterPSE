@@ -5,3 +5,10 @@ LogFile.*
 /bin/
 .checkstyle
 TestLog.*
+/bin/
+/build/
+/deploy/
+/dist/
+/externalLibs/
+/project/
+/projectRefs/

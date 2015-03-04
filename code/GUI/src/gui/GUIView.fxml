@@ -19,29 +19,29 @@
    <children>
       <MenuBar GridPane.columnSpan="3" GridPane.hgrow="ALWAYS" GridPane.valignment="TOP" GridPane.vgrow="NEVER">
         <menus>
-          <fx:include fx:id="csvExport" source="../../src/gui/csvExport/CSVExportView.fxml" />
-          <fx:include fx:id="databaseMenu" source="../../src/gui/databaseOptions/DatabaseOptView.fxml" />
-          <fx:include fx:id="help" source="../../src/gui/help/Help.fxml" />
+          <fx:include fx:id="csvExport" source="/gui/csvExport/CSVExportView.fxml" />
+          <fx:include fx:id="databaseMenu" source="/gui/databaseOptions/DatabaseOptView.fxml" />
+          <fx:include fx:id="help" source="/gui/help/Help.fxml" />
         </menus>
       </MenuBar>
-      <!-- <fx:include fx:id="search" source="../../src/gui/search/SearchView.fxml" GridPane.columnIndex="2" /> -->
-      <fx:include fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" source="../../src/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" GridPane.columnSpan="3" GridPane.rowIndex="1" />
-      <fx:include source="../../src/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.columnIndex="0" GridPane.rowIndex="2" maxHeight="1.7976931348623157E308"/>
+      <!-- <fx:include fx:id="search" source="/gui/search/SearchView.fxml" GridPane.columnIndex="2" /> -->
+      <fx:include fx:id="selectionOfQuerySelected" focusTraversable="false" maxWidth="1.7976931348623157E308" source="/gui/selectionOfQuery/SelectionOfQuerySelectedView.fxml" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+      <fx:include source="/gui/selectionOfQuery/SelectionOfQueryView.fxml" fx:id="selectionOfQuery" GridPane.hgrow="NEVER" GridPane.columnIndex="0" GridPane.rowIndex="2" maxHeight="1.7976931348623157E308"/>
       <TabPane tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
       	<GridPane.margin>
         	<Insets left="5.0" />
         </GridPane.margin>
         <tabs>
-          <fx:include fx:id="standardMap" source="../../src/gui/standardMap/StandardMapView.fxml" />
-          <fx:include source="../../src/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
+          <fx:include fx:id="standardMap" source="/gui/standardMap/StandardMapView.fxml" />
+          <fx:include source="/gui/table/ContentTableView.fxml" fx:id="contentTable"/>
           <!--<Tab closable="false" text="Karte (Differenz)">
             <content>
-              <fx:include fx:id="diffMap" source="../../src/gui/diffMap/DiffMapView.fxml" />
+              <fx:include fx:id="diffMap" source="/gui/diffMap/DiffMapView.fxml" />
             </content>
           </Tab>-->
           <!--<Tab closable="false" text="Karte (TimeSlider)">
             <content>
-              <fx:include fx:id="timeSliderMap" source="../../src/gui/timeSliderMap/TimeSliderMapView.fxml" />
+              <fx:include fx:id="timeSliderMap" source="/gui/timeSliderMap/TimeSliderMapView.fxml" />
             </content>
           </Tab> -->
         </tabs>

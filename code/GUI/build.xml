@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<project name="GUI" default="do-deploy" basedir="."  xmlns:fx="javafx:com.sun.javafx.tools.ant">
+	<target name="init-fx-tasks">
+		<path id="fxant">
+			<filelist>
+				<file name="${java.home}\..\lib\ant-javafx.jar"/>
+				<file name="${java.home}\lib\jfxrt.jar"/>
+			</filelist>
+		</path>
+	
+		<taskdef resource="com/sun/javafx/tools/ant/antlib.xml"      
+			uri="javafx:com.sun.javafx.tools.ant"
+			classpathref="fxant"/>
+	</target>
+	<target name="setup-staging-area">
+		<delete dir="externalLibs" />
+		<delete dir="project" />
+		<delete dir="projectRefs" />
+		
+		<mkdir dir="externalLibs" />
+		
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all-natives-linux-armv6hf.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="sqlite-jdbc-3.7.2.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all-natives-linux-amd64.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt-natives-windows-amd64.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="unfolding.0.9.6.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\twitter4j-4.0.2\lib">
+				<filename name="twitter4j-stream-4.0.2.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt-natives-windows-i586.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\twitter4j-4.0.2\lib">
+				<filename name="twitter4j-examples-4.0.2.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="json4processing.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt-natives-macosx-universal.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\twitter4j-4.0.2\lib">
+				<filename name="twitter4j-media-support-4.0.2.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\mysql-java-connector">
+				<filename name="mysql-connector-java-5.1.34.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Program Files\Eclipse (Luna)\plugins">
+				<filename name="org.hamcrest.core_1.3.0.v201303031735.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="log4j-1.2.15.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\mysql">
+				<filename name="bin"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="libTUIO.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all-natives-windows-amd64.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="C:\Program Files\Eclipse (Luna)\plugins\org.junit_4.11.0.v201303080030">
+				<filename name="junit.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt-natives-linux-i586.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="core.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt-natives-linux-armv6hf.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\twitter4j-4.0.2\lib">
+				<filename name="twitter4j-async-4.0.2.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\twitter4j-4.0.2\lib">
+				<filename name="twitter4j-core-4.0.2.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all-natives-macosx-universal.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all-natives-linux-i586.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all-natives-windows-i586.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="gluegen-rt-natives-linux-amd64.jar"/>	
+			</fileset>
+		</copy>
+		<copy todir="externalLibs">
+			<fileset dir="..\..\libs\unfolding_app_template_with_examples_0.9.6\lib">
+				<filename name="jogl-all.jar"/>	
+			</fileset>
+		</copy>
+		
+		<mkdir dir="project" />
+		<copy todir="project">
+			<fileset dir="..\GUI">
+				<include name="src/**" />
+			</fileset>
+		</copy>
+		
+		<mkdir dir="projectRefs" />
+		<copy todir="projectRefs">
+			<fileset dir="..\..\code">
+				<include name="mysql\src/**" />
+			</fileset>
+		</copy>
+	</target>
+	<target name='do-compile'>
+		<delete dir="build" />
+		<mkdir dir="build/src" />
+		<mkdir dir="build/libs" />
+		<mkdir dir="build/classes" />
+	
+		<!-- Copy project-libs references -->
+		<copy todir="build/libs">
+			<fileset dir="externalLibs">
+				<include name="twitter4j-async-4.0.2.jar"/>
+				<include name="twitter4j-media-support-4.0.2.jar"/>
+				<include name="gluegen-rt-natives-windows-amd64.jar"/>
+				<include name="jogl-all-natives-linux-armv6hf.jar"/>
+				<include name="bin"/>
+				<include name="log4j-1.2.15.jar"/>
+				<include name="twitter4j-core-4.0.2.jar"/>
+				<include name="twitter4j-examples-4.0.2.jar"/>
+				<include name="junit.jar"/>
+				<include name="sqlite-jdbc-3.7.2.jar"/>
+				<include name="gluegen-rt-natives-macosx-universal.jar"/>
+				<include name="json4processing.jar"/>
+				<include name="jogl-all-natives-macosx-universal.jar"/>
+				<include name="gluegen-rt-natives-windows-i586.jar"/>
+				<include name="core.jar"/>
+				<include name="gluegen-rt-natives-linux-amd64.jar"/>
+				<include name="unfolding.0.9.6.jar"/>
+				<include name="jogl-all-natives-linux-i586.jar"/>
+				<include name="gluegen-rt-natives-linux-armv6hf.jar"/>
+				<include name="jogl-all.jar"/>
+				<include name="gluegen-rt-natives-linux-i586.jar"/>
+				<include name="org.hamcrest.core_1.3.0.v201303031735.jar"/>
+				<include name="jogl-all-natives-windows-i586.jar"/>
+				<include name="mysql-connector-java-5.1.34.jar"/>
+				<include name="jogl-all-natives-windows-amd64.jar"/>
+				<include name="gluegen-rt.jar"/>
+				<include name="twitter4j-stream-4.0.2.jar"/>
+				<include name="libTUIO.jar"/>
+				<include name="jogl-all-natives-linux-amd64.jar"/>
+			</fileset>
+		</copy>
+	
+		<!-- Copy project references -->
+		<copy todir="build/src">
+			<fileset dir="projectRefs/mysql/src">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	
+		<!-- Copy project sources itself -->
+		<copy todir="build/src">
+			<fileset dir="project/src">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+	
+		<javac includeantruntime="false" source="1.8" target="1.8" srcdir="build/src" destdir="build/classes" encoding="Cp1252">
+			<classpath>
+				<fileset dir="build/libs">
+					<include name="*"/>
+				</fileset>
+			</classpath>
+		</javac>
+		
+		<!-- Copy over none Java-Files -->
+		<copy todir="build/classes">
+		<fileset dir="project/src">
+			<exclude name="**/*.java"/>
+		</fileset>
+		</copy>
+	
+		<copy todir="build/classes">
+			<fileset dir="projectRefs/mysql/src">
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
+	
+	</target>
+	<target name="do-deploy" depends="setup-staging-area, do-compile, init-fx-tasks">
+		<delete file="dist"/>
+		<delete file="deploy" />
+		
+		<mkdir dir="dist" />
+		<mkdir dir="dist/libs" />
+		
+		<copy todir="dist/libs">
+			<fileset dir="externalLibs">
+				<include name="*" />
+			</fileset>
+		</copy>
+		
+		
+		<fx:resources id="appRes">
+			<fx:fileset dir="dist" includes="GUI.jar"/>
+			<fx:fileset dir="dist" includes="libs/*"/>
+		</fx:resources> 
+		
+		<fx:application id="fxApplication"
+			name="TwitterPSE"
+			mainClass="gui.GUIController"
+			toolkit="fx"
+		/>
+	
+		<mkdir dir="build/classes/META-INF" />
+		
+		
+		
+		<fx:jar destfile="dist/GUI.jar">
+			<fx:application refid="fxApplication"/>
+			<fileset dir="build/classes">
+			</fileset>
+			<fx:resources refid="appRes"/>
+			
+			<manifest>
+				<attribute name="Implementation-Vendor" value="PSE"/>
+				<attribute name="Implementation-Title" value="TwitterPSE"/>
+				<attribute name="Implementation-Version" value="1"/>
+				<attribute name="JavaFX-Feature-Proxy" value="None"/>
+			</manifest>
+		</fx:jar>
+		
+	
+		<mkdir dir="deploy" />
+		<!-- Need to use ${basedir} because somehow the ant task is calculating the directory differently -->
+		<fx:deploy
+			embedJNLP="false"
+			extension="false"
+			includeDT="false"
+			offlineAllowed="true"
+			outdir="${basedir}/deploy"
+			outfile="GUI" nativeBundles="none"
+			updatemode="background" >
+	
+			<fx:info title="GUI" vendor="PSE"/>
+			<fx:application refId="fxApplication"/>
+			<fx:resources refid="appRes"/>
+		</fx:deploy>
+		
+		
+	</target>
+</project>
