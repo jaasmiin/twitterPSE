@@ -196,17 +196,6 @@ public class GUIController extends Application implements Initializable {
 			
 		});
 		
-		// TODO: I think this is never called
-		w.setOnHiding(new EventHandler<WindowEvent>() {
-
-			@Override
-			public void handle(WindowEvent event) {
-				update(UpdateType.WINDOW_HIDING);
-				System.out.println("Window hiding");
-			}
-			
-		});
-		
 		w.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -234,7 +223,8 @@ public class GUIController extends Application implements Initializable {
 
 			@Override
 			public void handle(Event event) {
-				System.out.println("Selection changed");
+				// TODO: remove test print
+				//System.out.println("Selection changed");
 				if (tab.isSelected()) {
 					update(UpdateType.MAP_SELECTED);
 				} else {

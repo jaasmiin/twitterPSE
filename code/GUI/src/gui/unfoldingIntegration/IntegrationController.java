@@ -26,21 +26,21 @@ public class IntegrationController extends OutputElement implements Initializabl
     private IntegratedMapDialog mapApp;
     
     private boolean guiHasFocus;
-    private boolean oldGuiHasFocus;
+    private boolean mapSelected;
+    
+    private FocusState currentState;
         
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		super.initialize(location, resources);
 		superController.subscribe(this);
 		
-		//maybe set it to true as when gui starts, gui has focus
+		//when GUI starts, GUI has focus
 		guiHasFocus = true;
-		oldGuiHasFocus = false;
 
 		mapApp = new IntegratedMapDialog(superController);
-		//mapApp.setVisible(false);
-		//mapApp.setAlwaysOnTop(true);
-		showDialogue(false);
+		currentState = new MapUnselected(this);
+		currentState.entry();
 		
 	}
 
@@ -48,62 +48,54 @@ public class IntegrationController extends OutputElement implements Initializabl
 	public void update(UpdateType type) {
 		switch (type) {
 		case GUI_STARTED : 
+			currentState.handleGuiStarted();
+			break;
 			
 		case WINDOW_RESIZE :
-			positionDialogue();
+			currentState.handleWindowResize();
 			break;
 			
 		case MAP_SELECTED :
-			System.out.println("Map selected");
-			//mapApp.setVisible(true);
-			showDialogue(true);
+			setMapSelected(true);
+			currentState.handleMapSelected();
 			break;
 			
 		case MAP_UNSELECTED :
-			System.out.println("Map unselected");
-			
-		case WINDOW_HIDING :
-			// TODO: maybe toggle instead of setting false
-			showDialogue(false);
+			setMapSelected(false);
+			currentState.handleMapUnselected();
 			break;
 			
-		// TODO: check if necessary
 		case WINDOW_FOCUS_CHANGED :
-			handleFocusChanged();
+			toggleGuiFocused();
+			currentState.handleWindowFocusChanged();
 			break;
 			
 		case CLOSE :
-			System.out.println("Gui closed");
-			mapApp.closeMap();
+			currentState.handleClose();
+			break;
 			
 		default : 
 			// nothing to do
 		}
-		
+		currentState.changeState();
+		System.out.println(currentState.toString());
 	}
 	
-	private void handleFocusChanged() {
-		oldGuiHasFocus = guiHasFocus;
-		//update if guiHasFocus, because focus changed
+	/**
+	 * Toggles guiHasFocus.
+	 */
+	private void toggleGuiFocused() {
 		guiHasFocus = !guiHasFocus;
-		
-		boolean focusGained = !oldGuiHasFocus && guiHasFocus;
-		
-		try {
-			Thread.sleep(10);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		System.out.println("GUI focus: " + guiHasFocus + ", MAP focus: " + mapApp.hasFocus());
-		if (!(mapApp.hasFocus() || guiHasFocus)) {
-			showDialogue(false);
-			//mapApp.toBack();
-		} 
 	}
-	
-
+		
+	/**
+	 * Sets the value of mapSelected.
+	 * 
+	 * @param selected
+	 */
+	private void setMapSelected(boolean selected) {
+		mapSelected = selected;
+	}
 	
 	/**
 	 * This method positions the dialogue containing the map.
@@ -111,7 +103,7 @@ public class IntegrationController extends OutputElement implements Initializabl
 	 * The dialogue will be displayed inside the border of the mapPane
 	 * with insets of 5 pxls on every side.
 	 */
-	private void positionDialogue() {
+	protected void positionDialogue() {
 		Bounds border = mapPane.localToScreen(mapPane.getBoundsInLocal());
 		mapApp.changeSize((int) border.getMinX() + 5, (int) border.getMinY() + 5, 
 				(int) border.getWidth() - 5,(int) border.getHeight() - 5);
@@ -122,12 +114,52 @@ public class IntegrationController extends OutputElement implements Initializabl
 	 *   
 	 * @param visible 
 	 */
-	private void showDialogue(boolean visible) {
+	protected void showDialogue(boolean visible) {
 		mapApp.setVisible(visible);
 		mapApp.setAlwaysOnTop(visible);
 	}
 	
-
+	/**
+	 * Closes the map.
+	 */
+	protected void closeMap() {
+		mapApp.closeMap();
+	}
 	
-
+	/**
+	 * Gets wether the map tab is selected.
+	 * 
+	 * @return
+	 */
+	protected boolean isMapSelected() {
+		return mapSelected;
+	}
+	
+	/**
+	 * Gets wether GUI is focused or not.
+	 * 
+	 * @return
+	 */
+	protected boolean hasGuiFocus() {
+		return guiHasFocus;
+	}
+	
+	/**
+	 * Gets wether map is focused or not.
+	 * 
+	 * @return
+	 */
+	protected boolean hasMapFocus() {
+		return mapApp.hasFocus();
+	}
+	
+	/**
+	 * Sets the current state of this controller.
+	 * 
+	 * @param state
+	 */
+	protected void setState(FocusState state) {
+		this.currentState = state;
+	}
+	
 }
