@@ -1,6 +1,13 @@
 package gui;
 
+
+import gui.CallablePSE;
+import gui.GUIElement;
 import gui.GUIElement.UpdateType;
+import gui.InfoRunnable;
+import gui.Labels;
+import gui.RunnableParameter;
+import gui.SelectionHashList;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,6 +57,7 @@ import util.LoggerUtil;
  * @author Maximilian Awiszus and Paul Jungeblut
  * 
  */
+
 public class GUIController extends Application implements Initializable {
 
     private static GUIController instance = null;
@@ -85,6 +93,8 @@ public class GUIController extends Application implements Initializable {
 
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
+
+    private HashMap<String, Integer> totalNumberOfRetweets;
 
     private Runnable rnbInitDBConnection = new Runnable() {
         @Override
@@ -220,49 +230,6 @@ public class GUIController extends Application implements Initializable {
         }
     };
 
-    private Runnable rnbReloadAccounts = new Runnable() {
-        @Override
-        public void run() {
-            reloadAccounts();
-        }
-    };
-
-    private Runnable rnbReloadCategories = new Runnable() {
-        @Override
-        public void run() {
-            String info = Labels.CATEGORIES_LOADING;
-            setInfo(info);
-            categoryRoot = db.getCategories();
-            if (categoryRoot != null) {
-                reloadCategoryHashMap();
-                update(UpdateType.CATEGORY);
-                setInfo(Labels.CATEGORIES_LOADED, info);
-            } else {
-                categoryRoot = new Category(0, Labels.ERROR, 0, false);
-                update(UpdateType.ERROR);
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-        }
-    };
-
-    private Runnable rnbReloadLocation = new Runnable() {
-
-        @Override
-        public void run() {
-            String info = Labels.LOCATIONS_LOADING;
-            setInfo(info);
-            locations.removeAll();
-            List<Location> locationList = db.getLocations();
-            if (locationList != null) {
-                locations.updateAll(locationList);
-                update(UpdateType.LOCATION);
-                setInfo(Labels.LOCATIONS_LOADED, info);
-            } else {
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-        }
-    };
-
     /**
      * Create a GUIController and set the singelton instance.
      */
@@ -377,6 +344,48 @@ public class GUIController extends Application implements Initializable {
             setInfo(Labels.DB_CONNECTION_ERROR, info);
         }
     }
+
+    private Runnable rnbReloadLocation = new Runnable() {
+        @Override
+        public void run() {
+            String info = Labels.LOCATIONS_LOADING;
+            setInfo(info);
+            locations.removeAll();
+            List<Location> locationList = db.getLocations();
+            if (locationList != null) {
+                locations.updateAll(locationList);
+                update(UpdateType.LOCATION);
+                setInfo(Labels.LOCATIONS_LOADED, info);
+            } else {
+                setInfo(Labels.DB_CONNECTION_ERROR, info);
+            }
+        }
+    };
+
+    private Runnable rnbReloadAccounts = new Runnable() {
+        @Override
+        public void run() {
+            reloadAccounts();
+        }
+    };
+
+    private Runnable rnbReloadCategories = new Runnable() {
+        @Override
+        public void run() {
+            String info = Labels.CATEGORIES_LOADING;
+            setInfo(info);
+            categoryRoot = db.getCategories();
+            if (categoryRoot != null) {
+                reloadCategoryHashMap();
+                update(UpdateType.CATEGORY);
+                setInfo(Labels.CATEGORIES_LOADED, info);
+            } else {
+                categoryRoot = new Category(0, Labels.ERROR, 0, false);
+                update(UpdateType.ERROR);
+                setInfo(Labels.DB_CONNECTION_ERROR, info);
+            }
+        }
+    };
 
     private void reloadCategoryHashMap() {
         categories.clear();
@@ -579,6 +588,7 @@ public class GUIController extends Application implements Initializable {
                 root = currentCat;
                 first = false;
             }
+
         }
         return root;
     }
@@ -881,6 +891,16 @@ public class GUIController extends Application implements Initializable {
         db.setLocation(accountID, locationID);
     }
 
+    // private abstract class UpdateRunnable implements Runnable {
+    // protected UpdateType type;
+    // protected GUIElement element;
+    //
+    // public UpdateRunnable(UpdateType t, GUIElement e) {
+    // type = t;
+    // element = e;
+    // }
+    // }
+
     private void update(UpdateType type) {
         for (GUIElement element : guiElements) {
             try {
@@ -950,9 +970,10 @@ public class GUIController extends Application implements Initializable {
         }
 
         HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
-        System.out.println("calculateStart");
-        HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
-        System.out.println("finish overall count");
+
+        if (totalNumberOfRetweets == null) {
+            totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+        }
         // calculate overall number of retweets in this special combination
         Set<String> keySet = retweetsPerLocation.keySet();
         int overallCounter = 0;
@@ -977,7 +998,6 @@ public class GUIController extends Application implements Initializable {
                     new MyDataEntry(relativeValue, key, totalNumberOfRetweets
                             .get(key), retweetsPerLocation.get(key)));
         }
-        System.out.println("finish old calculation");
         Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, MyDataEntry> entry = it.next();

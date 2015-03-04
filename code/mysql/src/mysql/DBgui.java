@@ -614,11 +614,15 @@ public class DBgui extends DBConnection implements DBIgui {
 
         // provide statements to separate retweets by date or to sum over all
         // dates
-        String a = "SELECT SUM(Counter), Code, Day FROM retweets "
-                + "JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id "
-                + "GROUP BY LocationId, DayId;";
-        String b = "SELECT SUM(Counter), Code FROM retweets "
-                + "JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY LocationId;";
+        String a = "SELECT STRAIGHT_JOIN SUM(Counter), Code, Day FROM retweets "
+                + "JOIN location ON retweets.LocationId = location.Id "
+                + "JOIN day ON retweets.DayId=day.Id "
+                + "JOIN final ON retweets.AccountId=final.val "
+                + "GROUP BY LocationId, DayId;"; 
+        String b = "SELECT STRAIGHT_JOIN SUM(Counter), Code FROM retweets "
+                + "JOIN location ON retweets.LocationId = location.Id "
+                + "JOIN final ON retweets.AccountId=final.val "
+                + "GROUP BY LocationId;";
 
         ResultSet res = null;
         runningRequest = true;
@@ -786,8 +790,8 @@ public class DBgui extends DBConnection implements DBIgui {
                 // 3 - Day (opt.)
                 int id = res.getInt(2);
                 accounts.get(id).addTweet(
-                        new Tweets(byDate ? res.getDate(3) : null, res
-                                .getInt(1)));
+                    new Tweets(byDate ? res.getDate(3) : null, res.getInt(1))
+                );
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -811,10 +815,14 @@ public class DBgui extends DBConnection implements DBIgui {
             HashMap<Integer, Account> ret) {
 
         // provide the requests to get the data grouped by date or not
-        String queryByDates = "SELECT Counter, AccountId, Code, Day FROM retweets "
-                + "JOIN final ON retweets.AccountId=final.val JOIN day ON retweets.DayId=day.Id JOIN location ON retweets.LocationId=location.Id;";
-        String queryBasic = "SELECT SUM(Counter), AccountId, Code FROM retweets "
-                + "JOIN final ON retweets.AccountId=final.val JOIN location ON retweets.LocationId=location.Id GROUP BY AccountId, LocationId;";
+        String queryByDates = "SELECT STRAIGHT_JOIN Counter, AccountId, Code, Day FROM retweets "
+                + "JOIN location ON retweets.LocationId = location.Id "
+                + "JOIN final ON retweets.AccountId=final.val "
+                + "JOIN day ON retweets.DayId=day.Id;";
+        String queryBasic = "SELECT STRAIGHT_JOIN SUM(Counter), AccountId, Code FROM retweets "
+                + "JOIN location ON retweets.LocationId = location.Id "
+                + "JOIN final ON retweets.AccountId=final.val "
+                + "GROUP BY AccountId, LocationId;";
 
         // request the data from the database
         ResultSet res = null;
@@ -835,6 +843,7 @@ public class DBgui extends DBConnection implements DBIgui {
             return;
 
         t = System.currentTimeMillis();
+        int items = 0;
         try {
             // read result line per line
             while (res.next()) {
@@ -849,6 +858,7 @@ public class DBgui extends DBConnection implements DBIgui {
                         res.getString(3));
                 // append the retweets-data to the data to return
                 ret.get(id).addRetweet(element);
+                items++;
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -858,7 +868,7 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
         System.out.println("Java Verarbeitung Retweets: "
-                + (System.currentTimeMillis() - t));
+                + (System.currentTimeMillis() - t) + " Items: " + items);
     }
 
     private Statement createBasicStatement(List<Integer> categoryIDs,
