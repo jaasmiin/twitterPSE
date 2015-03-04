@@ -86,6 +86,8 @@ public class GUIController extends Application implements Initializable {
 	
 	private String accountSearchText = "";
 	private MyDataEntry mapDetailInformation = null;
+	
+	private HashMap<String, Integer> totalNumberOfRetweets;
 
 	private Runnable rnbInitDBConnection = new Runnable() {
 		@Override
@@ -957,7 +959,10 @@ public class GUIController extends Application implements Initializable {
 			return null;
 		}
 		HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
-		HashMap<String, Integer> totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+		
+		if (totalNumberOfRetweets == null) {
+		    totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+		}
 
 		// calculate overall number of retweets in this special combination
 		Set<String> keySet = retweetsPerLocation.keySet();
