@@ -49,7 +49,7 @@ public class DatabaseOptController extends InputElement implements
     private static final int DELAY = 5000;
     
     @FXML
-    private Menu dbOpt_menu;
+    private Menu DBOPT_menu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -220,9 +220,9 @@ public class DatabaseOptController extends InputElement implements
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
-        if (dbOpt_menu != null) {
+        if (DBOPT_menu != null) {
             // set label
-            dbOpt_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
+            DBOPT_menu.setText(Util.getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
 
         if (addCat != null) {
@@ -358,16 +358,16 @@ public class DatabaseOptController extends InputElement implements
             // select right handling for event
             if (event.getSource().equals(addCat)) {
                 // popUp for input-dialog add category
-                createPopUp("AddCategory.fxml", "Kategorie hinzufügen", null);
+                createPopUp("AddCategory.fxml", Labels.DBOPT_POPUP_ADDACCOUNT, null);
 
             }
             if (event.getSource().equals(addLoc)) {
                 // popUp for input-dialog change/add location
-                createPopUp("AddLocation.fxml", "Location ändern", null);
+                createPopUp("AddLocation.fxml", Labels.DBOPT_POPUP_EDITLOCATION, null);
             }
             if (event.getSource().equals(addAcount)) {
                 // popUp for input dialog add account
-                createPopUp("AddAccount.fxml", "Account hinzufügen", null);
+                createPopUp("AddAccount.fxml",Labels.DBOPT_POPUP_ADDCATEGORY, null);
             }
         }
     }
@@ -458,6 +458,7 @@ public class DatabaseOptController extends InputElement implements
                         .getSelectionModel().getSelectedItem();
                 if (selectedItem == null) {
                     // no item selected;
+                    dialogStage.close();
                     return;
                 }
                 if (account == null) {
@@ -486,7 +487,7 @@ public class DatabaseOptController extends InputElement implements
         private void updateLocation(List<Location> list) {
             TreeItem<Location> rootItem = new TreeItem<Location>(new Location(
                     0, "World", "0000"));
-            rootItem.setExpanded(false);
+            rootItem.setExpanded(true);
             for (Location location : list) {
                 rootItem.getChildren().add(new TreeItem<Location>(location));
             }
@@ -725,20 +726,23 @@ public class DatabaseOptController extends InputElement implements
 
                 UserContainer userC = list_Acc_tab1.getSelectionModel()
                         .getSelectedItem();
-                // System.out.println("hinzugefuegen:   "
-                // + userC.getUser().getURL());
-
-                // print message
-                superController.setInfo(Labels.DBOPT_INPROCESS);
-
-                superController.addUserToWatch(userC.getUser(),
-                        DEFAULT_LOCATION);
-                // System.out.println(userC.getUser().getName() + "    "
-                // + userC.getUser().getScreenName());
-
-                // print message
-                superController.setInfo(Labels.DBOPT_UPDATED,
-                        Labels.DBOPT_INPROCESS);
+                
+                
+                
+                if (userC != null) {
+                    // user to add is selected
+                    superController.setInfo(Labels.DBOPT_INPROCESS);
+                    superController.addUserToWatch(userC.getUser(),
+                            DEFAULT_LOCATION);
+                    superController.setInfo(Labels.DBOPT_UPDATED,
+                            Labels.DBOPT_INPROCESS);
+                }
+                else {
+                    // print message that no user is selected
+                    superController.setInfo(Labels.DBOPT_NO_USER_SELECTED);
+                    superController.setInfo(Labels.DBOPT_NO_USER_SELECTED,Labels.DBOPT_NO_USER_SELECTED);
+                    
+                }
 
             }
             if (event.getSource().equals(b_Acc_tab1_schliessen)) {
