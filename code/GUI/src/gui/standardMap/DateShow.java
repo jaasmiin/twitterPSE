@@ -91,13 +91,15 @@ public class DateShow extends Thread {
      */
     @Override 
     public void run() {
-        List<LocalDate> list = new ArrayList<LocalDate>();
         LocalDate currentDate = startDate.plusDays(0);
         
         while(!isInterrupted() && (currentDate.isBefore(endDate) || currentDate.isEqual(endDate))) {
             // stops if end of period is reached or thread is interrupted
+            
+            
             HashMap<String, Integer> unCalcData = collectDataPerDate(currentDate);
             
+            // get adapted data and redraw map
             calculatedData = superController.getDisplayValuePerCountry(unCalcData,1);
             if (calculatedData != null) {
                 map.update(calculatedData);
@@ -108,7 +110,7 @@ public class DateShow extends Thread {
             try {
                 Thread.sleep(DELAY_PER_DAY);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
+                // thread is interrupted (probably by user)
                 superController.setInfo("", Labels.SHOW_PERIOD + startDate + " to " + currentDate);
                 return;
             }

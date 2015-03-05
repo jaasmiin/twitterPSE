@@ -3,7 +3,7 @@
 package gui.standardMap;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * Util class to do some date transformation
@@ -51,8 +51,8 @@ public class Dates {
         year = Integer.parseInt(result[0]);
         month = Integer.parseInt(result[1]);
         day = Integer.parseInt(result[2]);
-
-        int[] intResult = {year, month, day };
+        // System.out.println(year + "  " + month + "  "+ day);
+        int[] intResult = {year, month , day };
         return intResult;
     }
 

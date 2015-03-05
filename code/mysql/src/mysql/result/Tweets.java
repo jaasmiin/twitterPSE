@@ -1,6 +1,6 @@
 package mysql.result;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * store the tweets of a day or the total number of tweets
