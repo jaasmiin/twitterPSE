@@ -1,1 +1,4 @@
 twitter4j.properties
+/.gitignore
+/locate
+/main

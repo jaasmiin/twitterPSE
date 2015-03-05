@@ -5,12 +5,7 @@ import gui.GUIController;
 import gui.Labels;
 
 import java.time.LocalDate;
-import java.time.Period;
-import java.time.temporal.TemporalUnit;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import unfolding.MyDataEntry;
 import unfolding.MyUnfoldingMap;

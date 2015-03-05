@@ -1,5 +1,6 @@
 package mysql;
 
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -83,9 +84,14 @@ public class DBgui extends DBConnection implements DBIgui {
         try {
             while (res.next()) {
                 // build the category and add her to the list
-                boolean used = res.getInt("AccountId") == 0 ? false : true;
-                Category c = new Category(res.getInt("Id"),
-                        res.getString("Name"), res.getInt("ParentId"), used);
+                // 1 - Count(AccountId)
+                // 2 - category.Id
+                // 3 - Name
+                // 4 - ParentId
+                // 5 - AccountId
+                boolean used = res.getInt(5) == 0 ? false : true;
+                Category c = new Category(res.getInt(2), res.getString(3),
+                        res.getInt(4), used);
                 c.setMatchedAccounts(res.getInt(1));
                 categories.add(c);
             }
@@ -155,6 +161,7 @@ public class DBgui extends DBConnection implements DBIgui {
         PreparedStatement stmt = null;
         ResultSet res = null;
         runningRequest = true;
+        double t = System.currentTimeMillis();
         try {
             stmt = c.prepareStatement("SELECT accounts.Id, TwitterAccountId, AccountName, Verified, Follower, URL, Code FROM accounts "
                     + "JOIN location ON accounts.LocationId=location.Id WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
@@ -165,6 +172,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
+        System.out.println("Account search query: "
+                + (System.currentTimeMillis() - t));
 
         // check sql-result
         if (res == null || Thread.interrupted())
@@ -485,11 +494,12 @@ public class DBgui extends DBConnection implements DBIgui {
     }
 
     @Override
-    public HashMap<String, Integer> getAllRetweetsPerLocation() {
+    public HashMap<Date, HashMap<String, Integer>> getAllRetweetsPerLocation() {
 
         // select the total number of retweets for each country
 
-        String sqlCommand = "SELECT SUM(Counter), Code FROM retweets JOIN location ON retweets.locationId=location.Id GROUP BY locationId;";
+        String sqlCommand = "SELECT SUM(Counter), Code, Day FROM retweets "
+                + "JOIN location ON retweets.locationId=location.Id JOIN day ON day.Id=retweets.DayId GROUP BY locationId, DayId;";
 
         ResultSet res = null;
         Statement stmt = null;
@@ -500,32 +510,38 @@ public class DBgui extends DBConnection implements DBIgui {
             res = stmt.executeQuery(sqlCommand);
         } catch (SQLException e) {
             sqlExceptionLog(e, stmt);
-            return new HashMap<String, Integer>();
+            return new HashMap<Date, HashMap<String, Integer>>();
         } finally {
             runningRequest = false;
         }
 
         if (res == null || Thread.interrupted()) {
-            return new HashMap<String, Integer>();
+            return new HashMap<Date, HashMap<String, Integer>>();
         }
 
         // read the sql-result line per line
-        HashMap<String, Integer> ret = new HashMap<String, Integer>();
+        HashMap<Date, HashMap<String, Integer>> ret = new HashMap<Date, HashMap<String, Integer>>();
         try {
             while (res.next()) {
                 // write mapping between number and country into a hashmap
                 // 1 - SUM(Counter)
                 // 2 - Code
-                ret.put(res.getString(2), res.getInt(1));
+                // 3 - Date
+                Date date = res.getDate(3);
+                if (!ret.containsKey(date)) {
+                    ret.put(date, new HashMap<String, Integer>());
+                }
+                ret.get(date).put(res.getString(2), res.getInt(1));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
-            return new HashMap<String, Integer>();
+            return new HashMap<Date, HashMap<String, Integer>>();
         } catch (NullPointerException e) {
             // do nothing
         } finally {
             closeResultAndStatement(stmt, res);
         }
+
         return ret;
     }
 
@@ -618,7 +634,7 @@ public class DBgui extends DBConnection implements DBIgui {
                 + "JOIN location ON retweets.LocationId = location.Id "
                 + "JOIN day ON retweets.DayId=day.Id "
                 + "JOIN final ON retweets.AccountId=final.val "
-                + "GROUP BY LocationId, DayId;"; 
+                + "GROUP BY LocationId, DayId;";
         String b = "SELECT STRAIGHT_JOIN SUM(Counter), Code FROM retweets "
                 + "JOIN location ON retweets.LocationId = location.Id "
                 + "JOIN final ON retweets.AccountId=final.val "
@@ -731,7 +747,7 @@ public class DBgui extends DBConnection implements DBIgui {
         // read the sql-result line per line
         HashMap<Integer, Account> ret = new HashMap<Integer, Account>();
         try {
-            
+
             while (res.next()) {
                 // 1 - Id
                 // 2 - AccountName
@@ -790,8 +806,8 @@ public class DBgui extends DBConnection implements DBIgui {
                 // 3 - Day (opt.)
                 int id = res.getInt(2);
                 accounts.get(id).addTweet(
-                    new Tweets(byDate ? res.getDate(3) : null, res.getInt(1))
-                );
+                        new Tweets(byDate ? res.getDate(3) : null, res
+                                .getInt(1)));
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);

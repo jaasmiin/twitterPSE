@@ -67,6 +67,32 @@ Exception in thread "Thread-37" java.lang.NullPointerException
 
 
 
+java.util.concurrent.RejectedExecutionException: Task com.sun.javafx.tk.quantum.PaintRenderJob@211e005c rejected from com.sun.javafx.tk.quantum.QuantumRenderer@7a8c97fc[Terminated, pool size = 0, active threads = 0, queued tasks = 0, completed tasks = 12]
+	at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.reject(Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.execute(Unknown Source)
+	at java.util.concurrent.AbstractExecutorService.submit(Unknown Source)
+	at com.sun.javafx.tk.quantum.QuantumRenderer.submitRenderJob(Unknown Source)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.addRenderJob(Unknown Source)
+	at com.sun.javafx.tk.quantum.ViewScene.repaint(Unknown Source)
+	at com.sun.javafx.tk.quantum.PaintCollector.renderAll(Unknown Source)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.pulse(Unknown Source)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.pulse(Unknown Source)
+	at com.sun.javafx.tk.quantum.QuantumToolkit.lambda$runToolkit$363(Unknown Source)
+	at com.sun.javafx.tk.quantum.QuantumToolkit$$Lambda$41/632146760.run(Unknown Source)
+	at com.sun.glass.ui.InvokeLaterDispatcher$Future.run(Unknown Source)
+	at com.sun.glass.ui.win.WinApplication._runLoop(Native Method)
+	at com.sun.glass.ui.win.WinApplication.lambda$null$141(Unknown Source)
+	at com.sun.glass.ui.win.WinApplication$$Lambda$37/728890494.run(Unknown Source)
+	at java.lang.Thread.run(Unknown Source)
+
+
+
+
+
+
+
+
 
 
 

@@ -1,6 +1,5 @@
 package gui;
 
-
 import gui.CallablePSE;
 import gui.GUIElement;
 import gui.GUIElement.UpdateType;
@@ -11,6 +10,7 @@ import gui.SelectionHashList;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.logging.Logger;
 
 import mysql.AccessData;
 import mysql.DBgui;
@@ -64,7 +65,8 @@ public class GUIController extends Application implements Initializable {
 
     private Category categoryRoot;
 
-    private DBgui db;
+    private DBgui db, db2, db3;
+    private Logger log;
     private Stage stage;
 
     @FXML
@@ -78,7 +80,6 @@ public class GUIController extends Application implements Initializable {
 
     private SelectionHashList<Location> locations = new SelectionHashList<Location>();
     private SelectionHashList<Account> accounts = new SelectionHashList<Account>();
-    private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
     private List<Account> dataByAccount = new ArrayList<Account>();
     private TweetsAndRetweets dataByLocationAndDate = new TweetsAndRetweets();
 
@@ -93,7 +94,7 @@ public class GUIController extends Application implements Initializable {
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
 
-    private HashMap<String, Integer> totalNumberOfRetweets;
+    private HashMap<Date, HashMap<String, Integer>> totalNumberOfRetweets;
 
     private Runnable rnbInitDBConnection = new Runnable() {
         @Override
@@ -101,20 +102,29 @@ public class GUIController extends Application implements Initializable {
             boolean success = true;
             String info = Labels.DB_CONNECTING;
             setInfo(info);
+            try {
+                log = LoggerUtil.getLogger();
+            } catch (SecurityException | IOException e1) {
+                e1.printStackTrace();
+                success = false;
+            }
             AccessData accessData = new AccessData("172.22.214.133", "3306",
                     "twitter", "gui", "272b28");
             if (success) {
                 try {
-                    db = new DBgui(accessData, LoggerUtil.getLogger());
-                } catch (SecurityException | IOException
-                        | InstantiationException | IllegalAccessException
-                        | ClassNotFoundException e) {
+                    db = new DBgui(accessData, log);
+                    db2 = new DBgui(accessData, log);
+                    db3 = new DBgui(accessData, log);
+                } catch (SecurityException | InstantiationException
+                        | IllegalAccessException | ClassNotFoundException e) {
                     e.printStackTrace();
                     success = false;
                 }
                 if (success) {
                     try {
                         db.connect();
+                        db2.connect();
+                        db3.connect();
                     } catch (SQLException e) {
                         success = false;
                     }
@@ -156,26 +166,16 @@ public class GUIController extends Application implements Initializable {
             if (allSelectedCategories.size() + selectedLocations.size()
                     + selectedAccounts.size() >= 1) {
                 reloadDataPool.shutdownNow();
-                reloadDataPool = Executors.newFixedThreadPool(3);
+                reloadDataPool = Executors.newFixedThreadPool(2);
                 boolean success = true;
                 try {
-                    Future<TweetsAndRetweets> fDataByLocation = reloadDataPool
-                            .submit(new CallablePSE<TweetsAndRetweets>(
-                                    allSelectedCategories, selectedLocations,
-                                    selectedAccounts) {
-                                @Override
-                                public TweetsAndRetweets call()
-                                        throws Exception {
-                                    return db.getSumOfData(p1, p2, p3, false);
-                                }
-                            });
                     Future<List<Account>> fDataByAccount = reloadDataPool
                             .submit(new CallablePSE<List<Account>>(
                                     allSelectedCategories, selectedLocations,
                                     selectedAccounts) {
                                 @Override
                                 public List<Account> call() throws Exception {
-                                    return db.getAllData(p1, p2, p3, false);
+                                    return db2.getAllData(p1, p2, p3, false);
                                 }
                             });
                     Future<TweetsAndRetweets> fDataByLocationAndDate = reloadDataPool
@@ -185,11 +185,10 @@ public class GUIController extends Application implements Initializable {
                                 @Override
                                 public TweetsAndRetweets call()
                                         throws Exception {
-                                    return db.getSumOfData(p1, p2, p3, true);
+                                    return db3.getSumOfData(p1, p2, p3, true);
                                 }
                             });
                     try {
-                        dataByLocation = fDataByLocation.get();
                         dataByAccount = fDataByAccount.get();
                         dataByLocationAndDate = fDataByLocationAndDate.get();
                     } catch (InterruptedException e) {
@@ -208,7 +207,6 @@ public class GUIController extends Application implements Initializable {
                     update(UpdateType.TWEET_BY_DATE);
                 }
             } else {
-                dataByLocation = new TweetsAndRetweets();
                 dataByAccount = new ArrayList<Account>();
                 dataByLocationAndDate = new TweetsAndRetweets();
                 setInfo(Labels.ERROR_NO_FILTER_SELECTED, info);
@@ -758,15 +756,6 @@ public class GUIController extends Application implements Initializable {
     }
 
     /**
-     * Get data grouped by location.
-     * 
-     * @return data grouped by location or null
-     */
-    public TweetsAndRetweets getDataByLocation() {
-        return dataByLocation;
-    }
-
-    /**
      * Get data grouped by location and date.
      * 
      * @return data grouped by location or null
@@ -916,8 +905,8 @@ public class GUIController extends Application implements Initializable {
      * 
      * @return HashMap with location code and the sum of retweets as integer.
      */
-    private HashMap<String, Integer> getSumOfRetweetsPerLocation() {
-        return db.getAllRetweetsPerLocation();
+    private HashMap<Date, HashMap<String, Integer>> getSumOfRetweetsPerLocation() {
+        return db3.getAllRetweetsPerLocation();
     }
 
     /**
@@ -967,6 +956,7 @@ public class GUIController extends Application implements Initializable {
                 System.out.println("ERROR");
                 return null;
             }
+            // TODO build so that values can be summed over dates
             double relativeValue = retweetsPerLocation.get(key)
                     / ((double) overallCounter * totalNumberOfRetweets.get(key));
             relativeValue *= scale;

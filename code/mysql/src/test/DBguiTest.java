@@ -3,6 +3,7 @@ package test;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -351,14 +352,19 @@ public class DBguiTest {
     /**
      * test for right sum of retweets per country
      */
+    @SuppressWarnings("deprecation")
     @Test
     public void testGetAllRetweetsPerCountry() {
-        HashMap<String, Integer> h = dbg.getAllRetweetsPerLocation();
+        HashMap<Date, HashMap<String, Integer>> h = dbg
+                .getAllRetweetsPerLocation();
 
-        assertTrue(h.containsKey("T0"));
-        assertTrue(h.containsKey("T1"));
-        assertEquals(8, (int) h.get("T0"));
-        assertEquals(10, (int) h.get("T1"));
+        assertEquals(2, h.keySet().size());
+        assertTrue(h.containsKey(new Date(100, 00, 01))); // 2000-01-01
+        assertTrue(h.containsKey(new Date(100, 00, 02))); // 2000-01-02
+        assertEquals(4, (int) h.get(new Date(100, 00, 01)).get("0"));
+        assertEquals(8, (int) h.get(new Date(100, 00, 01)).get("T0"));
+        assertEquals(3, (int) h.get(new Date(100, 00, 02)).get("0"));
+        assertEquals(10, (int) h.get(new Date(100, 00, 02)).get("T1"));
     }
 
     /**

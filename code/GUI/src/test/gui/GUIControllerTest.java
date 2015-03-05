@@ -144,13 +144,13 @@ public class GUIControllerTest {
         assertFalse(guiController.getSelectedAccounts().contains(a));
     }
 
-    @Test
-    public void testGetDataByLocation() {
-        Account a = guiController.getAccounts("Obama").get(0);
-        guiController.setSelectedAccount(a.getId(), true);
-        TweetsAndRetweets tar = guiController.getDataByLocation();
-        assertTrue(tar.getRetweets().size() > 1);
-    }
+    // @Test
+    // public void testGetDataByLocation() {
+    // Account a = guiController.getAccounts("Obama").get(0);
+    // guiController.setSelectedAccount(a.getId(), true);
+    // TweetsAndRetweets tar = guiController.getDataByLocation();
+    // assertTrue(tar.getRetweets().size() > 1);
+    // }
 
     @Test
     public void testSubscribe() throws InterruptedException {

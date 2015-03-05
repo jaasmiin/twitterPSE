@@ -1,5 +1,3 @@
-
-
 package gui.standardMap;
 
 import java.time.LocalDate;
@@ -7,28 +5,30 @@ import java.sql.Date;
 
 /**
  * Util class to do some date transformation
+ * 
  * @author Matthias
- *
+ * 
  */
 public class Dates {
-    /**
-     * converts LocalDate to int numbers
-     * 
-     * @param input
-     *            LocalDate
-     * @return array with 0:Year 1:Month 3:Day null if invalid input
-     */
-    private static int[] convertLocalDateToInt(LocalDate date) {
-        if (date == null) {
-            return null;
-        }
-        int year, month, day;
-        year = date.getYear();
-        month = date.getMonthValue();
-        day = date.getDayOfMonth();
-        int[] result = {year, month, day };
-        return result;
-    }
+
+    // /**
+    // * converts LocalDate to int numbers
+    // *
+    // * @param input
+    // * LocalDate
+    // * @return array with 0:Year 1:Month 3:Day null if invalid input
+    // */
+    // private static int[] convertLocalDateToInt(LocalDate date) {
+    // if (date == null) {
+    // return null;
+    // }
+    // int year, month, day;
+    // year = date.getYear();
+    // month = date.getMonthValue();
+    // day = date.getDayOfMonth();
+    // int[] result = {year, month, day };
+    // return result;
+    // }
 
     /**
      * converts Date to int numbers
@@ -52,7 +52,7 @@ public class Dates {
         month = Integer.parseInt(result[1]);
         day = Integer.parseInt(result[2]);
         // System.out.println(year + "  " + month + "  "+ day);
-        int[] intResult = {year, month , day };
+        int[] intResult = {year, month, day };
         return intResult;
     }
 

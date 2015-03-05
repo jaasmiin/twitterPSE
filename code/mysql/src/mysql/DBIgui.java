@@ -1,5 +1,6 @@
 package mysql;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,10 +35,10 @@ public interface DBIgui {
     /**
      * returns the sum of all retweets for each location
      * 
-     * @return the sum of all retweets for each location (the location as
-     *         locationCode in the hashmap as key) as HashMap<String,Integer>
+     * @return the sum of all retweets for each location per Date (the location
+     *         as locationCode in the hashmap as key) as HashMap<String,Integer>
      */
-    public HashMap<String, Integer> getAllRetweetsPerLocation();
+    public HashMap<Date, HashMap<String, Integer>> getAllRetweetsPerLocation();
 
     /**
      * returns all accounts that match a category- and a location-ID, with the

@@ -1,7 +1,5 @@
 package gui;
 
-import java.time.LocalDate;
-
 /**
  * Class for labels of all GUI labels in buttons, labels, ...
  * 
