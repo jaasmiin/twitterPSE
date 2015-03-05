@@ -12,3 +12,4 @@ TestLog.*
 /externalLibs/
 /project/
 /projectRefs/
+.classpath
