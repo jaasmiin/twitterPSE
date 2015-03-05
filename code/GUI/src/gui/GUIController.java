@@ -81,7 +81,6 @@ public class GUIController extends Application implements Initializable {
     private TweetsAndRetweets dataByLocation = new TweetsAndRetweets();
     private List<Account> dataByAccount = new ArrayList<Account>();
     private TweetsAndRetweets dataByLocationAndDate = new TweetsAndRetweets();
-    private List<Account> dataByAccountAndDate = new ArrayList<Account>();
 
     private HashSet<Integer> selectedCategories = new HashSet<Integer>();
     private HashMap<Integer, Category> categories = new HashMap<Integer, Category>();
@@ -157,7 +156,7 @@ public class GUIController extends Application implements Initializable {
             if (allSelectedCategories.size() + selectedLocations.size()
                     + selectedAccounts.size() >= 1) {
                 reloadDataPool.shutdownNow();
-                reloadDataPool = Executors.newCachedThreadPool();
+                reloadDataPool = Executors.newFixedThreadPool(3);
                 boolean success = true;
                 try {
                     Future<TweetsAndRetweets> fDataByLocation = reloadDataPool
@@ -189,20 +188,10 @@ public class GUIController extends Application implements Initializable {
                                     return db.getSumOfData(p1, p2, p3, true);
                                 }
                             });
-                    Future<List<Account>> fDataByAccountAndDate = reloadDataPool
-                            .submit(new CallablePSE<List<Account>>(
-                                    allSelectedCategories, selectedLocations,
-                                    selectedAccounts) {
-                                @Override
-                                public List<Account> call() throws Exception {
-                                    return db.getAllData(p1, p2, p3, true);
-                                }
-                            });
                     try {
                         dataByLocation = fDataByLocation.get();
                         dataByAccount = fDataByAccount.get();
                         dataByLocationAndDate = fDataByLocationAndDate.get();
-                        dataByAccountAndDate = fDataByAccountAndDate.get();
                     } catch (InterruptedException e) {
                         // another thread loads newer data
                     } catch (ExecutionException e) {
@@ -222,7 +211,6 @@ public class GUIController extends Application implements Initializable {
                 dataByLocation = new TweetsAndRetweets();
                 dataByAccount = new ArrayList<Account>();
                 dataByLocationAndDate = new TweetsAndRetweets();
-                dataByAccountAndDate = new ArrayList<Account>();
                 setInfo(Labels.ERROR_NO_FILTER_SELECTED, info);
                 update(UpdateType.TWEET);
                 update(UpdateType.TWEET_BY_DATE);
@@ -767,15 +755,6 @@ public class GUIController extends Application implements Initializable {
      */
     public List<Account> getDataByAccount() {
         return dataByAccount;
-    }
-
-    /**
-     * Get data grouped by account and date.
-     * 
-     * @return data grouped by account or null
-     */
-    public List<Account> getDataByAccountAndDate() {
-        return dataByAccountAndDate;
     }
 
     /**
