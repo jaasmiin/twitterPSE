@@ -1,5 +1,7 @@
 package gui;
 
+import java.time.LocalDate;
+
 /**
  * Class for labels of all GUI labels in buttons, labels, ...
  * 
@@ -92,6 +94,9 @@ public class Labels {
 
 	public static final String DETAIL_INFORMATION = "Detail information";
 	public static final String TABLE = "Table";
+    public static final String SHOW_PERIOD = "Map currently shows the period from ";
+    public static final String START_SHOW = "Start show";
+    public static final String STOP_SHOW = "Stop show";
    
    
 }

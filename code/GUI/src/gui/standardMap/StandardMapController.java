@@ -46,10 +46,15 @@ public class StandardMapController extends OutputElement implements
     private Text lbl_StandMap_retweetsQuery;
     @FXML
     private Text lbl_StandMap_retweetsTotal;
+    @FXML
+    private Button b_StandMap_StartDateShow;
+    @FXML
+    private Button b_StandMap_StopDateShow;
 
     private LocalDate start = null;
     private LocalDate end = null;
     private StandardMapDialog dialog;
+    private Thread t1 = null;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -58,16 +63,28 @@ public class StandardMapController extends OutputElement implements
         dialog = new StandardMapDialog(superController);
 
         // set DatePicker on Action
+        // set text
+        setText();
         date_SliderMap_startDate.setOnAction(new MyActionHandler());
         date_SliderMap_endDate.setOnAction(new MyActionHandler());
-        b_StandMap_confirm.setText(Labels.STANDMAP_CONFIRM);
+       
         b_StandMap_confirm.setOnMouseClicked(new MyEventHandler());
-        b_StandMap_reset.setText(Labels.STANDMAP_RESET);
+       
         b_StandMap_reset.setOnMouseClicked(new MyEventHandler());
+        b_StandMap_StartDateShow.setOnMouseClicked(new MyEventHandler());
+        b_StandMap_StopDateShow.setOnMouseClicked(new MyEventHandler());
         
-        tabStandardMap.setText(Labels.DETAIL_INFORMATION);
     }
-
+    /**
+     * sets texts
+     */
+    private void setText() {
+        b_StandMap_confirm.setText(Labels.STANDMAP_CONFIRM);
+        b_StandMap_reset.setText(Labels.STANDMAP_RESET);
+        tabStandardMap.setText(Labels.DETAIL_INFORMATION);
+        b_StandMap_StartDateShow.setText(Labels.START_SHOW);
+        b_StandMap_StopDateShow.setText(Labels.STOP_SHOW);
+    }
     @Override
     public void update(UpdateType type) {
         if (type == UpdateType.MAP_DETAIL_INFORMATION) {
@@ -142,6 +159,40 @@ public class StandardMapController extends OutputElement implements
                 dialog.update(UpdateType.TWEET_BY_DATE,
                         date_SliderMap_startDate.getValue(),
                         date_SliderMap_endDate.getValue());
+            }
+            if (event.getSource().equals(b_StandMap_StartDateShow)) {
+                // start Date show
+                LocalDate start;
+                LocalDate end;
+                DateShow show;
+              // System.out.println("Mein Start datum: "
+              //   + date_SliderMap_startDate.getValue());
+              //   System.out.println("Mein end datum: "
+              //   + date_SliderMap_endDate.getValue());
+                 // set start and end dates
+                 if (date_SliderMap_startDate.getValue() == null) {
+                     
+                     start = LocalDate.of(2015, 1, 20);
+                 }
+                 else {
+                     start = date_SliderMap_startDate.getValue();
+                 }
+                 
+                 if (date_SliderMap_endDate.getValue() == null) {
+                     end = LocalDate.now();
+                 }
+                 else {
+                     end = date_SliderMap_endDate.getValue();
+                 }
+                 
+                 show = new DateShow(superController,start,end);
+                  t1 = new Thread(show);
+                 t1.start(); 
+            }
+            if (event.getSource().equals(b_StandMap_StopDateShow)) {
+                 if (t1 != null) {
+                     t1.interrupt();
+                 }
             }
 
         }
