@@ -87,7 +87,6 @@ public class DateShow extends Thread {
     @Override 
     public void run() {
         LocalDate currentDate = startDate.plusDays(0);
-        
         while(!isInterrupted() && (currentDate.isBefore(endDate) || currentDate.isEqual(endDate))) {
             // stops if end of period is reached or thread is interrupted
             
@@ -118,8 +117,7 @@ public class DateShow extends Thread {
             currentDate = currentDate.plusDays(1);
             
         }
-        
-        
+        superController.setDontLoadFromDB(false);
     }
     
 

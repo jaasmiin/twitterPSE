@@ -43,7 +43,7 @@ public abstract class GUIElement implements Initializable {
         /** The map detail information has changed */
         MAP_DETAIL_INFORMATION,
         /** Data grouped by date has changed */
-        TWEET_BY_DATE
+        TWEET_BY_DATE, DONT_LOAD
     };
 
     /**

@@ -118,7 +118,22 @@ public class SelectionOfQueryController extends InputElement implements
                     .getText()));
         } else if (type == UpdateType.ERROR) {
 
+        } else if (type == UpdateType.DONT_LOAD) {
+        	Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					System.err.println("UpdateType.DONT_LOAD");
+		        	setDisable(superController.isDontLoad());	
+				}
+			});
         }
+    }
+    
+    private void setDisable(boolean disabled) {
+    	txtFilterSearch.setDisable(disabled);
+    	tipLocation.setDisable(disabled);
+    	tipCategory.setDisable(disabled);
+    	tipAccount.setDisable(disabled);
     }
 
     @FXML

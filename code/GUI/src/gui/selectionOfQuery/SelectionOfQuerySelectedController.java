@@ -130,6 +130,7 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 		lblCategories.setText(Util.getUppercaseStartAndRestLowerCase(Labels.CATEGORIES));
 	}
 
+	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void update(UpdateType type) {
 		switch (type) {
@@ -142,8 +143,14 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 			case LOCATION_SELECTION:
 				updateSelectedLocation(superController.getSelectedLocations());
 				break;
-			default : 
-				// do nothing
+			case DONT_LOAD:
+				Platform.runLater(new Runnable() {
+					@Override
+					public void run() {
+						setDisable(superController.isDontLoad());	
+					}
+				});
+				break;
 		}					
 	}
 
@@ -215,6 +222,12 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 			int index = lstSelectedLocations.getSelectionModel().getSelectedIndex();
 			lstSelectedLocations.getItems().remove(index);
 		}	
+	}
+	
+	private void setDisable(boolean diabled) {
+		lstSelectedAccounts.setDisable(diabled);
+		lstSelectedCategories.setDisable(diabled);
+		lstSelectedLocations.setDisable(diabled);
 	}
 
 }

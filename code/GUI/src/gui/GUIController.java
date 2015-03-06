@@ -67,6 +67,7 @@ public class GUIController extends Application implements Initializable {
     private Category categoryRoot;
 
     private DBgui db, db2, db3;
+    private boolean dontLoad = false;
     private Logger log;
     private Stage stage;
     private final double EPSILON = 0.00000000001; // Epsilon for floating-point arithmetic
@@ -327,7 +328,8 @@ public class GUIController extends Application implements Initializable {
                 .getAccounts(accountSearchText == null ? "" : accountSearchText);
         if (accountList != null) {
             accounts.updateAll(accountList);
-            update(UpdateType.ACCOUNT);
+//            update(UpdateType.ACCOUNT);
+            // TODO
             setInfo(Labels.ACCOUNTS_LOADED, info);
         } else {
             setInfo(Labels.DB_CONNECTION_ERROR, info);
@@ -709,6 +711,23 @@ public class GUIController extends Application implements Initializable {
         }
     }
 
+    /**
+     * Block reloading.
+     * @param dontLoad is true if reloading should be blocked
+     */
+    public void setDontLoadFromDB(boolean dontLoad) {
+    	this.dontLoad = dontLoad;
+    	update(UpdateType.DONT_LOAD);
+    }
+    
+    /**
+     * Indicates whether reloading is blocked.
+     * @return True if data reloading is blocked, false otherwise
+     */
+    public boolean isDontLoad() {
+    	return dontLoad;
+    }
+    
     /**
      * Get list of all accounts.
      * 

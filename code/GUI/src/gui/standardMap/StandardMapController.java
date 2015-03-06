@@ -185,6 +185,7 @@ public class StandardMapController extends OutputElement implements
                      end = date_SliderMap_endDate.getValue();
                  }
                  
+                 superController.setDontLoadFromDB(true);
                  show = new DateShow(superController,start,end);
                   t1 = new Thread(show);
                  t1.start(); 
@@ -192,6 +193,7 @@ public class StandardMapController extends OutputElement implements
             if (event.getSource().equals(b_StandMap_StopDateShow)) {
                  if (t1 != null) {
                      t1.interrupt();
+                     superController.setDontLoadFromDB(false);
                  }
             }
 
