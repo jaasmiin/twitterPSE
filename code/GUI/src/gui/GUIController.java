@@ -328,8 +328,7 @@ public class GUIController extends Application implements Initializable {
                 .getAccounts(accountSearchText == null ? "" : accountSearchText);
         if (accountList != null) {
             accounts.updateAll(accountList);
-//            update(UpdateType.ACCOUNT);
-            // TODO
+            update(UpdateType.ACCOUNT);
             setInfo(Labels.ACCOUNTS_LOADED, info);
         } else {
             setInfo(Labels.DB_CONNECTION_ERROR, info);
@@ -444,6 +443,16 @@ public class GUIController extends Application implements Initializable {
         });
     }
 
+    public void setInfo(String info, Integer timeToShow) {
+    	Platform.runLater(new PPRunnable<String, Integer>(info, timeToShow) {
+			@Override
+			public void run(String info, Integer timeToShow) {
+				lstInfo.getItems().add(info);
+				Platform.runLater(new InfoRunnable(lstInfo, info, timeToShow));
+			}
+		});
+    }
+    
     /**
      * Get list of all categories
      * 

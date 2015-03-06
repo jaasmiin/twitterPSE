@@ -4,8 +4,12 @@ package gui.standardMap;
 import gui.GUIController;
 import gui.Labels;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+
+import org.apache.log4j.helpers.DateTimeDateFormat;
 
 import unfolding.MyDataEntry;
 import unfolding.MyUnfoldingMap;
@@ -100,17 +104,14 @@ public class DateShow extends Thread {
                 map.redraw();
             }
             // show the displayed day
-            superController.setInfo(Labels.SHOW_PERIOD + startDate + " to " + currentDate);
+            superController.setInfo("Map currently shows the period from " + startDate + " to " + currentDate, DELAY_PER_DAY);
+            
             try {
                 Thread.sleep(DELAY_PER_DAY);
             } catch (InterruptedException e) {
-                // thread is interrupted (probably by user)
-                superController.setInfo("", Labels.SHOW_PERIOD + startDate + " to " + currentDate);
+                superController.setInfo(Labels.SHOW_INTERRUPTED, DELAY_PER_DAY);
                 return;
             }
-            
-            // delete message
-            superController.setInfo("", "Map currently shows the period from " + startDate + " to " + currentDate);
             
             calculatedData = null;
             

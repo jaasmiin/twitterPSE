@@ -95,6 +95,7 @@ public class Labels {
     public static final String SHOW_PERIOD = "Map currently shows the period from ";
     public static final String START_SHOW = "Start show";
     public static final String STOP_SHOW = "Stop show";
+	public static final String SHOW_INTERRUPTED = "Show has been interrupted.";
    
    
 }

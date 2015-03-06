@@ -122,7 +122,6 @@ public class SelectionOfQueryController extends InputElement implements
         	Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					System.err.println("UpdateType.DONT_LOAD");
 		        	setDisable(superController.isDontLoad());	
 				}
 			});
