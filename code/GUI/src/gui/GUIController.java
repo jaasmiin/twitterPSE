@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,6 +69,7 @@ public class GUIController extends Application implements Initializable {
     private DBgui db, db2, db3;
     private Logger log;
     private Stage stage;
+    private final double EPSILON = 0.00000000001; // Epsilon for floating-point arithmetic
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -94,7 +96,8 @@ public class GUIController extends Application implements Initializable {
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
 
-    private HashMap<Date, HashMap<String, Integer>> totalNumberOfRetweets;
+    private HashMap<Date, HashMap<String, Integer>> totalNumberOfRetweets = null;
+    private List<Location> allLocationsInDB = null;
 
     private Runnable rnbInitDBConnection = new Runnable() {
         @Override
@@ -903,7 +906,7 @@ public class GUIController extends Application implements Initializable {
     /**
      * Get the sum of all retweets per location
      * 
-     * @return HashMap with location code and the sum of retweets as integer.
+     * @return HashMap with date as key and a HashMap with location code and the sum of retweets as integer per date as value.
      */
     private HashMap<Date, HashMap<String, Integer>> getSumOfRetweetsPerLocation() {
         return db3.getAllRetweetsPerLocation();
@@ -912,17 +915,22 @@ public class GUIController extends Application implements Initializable {
     /**
      * calculates the displayed value per country
      * 
-     * given: a category, country, accounts combination calculates:
+     * given: a category, country, accounts combination, a period of time:
      * 
-     * number of retweets for that combination in that country 1
-     * ------------------------------------------------------- *
-     * ------------------------------------ * scale number of retweets for that
-     * combination number of retweets in that country
+     * x :=number of retweets for that combination in that country in period
+     * y :=overall number of retweets for that country in period
+     * scale := scale factor (default == 1)
+     * 
+     * output = x / y * scale
      * 
      * 
+     * @param start 
+     *          start date of the requested period of time, if null start is interpreted an LocalDate.MIN
+     * @param end 
+     *          end date of the requested period of time, if null end is interpreted an LocalDate.MAX
      * @param retweetsPerLocation
      *            number of retweets for each country in a
-     *            category/country/accounts combination
+     *            category/country/accounts combination in the requested period of time
      * @param scale
      *            the value in scale is multiplied with the calculated relative
      *            factor to point out differences, it has to be positive
@@ -932,41 +940,65 @@ public class GUIController extends Application implements Initializable {
      *         positive
      */
     public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
-            HashMap<String, Integer> retweetsPerLocation, double scale) {
-        if (scale <= 0.0000000000001) {
+            HashMap<String, Integer> retweetsPerLocation, double scale, LocalDate start, LocalDate end) {
+        if (scale <= EPSILON) {
             return null;
         }
-
-        HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
-
-        if (totalNumberOfRetweets == null) {
-            totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+        if(allLocationsInDB == null) {
+            allLocationsInDB = getLocations();
         }
-        // calculate overall number of retweets in this special combination
+        
+        HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
+        HashMap<String, Integer> hashMapOverallNumber = getOverallNumberOfRetweetsForPeriod(start, end);
+        if (hashMapOverallNumber == null) {
+            return null;
+        }
+        
+        // calculate overall number of retweets for each country in this special combination
         Set<String> keySet = retweetsPerLocation.keySet();
         int overallCounter = 0;
         for (String key : keySet) {
             overallCounter += retweetsPerLocation.get(key);
         }
-
-        // calculate relative value
+        
         double minValue = Double.POSITIVE_INFINITY;
-        for (String key : keySet) {
-            if (!totalNumberOfRetweets.containsKey(key)) {
-                System.out.println("ERROR");
-                return null;
+        
+        // calculate relative value and iterate over all countries
+        // available in the DB not just the countries in the query
+        //Iterator iterator = allLocationsInDB.listIterator();
+        System.out.println(allLocationsInDB.size());
+        for (int i = 0; i < allLocationsInDB.size(); i++) {
+            
+            String key = ((Location) allLocationsInDB.get(i)).getLocationCode();
+            
+            // catch case if country is not set in the query
+            if (!hashMapOverallNumber.containsKey(key)) {
+                hashMapOverallNumber.put(key, 0);
+                //System.out.println("setze overallnumber 0 für ländercode " + key );
             }
-            // TODO build so that values can be summed over dates
+            if (!retweetsPerLocation.containsKey(key)) {
+                retweetsPerLocation.put(key, 0);
+            }
+            
             double relativeValue = retweetsPerLocation.get(key)
-                    / ((double) overallCounter * totalNumberOfRetweets.get(key));
+                    / ((double) overallCounter * hashMapOverallNumber.get(key));
             relativeValue *= scale;
-            minValue = Math.min(minValue, relativeValue);
-
+            if (!Double.isNaN(relativeValue)) {
+                minValue = Math.min(minValue, relativeValue);
+            }
+            else {
+                relativeValue = 0;
+            }
+            
+            
             result.put(
                     key,
-                    new MyDataEntry(relativeValue, key, totalNumberOfRetweets
+                    new MyDataEntry(relativeValue, key, hashMapOverallNumber
                             .get(key), retweetsPerLocation.get(key)));
+            System.out.println(relativeValue + "  " +key + "  " + hashMapOverallNumber
+                            .get(key)+ "  " + retweetsPerLocation.get(key));
         }
+        System.out.println(minValue);
         Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, MyDataEntry> entry = it.next();
@@ -976,7 +1008,63 @@ public class GUIController extends Application implements Initializable {
 
         return result;
     }
-
+    /**
+     * calculates the overall number of retweets per country within the requested period of time
+     * @param start start date, if null start is interpreted an LocalDate.MIN
+     * @param end end date, if null end is interpreted an LocalDate.MAX
+     * @return HashMap with countryCode as key and overall number of retweets within the period of time as
+     * value or null if input is invalid
+     */
+    private HashMap<String, Integer> getOverallNumberOfRetweetsForPeriod(LocalDate start, LocalDate end) {
+        
+        HashMap<String, Integer> result = new HashMap<String, Integer>();
+        if (totalNumberOfRetweets == null) {
+            totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+        }
+        Set<Date> dateSet = totalNumberOfRetweets.keySet();
+        if (dateSet == null) {
+            return null;
+        }
+        // check start end
+        if (start == null) {
+            start = LocalDate.MIN;
+        }
+        if (end == null) {
+            end = LocalDate.MAX;
+        }
+        
+        // iterate over all dates to sum the number of retweets
+        for (Date d : dateSet) {
+            
+            LocalDate currentDate = gui.standardMap.Dates.buildLocalDate(d);
+          
+            if (currentDate == null) {
+                return null;
+            }
+            
+            if(gui.standardMap.Dates.inRange(start, end, currentDate)) {
+                // currentDate is in requested period of time
+                HashMap<String, Integer> curMap = totalNumberOfRetweets.get(d);
+                Set<String>  curKeySet = curMap.keySet();
+                
+                // iterate over all countries at this specific date
+                for (String s : curKeySet) {
+                    if (result.containsKey(s)) {
+                        Integer counter = result.get(s);
+                        counter = counter.intValue() + curMap.get(s);
+                        result.put(s, counter);
+                    }
+                    else {
+                        result.put(s, curMap.get(s));
+                    }
+                }
+            }
+            
+        }
+        return result;
+        
+        
+    }
     private abstract class UpdateRunnable implements Runnable {
         protected UpdateType type;
         protected GUIElement element;

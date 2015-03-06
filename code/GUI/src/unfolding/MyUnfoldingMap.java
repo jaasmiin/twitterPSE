@@ -217,6 +217,7 @@ public final class MyUnfoldingMap extends PApplet {
      */
     public void update(HashMap<String, MyDataEntry> changedEntries) {
         resetMarkers();
+        maxValue = 0;
         if (setValues != null && !setValues.isEmpty()) {
             for (String id : setValues) {
 
@@ -224,6 +225,7 @@ public final class MyUnfoldingMap extends PApplet {
 
                 edit.setValue(0);
                 edit.setRetweetsLandFiltered(0);
+                edit.setRetweetsLand(666);
                 dataEntriesMap.put(id, edit);
             }
             setValues.clear();
