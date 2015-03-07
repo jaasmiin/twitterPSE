@@ -1010,7 +1010,7 @@ public class GUIController extends Application implements Initializable {
         while (it.hasNext()) {
             Entry<String, MyDataEntry> entry = it.next();
             entry.getValue().setValue(
-                    Math.log10(entry.getValue().getValue() + (1 - minValue)));
+                    Math.log10(entry.getValue().getValue() + 1));
         }
 
         return result;
