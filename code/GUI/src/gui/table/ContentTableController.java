@@ -67,7 +67,7 @@ public class ContentTableController extends OutputElement implements Initializab
 		Platform.runLater(new RunnableParameter<UpdateType>(type) {
 			@Override
 			public void run() {
-				if (parameter == UpdateType.TWEET) {
+				if (parameter == UpdateType.TWEET_BY_ACCOUNT) {
 					fillData(superController.getDataByAccount());			
 					table.setItems(data);
 				} else if (parameter == UpdateType.LOCATION) {

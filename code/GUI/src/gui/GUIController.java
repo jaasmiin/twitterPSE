@@ -1,6 +1,5 @@
 package gui;
 
-import gui.CallablePSE;
 import gui.GUIElement;
 import gui.GUIElement.UpdateType;
 import gui.InfoRunnable;
@@ -22,10 +21,8 @@ import java.util.Map.Entry;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.Stack;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.logging.Logger;
 
@@ -148,8 +145,6 @@ public class GUIController extends Application implements Initializable {
     private Runnable rnbReloadData = new Runnable() {
         @Override
         public void run() {
-            String info = Labels.DATA_LOADING;
-            setInfo(info);
             List<Integer> selectedLocations = new ArrayList<Integer>();
             for (Location l : locations.getSelected()) {
                 selectedLocations.add(l.getId());
@@ -160,62 +155,46 @@ public class GUIController extends Application implements Initializable {
             }
             List<Integer> allSelectedCategories = new ArrayList<Integer>();
             for (Integer id : selectedCategories) {
-                // allSelectedCategories.addAll(getSelectedChildCategories(id));
-                // changed data in database, so that each account is listed in
-                // each
-                // parent category
                 allSelectedCategories.add(id);
             }
-
+            reloadDataPool.shutdownNow();
             if (allSelectedCategories.size() + selectedLocations.size()
                     + selectedAccounts.size() >= 1) {
-                reloadDataPool.shutdownNow();
                 reloadDataPool = Executors.newFixedThreadPool(2);
-                boolean success = true;
-                try {
-                    Future<List<Account>> fDataByAccount = reloadDataPool
-                            .submit(new CallablePSE<List<Account>>(
-                                    allSelectedCategories, selectedLocations,
-                                    selectedAccounts) {
-                                @Override
-                                public List<Account> call() throws Exception {
-                                    return db2.getAllData(p1, p2, p3, false);
-                                }
-                            });
-                    Future<TweetsAndRetweets> fDataByLocationAndDate = reloadDataPool
-                            .submit(new CallablePSE<TweetsAndRetweets>(
-                                    allSelectedCategories, selectedLocations,
-                                    selectedAccounts) {
-                                @Override
-                                public TweetsAndRetweets call()
-                                        throws Exception {
-                                    return db3.getSumOfData(p1, p2, p3, true);
-                                }
-                            });
-                    try {
-                        dataByAccount = fDataByAccount.get();
-                        dataByLocationAndDate = fDataByLocationAndDate.get();
-                    } catch (InterruptedException e) {
-                        // another thread loads newer data
-                    } catch (ExecutionException e) {
-                        success = false;
-                        setInfo(Labels.DB_CONNECTION_ERROR, info);
+                reloadDataPool.submit(new PPPRunnable<List<Integer>, List<Integer>, List<Integer>>(
+                		selectedLocations, selectedAccounts, allSelectedCategories) {
+					@Override
+					public void run(List<Integer> l, List<Integer> a, List<Integer> c) {
+						String info = Labels.DATA_BY_ACCOUNT_LOADING;
+			            setInfo(info);
+						boolean success = true;
+						dataByAccount = db2.getAllData(c, l, a, false);
+						if (success) {
+		                    setInfo(Labels.DATA_BY_ACCOUNT_LOADED, info);
+		                    update(UpdateType.TWEET_BY_ACCOUNT);
+		                }
+					}
+				});
+                reloadDataPool.submit(new PPPRunnable<List<Integer>, List<Integer>, List<Integer>>(
+                		selectedLocations, selectedAccounts, allSelectedCategories) {
+                    @Override
+                    public void run(List<Integer> l, List<Integer> a, List<Integer> c) {
+                    	String info = Labels.DATA_BY_LOCATION_LOADING;
+			            setInfo(info);
+						boolean success = true;
+						dataByLocationAndDate = db3.getSumOfData(c, l, a, true);
+						if (success) {
+		                    setInfo(Labels.DATA_BY_LOCATION_LOADED, info);
+		                    update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
+		                }
                     }
-                } catch (IllegalArgumentException e) {
-                    success = false;
-                    setInfo(Labels.DB_CONNECTION_ERROR, info);
-                }
-                if (success) {
-                    setInfo(Labels.DATA_LOADED, info);
-                    update(UpdateType.TWEET);
-                    update(UpdateType.TWEET_BY_DATE);
-                }
+                });
             } else {
                 dataByAccount = new ArrayList<Account>();
                 dataByLocationAndDate = new TweetsAndRetweets();
-                setInfo(Labels.ERROR_NO_FILTER_SELECTED, info);
-                update(UpdateType.TWEET);
-                update(UpdateType.TWEET_BY_DATE);
+                setInfo(Labels.ERROR_NO_FILTER_SELECTED, 1500);
+                update(UpdateType.TWEET_BY_ACCOUNT);
+                update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
             }
         }
     };

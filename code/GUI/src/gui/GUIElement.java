@@ -22,8 +22,6 @@ public abstract class GUIElement implements Initializable {
      * 
      */
     public static enum UpdateType {
-    	/** Data has changed */
-    	TWEET,
     	/** Categories have changed */
     	CATEGORY, 
     	/** Locations have changed */
@@ -42,8 +40,12 @@ public abstract class GUIElement implements Initializable {
         CLOSE, GUI_STARTED,
         /** The map detail information has changed */
         MAP_DETAIL_INFORMATION,
-        /** Data grouped by date has changed */
-        TWEET_BY_DATE, DONT_LOAD
+        /** Components should not reload data attribute has changed. **/
+        DONT_LOAD,
+        /** Data grouped by account has changed */
+        TWEET_BY_ACCOUNT,
+        /** Data grouped by date and location has changed */
+        TWEET_BY_LOCATION_BY_DATE
     };
 
     /**
