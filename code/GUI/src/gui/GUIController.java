@@ -63,6 +63,9 @@ import util.LoggerUtil;
 public class GUIController extends Application implements Initializable {
 
     private static GUIController instance = null;
+    private static final double EPSILON = 0.00000000001; // Epsilon for
+                                                         // floating-point
+                                                         // arithmetic
 
     private Category categoryRoot;
 
@@ -70,7 +73,6 @@ public class GUIController extends Application implements Initializable {
     private boolean dontLoad = false;
     private Logger log;
     private Stage stage;
-    private final double EPSILON = 0.00000000001; // Epsilon for floating-point arithmetic
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -219,6 +221,48 @@ public class GUIController extends Application implements Initializable {
             }
         }
     };
+    
+    private Runnable rnbReloadLocation = new Runnable() {
+        @Override
+        public void run() {
+            String info = Labels.LOCATIONS_LOADING;
+            setInfo(info);
+            locations.removeAll();
+            List<Location> locationList = db.getLocations();
+            if (locationList != null) {
+                locations.updateAll(locationList);
+                update(UpdateType.LOCATION);
+                setInfo(Labels.LOCATIONS_LOADED, info);
+            } else {
+                setInfo(Labels.DB_CONNECTION_ERROR, info);
+            }
+        }
+    };
+
+    private Runnable rnbReloadAccounts = new Runnable() {
+        @Override
+        public void run() {
+            reloadAccounts();
+        }
+    };
+
+    private Runnable rnbReloadCategories = new Runnable() {
+        @Override
+        public void run() {
+            String info = Labels.CATEGORIES_LOADING;
+            setInfo(info);
+            categoryRoot = db.getCategories();
+            if (categoryRoot != null) {
+                reloadCategoryHashMap();
+                update(UpdateType.CATEGORY);
+                setInfo(Labels.CATEGORIES_LOADED, info);
+            } else {
+                categoryRoot = new Category(0, Labels.ERROR, 0, false);
+                update(UpdateType.ERROR);
+                setInfo(Labels.DB_CONNECTION_ERROR, info);
+            }
+        }
+    };
 
     /**
      * Create a GUIController and set the singelton instance.
@@ -335,48 +379,6 @@ public class GUIController extends Application implements Initializable {
         }
     }
 
-    private Runnable rnbReloadLocation = new Runnable() {
-        @Override
-        public void run() {
-            String info = Labels.LOCATIONS_LOADING;
-            setInfo(info);
-            locations.removeAll();
-            List<Location> locationList = db.getLocations();
-            if (locationList != null) {
-                locations.updateAll(locationList);
-                update(UpdateType.LOCATION);
-                setInfo(Labels.LOCATIONS_LOADED, info);
-            } else {
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-        }
-    };
-
-    private Runnable rnbReloadAccounts = new Runnable() {
-        @Override
-        public void run() {
-            reloadAccounts();
-        }
-    };
-
-    private Runnable rnbReloadCategories = new Runnable() {
-        @Override
-        public void run() {
-            String info = Labels.CATEGORIES_LOADING;
-            setInfo(info);
-            categoryRoot = db.getCategories();
-            if (categoryRoot != null) {
-                reloadCategoryHashMap();
-                update(UpdateType.CATEGORY);
-                setInfo(Labels.CATEGORIES_LOADED, info);
-            } else {
-                categoryRoot = new Category(0, Labels.ERROR, 0, false);
-                update(UpdateType.ERROR);
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-        }
-    };
-
     private void reloadCategoryHashMap() {
         categories.clear();
         reloadCategoryHashMapRec(categoryRoot);
@@ -444,15 +446,15 @@ public class GUIController extends Application implements Initializable {
     }
 
     public void setInfo(String info, Integer timeToShow) {
-    	Platform.runLater(new PPRunnable<String, Integer>(info, timeToShow) {
-			@Override
-			public void run(String info, Integer timeToShow) {
-				lstInfo.getItems().add(info);
-				Platform.runLater(new InfoRunnable(lstInfo, info, timeToShow));
-			}
-		});
+        Platform.runLater(new PPRunnable<String, Integer>(info, timeToShow) {
+            @Override
+            public void run(String info, Integer timeToShow) {
+                lstInfo.getItems().add(info);
+                Platform.runLater(new InfoRunnable(lstInfo, info, timeToShow));
+            }
+        });
     }
-    
+
     /**
      * Get list of all categories
      * 
@@ -722,21 +724,24 @@ public class GUIController extends Application implements Initializable {
 
     /**
      * Block reloading.
-     * @param dontLoad is true if reloading should be blocked
+     * 
+     * @param dontLoad
+     *            is true if reloading should be blocked
      */
     public void setDontLoadFromDB(boolean dontLoad) {
-    	this.dontLoad = dontLoad;
-    	update(UpdateType.DONT_LOAD);
+        this.dontLoad = dontLoad;
+        update(UpdateType.DONT_LOAD);
     }
-    
+
     /**
      * Indicates whether reloading is blocked.
+     * 
      * @return True if data reloading is blocked, false otherwise
      */
     public boolean isDontLoad() {
-    	return dontLoad;
+        return dontLoad;
     }
-    
+
     /**
      * Get list of all accounts.
      * 
@@ -934,7 +939,8 @@ public class GUIController extends Application implements Initializable {
     /**
      * Get the sum of all retweets per location
      * 
-     * @return HashMap with date as key and a HashMap with location code and the sum of retweets as integer per date as value.
+     * @return HashMap with date as key and a HashMap with location code and the
+     *         sum of retweets as integer per date as value.
      */
     private HashMap<Date, HashMap<String, Integer>> getSumOfRetweetsPerLocation() {
         return db3.getAllRetweetsPerLocation();
@@ -945,20 +951,23 @@ public class GUIController extends Application implements Initializable {
      * 
      * given: a category, country, accounts combination, a period of time:
      * 
-     * x :=number of retweets for that combination in that country in period
-     * y :=overall number of retweets for that country in period
-     * scale := scale factor (default == 1)
+     * x :=number of retweets for that combination in that country in period y
+     * :=overall number of retweets for that country in period scale := scale
+     * factor (default == 1)
      * 
      * output = x / y * scale
      * 
      * 
-     * @param start 
-     *          start date of the requested period of time, if null start is interpreted an LocalDate.MIN
-     * @param end 
-     *          end date of the requested period of time, if null end is interpreted an LocalDate.MAX
+     * @param start
+     *            start date of the requested period of time, if null start is
+     *            interpreted an LocalDate.MIN
+     * @param end
+     *            end date of the requested period of time, if null end is
+     *            interpreted an LocalDate.MAX
      * @param retweetsPerLocation
      *            number of retweets for each country in a
-     *            category/country/accounts combination in the requested period of time
+     *            category/country/accounts combination in the requested period
+     *            of time
      * @param scale
      *            the value in scale is multiplied with the calculated relative
      *            factor to point out differences, it has to be positive
@@ -968,63 +977,66 @@ public class GUIController extends Application implements Initializable {
      *         positive
      */
     public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
-            HashMap<String, Integer> retweetsPerLocation, double scale, LocalDate start, LocalDate end) {
+            HashMap<String, Integer> retweetsPerLocation, double scale,
+            LocalDate start, LocalDate end) {
         if (scale <= EPSILON) {
             return null;
         }
-        if(allLocationsInDB == null) {
+        if (allLocationsInDB == null) {
             allLocationsInDB = getLocations();
         }
-        
+
         HashMap<String, MyDataEntry> result = new HashMap<String, MyDataEntry>();
-        HashMap<String, Integer> hashMapOverallNumber = getOverallNumberOfRetweetsForPeriod(start, end);
+        HashMap<String, Integer> hashMapOverallNumber = getOverallNumberOfRetweetsForPeriod(
+                start, end);
         if (hashMapOverallNumber == null) {
             return null;
         }
-        
-        // calculate overall number of retweets for each country in this special combination
+
+        // calculate overall number of retweets for each country in this special
+        // combination
         Set<String> keySet = retweetsPerLocation.keySet();
         int overallCounter = 0;
         for (String key : keySet) {
             overallCounter += retweetsPerLocation.get(key);
         }
-        
+
         double minValue = Double.POSITIVE_INFINITY;
-        
+
         // calculate relative value and iterate over all countries
         // available in the DB not just the countries in the query
-        //Iterator iterator = allLocationsInDB.listIterator();
+        // Iterator iterator = allLocationsInDB.listIterator();
         System.out.println(allLocationsInDB.size());
         for (int i = 0; i < allLocationsInDB.size(); i++) {
-            
+
             String key = ((Location) allLocationsInDB.get(i)).getLocationCode();
-            
+
             // catch case if country is not set in the query
             if (!hashMapOverallNumber.containsKey(key)) {
                 hashMapOverallNumber.put(key, 0);
-                //System.out.println("setze overallnumber 0 für ländercode " + key );
+                // System.out.println("setze overallnumber 0 für ländercode " +
+                // key );
             }
             if (!retweetsPerLocation.containsKey(key)) {
                 retweetsPerLocation.put(key, 0);
             }
-            
+
             double relativeValue = retweetsPerLocation.get(key)
                     / ((double) overallCounter * hashMapOverallNumber.get(key));
             relativeValue *= scale;
             if (!Double.isNaN(relativeValue)) {
                 minValue = Math.min(minValue, relativeValue);
-            }
-            else {
+            } else {
                 relativeValue = 0;
             }
-            
-            
+
             result.put(
                     key,
                     new MyDataEntry(relativeValue, key, hashMapOverallNumber
                             .get(key), retweetsPerLocation.get(key)));
-            System.out.println(relativeValue + "  " +key + "  " + hashMapOverallNumber
-                            .get(key)+ "  " + retweetsPerLocation.get(key));
+            System.out.println(relativeValue + "  " + key + "  "
+                    + hashMapOverallNumber.get(key) + "  "
+                    + retweetsPerLocation.get(key));
         }
         System.out.println(minValue);
         Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
@@ -1036,15 +1048,21 @@ public class GUIController extends Application implements Initializable {
 
         return result;
     }
+
     /**
-     * calculates the overall number of retweets per country within the requested period of time
-     * @param start start date, if null start is interpreted an LocalDate.MIN
-     * @param end end date, if null end is interpreted an LocalDate.MAX
-     * @return HashMap with countryCode as key and overall number of retweets within the period of time as
-     * value or null if input is invalid
+     * calculates the overall number of retweets per country within the
+     * requested period of time
+     * 
+     * @param start
+     *            start date, if null start is interpreted an LocalDate.MIN
+     * @param end
+     *            end date, if null end is interpreted an LocalDate.MAX
+     * @return HashMap with countryCode as key and overall number of retweets
+     *         within the period of time as value or null if input is invalid
      */
-    private HashMap<String, Integer> getOverallNumberOfRetweetsForPeriod(LocalDate start, LocalDate end) {
-        
+    private HashMap<String, Integer> getOverallNumberOfRetweetsForPeriod(
+            LocalDate start, LocalDate end) {
+
         HashMap<String, Integer> result = new HashMap<String, Integer>();
         if (totalNumberOfRetweets == null) {
             totalNumberOfRetweets = getSumOfRetweetsPerLocation();
@@ -1060,39 +1078,38 @@ public class GUIController extends Application implements Initializable {
         if (end == null) {
             end = LocalDate.MAX;
         }
-        
+
         // iterate over all dates to sum the number of retweets
         for (Date d : dateSet) {
-            
+
             LocalDate currentDate = gui.standardMap.Dates.buildLocalDate(d);
-          
+
             if (currentDate == null) {
                 return null;
             }
-            
-            if(gui.standardMap.Dates.inRange(start, end, currentDate)) {
+
+            if (gui.standardMap.Dates.inRange(start, end, currentDate)) {
                 // currentDate is in requested period of time
                 HashMap<String, Integer> curMap = totalNumberOfRetweets.get(d);
-                Set<String>  curKeySet = curMap.keySet();
-                
+                Set<String> curKeySet = curMap.keySet();
+
                 // iterate over all countries at this specific date
                 for (String s : curKeySet) {
                     if (result.containsKey(s)) {
                         Integer counter = result.get(s);
                         counter = counter.intValue() + curMap.get(s);
                         result.put(s, counter);
-                    }
-                    else {
+                    } else {
                         result.put(s, curMap.get(s));
                     }
                 }
             }
-            
+
         }
         return result;
-        
-        
+
     }
+
     private abstract class UpdateRunnable implements Runnable {
         protected UpdateType type;
         protected GUIElement element;

@@ -9,13 +9,18 @@ import gui.GUIElement;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
-import mysql.result.TweetsAndRetweets;
 
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * class to test some basic functionality of the GUIController
+ * 
+ * @author Maximilian Awiszus
+ * 
+ */
 public class GUIControllerTest {
 
     private static GUIController guiController;
