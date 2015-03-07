@@ -6,6 +6,7 @@ import java.util.List;
 
 import gui.GUIController;
 import gui.GUIElement;
+import gui.GUIElement.UpdateType;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
@@ -104,22 +105,40 @@ public class GUIControllerTest {
     /**
      * Test loading data grouped by location containing
      * accounts with 'Katy'.
+     * @throws InterruptedException if problem with waiting
      */
     @Test
-    public void testGetDataByLocation() {
+    public void testGetDataByLocation() throws InterruptedException {
+    	GUIElement e = new GUIElement() {
+    		private String locationCode = "";
+			@Override
+			public void update(UpdateType type) {
+				if (type == UpdateType.TWEET_BY_LOCATION_BY_DATE) {
+					TweetsAndRetweets tr = guiController.getDataByLocationAndDate();
+					int no = 0;
+			    	String loc = "";
+			    	for (mysql.result.Retweets r : tr.getRetweets()) {
+			    		if (!r.getLocationCode().equals("0") && no < r.getCounter()) {
+			    			loc = r.getLocationCode();
+			    			no = r.getCounter();
+			    		}
+			    	}
+					locationCode = loc;
+				}
+			}
+			@Override
+			public String toString() {
+				return locationCode;
+			}
+		};
+    	guiController.subscribe(e);
     	List<Account> accounts = guiController.getAccounts("Katy");
     	guiController.setSelectedAccount(accounts.get(0).getId(), true);
-    	TweetsAndRetweets tr = guiController.getDataByLocationAndDate();
-    	int no = 0;
-    	String loc = "";
-    	for (mysql.result.Retweets r : tr.getRetweets()) {
-    		if (no < r.getCounter()) {
-    			loc = r.getLocationCode();
-    			no = r.getCounter();
-    		}
+    	while (e.toString().equals("")) {
+    		Thread.sleep(500);
     	}
-    	System.out.println(loc);
-    	assertTrue(loc.equals("US"));
+    	System.err.println("Location code: " + e.toString());
+    	assertTrue(e.toString().equals("US"));
     }
     
     /**
@@ -213,41 +232,42 @@ public class GUIControllerTest {
     }
 
     /**
-     * Test subscribing at the GUIController.
+     * Test subscribing at the GUIController and getting
+     * an update within 1s.
      * @throws InterruptedException can be thrown
      */
     @Test
     public void testSubscribe() throws InterruptedException {
-    	/**
-    	 * Class for testing the subscription.
-    	 * @author Maximilian Awiszus
-    	 */
-        class TestGUIElement extends GUIElement {
-            private boolean updated = false;
-
-            @Override
-            public void update(UpdateType type) {
-                if (type == UpdateType.CATEGORY_SELECTION) {
-                    updated = true;
-                }
-            }
-            /**
-             * True if element has been updated
-             * with type CATEGORY_SELECTION
-             * @return true if element has been updated
-             * with type CATEGORY_SELECTION
-             */
-            public boolean isUpdated() {
-                return updated;
-            }
-
-        }
         TestGUIElement e = new TestGUIElement();
         guiController.subscribe(e);
-        guiController.setSelectedCategory(guiController.getCategoryRoot()
-                .getId(), true);
-        System.out.println("assertTrue(e.isUpdated());");
-        assertTrue(e.isUpdated());
+        guiController.setDontLoadFromDB(true);
         Thread.sleep(1000);
+        assertTrue(e.isUpdated());
+        guiController.setDontLoadFromDB(false);
+    }
+    
+    /**
+	 * Class for testing the subscription.
+	 * @author Maximilian Awiszus
+	 */
+    class TestGUIElement extends GUIElement {
+        private boolean updated = false;
+
+        @Override
+        public void update(UpdateType type) {
+            if (type == UpdateType.DONT_LOAD) {
+                updated = true;
+            }
+        }
+        /**
+         * True if element has been updated
+         * with type CATEGORY_SELECTION
+         * @return true if element has been updated
+         * with type CATEGORY_SELECTION
+         */
+        public boolean isUpdated() {
+            return updated;
+        }
+
     }
 }

@@ -114,7 +114,6 @@ public class SelectionOfQueryController extends InputElement implements
             updateCategory(superController.getCategoryRoot(txtFilterSearch
                     .getText()));
         } else if (type == UpdateType.ACCOUNT) {
-        	System.err.println("UpdateType.ACCOUNT");
             updateAccounts(superController.getAccounts(txtFilterSearch
                     .getText()));
         } else if (type == UpdateType.ERROR) {

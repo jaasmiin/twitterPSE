@@ -91,10 +91,10 @@ public class GUIController extends Application implements Initializable {
     private ExecutorService listLoaderPool = Executors.newCachedThreadPool();
     private ExecutorService reloadDataPool = Executors.newCachedThreadPool();
     private ExecutorService threadPool = Executors.newCachedThreadPool();
-
+    
     private String accountSearchText = "";
     private MyDataEntry mapDetailInformation = null;
-
+    
     private HashMap<Date, HashMap<String, Integer>> totalNumberOfRetweets = null;
     private List<Location> allLocationsInDB = null;
 
@@ -163,39 +163,43 @@ public class GUIController extends Application implements Initializable {
             if (allSelectedCategories.size() + selectedLocations.size()
                     + selectedAccounts.size() >= 1) {
                 reloadDataPool = Executors.newCachedThreadPool();
-                reloadDataPool.submit(new PPPPRunnable<List<Integer>, List<Integer>, List<Integer>, Integer>(
-                		selectedLocations, selectedAccounts, allSelectedCategories, current) {
-					@Override
-					public void run(List<Integer> l, List<Integer> a, List<Integer> c, Integer current) {
-						String info = Labels.DATA_BY_ACCOUNT_LOADING;
-			            setInfo(info);
-			            List<Account> temp = db2.getAllData(c, l, a, false);
-						if (current == upToDate.get()) {
-				            dataByAccount = temp;
-		                    setInfo(Labels.DATA_BY_ACCOUNT_LOADED, info);
-		                    update(UpdateType.TWEET_BY_ACCOUNT);
+                try {
+	                reloadDataPool.submit(new PPPPRunnable<List<Integer>, List<Integer>, List<Integer>, Integer>(
+	                		selectedLocations, selectedAccounts, allSelectedCategories, current) {
+						@Override
+						public void run(List<Integer> l, List<Integer> a, List<Integer> c, Integer current) {
+							String info = Labels.DATA_BY_ACCOUNT_LOADING;
+				            setInfo(info);
+				            List<Account> temp = db2.getAllData(c, l, a, false);
+							if (current == upToDate.get()) {
+					            dataByAccount = temp;
+			                    setInfo(Labels.DATA_BY_ACCOUNT_LOADED, info);
+			                    update(UpdateType.TWEET_BY_ACCOUNT);
+							}
 						}
-					}
-				});
-                reloadDataPool.submit(new PPPPRunnable<List<Integer>, List<Integer>, List<Integer>, Integer>(
-                		selectedLocations, selectedAccounts, allSelectedCategories, current) {
-                    @Override
-                    public void run(List<Integer> l, List<Integer> a, List<Integer> c, Integer current) {
-                    	String info = Labels.DATA_BY_LOCATION_LOADING;
-			            setInfo(info);
-			            TweetsAndRetweets temp = db3.getSumOfData(c, l, a, true);
-			            if (current == upToDate.get()) {
-							dataByLocationAndDate = temp;
-		                    setInfo(Labels.DATA_BY_LOCATION_LOADED, info);
-		                    update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
-			            }
-                    }
-                });
+					});
+	                reloadDataPool.submit(new PPPPRunnable<List<Integer>, List<Integer>, List<Integer>, Integer>(
+	                		selectedLocations, selectedAccounts, allSelectedCategories, current) {
+	                    @Override
+	                    public void run(List<Integer> l, List<Integer> a, List<Integer> c, Integer current) {
+	                    	String info = Labels.DATA_BY_LOCATION_LOADING;
+				            setInfo(info);
+				            TweetsAndRetweets temp = db3.getSumOfData(c, l, a, true);
+				            if (current == upToDate.get()) {
+								dataByLocationAndDate = temp;
+			                    setInfo(Labels.DATA_BY_LOCATION_LOADED, info);
+			                    update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
+				            }
+	                    }
+	                });
+	            } catch (RejectedExecutionException e) {
+	            	setInfo(Labels.ERROR, 3000);
+	            }
             } else {
             	if (current == upToDate.get()) {
 	                dataByAccount = new ArrayList<Account>();
 	                dataByLocationAndDate = new TweetsAndRetweets();
-	                setInfo(Labels.ERROR_NO_FILTER_SELECTED, 1500);
+	                setInfo(Labels.ERROR_NO_FILTER_SELECTED, 3000);
 	                update(UpdateType.TWEET_BY_ACCOUNT);
 	                update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
             	}
@@ -781,6 +785,7 @@ public class GUIController extends Application implements Initializable {
      * @return data grouped by location or null
      */
     public TweetsAndRetweets getDataByLocationAndDate() {
+    	
         return dataByLocationAndDate;
     }
 
