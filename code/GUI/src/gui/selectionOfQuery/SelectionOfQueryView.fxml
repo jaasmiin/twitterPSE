@@ -6,7 +6,7 @@
 
 <GridPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.selectionOfQuery.SelectionOfQueryController">
   <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES"/>
+    <ColumnConstraints hgrow="ALWAYS"/>
   </columnConstraints>
   <rowConstraints>
     <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />

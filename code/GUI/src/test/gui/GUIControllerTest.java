@@ -77,7 +77,24 @@ public class GUIControllerTest {
         List<Account> list = guiController.getAccounts("Barack");
         assertTrue(list.get(0).toString().equals("Barack Obama"));
     }
-
+    
+    @Test
+    public void testGetDataByLocation() {
+    	List<Account> accounts = guiController.getAccounts("Katy");
+    	guiController.setSelectedAccount(accounts.get(0).getId(), true);
+    	TweetsAndRetweets tr = guiController.getDataByLocationAndDate();
+    	int no = 0;
+    	String loc = "";
+    	for (mysql.result.Retweets r : tr.getRetweets()) {
+    		if (no < r.getCounter()) {
+    			loc = r.getLocationCode();
+    			no = r.getCounter();
+    		}
+    	}
+    	System.out.println(loc);
+    	assertTrue(loc.equals("US"));
+    }
+    
     @Test
     public void testGetLocations() {
         List<Location> list = guiController.getLocations();
@@ -89,6 +106,7 @@ public class GUIControllerTest {
         Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
         guiController.setSelectedCategory(c.getId(), true);
         assertTrue(guiController.getSelectedCategories().contains(c));
+        guiController.setSelectedCategory(c.getId(), false);
     }
 
     @Test
@@ -106,6 +124,8 @@ public class GUIControllerTest {
                 true);
         assertTrue(guiController.getSelectedLocations().contains(
                 list.get(list.size() - 1)));
+        guiController.setSelectedLocation(list.get(list.size() - 1).getId(),
+                false);
     }
 
     @Test
@@ -144,14 +164,6 @@ public class GUIControllerTest {
         assertFalse(guiController.getSelectedAccounts().contains(a));
     }
 
-    // @Test
-    // public void testGetDataByLocation() {
-    // Account a = guiController.getAccounts("Obama").get(0);
-    // guiController.setSelectedAccount(a.getId(), true);
-    // TweetsAndRetweets tar = guiController.getDataByLocation();
-    // assertTrue(tar.getRetweets().size() > 1);
-    // }
-
     @Test
     public void testSubscribe() throws InterruptedException {
         class TestGUIElement extends GUIElement {
@@ -173,6 +185,8 @@ public class GUIControllerTest {
         guiController.subscribe(e);
         guiController.setSelectedCategory(guiController.getCategoryRoot()
                 .getId(), true);
+        System.out.println("assertTrue(e.isUpdated());");
         assertTrue(e.isUpdated());
+        Thread.sleep(1000);
     }
 }
