@@ -33,18 +33,18 @@ public class InfoRunnable implements Runnable {
 	}
 	@Override
 	public void run() {
-		new Thread(new RunnableParameter<String>(text) {
+		new Thread(new PRunnable<String>(text) {
 			@Override
-			public void run() {
+			public void run(String text) {
 				try {
 					Thread.sleep(delay);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				Platform.runLater(new Runnable() {
+				Platform.runLater(new PRunnable<String>(text) {
 					@Override
-					public void run() {
-						list.getItems().remove(parameter);
+					public void run(String text) {
+						list.getItems().remove(text);
 					}
 				});
 				

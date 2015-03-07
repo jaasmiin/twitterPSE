@@ -22,7 +22,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import gui.Labels;
 import gui.OutputElement;
-import gui.RunnableParameter;
+import gui.PRunnable;
 
 /**
  * This class presents raw-data in a table.
@@ -64,13 +64,13 @@ public class ContentTableController extends OutputElement implements Initializab
 	
 	@Override
 	public void update(UpdateType type) {
-		Platform.runLater(new RunnableParameter<UpdateType>(type) {
+		Platform.runLater(new PRunnable<UpdateType>(type) {
 			@Override
-			public void run() {
-				if (parameter == UpdateType.TWEET_BY_ACCOUNT) {
+			public void run(UpdateType updateType) {
+				if (updateType == UpdateType.TWEET_BY_ACCOUNT) {
 					fillData(superController.getDataByAccount());			
 					table.setItems(data);
-				} else if (parameter == UpdateType.LOCATION) {
+				} else if (updateType == UpdateType.LOCATION) {
 					addLocationColumns();
 				}
 			}

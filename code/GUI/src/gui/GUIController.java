@@ -4,7 +4,6 @@ import gui.GUIElement;
 import gui.GUIElement.UpdateType;
 import gui.InfoRunnable;
 import gui.Labels;
-import gui.RunnableParameter;
 import gui.SelectionHashList;
 
 import java.io.IOException;
@@ -393,11 +392,11 @@ public class GUIController extends Application implements Initializable {
      *            which should be displayed
      */
     public void setInfo(String info) {
-        Platform.runLater(new RunnableParameter<String>(info) {
+        Platform.runLater(new PRunnable<String>(info) {
             @Override
-            public void run() {
-                lstInfo.getItems().removeAll(parameter);
-                lstInfo.getItems().add(parameter);
+            public void run(String info) {
+                lstInfo.getItems().removeAll(info);
+                lstInfo.getItems().add(info);
             }
         });
     }
@@ -412,14 +411,13 @@ public class GUIController extends Application implements Initializable {
      *            which should be removed
      */
     public void setInfo(String info, String oldInfo) {
-        String[] infos = {info, oldInfo };
-        Platform.runLater(new RunnableParameter<String[]>(infos) {
+        Platform.runLater(new PPRunnable<String, String>(info, oldInfo) {
             @Override
-            public void run() {
-                lstInfo.getItems().remove(parameter[1]);
-                lstInfo.getItems().removeAll(parameter[0]);
-                lstInfo.getItems().add(parameter[0]);
-                Platform.runLater(new InfoRunnable(lstInfo, parameter[0]));
+            public void run(String info, String oldInfo) {
+                lstInfo.getItems().remove(oldInfo);
+                lstInfo.getItems().removeAll(info);
+                lstInfo.getItems().add(info);
+                Platform.runLater(new InfoRunnable(lstInfo, info));
             }
         });
     }
