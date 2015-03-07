@@ -130,7 +130,6 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 		lblCategories.setText(Util.getUppercaseStartAndRestLowerCase(Labels.CATEGORIES));
 	}
 
-	@SuppressWarnings("incomplete-switch")
 	@Override
 	public void update(UpdateType type) {
 		switch (type) {
@@ -151,6 +150,8 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 					}
 				});
 				break;
+		default:
+			break;
 		}					
 	}
 

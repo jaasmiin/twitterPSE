@@ -52,7 +52,6 @@ public class StandardMapDialog extends JDialog {
      * @param end
      *            end date of range of the query
      */
-    @SuppressWarnings("incomplete-switch")
 	public void update(UpdateType type, LocalDate start, LocalDate end) {
         switch (type) {
 	        case CLOSE:
@@ -119,6 +118,8 @@ public class StandardMapDialog extends JDialog {
 	            map.redraw();
 	            setVisible(true);
 	            break;
+		default:
+			break;
         }
     }
 

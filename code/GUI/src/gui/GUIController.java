@@ -68,7 +68,7 @@ public class GUIController extends Application implements Initializable {
     private Logger log;
     private Stage stage;
     private AtomicInteger upToDate = new AtomicInteger();
-    private final double EPSILON = 0.00000000001; // Epsilon for floating-point arithmetic
+    private final double epsilon = 0.00000000001; // Epsilon for floating-point arithmetic
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -202,6 +202,48 @@ public class GUIController extends Application implements Initializable {
             }
         }
     };
+    
+    private Runnable rnbReloadLocation = new Runnable() {
+        @Override
+        public void run() {
+            String info = Labels.LOCATIONS_LOADING;
+            setInfo(info);
+            locations.removeAll();
+            List<Location> locationList = db.getLocations();
+            if (locationList != null) {
+                locations.updateAll(locationList);
+                update(UpdateType.LOCATION);
+                setInfo(Labels.LOCATIONS_LOADED, info);
+            } else {
+                setInfo(Labels.DB_CONNECTION_ERROR, info);
+            }
+        }
+    };
+
+    private Runnable rnbReloadAccounts = new Runnable() {
+        @Override
+        public void run() {
+            reloadAccounts(true);
+        }
+    };
+
+    private Runnable rnbReloadCategories = new Runnable() {
+        @Override
+        public void run() {
+            String info = Labels.CATEGORIES_LOADING;
+            setInfo(info);
+            categoryRoot = db.getCategories();
+            if (categoryRoot != null) {
+                reloadCategoryHashMap();
+                update(UpdateType.CATEGORY);
+                setInfo(Labels.CATEGORIES_LOADED, info);
+            } else {
+                categoryRoot = new Category(0, Labels.ERROR, 0, false);
+                update(UpdateType.ERROR);
+                setInfo(Labels.DB_CONNECTION_ERROR, info);
+            }
+        }
+    };
 
     /**
      * Create a GUIController and set the singelton instance.
@@ -320,48 +362,6 @@ public class GUIController extends Application implements Initializable {
         }
     }
 
-    private Runnable rnbReloadLocation = new Runnable() {
-        @Override
-        public void run() {
-            String info = Labels.LOCATIONS_LOADING;
-            setInfo(info);
-            locations.removeAll();
-            List<Location> locationList = db.getLocations();
-            if (locationList != null) {
-                locations.updateAll(locationList);
-                update(UpdateType.LOCATION);
-                setInfo(Labels.LOCATIONS_LOADED, info);
-            } else {
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-        }
-    };
-
-    private Runnable rnbReloadAccounts = new Runnable() {
-        @Override
-        public void run() {
-            reloadAccounts(true);
-        }
-    };
-
-    private Runnable rnbReloadCategories = new Runnable() {
-        @Override
-        public void run() {
-            String info = Labels.CATEGORIES_LOADING;
-            setInfo(info);
-            categoryRoot = db.getCategories();
-            if (categoryRoot != null) {
-                reloadCategoryHashMap();
-                update(UpdateType.CATEGORY);
-                setInfo(Labels.CATEGORIES_LOADED, info);
-            } else {
-                categoryRoot = new Category(0, Labels.ERROR, 0, false);
-                update(UpdateType.ERROR);
-                setInfo(Labels.DB_CONNECTION_ERROR, info);
-            }
-        }
-    };
-
     private void reloadCategoryHashMap() {
         categories.clear();
         reloadCategoryHashMapRec(categoryRoot);
@@ -427,6 +427,11 @@ public class GUIController extends Application implements Initializable {
         });
     }
 
+    /**
+     * Show info message for a time period.
+     * @param info which should be displayed
+     * @param timeToShow time after the message is going to disappears
+     */
     public void setInfo(String info, Integer timeToShow) {
     	Platform.runLater(new PPRunnable<String, Integer>(info, timeToShow) {
 			@Override
@@ -953,10 +958,10 @@ public class GUIController extends Application implements Initializable {
      */
     public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
             HashMap<String, Integer> retweetsPerLocation, double scale, LocalDate start, LocalDate end) {
-        if (scale <= EPSILON) {
+        if (scale <= epsilon) {
             return null;
         }
-        if(allLocationsInDB == null) {
+        if (allLocationsInDB == null) {
             allLocationsInDB = getLocations();
         }
         
@@ -1007,8 +1012,8 @@ public class GUIController extends Application implements Initializable {
                     key,
                     new MyDataEntry(relativeValue, key, hashMapOverallNumber
                             .get(key), retweetsPerLocation.get(key)));
-            System.out.println(relativeValue + "  " +key + "  " + hashMapOverallNumber
-                            .get(key)+ "  " + retweetsPerLocation.get(key));
+            System.out.println(relativeValue + "  " + key + "  " + hashMapOverallNumber
+                            .get(key) + "  " + retweetsPerLocation.get(key));
         }
         System.out.println(minValue);
         Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
@@ -1054,7 +1059,7 @@ public class GUIController extends Application implements Initializable {
                 return null;
             }
             
-            if(gui.standardMap.Dates.inRange(start, end, currentDate)) {
+            if (gui.standardMap.Dates.inRange(start, end, currentDate)) {
                 // currentDate is in requested period of time
                 HashMap<String, Integer> curMap = totalNumberOfRetweets.get(d);
                 Set<String>  curKeySet = curMap.keySet();

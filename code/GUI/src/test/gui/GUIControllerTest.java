@@ -26,6 +26,10 @@ public class GUIControllerTest {
 
     private static GUIController guiController;
 
+    /**
+     * Create connection with db.
+     * @throws InterruptedException can be thrown
+     */
     @BeforeClass
     public static void setUpBeforeClass() throws InterruptedException {
         // Initialise Java FX
@@ -46,11 +50,18 @@ public class GUIControllerTest {
         }
     }
 
+    /**
+     * Close application after all tests.
+     * @throws Exception can be thrown
+     */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
         guiController.close();
     }
 
+    /**
+     * Clear selection before each test.
+     */
     @Before
     public void setUpBefore() {
         List<Account> aList = guiController.getSelectedAccounts();
@@ -69,6 +80,9 @@ public class GUIControllerTest {
         }
     }
 
+    /**
+     * Test to load categories containing 'Politics'..
+     */
     @Test
     public void testGetCategories() {
         Category c = guiController.getCategoryRoot("Politics");
@@ -78,12 +92,19 @@ public class GUIControllerTest {
         assertTrue(c.toString().contains("Politics"));
     }
 
+    /**
+     * Test loading accounts containing 'Barack'.
+     */
     @Test
     public void testGetAccounts() {
         List<Account> list = guiController.getAccounts("Barack");
         assertTrue(list.get(0).toString().equals("Barack Obama"));
     }
     
+    /**
+     * Test loading data grouped by location containing
+     * accounts with 'Katy'.
+     */
     @Test
     public void testGetDataByLocation() {
     	List<Account> accounts = guiController.getAccounts("Katy");
@@ -101,12 +122,18 @@ public class GUIControllerTest {
     	assertTrue(loc.equals("US"));
     }
     
+    /**
+     * Test getting all locations.
+     */
     @Test
     public void testGetLocations() {
         List<Location> list = guiController.getLocations();
         assertTrue(list.size() > 0);
     }
 
+    /**
+     * Test selection a category.
+     */
     @Test
     public void testSelectCategory() {
         Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
@@ -115,6 +142,9 @@ public class GUIControllerTest {
         guiController.setSelectedCategory(c.getId(), false);
     }
 
+    /**
+     * Test deselecting a category.
+     */
     @Test
     public void testDeselectCategory() {
         Category c = guiController.getCategoryRoot("Music").getChilds().get(0);
@@ -123,6 +153,9 @@ public class GUIControllerTest {
         assertTrue(!guiController.getSelectedCategories().contains(c));
     }
 
+    /**
+     * Test selecting a location.
+     */
     @Test
     public void testSelectLocation() {
         List<Location> list = guiController.getLocations();
@@ -134,6 +167,9 @@ public class GUIControllerTest {
                 false);
     }
 
+    /**
+     * Test deselecting a location.
+     */
     @Test
     public void testDeselectLocation() {
         List<Location> list = guiController.getLocations();
@@ -147,6 +183,9 @@ public class GUIControllerTest {
                 list.get(list.size() - 1)));
     }
 
+    /**
+     * Test selecting an account.
+     */
     @Test
     public void testSelectAccount() {
         List<Account> list = guiController.getAccounts("Barack");
@@ -162,6 +201,9 @@ public class GUIControllerTest {
         assertTrue(found);
     }
 
+    /**
+     * Test deselecting an account.
+     */
     @Test
     public void testDeselectAccount() {
         Account a = guiController.getAccounts("Obama").get(0);
@@ -170,8 +212,16 @@ public class GUIControllerTest {
         assertFalse(guiController.getSelectedAccounts().contains(a));
     }
 
+    /**
+     * Test subscribing at the GUIController.
+     * @throws InterruptedException can be thrown
+     */
     @Test
     public void testSubscribe() throws InterruptedException {
+    	/**
+    	 * Class for testing the subscription.
+    	 * @author Maximilian Awiszus
+    	 */
         class TestGUIElement extends GUIElement {
             private boolean updated = false;
 
@@ -181,7 +231,12 @@ public class GUIControllerTest {
                     updated = true;
                 }
             }
-
+            /**
+             * True if element has been updated
+             * with type CATEGORY_SELECTION
+             * @return true if element has been updated
+             * with type CATEGORY_SELECTION
+             */
             public boolean isUpdated() {
                 return updated;
             }
