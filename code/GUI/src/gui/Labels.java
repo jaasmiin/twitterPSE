@@ -32,8 +32,6 @@ public class Labels {
             .getUppercaseStart(ACCOUNTS) + " loaded.";
     public static final String DB_CONNECTION_ERROR = "Error, problem with the connection to databse.";
     public static final String ERROR = "Error.";
-    public static final String DATA_LOADING = "Loading data...";
-    public static final String DATA_LOADED = "Data loaded.";
     public static final String ERROR_NO_FILTER_SELECTED = "Can not load data. Please select minimum one filter.";
     public static final String TOTAL = "Total";
     public static final String FOLLOWER = "Follower";
@@ -96,6 +94,10 @@ public class Labels {
     public static final String START_SHOW = "Start show";
     public static final String STOP_SHOW = "Stop show";
 	public static final String SHOW_INTERRUPTED = "Show has been interrupted.";
+	public static final String DATA_BY_ACCOUNT_LOADING = "Data grouped by account is loading...";
+	public static final String DATA_BY_ACCOUNT_LOADED = "Data grouped by account is loaded.";
+	public static final String DATA_BY_LOCATION_LOADING = "Data grouped by location is loading...";
+	public static final String DATA_BY_LOCATION_LOADED = "Data grouped by location is loaded.";
    
    
 }

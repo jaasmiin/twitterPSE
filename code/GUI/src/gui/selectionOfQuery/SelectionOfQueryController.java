@@ -24,7 +24,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import gui.InputElement;
 import gui.Labels;
-import gui.RunnableParameter;
+import gui.PRunnable;
 import gui.Util;
 /**
  * Class where categories, locations and accounts can be selected out of a list.
@@ -52,11 +52,11 @@ public class SelectionOfQueryController extends InputElement implements
     private ExecutorService threadPool = Executors.newCachedThreadPool();
     
     private void updateAccounts(List<Account> accounts) {
-    	Platform.runLater(new RunnableParameter<List<Account>>(accounts) {
+    	Platform.runLater(new PRunnable<List<Account>>(accounts) {
 			@Override
-			public void run() {
+			public void run(List<Account> accounts) {
 				lstAccount.getItems().clear();
-		        for (Account a : parameter) {
+		        for (Account a : accounts) {
 		            lstAccount.getItems().add(a);
 		        }
 		        tipAccount.setDisable(false);
@@ -66,12 +66,12 @@ public class SelectionOfQueryController extends InputElement implements
     }
 
     private void updateCategory(Category rootCategory) {
-        Platform.runLater(new RunnableParameter<Category>(rootCategory) {
+        Platform.runLater(new PRunnable<Category>(rootCategory) {
 			@Override
-			public void run() {
-		        TreeItem<Category> rootItem = new TreeItem<Category>(parameter);
+			public void run(Category rootCategory) {
+		        TreeItem<Category> rootItem = new TreeItem<Category>(rootCategory);
 		        rootItem.setExpanded(true);
-		        updateCategoryRec(parameter, rootItem);
+		        updateCategoryRec(rootCategory, rootItem);
 		        trvCategory.setRoot(rootItem);
 		        tipCategory.setDisable(false);
 			}
@@ -89,13 +89,13 @@ public class SelectionOfQueryController extends InputElement implements
     }
 
     private void updateLocation(List<Location> list) {
-        Platform.runLater(new RunnableParameter<List<Location>>(list) {
+        Platform.runLater(new PRunnable<List<Location>>(list) {
 			@Override
-			public void run() {
+			public void run(List<Location> locations) {
 				TreeItem<Location> rootItem = new TreeItem<Location>(new Location(0,
 		                Util.getUppercaseStart(Labels.WORLD), "0000"));
 		        rootItem.setExpanded(true);
-				for (Location location : parameter) {
+				for (Location location : locations) {
 		            rootItem.getChildren().add(new TreeItem<Location>(location));
 		        }
 		        trvLocation.setRoot(rootItem);
@@ -114,6 +114,7 @@ public class SelectionOfQueryController extends InputElement implements
             updateCategory(superController.getCategoryRoot(txtFilterSearch
                     .getText()));
         } else if (type == UpdateType.ACCOUNT) {
+        	System.err.println("UpdateType.ACCOUNT");
             updateAccounts(superController.getAccounts(txtFilterSearch
                     .getText()));
         } else if (type == UpdateType.ERROR) {
@@ -174,11 +175,11 @@ public class SelectionOfQueryController extends InputElement implements
     }
 
     private void reloadAccounts() {
-    	threadPool.execute(new RunnableParameter<Integer>(lstAccount
+    	threadPool.execute(new PRunnable<Integer>(lstAccount
                 .getSelectionModel().getSelectedItem().getId()) {
             @Override
-            public void run() {
-                superController.setSelectedAccount(parameter, true);
+            public void run(Integer accountID) {
+                superController.setSelectedAccount(accountID, true);
             }
         });
     }
@@ -197,24 +198,24 @@ public class SelectionOfQueryController extends InputElement implements
     }
     
     private void reloadCoategories() {
-    	threadPool.execute(new RunnableParameter<Integer>(trvCategory
+    	threadPool.execute(new PRunnable<Integer>(trvCategory
                 .getSelectionModel().getSelectedItem().getValue()
                 .getId()) {
             @Override
-            public void run() {
+            public void run(Integer categoryID) {
                 superController
-                        .setSelectedCategory(parameter, true);
+                        .setSelectedCategory(categoryID, true);
             }
         });
     }
     
     private void reloadLocations() {
-    	threadPool.execute(new RunnableParameter<Integer>(trvLocation
+    	threadPool.execute(new PRunnable<Integer>(trvLocation
                  .getSelectionModel().getSelectedItem().getValue()
                  .getId()) {
              @Override
-             public void run() {
-                 superController.setSelectedLocation(parameter, true);
+             public void run(Integer locationID) {
+                 superController.setSelectedLocation(locationID, true);
              }
          });
     }

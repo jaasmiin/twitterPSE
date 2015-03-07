@@ -152,14 +152,14 @@ public class StandardMapController extends OutputElement implements
                 // + date_SliderMap_startDate.getValue());
                 // System.out.println("Mein end datum: "
                 // + date_SliderMap_endDate.getValue());
-                dialog.update(UpdateType.TWEET_BY_DATE,
+                dialog.update(UpdateType.TWEET_BY_LOCATION_BY_DATE,
                         date_SliderMap_startDate.getValue(),
                         date_SliderMap_endDate.getValue());
             }
             if (event.getSource().equals(b_StandMap_reset)) {
                 date_SliderMap_startDate.setValue(null);
                 date_SliderMap_endDate.setValue(null);
-                dialog.update(UpdateType.TWEET_BY_DATE,
+                dialog.update(UpdateType.TWEET_BY_LOCATION_BY_DATE,
                         date_SliderMap_startDate.getValue(),
                         date_SliderMap_endDate.getValue());
             }

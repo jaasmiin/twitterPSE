@@ -2,7 +2,7 @@ package gui.selectionOfQuery;
 
 import gui.Labels;
 import gui.OutputElement;
-import gui.RunnableParameter;
+import gui.PRunnable;
 import gui.Util;
 
 import java.net.URL;
@@ -73,11 +73,11 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 * @param selectedCategories the list to display
 	 */
 	private void updateSelectedCategory(List<Category> selectedCategories) {
-		Platform.runLater(new RunnableParameter<List<Category>>(selectedCategories) {
+		Platform.runLater(new PRunnable<List<Category>>(selectedCategories) {
 			@Override
-			public void run() {
+			public void run(List<Category> categories) {
 				lstSelectedCategories.getItems().clear();
-				for (Category c : parameter) {
+				for (Category c : categories) {
 					lstSelectedCategories.getItems().add(c);
 				}
 			}
@@ -91,11 +91,11 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 * @param selectedAccounts the list to display
 	 */
 	private void updateSelectedAccount(List<Account> selectedAccounts) {
-		Platform.runLater(new RunnableParameter<List<Account>>(selectedAccounts) {
+		Platform.runLater(new PRunnable<List<Account>>(selectedAccounts) {
 			@Override
-			public void run() {
+			public void run(List<Account> accounts) {
 				lstSelectedAccounts.getItems().clear();
-				for (Account a : parameter) {
+				for (Account a : accounts) {
 					lstSelectedAccounts.getItems().add(a);
 				}
 			}
@@ -109,11 +109,11 @@ public class SelectionOfQuerySelectedController extends OutputElement implements
 	 * @param selectedLocations the list to display
 	 */
 	private void updateSelectedLocation(List<Location> selectedLocations) {
-		Platform.runLater(new RunnableParameter<List<Location>>(selectedLocations) {
+		Platform.runLater(new PRunnable<List<Location>>(selectedLocations) {
 			@Override
-			public void run() {
+			public void run(List<Location> locations) {
 				lstSelectedLocations.getItems().clear();
-				for (Location l : parameter) {
+				for (Location l : locations) {
 					lstSelectedLocations.getItems().add(l);
 				}				
 			}
