@@ -23,6 +23,7 @@ import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Logger;
 
 import mysql.AccessData;
@@ -66,6 +67,7 @@ public class GUIController extends Application implements Initializable {
     private boolean dontLoad = false;
     private Logger log;
     private Stage stage;
+    private AtomicInteger upToDate = new AtomicInteger();
     private final double EPSILON = 0.00000000001; // Epsilon for floating-point arithmetic
 
     @FXML
@@ -144,6 +146,7 @@ public class GUIController extends Application implements Initializable {
     private Runnable rnbReloadData = new Runnable() {
         @Override
         public void run() {
+        	Integer current = upToDate.incrementAndGet();
             List<Integer> selectedLocations = new ArrayList<Integer>();
             for (Location l : locations.getSelected()) {
                 selectedLocations.add(l.getId());
@@ -159,41 +162,43 @@ public class GUIController extends Application implements Initializable {
             reloadDataPool.shutdownNow();
             if (allSelectedCategories.size() + selectedLocations.size()
                     + selectedAccounts.size() >= 1) {
-                reloadDataPool = Executors.newFixedThreadPool(2);
-                reloadDataPool.submit(new PPPRunnable<List<Integer>, List<Integer>, List<Integer>>(
-                		selectedLocations, selectedAccounts, allSelectedCategories) {
+                reloadDataPool = Executors.newCachedThreadPool();
+                reloadDataPool.submit(new PPPPRunnable<List<Integer>, List<Integer>, List<Integer>, Integer>(
+                		selectedLocations, selectedAccounts, allSelectedCategories, current) {
 					@Override
-					public void run(List<Integer> l, List<Integer> a, List<Integer> c) {
+					public void run(List<Integer> l, List<Integer> a, List<Integer> c, Integer current) {
 						String info = Labels.DATA_BY_ACCOUNT_LOADING;
 			            setInfo(info);
-						boolean success = true;
-						dataByAccount = db2.getAllData(c, l, a, false);
-						if (success) {
+			            List<Account> temp = db2.getAllData(c, l, a, false);
+						if (current == upToDate.get()) {
+				            dataByAccount = temp;
 		                    setInfo(Labels.DATA_BY_ACCOUNT_LOADED, info);
 		                    update(UpdateType.TWEET_BY_ACCOUNT);
-		                }
+						}
 					}
 				});
-                reloadDataPool.submit(new PPPRunnable<List<Integer>, List<Integer>, List<Integer>>(
-                		selectedLocations, selectedAccounts, allSelectedCategories) {
+                reloadDataPool.submit(new PPPPRunnable<List<Integer>, List<Integer>, List<Integer>, Integer>(
+                		selectedLocations, selectedAccounts, allSelectedCategories, current) {
                     @Override
-                    public void run(List<Integer> l, List<Integer> a, List<Integer> c) {
+                    public void run(List<Integer> l, List<Integer> a, List<Integer> c, Integer current) {
                     	String info = Labels.DATA_BY_LOCATION_LOADING;
 			            setInfo(info);
-						boolean success = true;
-						dataByLocationAndDate = db3.getSumOfData(c, l, a, true);
-						if (success) {
+			            TweetsAndRetweets temp = db3.getSumOfData(c, l, a, true);
+			            if (current == upToDate.get()) {
+							dataByLocationAndDate = temp;
 		                    setInfo(Labels.DATA_BY_LOCATION_LOADED, info);
 		                    update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
-		                }
+			            }
                     }
                 });
             } else {
-                dataByAccount = new ArrayList<Account>();
-                dataByLocationAndDate = new TweetsAndRetweets();
-                setInfo(Labels.ERROR_NO_FILTER_SELECTED, 1500);
-                update(UpdateType.TWEET_BY_ACCOUNT);
-                update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
+            	if (current == upToDate.get()) {
+	                dataByAccount = new ArrayList<Account>();
+	                dataByLocationAndDate = new TweetsAndRetweets();
+	                setInfo(Labels.ERROR_NO_FILTER_SELECTED, 1500);
+	                update(UpdateType.TWEET_BY_ACCOUNT);
+	                update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
+            	}
             }
         }
     };

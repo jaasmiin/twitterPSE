@@ -26,8 +26,8 @@ import gui.OutputElement;
  */
 public class StandardMapController extends OutputElement implements
         Initializable {
-	@FXML
-	private Tab tabStandardMap;
+    @FXML
+    private Tab tabStandardMap;
     @FXML
     private Text txt_StandMap_country;
     @FXML
@@ -67,14 +67,15 @@ public class StandardMapController extends OutputElement implements
         setText();
         date_SliderMap_startDate.setOnAction(new MyActionHandler());
         date_SliderMap_endDate.setOnAction(new MyActionHandler());
-       
+
         b_StandMap_confirm.setOnMouseClicked(new MyEventHandler());
-       
+
         b_StandMap_reset.setOnMouseClicked(new MyEventHandler());
         b_StandMap_StartDateShow.setOnMouseClicked(new MyEventHandler());
         b_StandMap_StopDateShow.setOnMouseClicked(new MyEventHandler());
-        
+
     }
+
     /**
      * sets texts
      */
@@ -85,22 +86,24 @@ public class StandardMapController extends OutputElement implements
         b_StandMap_StartDateShow.setText(Labels.START_SHOW);
         b_StandMap_StopDateShow.setText(Labels.STOP_SHOW);
     }
+
     @Override
     public void update(UpdateType type) {
         if (type == UpdateType.MAP_DETAIL_INFORMATION) {
-        	Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					// update detailed information view
-		            MyDataEntry entry = superController.getMapDetailInformation();
-		            setVisible(true);
-		            txt_StandMap_country.setText(entry.getCountryName());
-		            txt_StandMap_retweetsQuery.setText(Integer.toString(entry
-		                    .getRetweetsLandFiltered()));
-		            txt_StandMap_retweetsTotal.setText(Integer.toString(entry
-		                    .getRetweetsLand()));
-				}
-			});
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    // update detailed information view
+                    MyDataEntry entry = superController
+                            .getMapDetailInformation();
+                    setVisible(true);
+                    txt_StandMap_country.setText(entry.getCountryName());
+                    txt_StandMap_retweetsQuery.setText(Integer.toString(entry
+                            .getRetweetsLandFiltered()));
+                    txt_StandMap_retweetsTotal.setText(Integer.toString(entry
+                            .getRetweetsLand()));
+                }
+            });
         } else {
             dialog.update(type, start, end);
         }
@@ -165,36 +168,34 @@ public class StandardMapController extends OutputElement implements
                 LocalDate start;
                 LocalDate end;
                 DateShow show;
-              // System.out.println("Mein Start datum: "
-              //   + date_SliderMap_startDate.getValue());
-              //   System.out.println("Mein end datum: "
-              //   + date_SliderMap_endDate.getValue());
-                 // set start and end dates
-                 if (date_SliderMap_startDate.getValue() == null) {
-                     
-                     start = LocalDate.of(2015, 1, 20);
-                 }
-                 else {
-                     start = date_SliderMap_startDate.getValue();
-                 }
-                 
-                 if (date_SliderMap_endDate.getValue() == null) {
-                     end = LocalDate.now();
-                 }
-                 else {
-                     end = date_SliderMap_endDate.getValue();
-                 }
-                 
-                 superController.setDontLoadFromDB(true);
-                 show = new DateShow(superController,start,end);
-                  t1 = new Thread(show);
-                 t1.start(); 
+                // System.out.println("Mein Start datum: "
+                // + date_SliderMap_startDate.getValue());
+                // System.out.println("Mein end datum: "
+                // + date_SliderMap_endDate.getValue());
+                // set start and end dates
+                if (date_SliderMap_startDate.getValue() == null) {
+
+                    start = LocalDate.of(2015, 1, 20);
+                } else {
+                    start = date_SliderMap_startDate.getValue();
+                }
+
+                if (date_SliderMap_endDate.getValue() == null) {
+                    end = LocalDate.now();
+                } else {
+                    end = date_SliderMap_endDate.getValue();
+                }
+
+                superController.setDontLoadFromDB(true);
+                show = new DateShow(superController, start, end);
+                t1 = new Thread(show);
+                t1.start();
             }
             if (event.getSource().equals(b_StandMap_StopDateShow)) {
-                 if (t1 != null) {
-                     t1.interrupt();
-                     superController.setDontLoadFromDB(false);
-                 }
+                if (t1 != null) {
+                    t1.interrupt();
+                    superController.setDontLoadFromDB(false);
+                }
             }
 
         }
