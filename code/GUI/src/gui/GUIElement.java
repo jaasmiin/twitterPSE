@@ -37,7 +37,9 @@ public abstract class GUIElement implements Initializable {
         /** Selection of accounts has changed */
         ACCOUNT_SELECTION,
         /** The main application closes */
-        CLOSE, GUI_STARTED,
+        CLOSE,
+        /** The main application hast started */
+        GUI_STARTED,
         /** The map detail information has changed */
         MAP_DETAIL_INFORMATION,
         /** Components should not reload data attribute has changed. **/

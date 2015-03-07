@@ -299,7 +299,7 @@ public class GUIController extends Application implements Initializable {
         launch();
     }
 
-    private void reloadAccounts() {
+    private void reloadAccounts(boolean update) {
         String info = Labels.ACCOUNTS_LOADING;
         setInfo(info);
         accounts.removeAll();
@@ -307,7 +307,9 @@ public class GUIController extends Application implements Initializable {
                 .getAccounts(accountSearchText == null ? "" : accountSearchText);
         if (accountList != null) {
             accounts.updateAll(accountList);
-            update(UpdateType.ACCOUNT);
+            if (update) {
+            	update(UpdateType.ACCOUNT);
+            }
             setInfo(Labels.ACCOUNTS_LOADED, info);
         } else {
             setInfo(Labels.DB_CONNECTION_ERROR, info);
@@ -334,7 +336,7 @@ public class GUIController extends Application implements Initializable {
     private Runnable rnbReloadAccounts = new Runnable() {
         @Override
         public void run() {
-            reloadAccounts();
+            reloadAccounts(true);
         }
     };
 
@@ -582,7 +584,7 @@ public class GUIController extends Application implements Initializable {
     public List<Account> getAccounts(String text) {
         if (!accountSearchText.equals(text)) {
             accountSearchText = text;
-            reloadAccounts();
+            reloadAccounts(false);
         }
         return accounts.get();
     }
