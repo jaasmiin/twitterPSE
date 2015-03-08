@@ -49,7 +49,7 @@ public class DatabaseOptController extends InputElement implements
     // private static final int DELAY = 5000;
 
     @FXML
-    private Menu DBOPT_menu;
+    private Menu dbOPT_menu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -220,9 +220,9 @@ public class DatabaseOptController extends InputElement implements
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
-        if (DBOPT_menu != null) {
+        if (dbOPT_menu != null) {
             // set label
-            DBOPT_menu.setText(Util
+            dbOPT_menu.setText(Util
                     .getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
 

@@ -67,7 +67,7 @@ public class CSVExportController extends InputElement implements Initializable {
 
         FileChooser fc = new FileChooser();
         fc.getExtensionFilters().add(ef);
-        fc.setTitle("Speichern unter...");
+        fc.setTitle(Labels.SAVE_AS);
 
         String path = null;
         // get file path
@@ -124,9 +124,9 @@ public class CSVExportController extends InputElement implements Initializable {
 
         // write header information
         String[][] file = new String[accounts.size() + 1][locations.size() + 3];
-        file[0][0] = "Accountname";
-        file[0][1] = "Country";
-        file[0][2] = "Follower";
+        file[0][0] = Labels.ACCOUNTNAME;
+        file[0][1] = Labels.COUNTRY;
+        file[0][2] = Labels.FOLLOWER;
         int i = 3;
         for (Location l : locations) {
             file[0][i] = l.toString();

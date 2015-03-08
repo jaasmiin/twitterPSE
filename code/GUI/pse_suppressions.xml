@@ -5,5 +5,5 @@
     "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-	<suppress checks="[a-zA-Z]*" files="Labels.java" lines="10-100"/>
+	<suppress checks="[a-zA-Z]*" files="Labels.java" lines="10-105"/>
 </suppressions>

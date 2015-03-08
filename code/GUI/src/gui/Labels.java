@@ -37,11 +37,14 @@ public class Labels {
     public static final String FOLLOWER = "Follower";
     public static final String RETWEETS = "Retweets";
 
+    public static final String SAVE_AS = "Save as...";
     public static final String EXPORT = "Export...";
     public static final String FILE = "File";
     public static final String EXPORTING = "Exporting...";
     public static final String EXPORTED = "Exported.";
     public static final String EXPORT_FAILED = "Export failed.";
+    public static final String ACCOUNTNAME = "Accountname";
+    public static final String COUNTRY = "Country";
 
     public static final String DBOPT_POPUP_ADDACCOUNT = "Add account";
     public static final String DBOPT_POPUP_EDITLOCATION = "Edit location";
@@ -99,5 +102,5 @@ public class Labels {
 	public static final String DATA_BY_LOCATION_LOADING = "Data grouped by location is loading...";
 	public static final String DATA_BY_LOCATION_LOADED = "Data grouped by location is loaded.";
    
-   
+	
 }

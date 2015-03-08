@@ -6,7 +6,6 @@ import java.util.List;
 
 import gui.GUIController;
 import gui.GUIElement;
-import gui.GUIElement.UpdateType;
 import mysql.result.Account;
 import mysql.result.Category;
 import mysql.result.Location;
@@ -29,11 +28,13 @@ public class GUIControllerTest {
 
     /**
      * Create connection with db.
-     * @throws InterruptedException can be thrown
+     * 
+     * @throws InterruptedException
+     *             can be thrown
      */
     @BeforeClass
     public static void setUpBeforeClass() throws InterruptedException {
-        // Initialise Java FX
+        // Initialize Java FX
         System.out.printf("About to launch FX App\n");
         Thread t = new Thread("JavaFX Init Thread") {
             @Override
@@ -53,7 +54,9 @@ public class GUIControllerTest {
 
     /**
      * Close application after all tests.
-     * @throws Exception can be thrown
+     * 
+     * @throws Exception
+     *             can be thrown
      */
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
@@ -101,46 +104,51 @@ public class GUIControllerTest {
         List<Account> list = guiController.getAccounts("Barack");
         assertTrue(list.get(0).toString().equals("Barack Obama"));
     }
-    
+
     /**
-     * Test loading data grouped by location containing
-     * accounts with 'Katy'.
-     * @throws InterruptedException if problem with waiting
+     * Test loading data grouped by location containing accounts with 'Katy'.
+     * 
+     * @throws InterruptedException
+     *             if problem with waiting
      */
     @Test
     public void testGetDataByLocation() throws InterruptedException {
-    	GUIElement e = new GUIElement() {
-    		private String locationCode = "";
-			@Override
-			public void update(UpdateType type) {
-				if (type == UpdateType.TWEET_BY_LOCATION_BY_DATE) {
-					TweetsAndRetweets tr = guiController.getDataByLocationAndDate();
-					int no = 0;
-			    	String loc = "";
-			    	for (mysql.result.Retweets r : tr.getRetweets()) {
-			    		if (!r.getLocationCode().equals("0") && no < r.getCounter()) {
-			    			loc = r.getLocationCode();
-			    			no = r.getCounter();
-			    		}
-			    	}
-					locationCode = loc;
-				}
-			}
-			@Override
-			public String toString() {
-				return locationCode;
-			}
-		};
-    	guiController.subscribe(e);
-    	List<Account> accounts = guiController.getAccounts("Katy");
-    	guiController.setSelectedAccount(accounts.get(0).getId(), true);
-    	while (e.toString().equals("")) {
-    		Thread.sleep(500);
-    	}
-    	System.err.println("Location code: " + e.toString());
-    	assertTrue(e.toString().equals("US"));
+        GUIElement e = new GUIElement() {
+            private String locationCode = "";
+
+            @Override
+            public void update(UpdateType type) {
+                if (type == UpdateType.TWEET_BY_LOCATION_BY_DATE) {
+                    TweetsAndRetweets tr = guiController
+                            .getDataByLocationAndDate();
+                    int no = 0;
+                    String loc = "";
+                    for (mysql.result.Retweets r : tr.getRetweets()) {
+                        if (!r.getLocationCode().equals("0")
+                                && no < r.getCounter()) {
+                            loc = r.getLocationCode();
+                            no = r.getCounter();
+                        }
+                    }
+                    locationCode = loc;
+                }
+            }
+
+            @Override
+            public String toString() {
+                return locationCode;
+            }
+        };
+        guiController.subscribe(e);
+        List<Account> accounts = guiController.getAccounts("Katy");
+        guiController.setSelectedAccount(accounts.get(0).getId(), true);
+        while (e.toString().equals("")) {
+            Thread.sleep(500);
+        }
+        System.err.println("Location code: " + e.toString());
+        assertTrue(e.toString().equals("US"));
     }
-    
+
     /**
      * Test getting all locations.
      */
@@ -232,9 +240,10 @@ public class GUIControllerTest {
     }
 
     /**
-     * Test subscribing at the GUIController and getting
-     * an update within 1s.
-     * @throws InterruptedException can be thrown
+     * Test subscribing at the GUIController and getting an update within 1s.
+     * 
+     * @throws InterruptedException
+     *             can be thrown
      */
     @Test
     public void testSubscribe() throws InterruptedException {
@@ -245,11 +254,12 @@ public class GUIControllerTest {
         assertTrue(e.isUpdated());
         guiController.setDontLoadFromDB(false);
     }
-    
+
     /**
-	 * Class for testing the subscription.
-	 * @author Maximilian Awiszus
-	 */
+     * Class for testing the subscription.
+     * 
+     * @author Maximilian Awiszus
+     */
     class TestGUIElement extends GUIElement {
         private boolean updated = false;
 
@@ -259,11 +269,11 @@ public class GUIControllerTest {
                 updated = true;
             }
         }
+
         /**
-         * True if element has been updated
-         * with type CATEGORY_SELECTION
-         * @return true if element has been updated
-         * with type CATEGORY_SELECTION
+         * True if element has been updated with type CATEGORY_SELECTION
+         * 
+         * @return true if element has been updated with type CATEGORY_SELECTION
          */
         public boolean isUpdated() {
             return updated;

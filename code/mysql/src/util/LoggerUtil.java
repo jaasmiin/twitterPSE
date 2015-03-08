@@ -29,6 +29,10 @@ public class LoggerUtil {
      */
     public static Logger getLogger(String filename) throws SecurityException,
             IOException {
+
+        // clear directory
+        cleanUp(filename);
+
         // get logger instance
         Logger l = Logger.getLogger(filename);
         // get/create logfile
@@ -42,6 +46,7 @@ public class LoggerUtil {
         // true: print output on console and into file
         // false: only store output in logFile
         l.setUseParentHandlers(false);
+
         return l;
     }
 
@@ -57,6 +62,19 @@ public class LoggerUtil {
      */
     public static Logger getLogger() throws SecurityException, IOException {
         return getLogger("LogFile");
+    }
+
+    // deletes all temporary log-files
+    private static void cleanUp(String filename) {
+        File directory = new File(".");
+        File[] files = directory.listFiles();
+
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()
+                    && files[i].getName().startsWith(filename + ".log.")) {
+                files[i].delete();
+            }
+        }
     }
 
 }
