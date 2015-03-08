@@ -49,7 +49,7 @@ public class DatabaseOptController extends InputElement implements
     // private static final int DELAY = 5000;
 
     @FXML
-    private Menu dbOPT_menu;
+    private Menu DBOPT_menu;
     @FXML
     private MenuItem addCat;
     @FXML
@@ -220,9 +220,9 @@ public class DatabaseOptController extends InputElement implements
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
 
-        if (dbOPT_menu != null) {
+        if (DBOPT_menu != null) {
             // set label
-            dbOPT_menu.setText(Util
+            DBOPT_menu.setText(Util
                     .getUppercaseStartAndRestLowerCase(Labels.DBOPT_MENU));
         }
 
@@ -361,7 +361,7 @@ public class DatabaseOptController extends InputElement implements
             // select right handling for event
             if (event.getSource().equals(addCat)) {
                 // popUp for input-dialog add category
-                createPopUp("AddCategory.fxml", Labels.DBOPT_POPUP_ADDACCOUNT,
+                createPopUp("AddCategory.fxml", Labels.DBOPT_POPUP_ADDCATEGORY,
                         null);
 
             }
@@ -372,7 +372,7 @@ public class DatabaseOptController extends InputElement implements
             }
             if (event.getSource().equals(addAcount)) {
                 // popUp for input dialog add account
-                createPopUp("AddAccount.fxml", Labels.DBOPT_POPUP_ADDCATEGORY,
+                createPopUp("AddAccount.fxml", Labels.DBOPT_POPUP_ADDACCOUNT,
                         null);
             }
         }
@@ -409,10 +409,13 @@ public class DatabaseOptController extends InputElement implements
 
                         list_Loc_tab1.getItems().clear();
                         list = list_Loc_tab1.getItems();
-
-                        for (Account a : superController.getAccounts(input)) {
-                            list_Loc_tab1.getItems().add(a);
+                        List<Account> listAcc = superController.getAccounts(input);
+                        if (listAcc != null) {
+                            for (Account a : superController.getAccounts(input)) {
+                                list_Loc_tab1.getItems().add(a);
+                            }
                         }
+                        
 
                     }
                 }
@@ -530,9 +533,13 @@ public class DatabaseOptController extends InputElement implements
                         String input = txtField_Cat_tab1.getText();
                         // update list
                         list_Cat_tab1.getItems().clear();
-                        for (Account a : superController.getAccounts(input)) {
-                            list_Cat_tab1.getItems().add(a);
+                        List<Account> list = superController.getAccounts(input);
+                        if (list != null) {
+                            for (Account a : superController.getAccounts(input)) {
+                                list_Cat_tab1.getItems().add(a);
+                            }
                         }
+                        
 
                     }
                 }
@@ -719,11 +726,13 @@ public class DatabaseOptController extends InputElement implements
                 List<User> list = TwitterAccess.getUser(input);
 
                 // fill found users/accounts in listView
-                Iterator<User> it = list.iterator();
-                while (it.hasNext()) {
-                    UserContainer userW = new UserContainer(it.next());
-                    list_Acc_tab1.getItems().add(userW);
+                if (list != null) {
+                    Iterator<User> it = list.iterator();
+                    while (it.hasNext()) {
+                        UserContainer userW = new UserContainer(it.next());
+                        list_Acc_tab1.getItems().add(userW);
 
+                    }
                 }
 
             }

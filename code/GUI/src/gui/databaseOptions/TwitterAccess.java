@@ -30,7 +30,7 @@ public class TwitterAccess {
             list = TwitterFactory.getSingleton().searchUsers(accountName, 1);
 
         } catch (TwitterException e) {
-            e.printStackTrace();
+            System.out.println("hallo");
         }
         return list;
     }
