@@ -1,17 +1,25 @@
 \section{Automatisierte Tests}
-
+Die Tests wurden in \emph{Eclipse} mittels \emph{JUnit} durchgeführt und die Überdeckung mit \emph{Eclemma} berechnet.
+In folgenden Tabellen ist die Überdeckung für das Paket \emph{mysql} (s.S. \pageref{tbl:coverageMysql}) bzw. \emph{gui} 
+(s.S. \pageref{tbl:coverageGui}) zu finden.
 \begin{table}[h]
-\begin{tabular} {lcr}
-Bereich (Klasse / Package) & Überdeckung \\
+\centering
+\begin{tabular} {l||r}
+\label{tbl:coverageMysql}
+	Bereich (Klasse / Package) & Überdeckung \\
+	\hline
+	\hline
 	\textbf{mysql} &  \\
 		\hspace*{3mm}AccessData & 100\% \\
 		\hspace*{3mm}DBConnection & 69\% \\
 		\hspace*{3mm}DBcategorizer & 68\% \\
 		\hspace*{3mm}DBcrawler & 79\% \\
 		\hspace*{3mm}DBgui & 76\% \\
+		\hline
 	\textbf{mysql.util} &  \\
 		\hspace*{3mm}LoggerUtil & 88\% \\
 		\hspace*{3mm}Util & 88\% \\
+		\hline
 	\textbf{mysql.result} &  \\
 		\hspace*{3mm}Account & 99\% \\
 		\hspace*{3mm}Category & 99\% \\
@@ -21,11 +29,45 @@ Bereich (Klasse / Package) & Überdeckung \\
 		\hspace*{3mm}Tweets & 100\% \\
 		\hspace*{3mm}TweetsAndRetweets & 100\% \\
 	\end{tabular}
-	\caption{Übersicht über die Testüberdeckung}
+	\caption{Übersicht über die Testüberdeckung des mysql Pakets}
+\end{table}
+\begin{table}[h]
+\centering
+\begin{tabular} {l||r}
+	\label{tbl:coverageGui}
+	Bereich (Klasse / Package) & Überdeckung \\
+	\hline
+	\hline
+		\textbf{gui} \\
+		\hspace*{3mm}GUIController & 67\% \\
+		\hspace*{3mm}SelectionHashList & 58\% \\
+		\hspace*{3mm}GUIElement & 97\% \\
+		\hspace*{3mm}InfoRunnable & 96\% \\
+		\hspace*{3mm}Labels & 91\% \\
+		\hspace*{3mm}Util & 92\% \\
+		\hspace*{3mm}InputElement & 100\% \\
+		\hspace*{3mm}OutputElement & 100\% \\
+		\hspace*{3mm}PPPPRunnable & 100\% \\
+		\hspace*{3mm}PPRunnable & 100\% \\
+		\hspace*{3mm}PRunnable & 100\% \\
+		\hline
+		\textbf{gui.selectionOfQuery} \\
+		\hspace*{3mm}SelectionofQueryController & 54\% \\
+		\hspace*{3mm}SelectionofQuerySelectedController & 56\% \\
+		\hline
+		\textbf{gui.unfolding} \\
+		\hspace*{3mm}MyUnfoldingMap & 51\% \\
+		\hspace*{3mm}MyDataEntry & 52\% \\
+		\hline
+		\textbf{gui.table} \\
+		\hspace*{3mm}ContentTableController & 100\% \\
+		\hspace*{3mm}InternAccount & 56\% \\
+	\end{tabular}
+	\caption{Übersicht über die Testüberdeckung der GUI}
 \end{table}
 
 \section{Manuelle Tests}
-
+In einer GUI können bestimmte Szenarien nur schwer automatisiert getestet werden, deswegen wurden einige Tests manuell ausgeführt.
 \subsection{Bestehenden Account bearbeiten}
 
 \subsubsection{Kategorie zu einem Account hinzufügen}
