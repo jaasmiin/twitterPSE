@@ -535,7 +535,7 @@ public class DatabaseOptController extends InputElement implements
                         list_Cat_tab1.getItems().clear();
                         List<Account> list = superController.getAccounts(input);
                         if (list != null) {
-                            for (Account a : superController.getAccounts(input)) {
+                            for (Account a : list) {
                                 list_Cat_tab1.getItems().add(a);
                             }
                         }

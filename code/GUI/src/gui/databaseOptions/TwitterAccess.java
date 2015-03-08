@@ -22,7 +22,7 @@ public class TwitterAccess {
      * @param accountName
      *            string to look for
      * @return list of users that where delivered by 'Twitter' for the query or
-     *         null if there is no user matching the query
+     *         null if there is no user matching the query or no internet connection
      */
     public static List<User> getUser(String accountName) {
         ResponseList<User> list = null;
@@ -30,7 +30,8 @@ public class TwitterAccess {
             list = TwitterFactory.getSingleton().searchUsers(accountName, 1);
 
         } catch (TwitterException e) {
-            System.out.println("hallo");
+            System.out.println("no internet conntection");
+            return null;
         }
         return list;
     }
