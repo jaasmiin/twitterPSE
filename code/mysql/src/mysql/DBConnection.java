@@ -230,9 +230,13 @@ public abstract class DBConnection {
      *            the statement that causes the exception as Statement
      */
     protected void sqlExceptionLog(SQLException e, Statement statement) {
-        logger.warning("Couldn't execute sql query! SQL-Status: "
-                + e.getSQLState() + "\n Message: " + e.getMessage()
-                + "\n SQL-Query: " + statement.toString() + "\n");
+        if (e != null && statement != null) {
+            logger.warning("Couldn't execute sql query! SQL-Status: "
+                    + e.getSQLState() + "\n Message: " + e.getMessage()
+                    + "\n SQL-Query: " + statement.toString() + "\n");
+        } else if (e != null) {
+            sqlExceptionLog(e);
+        }
     }
 
 }
