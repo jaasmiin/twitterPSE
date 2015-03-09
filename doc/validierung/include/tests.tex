@@ -101,3 +101,7 @@ Um die Exportfunktion zu testen, wurde folgende zwei Tests durchgeführt:
 	\item Auswahl von zwei Kategorien (hier: \textit{Top/Computers/Software}, \textit{Top/Science/Technology}), zweier Länder (hier: \textit{Germany}, \textit{France}) und zusätzlich eines Accounts (hier: \textit{Qualcomm}). Nun wurde über "`File"' $\to$ "`Export"'... eine .csv Datei als Zieldatei ausgewählt und die Daten wurden exportiert.
 \end{itemize}
 Bei beiden Exporten wurde die exportierte Datei eingehend untersucht. Dabei wurden keine Abweichungen von der Spezifikation gefunden. Auch stimmen die exportierten Werte mit den original-Werten der Anwendung überein.
+
+\subsection{Differenz zwischen zwei Zeiträumen anzeigen lassen}
+Diese Funktion wurde so nicht implementiert. Allerdings wurde es möglich gemacht Tweets aus bestimmten, selbst gewählten, Zeitspannen auf der Karte zu visualisieren.\\
+Um diese Funktion zu testen wurde Folgendes durchgeführt:\\ Nach Account suchen (hier: \textit{YouTube}) $\to$ Karte wird eingefärbt $\to$ Im Tab "`Detail information"'  ein Startdatum wählen (hier: \textit{09.02.2015}) $\to$ ein Enddatum wählen hier: \textit{09.03.2015}) $\to$ Knopf "`Confirm"' drücken $\to$ Einfärbung der Karte verändert sich, bei Überprüfung der einzelnen Werte der Länder verringern sich, wie erwartet, die Anzahlen an Tweets $\to$ "`Reset"' Knopf drücken $\to$ Felder für Start- und Enddatum leeren sich $\to$ Karte wird wie zu Beginn eingefärbt, Anzahlen der Tweets der Länder stimmt mit den Anzahlen am Anfang (ohne Angabe einer Zeitspanne) überein.
