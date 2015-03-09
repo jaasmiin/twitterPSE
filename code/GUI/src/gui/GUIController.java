@@ -288,7 +288,7 @@ public class GUIController extends Application implements Initializable {
             stage = primaryStage;
             stage.setTitle(Labels.PSE_TWITTER);
             stage.setMinHeight(500);
-            stage.setMinWidth(600);
+            stage.setMinWidth(800);
             stage.setScene(scene);
             stage.show();
             scene.getWindow().setOnCloseRequest(
