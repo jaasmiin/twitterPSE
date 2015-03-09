@@ -1,5 +1,5 @@
 \section{Automatisierte Tests}
-Die Tests wurden in \emph{Eclipse} mittels \emph{JUnit} durchgeführt und die Überdeckung mit \emph{Eclemma} berechnet.
+Die Tests wurden in \emph{Eclipse} mittels \emph{JUnit} durchgeführt und die Überdeckung mit dem Plugin \emph{Eclemma} berechnet.
 In folgenden Tabellen ist die Überdeckung für das Paket \emph{mysql} (s.S. \pageref{tbl:coverageMysql}) bzw. \emph{gui}
 (s.S. \pageref{tbl:coverageGui}) zu finden.
 \begin{table}[h]
@@ -78,9 +78,7 @@ Das Programm wird gestartet und im \textit{Suchfeld} wird ein Teil eines Account
 Für eine nicht vorhandenen Account siehe \cref{sec:AddNewAccount}.
 \subsection{Bestehenden Account bearbeiten}
 \subsubsection{Kategorie zu einem Account hinzufügen}
-"`Database"' in der Menüleiste auswählen, zu Unterpunkt "`Add category"' wechseln $\to$ Account suchen, z.B. \textit{KATY PERRY} $\to$ Neue Kategorie aus Kategorienbaum auswählen, z.B. \textit{Top/Arts/Music}. Durch Doppelklick hinzufügen. $\to$ Am Ende "`Finish"' drücken, um Vorgang abzuschließen.\\
-Das Verhalten entspricht damit der Spezifikation.
-
+"`Database"' in der Menüleiste auswählen, zu Unterpunkt "`Add category"' wechseln $\to$ Account suchen, z.B. \textit{KATY PERRY} $\to$ Neue Kategorie aus Kategorienbaum auswählen, z.B. \textit{Top/Arts/Music}. Durch Doppelklick hinzufügen. $\to$ Am Ende "`Finish"' drücken, um den Vorgang abzuschließen.
 \subsubsection{Ort ändern/hinzufügen}
 "`Database"' in der Menüleiste auswählen, zu Unterpunkt "`Edit location "' wechseln $\to$ Account suchen, z.B. \textit{KATY PERRY} $\to$ Das aktuelle Land und eine Liste aller Länder werden angezeigt. $\to$ Wähle neues Land aus, z.B. \textit{United States of America} $\to$ Drücke "`Change"'.\\
 Das Verhalten entspricht damit der Spezifikation.
@@ -93,9 +91,6 @@ Dieses Szenario wurde wie im Pflichtenheft beschrieben implementiert.
 Um die Exportfunktion zu testen, wurde folgende zwei Tests durchgeführt:
 \begin{itemize}
 	\item Auswahl einer Kategorie (hier: \textit{World}) und eines Landes (hier: \textit{United States of America}). Nun wurde über "`File"' $\to$ "`Export..."' eine .csv Datei als Zieldatei ausgewählt und die Daten wurden exportiert.
-	\item Auswahl von zwei Kategorien (hier: \textit{Software}, \textit{Technology}), zweier Länder (hier: \textit{Germany}, \textit{France}) und zusätzlich eines Accounts (hier: \textit{Qualcomm}). Nun wurde über "`File"' $\to$ "`Export"'... eine .csv Datei als Zieldatei ausgewählt und die Daten wurden exportiert.
+	\item Auswahl von zwei Kategorien (hier: \textit{Top/Computers/Software}, \textit{Top/Science/Technology}), zweier Länder (hier: \textit{Germany}, \textit{France}) und zusätzlich eines Accounts (hier: \textit{Qualcomm}). Nun wurde über "`File"' $\to$ "`Export"'... eine .csv Datei als Zieldatei ausgewählt und die Daten wurden exportiert.
 \end{itemize}
 Bei beiden Exporten wurde die exportierte Datei eingehend untersucht. Dabei wurden keine Abweichungen von der Spezifikation gefunden. Auch stimmen die exportierten Werte mit den original-Werten der Anwendung überein.
-
-
-
