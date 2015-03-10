@@ -161,6 +161,8 @@ public class GUIController extends Application implements Initializable {
                 allSelectedCategories.add(id);
             }
             reloadDataPool.shutdownNow();
+            db2.interruptGetAllDataQuery();
+            db3.interruptGetSumOfDataQuery();
             if (allSelectedCategories.size() + selectedLocations.size()
                     + selectedAccounts.size() >= 1) {
                 reloadDataPool = Executors.newCachedThreadPool();
@@ -175,8 +177,6 @@ public class GUIController extends Application implements Initializable {
                                         Integer current) {
                                     String info = Labels.DATA_BY_ACCOUNT_LOADING;
                                     setInfo(info);
-                                    // TODO check if it's on the right position
-                                    db2.interruptGetAllDataQuery();
                                     List<Account> temp = db2.getAllData(c, l,
                                             a, false);
                                     if (current == upToDate.get()) {
@@ -197,8 +197,6 @@ public class GUIController extends Application implements Initializable {
                                         Integer current) {
                                     String info = Labels.DATA_BY_LOCATION_LOADING;
                                     setInfo(info);
-                                    // TODO check if it's on the right position
-                                    db3.interruptGetSumOfDataQuery();
                                     TweetsAndRetweets temp = db3.getSumOfData(
                                             c, l, a, true);
                                     if (current == upToDate.get()) {
@@ -244,8 +242,7 @@ public class GUIController extends Application implements Initializable {
     private Runnable rnbReloadAccounts = new Runnable() {
         @Override
         public void run() {
-            // TODO check if it's on the right position
-            //db.interruptGetAccountsQuery();
+            db.interruptGetAccountsQuery();
             reloadAccounts(true);
         }
     };
