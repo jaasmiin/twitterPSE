@@ -367,7 +367,7 @@ public class GUIController extends Application implements Initializable {
     private void reloadAccounts(boolean update) {
         String info = Labels.ACCOUNTS_LOADING;
         setInfo(info);
-        db.interruptGetAccountsQuery();
+    	db.interruptGetAccountsQuery();
         accounts.removeAll();
         List<Account> accountList = db
                 .getAccounts(accountSearchText == null ? "" : accountSearchText);

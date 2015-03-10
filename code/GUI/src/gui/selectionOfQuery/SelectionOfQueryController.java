@@ -1,10 +1,12 @@
 package gui.selectionOfQuery;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 import mysql.result.Account;
 import mysql.result.Category;
@@ -24,6 +26,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import gui.InputElement;
 import gui.Labels;
+import gui.PPRunnable;
 import gui.PRunnable;
 import gui.Util;
 /**
@@ -50,16 +53,24 @@ public class SelectionOfQueryController extends InputElement implements
     private TitledPane tipCategory;
 
     private ExecutorService threadPool = Executors.newCachedThreadPool();
+    private Thread accountUpdateThread;
+    private AtomicLong accountUpdateNo = new AtomicLong();
     
-    private void updateAccounts(List<Account> accounts) {
-    	Platform.runLater(new PRunnable<List<Account>>(accounts) {
+    private void updateAccounts(List<Account> accounts, Long updateValue) {
+    	Platform.runLater(new PPRunnable<List<Account>, Long>(accounts, updateValue) {
 			@Override
-			public void run(List<Account> accounts) {
-				lstAccount.getItems().clear();
-		        for (Account a : accounts) {
-		            lstAccount.getItems().add(a);
-		        }
-		        tipAccount.setDisable(false);
+			public void run(List<Account> accounts, Long updateValue) {
+				synchronized (SelectionOfQueryController.this) {
+					System.out.println("Update: " + updateValue + "/" + accountUpdateNo.get());
+					if (updateValue == accountUpdateNo.get()) {
+						System.out.println(" updated.");
+						lstAccount.getItems().clear();
+				        for (Account a : accounts) {
+				            lstAccount.getItems().add(a);
+				        }
+				        tipAccount.setDisable(false);
+					}
+				}
 			}
 		});
         
@@ -115,7 +126,7 @@ public class SelectionOfQueryController extends InputElement implements
                     .getText()));
         } else if (type == UpdateType.ACCOUNT) {
             updateAccounts(superController.getAccounts(txtFilterSearch
-                    .getText()));
+                    .getText()), accountUpdateNo.incrementAndGet());
         } else if (type == UpdateType.ERROR) {
 
         } else if (type == UpdateType.DONT_LOAD) {
@@ -167,7 +178,7 @@ public class SelectionOfQueryController extends InputElement implements
                 if (!k.getText().isEmpty()
                         || k.getCode().equals(KeyCode.DELETE)
                         || k.getCode().equals(KeyCode.BACK_SPACE)) {
-                    reloadActiveList();
+                	reloadActiveList();
                 }
             }
         }
@@ -188,8 +199,25 @@ public class SelectionOfQueryController extends InputElement implements
             updateCategory(superController
                     .getCategoryRoot(txtFilterSearch.getText()));
         } else if (tipAccount.isExpanded()) {
-            updateAccounts(superController
-                    .getAccounts(txtFilterSearch.getText()));
+        	synchronized (this) {
+	        	if (accountUpdateThread != null) {
+	        		accountUpdateThread.interrupt();
+	        	}
+	        	accountUpdateThread = new Thread(new PPRunnable<Long, String>(accountUpdateNo.incrementAndGet(), txtFilterSearch.getText()) {
+					@Override
+					public void run(Long updateValue, String text) {
+						List<Account> accounts = new ArrayList<Account>();
+						synchronized (SelectionOfQueryController.this) {
+							if (updateValue == accountUpdateNo.get()) {
+								System.out.println(updateValue);
+								accounts = superController.getAccounts(text);
+							}	
+						}
+						updateAccounts(accounts, updateValue);
+					}
+				});
+	        	accountUpdateThread.start();
+        	}
         } else if (tipLocation.isExpanded()) {
             updateLocation(superController
                     .getLocations(txtFilterSearch.getText()));
