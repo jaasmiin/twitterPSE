@@ -242,7 +242,6 @@ public class GUIController extends Application implements Initializable {
     private Runnable rnbReloadAccounts = new Runnable() {
         @Override
         public void run() {
-            db.interruptGetAccountsQuery();
             reloadAccounts(true);
         }
     };
@@ -368,6 +367,7 @@ public class GUIController extends Application implements Initializable {
     private void reloadAccounts(boolean update) {
         String info = Labels.ACCOUNTS_LOADING;
         setInfo(info);
+        db.interruptGetAccountsQuery();
         accounts.removeAll();
         List<Account> accountList = db
                 .getAccounts(accountSearchText == null ? "" : accountSearchText);

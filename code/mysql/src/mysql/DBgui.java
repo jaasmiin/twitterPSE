@@ -204,6 +204,7 @@ public class DBgui extends DBConnection implements DBIgui {
             // do nothing
         } finally {
             closeResultAndStatement(getAccountsStmt, res);
+            getAccountsStmt = null;
         }
 
         // add the categories from the database to the accounts
@@ -550,7 +551,7 @@ public class DBgui extends DBConnection implements DBIgui {
     public TweetsAndRetweets getSumOfData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
 
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
         TweetsAndRetweets ret = new TweetsAndRetweets();
         try {
             // build sql-statments
@@ -563,8 +564,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } catch (IllegalArgumentException e) {
         }
 
-        System.out.println("Zusammengefasste Daten: "
-                + (System.currentTimeMillis() - t));
+        // System.out.println("Zusammengefasste Daten: "
+        // + (System.currentTimeMillis() - t));
 
         return ret;
     }
@@ -688,7 +689,7 @@ public class DBgui extends DBConnection implements DBIgui {
     public List<Account> getAllData(List<Integer> categoryIDs,
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
 
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
 
         // to get all the data, we fist build the basic statement to put all the
         // matching accounts into a list, then we select the data to describe
@@ -709,7 +710,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } catch (IllegalArgumentException e) {
         }
 
-        System.out.println("Alle Daten: " + (System.currentTimeMillis() - t));
+        // System.out.println("Alle Daten: " + (System.currentTimeMillis() -
+        // t));
 
         return ret;
     }
