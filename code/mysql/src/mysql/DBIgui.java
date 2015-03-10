@@ -33,10 +33,12 @@ public interface DBIgui {
     public List<Location> getLocations();
 
     /**
-     * returns the sum of all retweets for each location
+     * returns the sum of all retweets for each location for each day
      * 
-     * @return the sum of all retweets for each location per Date (the location
-     *         as locationCode in the hashmap as key) as HashMap<String,Integer>
+     * @return the sum of all retweets for each location per Date (the date as
+     *         key in the first HashMap, the location as locationCode in the
+     *         second hashmap(object) as key) as HashMap<Date, HashMap<String,
+     *         Integer>>
      */
     public HashMap<Date, HashMap<String, Integer>> getAllRetweetsPerLocation();
 

@@ -34,6 +34,7 @@ public abstract class DBConnection {
      * boolean to indicate a running database-request
      */
     protected boolean runningRequest;
+
     private final AccessData accessData;
     private boolean connected;
 

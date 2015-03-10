@@ -31,6 +31,10 @@ import mysql.result.TweetsAndRetweets;
  */
 public class DBgui extends DBConnection implements DBIgui {
 
+    private Statement getAllDataStmt;
+    private Statement getSumOfDataStmt;
+    private PreparedStatement getAccountsStmt;
+
     /**
      * configure the connection to the database
      * 
@@ -158,22 +162,19 @@ public class DBgui extends DBConnection implements DBIgui {
     public List<Account> getAccounts(String search) {
 
         // prevent SQL-injection
-        PreparedStatement stmt = null;
         ResultSet res = null;
         runningRequest = true;
-        double t = System.currentTimeMillis();
         try {
-            stmt = c.prepareStatement("SELECT accounts.Id, TwitterAccountId, AccountName, Verified, Follower, URL, Code FROM accounts "
-                    + "JOIN location ON accounts.LocationId=location.Id WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
-            stmt.setString(1, "%" + search + "%");
-            res = stmt.executeQuery();
+            getAccountsStmt = c
+                    .prepareStatement("SELECT accounts.Id, TwitterAccountId, AccountName, Verified, Follower, URL, Code FROM accounts "
+                            + "JOIN location ON accounts.LocationId=location.Id WHERE AccountName LIKE ? ORDER BY Follower DESC LIMIT 100;");
+            getAccountsStmt.setString(1, "%" + search + "%");
+            res = getAccountsStmt.executeQuery();
         } catch (SQLException e) {
-            sqlExceptionLog(e, stmt);
+            sqlExceptionLog(e, getAccountsStmt);
         } finally {
             runningRequest = false;
         }
-        System.out.println("Account search query: "
-                + (System.currentTimeMillis() - t));
 
         // check sql-result
         if (res == null || Thread.interrupted())
@@ -202,7 +203,7 @@ public class DBgui extends DBConnection implements DBIgui {
         } catch (NullPointerException e) {
             // do nothing
         } finally {
-            closeResultAndStatement(stmt, res);
+            closeResultAndStatement(getAccountsStmt, res);
         }
 
         // add the categories from the database to the accounts
@@ -550,13 +551,13 @@ public class DBgui extends DBConnection implements DBIgui {
             List<Integer> locationIDs, List<Integer> accountIDs, boolean byDates) {
 
         double t = System.currentTimeMillis();
-        Statement stmt;
         TweetsAndRetweets ret = new TweetsAndRetweets();
         try {
             // build sql-statments
-            stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
+            getSumOfDataStmt = createBasicStatement(categoryIDs, locationIDs,
+                    accountIDs);
             // execute sql-queries and receive result
-            ret = getTweetSum(stmt, byDates);
+            ret = getTweetSum(getSumOfDataStmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatSumData: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -576,7 +577,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
         ResultSet res = null;
         runningRequest = true;
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
         try {
             // execute the prepared statements to build a list of selected
             // accounts in the database
@@ -588,8 +589,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Query für Tweets (summed): "
-                + (System.currentTimeMillis() - t));
+        // System.out.println("Query für Tweets (summed): "
+        // + (System.currentTimeMillis() - t));
 
         if (res == null || Thread.interrupted()) {
             return new TweetsAndRetweets();
@@ -639,7 +640,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
         ResultSet res = null;
         runningRequest = true;
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
         try {
             // execute select-query on the database by using the temporary table
             // with the selected accounts (created by the getTweets-Method
@@ -650,8 +651,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Query für Retweets (summed): "
-                + (System.currentTimeMillis() - t));
+        // System.out.println("Query für Retweets (summed): "
+        // + (System.currentTimeMillis() - t));
 
         // check result
         if (res == null || Thread.interrupted())
@@ -696,13 +697,13 @@ public class DBgui extends DBConnection implements DBIgui {
         // we select the retweets for the selected accounts and append this data
         // also to the accounts
 
-        Statement stmt;
         List<Account> ret = new ArrayList<Account>();
         try {
             // build the statement to select all matching accounts
-            stmt = createBasicStatement(categoryIDs, locationIDs, accountIDs);
+            getAllDataStmt = createBasicStatement(categoryIDs, locationIDs,
+                    accountIDs);
             // retrieving data
-            ret = getTweetSumPerAccount(stmt, byDates);
+            ret = getTweetSumPerAccount(getAllDataStmt, byDates);
         } catch (SQLException e) {
             logger.warning("SQL-Exception by gatAllData: " + e.getMessage());
         } catch (IllegalArgumentException e) {
@@ -720,7 +721,7 @@ public class DBgui extends DBConnection implements DBIgui {
                 + "final LEFT JOIN accounts ON final.val=accounts.Id JOIN location ON accounts.LocationId=location.Id ORDER BY Follower DESC;";
         ResultSet res = null;
         runningRequest = true;
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
         try {
             // execute the querie on the database
             stmt.executeBatch();
@@ -730,8 +731,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Query für Accounts: "
-                + (System.currentTimeMillis() - t));
+        // System.out.println("Query für Accounts: "
+        // + (System.currentTimeMillis() - t));
 
         // vaidate result
         if (res == null || Thread.interrupted()) {
@@ -776,7 +777,7 @@ public class DBgui extends DBConnection implements DBIgui {
         // execute querie on the database
         ResultSet res = null;
         runningRequest = true;
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
         try {
             res = stmt.executeQuery(byDate ? a : b);
         } catch (SQLException e) {
@@ -784,8 +785,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Query für Tweets: "
-                + (System.currentTimeMillis() - t));
+        // System.out.println("Query für Tweets: "
+        // + (System.currentTimeMillis() - t));
 
         // validate sql-result
         if (res == null || Thread.interrupted())
@@ -833,7 +834,7 @@ public class DBgui extends DBConnection implements DBIgui {
 
         // request the data from the database
         ResultSet res = null;
-        double t = System.currentTimeMillis();
+        // double t = System.currentTimeMillis();
         try {
             runningRequest = true;
             res = stmt.executeQuery(byDate ? queryByDates : queryBasic);
@@ -842,8 +843,8 @@ public class DBgui extends DBConnection implements DBIgui {
         } finally {
             runningRequest = false;
         }
-        System.out.println("Query für Retweets: "
-                + (System.currentTimeMillis() - t));
+        // System.out.println("Query für Retweets: "
+        // + (System.currentTimeMillis() - t));
 
         // validate the sql-result
         if (res == null || Thread.interrupted())
@@ -956,4 +957,44 @@ public class DBgui extends DBConnection implements DBIgui {
         }
         return stmt;
     }
+
+    /**
+     * method to interrupt the current sql-query started by getAccounts()
+     */
+    public void interruptGetAccountsQuery() {
+        if (getAccountsStmt == null)
+            return;
+        try {
+            getAccountsStmt.cancel();
+        } catch (SQLException e) {
+            sqlExceptionLog(e);
+        }
+    }
+
+    /**
+     * method to interrupt the current sql-query started by getSumOfData()
+     */
+    public void interruptGetSumOfDataQuery() {
+        if (getSumOfDataStmt == null)
+            return;
+        try {
+            getSumOfDataStmt.cancel();
+        } catch (SQLException e) {
+            sqlExceptionLog(e);
+        }
+    }
+
+    /**
+     * method to interrupt the current sql-query started by getAllData()
+     */
+    public void interruptGetAllDataQuery() {
+        if (getAllDataStmt == null)
+            return;
+        try {
+            getAllDataStmt.cancel();
+        } catch (SQLException e) {
+            sqlExceptionLog(e);
+        }
+    }
+
 }
