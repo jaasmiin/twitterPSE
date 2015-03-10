@@ -105,5 +105,9 @@ class InternAccount {
 	int getTotalRetweets() {
 		return totalRetweets;
 	}
+	
+	public String toString() {
+		return accountName;
+	}
 
 }
