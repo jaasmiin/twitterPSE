@@ -1,6 +1,7 @@
 package gui.table;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -63,6 +64,11 @@ public class ContentTableController extends OutputElement implements Initializab
 	 */
 	private ObservableList<InternAccount> data;
 	
+	/**
+	 * A hashmap containing all locationColumns.
+	 */
+	private HashMap<String, TableColumn<InternAccount, Integer>> locationColumns;
+	
 	@Override
 	public void update(UpdateType type) {
 		Platform.runLater(new PRunnable<UpdateType>(type) {
@@ -90,8 +96,7 @@ public class ContentTableController extends OutputElement implements Initializab
 		table.setPlaceholder(new Text(Labels.TABLE_EMPTY));
 		
 		addAccountsColumn();
-		addFollowerColumn();
-		//addRetweetsColumn();		
+		addFollowerColumn();		
 	}
 	
 	/**
@@ -102,8 +107,22 @@ public class ContentTableController extends OutputElement implements Initializab
 	private void fillData(List<Account> accounts) {
 		// clear list before inserting new data
 		data.removeAll(data);
+		InternAccount.clearTotalRetweets();
 		for (Account a : accounts) {
 			data.add(new InternAccount(a.getName(), a.getFollower(), a.getRetweets()));
+		}
+		
+		// only show columns where a minimum of one entry is greater zero
+		TableColumn<InternAccount, Integer> currentColumn = null;
+		for (Location loc : superController.getLocations()) {
+			int retweets = InternAccount.getTotalRetweets(loc.getLocationCode());
+			
+			currentColumn = locationColumns.get(loc.getLocationCode());
+			if (retweets == 0) {
+				currentColumn.setVisible(false);
+			} else {
+				currentColumn.setVisible(true);
+			}
 		}
 	}
 	
@@ -127,19 +146,9 @@ public class ContentTableController extends OutputElement implements Initializab
 			}
 			
 		});
-				
+		
+		accountsColumn.setMinWidth(75);
 		table.getColumns().add(accountsColumn);
-	}
-	
-	
-	
-	/**
-	 * Adds columns containing the number of retweets per country
-	 * a certain account received to the table.
-	 */
-	private void addRetweetsColumn() {
-		retweetColumn = new TableColumn<>(Labels.RETWEETS);
-		table.getColumns().add(retweetColumn);
 	}
 	
 	/**
@@ -162,7 +171,7 @@ public class ContentTableController extends OutputElement implements Initializab
 			
 		});
 		
-		//retweetColumn.getColumns().add(sumColumn);
+		sumColumn.setMinWidth(75);
 		table.getColumns().add(sumColumn);
 	}
 	
@@ -171,6 +180,9 @@ public class ContentTableController extends OutputElement implements Initializab
 	 */
 	private void addLocationColumns() {		
 		addTotalRetweetsColumn();
+		
+		// optimize number of rehashs
+		locationColumns = new HashMap<>((int) (superController.getLocations().size() * (1 / 0.75)));
 		
 		for (Location currentLocation : superController.getLocations()) {
 			final Location tempLocation = currentLocation;
@@ -190,8 +202,10 @@ public class ContentTableController extends OutputElement implements Initializab
 						}
 						
 					});
-			//retweetColumn.getColumns().add(countryColumn);
+			
+			countryColumn.setMinWidth(75);
 			table.getColumns().add(countryColumn);
+			locationColumns.put(tempLocation.getLocationCode(), countryColumn);
 		}	
 	}
 	
@@ -215,6 +229,7 @@ public class ContentTableController extends OutputElement implements Initializab
 			
 		});
 		
+		followerColumn.setMinWidth(75);
 		table.getColumns().add(followerColumn);
 	}
 	
