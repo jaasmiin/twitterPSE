@@ -90,6 +90,7 @@ public class ContentTableController extends OutputElement implements Initializab
 		superController.subscribe(this);
 		
 		data = FXCollections.observableArrayList();
+		locationColumns = new HashMap<>();
 		
 		tabTable.setText(Labels.TABLE);
 		
@@ -118,10 +119,12 @@ public class ContentTableController extends OutputElement implements Initializab
 			int retweets = InternAccount.getTotalRetweets(loc.getLocationCode());
 			
 			currentColumn = locationColumns.get(loc.getLocationCode());
-			if (retweets == 0) {
-				currentColumn.setVisible(false);
-			} else {
-				currentColumn.setVisible(true);
+			if (currentColumn != null) {
+				if (retweets == 0) {
+					currentColumn.setVisible(false);
+				} else {
+					currentColumn.setVisible(true);
+				}
 			}
 		}
 	}
@@ -203,6 +206,7 @@ public class ContentTableController extends OutputElement implements Initializab
 						
 					});
 			
+			countryColumn.setVisible(true);
 			countryColumn.setMinWidth(75);
 			table.getColumns().add(countryColumn);
 			locationColumns.put(tempLocation.getLocationCode(), countryColumn);

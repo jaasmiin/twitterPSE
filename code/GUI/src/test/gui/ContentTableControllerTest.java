@@ -108,12 +108,43 @@ public class ContentTableControllerTest {
 
 	}
 
+	
+    /**
+     * Tests if location columns are added in correct order
+     */
+    @Test
+    public void testUpdateLocation() {
+    	System.out.println("Test1: UpdateLocation");
+    	table.update(UpdateType.LOCATION);
+    	
+    	try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+    	
+    	int locNumber = contentTable.getColumns().size() - 3;
+    	System.out.println("locNumber = " + locNumber);
+    	
+    	boolean equalLocs = true;
+    	String names[] = guiController.getLocationNames();
+    	String columnName = null;
+    	for (int i = 0; i < names.length; i++) {
+    		// start after "account", "follower" and "total" column
+    		columnName = contentTable.getColumns().get(i + 3).getText();
+    		equalLocs &= names[i].equals(columnName);
+    	}
+    	
+    	assertTrue(equalLocs);
+    	assertTrue(locNumber == 5);   	
+    }
+	
     /**
      * Test selection of one account.
      */
     @Test
     public void testInsertOneAccount() {
-    	System.out.println("Test1: InsertAccount");   	
+    	System.out.println("Test2: InsertAccount");   	
     	guiController.setSelectedAccount(0, true);
     	
     	// Wait until updates arrive
@@ -126,45 +157,15 @@ public class ContentTableControllerTest {
     	int rowNumber = contentTable.getItems().size();
     	int columnNumber = contentTable.getColumns().size();
     	
+    	System.out.println("RowNumber = " + rowNumber + ", ColumnNumber = " + columnNumber);
+    	
     	String contentName = contentTable.getColumns().get(0).getCellData(0).toString();
     	
     	
-    	System.out.println("RowNumber = " + rowNumber + ", ColumnNumber = " + columnNumber);
+    	
     	
     	assertEquals("Number of Rows is equal to 1 : ", 1, rowNumber);
     	assertEquals("Name of Account is TestAccount0",  "TestAccount0", contentName);
-    }
-    
-    /**
-     * Tests if location columns are added in correct order
-     */
-    @Test
-    public void testUpdateLocation() {
-    	System.out.println("Test2: UpdateLocation");
-    	table.update(UpdateType.LOCATION);
-    	
-    	try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	int locNumber = contentTable.getColumns().get(2).getColumns().size();
-    	System.out.println("locNumber = " + locNumber);
-    	
-    	boolean equalLocs = true;
-    	String names[] = guiController.getLocationNames();
-    	String columnName = null;
-    	for (int i = 0; i < names.length; i++) {
-    		// without "total" column
-    		columnName = contentTable.getColumns().get(2).getColumns().get(i + 1).getText();
-    		equalLocs &= names[i].equals(columnName);
-    	}
-    	
-    	assertTrue(equalLocs);
-    	assertEquals("Number of Locations is 6 (inlcuding Total) : ", 6, locNumber);
-    	
     }
 	
 
