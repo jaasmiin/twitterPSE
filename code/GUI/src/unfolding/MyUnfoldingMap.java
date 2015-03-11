@@ -207,7 +207,7 @@ public final class MyUnfoldingMap extends PApplet {
 	        }
     	}
     }
-
+    
     /**
      * Updates new values to be visualized on the map.
      * 
@@ -219,8 +219,8 @@ public final class MyUnfoldingMap extends PApplet {
         resetMarkers();
         maxValue = 0;
         if (setValues != null && !setValues.isEmpty()) {
-            for (String id : setValues) {
-
+            for (int i = 0; i < setValues.size(); i++) {
+                String id = setValues.get(i);
                 MyDataEntry edit = dataEntriesMap.get(id);
 
                 edit.setValue(0);
