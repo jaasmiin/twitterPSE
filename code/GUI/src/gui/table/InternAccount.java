@@ -15,6 +15,16 @@ import mysql.result.Retweets;
 class InternAccount {
 
 	/**
+	 * This HashMap maps the locationCode of all retweets objects 
+	 * since the static clearTotalRetweets method was called to 
+	 * their counter value.
+	 */
+	private static HashMap<String, Integer> totalRetweetsPerLocation;
+	static {
+		totalRetweetsPerLocation = new HashMap<String, Integer>();
+	}
+	
+	/**
 	 * The name of this account.
 	 */
 	private String accountName;
@@ -57,8 +67,32 @@ class InternAccount {
 		for (Retweets r : retweetList) {
 			int counter = r.getCounter();
 			totalRetweets += counter;
-			retweetsPerLocation.put(r.getLocationCode(), counter);			
+			retweetsPerLocation.put(r.getLocationCode(), counter);
+			totalRetweetsPerLocation.put(r.getLocationCode(), counter);
 		}
+	}
+	
+	/**
+	 * Gets the sum of retweets in a specific location over all created InternAccounts
+	 * since the last call to static method clearTotalRetweets.
+	 * 
+	 * @param locationCode a unique identifier for a location
+	 * @return the sum of retweets in a specific location over all created InternAccounts
+	 * since the last call to static method clearTotalRetweets
+	 */
+	static int getTotalRetweets(String locationCode) {
+		Integer result = totalRetweetsPerLocation.get(locationCode);
+		if (result == null) {
+			result = 0;
+		}
+		return result;
+	}
+	
+	/**
+	 * Sets the sum of retweets per location above all created InternAccounts to zero.
+	 */
+	static void clearTotalRetweets() {
+		totalRetweetsPerLocation.clear();
 	}
 
 	/**
