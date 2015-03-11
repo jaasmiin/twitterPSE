@@ -53,10 +53,10 @@
                   <Insets right="5.0" />
                </GridPane.margin>
             </DatePicker>
-            <Button fx:id="b_StandMap_confirm" mnemonicParsing="false" prefWidth="70.0" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
-            <Button fx:id="b_StandMap_reset" mnemonicParsing="false" prefWidth="70.0" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
-            <Button fx:id="b_StandMap_StartDateShow" mnemonicParsing="false" prefWidth="70.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Button fx:id="b_StandMap_StopDateShow" mnemonicParsing="false" prefWidth="70.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Button fx:id="b_StandMap_confirm" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
+            <Button fx:id="b_StandMap_reset" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
+            <Button fx:id="b_StandMap_StartDateShow" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+            <Button fx:id="b_StandMap_StopDateShow" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="1" />
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />

@@ -14,9 +14,9 @@
                   <Label fx:id="l_Acc_searchAccount" layoutX="14.0" layoutY="23.0" />
                   <ListView fx:id="list_Acc_tab1" layoutX="300.0" layoutY="60.0" prefHeight="256.0" prefWidth="272.0" />
                   <Label fx:id="l_Acc_twitterAccounts" layoutX="300.0" layoutY="23.0" />
-                  <Button fx:id="b_Acc_tab1_hinzufuegen" layoutX="472.0" layoutY="316.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="48.0" />
+                  <Button fx:id="b_Acc_tab1_hinzufuegen" layoutX="452.0" layoutY="316.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" />
                   <Button fx:id="b_Acc_tab1_suchen" layoutX="14.0" layoutY="106.0" mnemonicParsing="false" />
-                  <Button fx:id="b_Acc_tab1_schliessen" layoutX="519.0" layoutY="316.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="53.0" />
+                  <Button fx:id="b_Acc_tab1_schliessen" layoutX="512.0" layoutY="316.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" />
                </children></AnchorPane>
       </content>
     </Tab>
