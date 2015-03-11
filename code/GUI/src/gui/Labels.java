@@ -34,8 +34,10 @@ public class Labels {
     public static final String ERROR = "Error.";
     public static final String ERROR_NO_FILTER_SELECTED = "Can not load data. Please select minimum one filter.";
     public static final String TOTAL = "Total";
+    public static final String TOTAL_RETWEETS = "Total Retweets";
     public static final String FOLLOWER = "Follower";
     public static final String RETWEETS = "Retweets";
+    public static final String TABLE_EMPTY = "No accounts selected!";
 
     public static final String SAVE_AS = "Save as...";
     public static final String EXPORT = "Export...";

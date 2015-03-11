@@ -3,10 +3,7 @@ package test.gui;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.List;
 
 import javafx.scene.control.TableView;
 import gui.GUIElement.UpdateType;
@@ -18,6 +15,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/**
+ * Test class for ContentTableController
+ * 
+ * @author Philipp
+ *
+ */
 public class ContentTableControllerTest {
 
     private static GuiControllerMock guiController;
@@ -28,12 +31,6 @@ public class ContentTableControllerTest {
 
     /**
      * Create GuiControllerMock and load ContentTableController
-     * 
-     * @throws SecurityException 
-     * @throws NoSuchFieldException 
-     * @throws NoSuchMethodException 
-	 * 
-     * 
      */
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -51,12 +48,12 @@ public class ContentTableControllerTest {
     	System.out.println("Loading ContentTableController");
     	
     	URL adress = ContentTableController.class.getResource("ContentTableView.fxml");    	
-    	ComponentLoader.setComponent(adress);
+    	ContentTableLoader.setComponent(adress);
     	
     	Thread starterThread = new Thread("Application Starter Thread") {
     		
     		public void run() {
-    			ComponentLoader.main(null);
+    			ContentTableLoader.main(null);
     		}
     	};
     	
@@ -69,7 +66,7 @@ public class ContentTableControllerTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-    	Object maybeTable = ComponentLoader.getController();
+    	Object maybeTable = ContentTableLoader.getController();
     	
     	if (maybeTable instanceof ContentTableController) {
     		System.out.println("Set subscriber");
@@ -103,16 +100,16 @@ public class ContentTableControllerTest {
     	contentTable.getItems().clear();  	
     }
 
+    /**
+     * Called after execution of a test case
+     */
 	@After
-	public void tearDown() throws Exception {
+	public void tearDown() {
 
 	}
 
     /**
      * Test selection of one account.
-     * @throws InvocationTargetException 
-     * @throws IllegalArgumentException 
-     * @throws IllegalAccessException 
      */
     @Test
     public void testInsertOneAccount() {
@@ -138,6 +135,9 @@ public class ContentTableControllerTest {
     	assertEquals("Name of Account is TestAccount0",  "TestAccount0", contentName);
     }
     
+    /**
+     * Tests if location columns are added in correct order
+     */
     @Test
     public void testUpdateLocation() {
     	System.out.println("Test2: UpdateLocation");
