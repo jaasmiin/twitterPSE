@@ -53,10 +53,19 @@
                   <Insets right="5.0" />
                </GridPane.margin>
             </DatePicker>
-            <Button fx:id="b_StandMap_confirm" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
-            <Button fx:id="b_StandMap_reset" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM" />
-            <Button fx:id="b_StandMap_StartDateShow" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-            <Button fx:id="b_StandMap_StopDateShow" mnemonicParsing="false" prefWidth="80.0" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+            <Button fx:id="b_StandMap_confirm" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
+            <Button fx:id="b_StandMap_reset" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin></Button>
+            <Button fx:id="b_StandMap_StartDateShow" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin></Button>
+            <Button fx:id="b_StandMap_StopDateShow" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="10.0" top="10.0" />
+               </GridPane.margin></Button>
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
