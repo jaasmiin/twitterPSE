@@ -1,6 +1,7 @@
 package test.gui;
 
 
+import java.io.IOException;
 import java.net.URL;
 
 import javafx.application.Application;
@@ -12,7 +13,13 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class ComponentLoader extends Application {
+/**
+ * Loads an instance of ContentTableController.
+ * 
+ * @author Philipp
+ *
+ */
+public class ContentTableLoader extends Application {
 
 	private static URL location;
 	
@@ -21,12 +28,18 @@ public class ComponentLoader extends Application {
 	/**
 	 * Call before invoking main()
 	 * 
-	 * @param locationOfComponent
+	 * @param locationOfComponent a unique identifier for the location of the fxml-File
+	 * of the ContentTable
 	 */
 	public static void setComponent(URL locationOfComponent) {
-		ComponentLoader.location = locationOfComponent;
+		ContentTableLoader.location = locationOfComponent;
 	}
 	
+	/**
+	 * Launches the Application.
+	 * 
+	 * @param args the command line arguments. None expected.
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
@@ -50,19 +63,25 @@ public class ComponentLoader extends Application {
 			bPane.getChildren().add(tPane);
 			
 			Scene scene = new Scene(bPane);
-			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);			
 			primaryStage.show();
 			
-		} catch(Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}				
 	}
 	
+	/**
+	 * Gets the instance of ContentTableController that controls the launched application.
+	 * @return the instance of ContentTableController that controls the launched application
+	 */
 	public static Object getController() {
 		return controller;
 	}
 	
+	/**
+	 * Closes the Application.
+	 */
 	public static void closeComponent() {
 		Platform.exit();
 	}

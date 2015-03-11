@@ -106,6 +106,7 @@ class InternAccount {
 		return totalRetweets;
 	}
 	
+	@Override
 	public String toString() {
 		return accountName;
 	}

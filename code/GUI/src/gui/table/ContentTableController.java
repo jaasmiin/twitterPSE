@@ -19,6 +19,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import gui.Labels;
 import gui.OutputElement;
@@ -86,9 +87,11 @@ public class ContentTableController extends OutputElement implements Initializab
 		
 		tabTable.setText(Labels.TABLE);
 		
+		table.setPlaceholder(new Text(Labels.TABLE_EMPTY));
+		
 		addAccountsColumn();
 		addFollowerColumn();
-		addRetweetsColumn();		
+		//addRetweetsColumn();		
 	}
 	
 	/**
@@ -144,7 +147,7 @@ public class ContentTableController extends OutputElement implements Initializab
 	 * to the retweetsColumn.
 	 */
 	private void addTotalRetweetsColumn() {		
-		TableColumn<InternAccount, Integer> sumColumn = new TableColumn<>(Labels.TOTAL);		
+		TableColumn<InternAccount, Integer> sumColumn = new TableColumn<>(Labels.TOTAL_RETWEETS);		
 		sumColumn.setCellValueFactory(
 				new Callback<TableColumn.CellDataFeatures<InternAccount, Integer>, ObservableValue<Integer>>() {
 
@@ -159,7 +162,8 @@ public class ContentTableController extends OutputElement implements Initializab
 			
 		});
 		
-		retweetColumn.getColumns().add(sumColumn);	
+		//retweetColumn.getColumns().add(sumColumn);
+		table.getColumns().add(sumColumn);
 	}
 	
 	/**
@@ -186,7 +190,8 @@ public class ContentTableController extends OutputElement implements Initializab
 						}
 						
 					});
-			retweetColumn.getColumns().add(countryColumn);
+			//retweetColumn.getColumns().add(countryColumn);
+			table.getColumns().add(countryColumn);
 		}	
 	}
 	
