@@ -223,10 +223,12 @@ public final class MyUnfoldingMap extends PApplet {
                 String id = setValues.get(i);
                 MyDataEntry edit = dataEntriesMap.get(id);
 
-                edit.setValue(0);
-                edit.setRetweetsLandFiltered(0);
-                edit.setRetweetsLand(666);
-                dataEntriesMap.put(id, edit);
+                if (edit != null) {
+                    edit.setValue(0);
+                    edit.setRetweetsLandFiltered(0);
+                    edit.setRetweetsLand(666);
+                    dataEntriesMap.put(id, edit);
+                }
             }
             setValues.clear();
         }
