@@ -55,11 +55,6 @@ public class ContentTableController extends OutputElement implements Initializab
     private TableView<InternAccount> table;
 	
 	/**
-	 * The column containing the numbers of retweets.
-	 */
-	private TableColumn<InternAccount, Integer> retweetColumn;
-	
-	/**
 	 * The List containing the data to be displayed in the table.
 	 */
 	private ObservableList<InternAccount> data;

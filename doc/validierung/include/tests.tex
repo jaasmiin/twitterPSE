@@ -75,20 +75,21 @@ In folgenden Tabellen ist die Überdeckung für das Paket \emph{mysql} (s.S. \pa
 In einer GUI können bestimmte Szenarien nur schwer automatisiert getestet werden, deswegen wurden einige Tests manuell ausgeführt.
 
 \subsection{Programm starten und Twitterdatenströme anzeigen lassen}
-Programm starten $\to$ auf "`Category"' klicken $\to$ eine Kategorie auswählen, z.B. \textit{Software} und durch Doppelklick hinzufügen $\to$ auf "`Location"' klicken und ein Land auswählen, z.B. \textit{United States of America} und durch Doppelklick hinzufügen. $\to$ auf "`Account"' klicken und einen Account auswählen, z.B. \textit{Bill Gates} und durch Doppelklick hinzufügen. $\to$ "`Table"' anklicken und Tabelle anzeigen lassen $\to$ auf die Karte klicken und mit den Tasten "`+"' und "`-"' zoomen.
+Programm starten $\to$ auf "`Category"' klicken $\to$ eine Kategorie auswählen, z.B. \textit{Top/Computers/Software} und durch Doppelklick hinzufügen $\to$ auf "`Location"' klicken und ein Land auswählen, z.B. \textit{United States of America} und durch Doppelklick hinzufügen. $\to$ auf "`Account"' klicken und einen Account auswählen, z.B. \textit{Bill Gates} und durch Doppelklick hinzufügen. $\to$ "`Table"' anklicken und Tabelle anzeigen lassen $\to$ auf die Karte klicken und mit den Tasten "`+"' und "`-"' zoomen.
 Die Daten werden angezeigt und aktualisieren sich sowohl in der Tabelle als auch in der Karte nach jeder Änderung der Kombination von Accounts, Orten und Kategorien.
 \subsection{Bestimmten verifizierten Account, Kategorie und Ort finden}
 \subsubsection{Account}
-Das Programm wird gestartet und im Suchfeld wird ein Teil eines Accountnames eingegeben ("`Seib"'). Der gewünschte Account ("`Steffen Seibert"') erscheint in der Liste im Reiter \textit{Account} und wird mit einem Doppelklick zum Filter hinzugefügt. Nach einer kurzen Wartezeit werden die relativen Retweet-Häufigkeiten in der Weltkarte farblich dargestellt.
+Das Programm wird gestartet und im Suchfeld wird ein Teil eines Accountnames eingegeben (\textit{Seib}). Der gewünschte Account (\textit{Steffen Seibert}) erscheint in der Liste im Reiter "`Account"' und wird mit einem Doppelklick zum Filter hinzugefügt. Nach einer kurzen Wartezeit werden die relativen Retweet-Häufigkeiten in der Weltkarte farblich dargestellt.
 
-Für eine nicht vorhandenen Account siehe \cref{sec:AddNewAccount}.
+Für einen nicht vorhandenen Account siehe \cref{sec:AddNewAccount}.
 \subsubsection{Kategorie}
-Gibt man "`pol"' im Suchfeld ein und wechselt in den Reiter \textit{Category} findet man die passende Kategorie unter \textit{Top} $\to$ \textit{Society} $\to$ \textit{Politics}. Wie auch beim Account wird die Karte nach einem Doppelklick auf den Eintrag aktualisiert.
+Gibt man \textit{pol} im Suchfeld ein und wechselt in den Reiter "`Category"' findet man die passende Kategorie unter \textit{Top} $\to$ \textit{Society} $\to$ \textit{Politics}. Wie auch beim Account wird die Karte nach einem Doppelklick auf den Eintrag aktualisiert.
 \subsubsection{Ort}
-Nun wird "`man"' eingeben und zum Reiter \textit{Location} gewechselt und mit einem Doppelklick das gesuchte Land (\textit{Germany}) hinzugefügt. Auch hier wird die Karte automatisch aktualsiert.
+Nun wird \textit{man} eingeben und zum Reiter "`Location"' gewechselt und mit einem Doppelklick das gesuchte Land (\textit{Germany}) hinzugefügt. Auch hier wird die Karte automatisch aktualisiert.
 
 Es konnte bei diesem Test ("`Bestimmten verifizierten Account, Kategorie und Ort finden"') keine Abweichung zur gewünschten Funktionsweise festgestellt werden.
 \subsection{Bestehenden Account bearbeiten}
+
 \subsubsection{Kategorie zu einem Account hinzufügen}
 "`Database"' in der Menüleiste auswählen, zu Unterpunkt "`Add category"' wechseln $\to$ Account suchen, z.B. \textit{KATY PERRY} $\to$ Neue Kategorie aus Kategorienbaum auswählen, z.B. \textit{Top/Arts/Music}. Durch Doppelklick hinzufügen. $\to$ Am Ende "`Finish"' drücken, um den Vorgang abzuschließen.
 \subsubsection{Ort ändern/hinzufügen}
@@ -108,5 +109,5 @@ Um die Exportfunktion zu testen, wurde folgende zwei Tests durchgeführt:
 Bei beiden Exporten wurde die exportierte Datei eingehend untersucht. Dabei wurden keine Abweichungen von der Spezifikation gefunden. Auch stimmen die exportierten Werte mit den original-Werten der Anwendung überein.
 
 \subsection{Differenz zwischen zwei Zeiträumen anzeigen lassen}
-Diese Funktion wurde so nicht implementiert. Allerdings wurde es möglich gemacht Tweets aus bestimmten, selbst gewählten, Zeitspannen auf der Karte zu visualisieren.\\
-Um diese Funktion zu testen wurde Folgendes durchgeführt:\\ Nach Account suchen (hier: \textit{YouTube}) $\to$ Karte wird eingefärbt $\to$ Im Tab "`Detail information"'  ein Startdatum wählen (hier: \textit{09.02.2015}) $\to$ ein Enddatum wählen hier: \textit{09.03.2015}) $\to$ Knopf "`Confirm"' drücken $\to$ Einfärbung der Karte verändert sich, bei Überprüfung der einzelnen Werte der Länder verringern sich, wie erwartet, die Anzahlen an Tweets $\to$ "`Reset"' Knopf drücken $\to$ Felder für Start- und Enddatum leeren sich $\to$ Karte wird wie zu Beginn eingefärbt, Anzahlen der Tweets der Länder stimmt mit den Anzahlen am Anfang (ohne Angabe einer Zeitspanne) überein.
+Diese Funktion wurde so nicht implementiert. Allerdings wurde es möglich gemacht Retweets aus bestimmten, selbst gewählten, Zeitspannen auf der Karte zu visualisieren.\\
+Um diese Funktion zu testen wurde Folgendes durchgeführt:\\ Nach Account suchen (hier: \textit{YouTube}) $\to$ Karte wird eingefärbt $\to$ Im Tab "`Detail information"'  ein Startdatum wählen (hier: \textit{09.02.2015}) $\to$ ein Enddatum wählen (hier: \textit{09.03.2015}) $\to$ Button "`Confirm"' drücken $\to$ Einfärbung der Karte verändert sich, bei Überprüfung der einzelnen Werte der Länder verringern sich, wie erwartet, die Anzahl der Retweets $\to$ "`Reset"' Button drücken $\to$ Felder für Start- und Enddatum leeren sich $\to$ Karte wird wie zu Beginn eingefärbt, Anzahl der Retweets der Länder stimmt mit den Anzahlen am Anfang (ohne Angabe einer Zeitspanne) überein.

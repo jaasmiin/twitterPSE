@@ -68,8 +68,8 @@ public final class MyUnfoldingMap extends PApplet {
      * @return Instance of MyUnfoldingMap
      */
     public static MyUnfoldingMap getInstance(GUIController controller) {
-        if (SINGLETON.superController == null) {
-            SINGLETON.superController = controller;
+        if (MyUnfoldingMap.superController == null) {
+            MyUnfoldingMap.superController = controller;
         }
         return SINGLETON;
     }
