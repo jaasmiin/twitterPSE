@@ -5,7 +5,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<Menu fx:id="DBOPT_menu" mnemonicParsing="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+<Menu fx:id="dbOPT_menu" mnemonicParsing="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
   <items>
     <MenuItem fx:id="addCat" mnemonicParsing="false" text="Kategorie hinzufügen" />
     <MenuItem fx:id="addLoc" mnemonicParsing="false" text="Ort ändern" />
