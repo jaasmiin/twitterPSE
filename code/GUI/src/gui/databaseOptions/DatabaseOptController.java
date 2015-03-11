@@ -406,10 +406,10 @@ public class DatabaseOptController extends InputElement implements
                         String input = txtField_Loc_tab1.getText();
 
                         // update list
-                        List<Account> list = list_Loc_tab1.getItems();
+                       
 
                         list_Loc_tab1.getItems().clear();
-                        list = list_Loc_tab1.getItems();
+                       
                         List<Account> listAcc = superController.getAccounts(input);
                         if (listAcc != null) {
                             for (Account a : superController.getAccounts(input)) {
