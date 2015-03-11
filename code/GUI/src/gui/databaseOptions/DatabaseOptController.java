@@ -314,6 +314,7 @@ public class DatabaseOptController extends InputElement implements
                     .setCurrentStage(dialogStage);
             ((DatabaseOptController) loader.getController())
                     .setAccount(selectedAccount);
+            dialogStage.setResizable(false);
             dialogStage.setTitle(title);
             dialogStage.initModality(Modality.WINDOW_MODAL);
             // dialogStage.initOwner(primaryStage);
