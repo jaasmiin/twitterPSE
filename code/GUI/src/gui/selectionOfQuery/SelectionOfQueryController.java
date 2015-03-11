@@ -61,9 +61,7 @@ public class SelectionOfQueryController extends InputElement implements
 			@Override
 			public void run(List<Account> accounts, Long updateValue) {
 				synchronized (SelectionOfQueryController.this) {
-					System.out.println("Update: " + updateValue + "/" + accountUpdateNo.get());
 					if (updateValue == accountUpdateNo.get()) {
-						System.out.println(" updated.");
 						lstAccount.getItems().clear();
 				        for (Account a : accounts) {
 				            lstAccount.getItems().add(a);
@@ -209,7 +207,6 @@ public class SelectionOfQueryController extends InputElement implements
 						List<Account> accounts = new ArrayList<Account>();
 						synchronized (SelectionOfQueryController.this) {
 							if (updateValue == accountUpdateNo.get()) {
-								System.out.println(updateValue);
 								accounts = superController.getAccounts(text);
 							}	
 						}

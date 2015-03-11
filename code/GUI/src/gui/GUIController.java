@@ -407,6 +407,14 @@ public class GUIController extends Application implements Initializable {
             listLoaderPool.execute(rnbReloadAccounts);
             listLoaderPool.execute(rnbReloadCategories);
             listLoaderPool.execute(rnbReloadLocation);
+            listLoaderPool.execute(new Runnable() {
+				@Override
+				public void run() {
+					if (totalNumberOfRetweets == null) {
+			            totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+			        }
+				}
+			});
         }
     }
 
@@ -906,16 +914,6 @@ public class GUIController extends Application implements Initializable {
         db.setLocation(accountID, locationID);
     }
 
-    // private abstract class UpdateRunnable implements Runnable {
-    // protected UpdateType type;
-    // protected GUIElement element;
-    //
-    // public UpdateRunnable(UpdateType t, GUIElement e) {
-    // type = t;
-    // element = e;
-    // }
-    // }
-
     private void update(UpdateType type) {
         for (GUIElement element : guiElements) {
             try {
@@ -1073,10 +1071,13 @@ public class GUIController extends Application implements Initializable {
      */
     private HashMap<String, Integer> getOverallNumberOfRetweetsForPeriod(
             LocalDate start, LocalDate end) {
-
         HashMap<String, Integer> result = new HashMap<String, Integer>();
-        if (totalNumberOfRetweets == null) {
-            totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+        while (totalNumberOfRetweets == null) { // wait if totalNumberOfRetweets is not loaded yet
+        	try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				
+			}
         }
         Set<Date> dateSet = totalNumberOfRetweets.keySet();
         if (dateSet == null) {
