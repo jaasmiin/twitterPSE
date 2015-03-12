@@ -8,8 +8,17 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 
+/**
+ * Class to test the functions of the standardMap concerning the chosen
+ * period of time. 
+ * @author Lidia
+ *
+ */
 public class StandardMapTest {
 
+    /**
+     * Tests if Dates method inRange() returns correct value.
+     */
     @Test
     public void testInRange1() {
         LocalDate startDate = LocalDate.of(1, 1, 1);
@@ -18,6 +27,9 @@ public class StandardMapTest {
         assertTrue(Dates.inRange(startDate, endDate, inBetween));
     }
 
+    /**
+     * Tests if Dates method inRange() returns correct value.
+     */
     @Test
     public void testInRange2() {
         LocalDate startDate = LocalDate.of(1, 1, 1);
@@ -26,6 +38,9 @@ public class StandardMapTest {
         assertTrue(Dates.inRange(startDate, endDate, inBetween));
     }
 
+    /**
+     * Tests if Dates method inRange() returns correct value.
+     */
     @Test
     public void testInRange3() {
         LocalDate startDate = LocalDate.of(1, 1, 1);
@@ -34,6 +49,9 @@ public class StandardMapTest {
         assertTrue(Dates.inRange(startDate, endDate, inBetween));
     }
 
+    /**
+     * Tests if correct localDate is build.
+     */
     @Test
     public void testBuildLocalDate1() {
         Date date = new Date(System.currentTimeMillis());
@@ -44,6 +62,9 @@ public class StandardMapTest {
                 && con.getMonth() == cur.getMonth());
     }
 
+    /**
+     * Tests if correct localDate is build.
+     */
     @Test
     public void testBuildLocalDate2() {
 
