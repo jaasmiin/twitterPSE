@@ -670,12 +670,13 @@ public class GUIController extends Application implements Initializable {
      * @param selected
      *            is true if account should be selected, false otherwise
      */
-    public void setSelectedAccount(int id, boolean selected) {
+    public synchronized void setSelectedAccount(int id, boolean selected) {
         if (accounts.setSelected(id, selected)) {
             interruptReloadData();
             update(UpdateType.ACCOUNT_SELECTION);
             reloadData();
         }
+        accounts.printSelected();
     }
 
     private void interruptReloadData() {

@@ -6,6 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.swing.plaf.basic.BasicScrollPaneUI.HSBChangeListener;
+
+import mysql.result.Result;
+
 /**
  * Class for quickly selecting and iterating over elements.
  * 
@@ -378,8 +382,8 @@ public class SelectionHashList<T> {
      *            item which will be inserted or updated
      */
     public void update(T t) {
-        if (hashMap.containsValue(t)) {
-            SelectionHashListEntry e = hashMap.get(t);
+        if (hashMap.containsKey(t.hashCode())) {
+            SelectionHashListEntry e = hashMap.get(t.hashCode());
             if (e.isVisible()) {
                 e.setValue(t);
             } else {
@@ -451,23 +455,20 @@ public class SelectionHashList<T> {
     public void remove(T t) {
         if (hashMap.containsKey(t.hashCode())) {
             SelectionHashListEntry e = hashMap.get(t.hashCode());
-            if (last.getValue().equals(e.getValue())) {
-                last = e.getPrev();
-            }
-            if (first.getValue().equals(e.getValue())) {
-                first = e.getNext();
-            }
-            if (e.getPrev() != null) {
-                e.getPrev().setNext(e.getNext());
-            }
-            if (e.getNext() != null) {
-                e.getNext().setNext(e.getPrev());
-            }
-            if (!e.isSelected()) {
-                hashMap.remove(t.hashCode());
+            if (!first.getValue().equals(e.getValue())) {
+            	e.getPrev().setNext(e.getNext());
             } else {
-                e.setVisible(false);
+            	first = e.getNext();
             }
+            if (!last.getValue().equals(e.getValue())) {
+            	e.getNext().setPrev(e.getPrev());
+            } else {
+            	last = null;
+            }
+            e.setNext(null);
+            e.setPrev(null);
+            
+            e.setVisible(false);
             counter--;
         }
     }
@@ -496,8 +497,8 @@ public class SelectionHashList<T> {
      */
     public boolean setSelected(Integer id, boolean selected) {
         boolean changed = false;
-        if (hashMap.containsKey(id.hashCode())) {
-            SelectionHashListEntry e = hashMap.get(id.hashCode());
+        if (hashMap.containsKey(id)) {
+            SelectionHashListEntry e = hashMap.get(id);
             if (selected && !e.isSelected()) {
                 changed = true;
                 selectedCounter++;
@@ -526,9 +527,6 @@ public class SelectionHashList<T> {
                 }
                 e.setNextSelected(null);
                 e.setPrevSelected(null);
-                if (!e.isVisible()) {
-                    hashMap.remove(e.hashCode());
-                }
             }
         }
         return changed;
@@ -560,7 +558,7 @@ public class SelectionHashList<T> {
      * @return element with id or null
      */
     public T getElement(Integer id) {
-        SelectionHashListEntry e = hashMap.get(id.hashCode());
+        SelectionHashListEntry e = hashMap.get(id);
         return e == null ? null : e.getValue();
     }
 
@@ -595,8 +593,7 @@ public class SelectionHashList<T> {
         }
 
         public boolean isSelected() {
-            return firstSelected == this || prevSelected != null
-                    || nextSelected != null;
+            return firstSelected == this || prevSelected != null;
         }
 
         public T getValue() {
@@ -636,5 +633,15 @@ public class SelectionHashList<T> {
             return value.hashCode();
         }
     }
-
+    /**
+     * For debugging, print selected list.
+     * TODO: only to debug
+     */
+    public void printSelected() {
+    	String selected = "{";
+    	for (T t : this.selected) {
+    		selected += t.toString() + " " + ((Result) t).getId();
+    	}
+    	System.out.println(selected + "}");
+    }
 }

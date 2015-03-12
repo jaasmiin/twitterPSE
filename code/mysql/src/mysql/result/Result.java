@@ -30,6 +30,6 @@ public abstract class Result {
 
     @Override
     public int hashCode() {
-        return ((Integer) getId()).hashCode();
+        return getId();
     }
 }
