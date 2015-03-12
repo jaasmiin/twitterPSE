@@ -100,8 +100,7 @@ public class StandardMapDialog extends JDialog {
             // System.out.println("############################################################");
             // System.out.println("start: " + forCalc.size() + "   keySet" +
             // keySet.size());
-            calculatedData = superController.getDisplayValuePerCountry(forCalc,
-                    1, start, end);
+            calculatedData = superController.getDisplayValuePerCountry(forCalc, start, end);
             // System.out.println("end");
 
             // for (String key : keySet) {

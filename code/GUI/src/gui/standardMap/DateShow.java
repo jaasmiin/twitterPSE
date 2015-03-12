@@ -101,7 +101,7 @@ public class DateShow extends Thread {
 
             // get adapted data and redraw map
             calculatedData = superController.getDisplayValuePerCountry(
-                    unCalcData, 1, startDate, currentDate);
+                    unCalcData, startDate, currentDate);
             if (calculatedData != null) {
                 map.update(calculatedData);
                 map.redraw();
