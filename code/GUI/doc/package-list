@@ -1,7 +1,6 @@
 gui
 gui.csvExport
 gui.databaseOptions
-gui.diffMap
 gui.help
 gui.search
 gui.selectionOfQuery
