@@ -967,11 +967,11 @@ public class GUIController extends Application implements Initializable {
      * 
      * given: a category, country, accounts combination, a period of time:
      * 
-     * x :=number of retweets for that combination in that country in period y
-     * :=overall number of retweets for that country in period scale := scale
-     * factor (default == 1)
+     * x := number of retweets for that combination in that country in period
+     * y := overall number of retweets for that country in period
+     * z := overall number of retweets in all contries in that combination/period
      * 
-     * output = x / y * scale
+     * output = log_10(x^2 / (y * z))
      * 
      * 
      * @param start
@@ -984,20 +984,16 @@ public class GUIController extends Application implements Initializable {
      *            number of retweets for each country in a
      *            category/country/accounts combination in the requested period
      *            of time
-     * @param scale
-     *            the value in scale is multiplied with the calculated relative
-     *            factor to point out differences, it has to be positive
      * @return the hashmap mapping countries to the number quantifying the
      *         retweet activity in this country or null if retweetsPerLocation
      *         contained invalid countrycode identifier, or scale is not
      *         positive
      */
     public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
-            HashMap<String, Integer> retweetsPerLocation, double scale,
-            LocalDate start, LocalDate end) {
-        if (scale <= epsilon) {
-            return null;
-        }
+            HashMap<String, Integer> retweetsPerLocation,
+            LocalDate start,
+            LocalDate end
+    ) {
         if (allLocationsInDB == null) {
             allLocationsInDB = getLocations();
         }
@@ -1017,49 +1013,48 @@ public class GUIController extends Application implements Initializable {
             overallCounter += retweetsPerLocation.get(key);
         }
 
-        double minValue = Double.POSITIVE_INFINITY;
-
         // calculate relative value and iterate over all countries
         // available in the DB not just the countries in the query
         // Iterator iterator = allLocationsInDB.listIterator();
         // System.out.println(allLocationsInDB.size());
+        double minValue = Double.POSITIVE_INFINITY;
         for (int i = 0; i < allLocationsInDB.size(); i++) {
-
             String key = ((Location) allLocationsInDB.get(i)).getLocationCode();
 
             // catch case if country is not set in the query
             if (!hashMapOverallNumber.containsKey(key)) {
                 hashMapOverallNumber.put(key, 0);
-                // System.out.println("setze overallnumber 0 für ländercode " +
-                // key );
             }
             if (!retweetsPerLocation.containsKey(key)) {
                 retweetsPerLocation.put(key, 0);
             }
 
-            double relativeValue = retweetsPerLocation.get(key)
-                    / ((double) overallCounter * hashMapOverallNumber.get(key));
-            relativeValue *= scale;
-            if (!Double.isNaN(relativeValue)) {
-                minValue = Math.min(minValue, relativeValue);
-            } else {
+            double relativeValue;
+            if (hashMapOverallNumber.get(key) == 0) {
                 relativeValue = 0;
+            } else {
+                relativeValue = ((double)retweetsPerLocation.get(key) * (double)retweetsPerLocation.get(key)) / ((double)hashMapOverallNumber.get(key) * (double)overallCounter);
+            }
+
+            if (relativeValue > 0) {
+                minValue = Math.min(minValue, relativeValue);
             }
 
             result.put(
+                key,
+                new MyDataEntry(
+                    relativeValue,
                     key,
-                    new MyDataEntry(relativeValue, key, hashMapOverallNumber
-                            .get(key), retweetsPerLocation.get(key)));
-            // System.out.println(relativeValue + "  " + key + "  " +
-            // hashMapOverallNumber
-            // .get(key) + "  " + retweetsPerLocation.get(key));
+                    hashMapOverallNumber.get(key),
+                    retweetsPerLocation.get(key)
+                )
+            );
         }
-        // System.out.println(minValue);
+        
         Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, MyDataEntry> entry = it.next();
-            entry.getValue().setValue(
-                    Math.log10(entry.getValue().getValue() + 1));
+            entry.getValue().setValue(Math.log10(entry.getValue().getValue() / minValue + 1));
         }
 
         return result;
