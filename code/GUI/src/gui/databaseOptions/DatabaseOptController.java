@@ -657,7 +657,7 @@ public class DatabaseOptController extends InputElement implements
                 // add categories
                 for (Category cat : list_Cat_tab2.getItems()) {
                     superController.setCategory(account.getId(), cat.getId());
-                    System.out.println("2");
+                    // System.out.println("2");
                 }
 
                 // print message

@@ -160,6 +160,13 @@ public class GUIController extends Application implements Initializable {
             for (Integer id : selectedCategories) {
                 allSelectedCategories.add(id);
             }
+            Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					lstInfo.getItems().removeAll(Labels.DATA_BY_ACCOUNT_LOADING);
+		            lstInfo.getItems().removeAll(Labels.DATA_BY_LOCATION_LOADING);
+				}
+			});
             reloadDataPool.shutdownNow();
             db2.interruptGetAllDataQuery();
             db3.interruptGetSumOfDataQuery();

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<?import javafx.scene.layout.AnchorPane?>
-
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.diffMap.DiffMapController">
-	<!-- TODO Add Nodes -->
-</AnchorPane>
-

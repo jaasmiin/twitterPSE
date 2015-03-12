@@ -852,7 +852,6 @@ public class DBgui extends DBConnection implements DBIgui {
         if (res == null || Thread.interrupted())
             return;
 
-        // int items = 0;
         // t = System.currentTimeMillis();
         try {
             // read result line per line
@@ -868,7 +867,6 @@ public class DBgui extends DBConnection implements DBIgui {
                         res.getString(3));
                 // append the retweets-data to the data to return
                 ret.get(id).addRetweet(element);
-                // items++;
             }
         } catch (SQLException e) {
             sqlExceptionResultLog(e);
@@ -878,7 +876,7 @@ public class DBgui extends DBConnection implements DBIgui {
             closeResultAndStatement(stmt, res);
         }
         // System.out.println("Java Verarbeitung Retweets: "
-        // + (System.currentTimeMillis() - t) + " Items: " + items);
+        // + (System.currentTimeMillis() - t));
     }
 
     private Statement createBasicStatement(List<Integer> categoryIDs,
