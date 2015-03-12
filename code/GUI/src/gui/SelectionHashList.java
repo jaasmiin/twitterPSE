@@ -562,6 +562,18 @@ public class SelectionHashList<T> {
         return e == null ? null : e.getValue();
     }
 
+    /**
+     * For debugging, print selected list.
+     * TODO: only to debug
+     */
+    public void printSelected() {
+    	String selected = "{";
+    	for (T t : this.selected) {
+    		selected += t.toString() + " " + ((Result) t).getId();
+    	}
+    	System.out.println(selected + "}");
+    }
+    
     private class SelectionHashListEntry {
         private T value;
         private SelectionHashListEntry next, prev;
@@ -633,15 +645,5 @@ public class SelectionHashList<T> {
             return value.hashCode();
         }
     }
-    /**
-     * For debugging, print selected list.
-     * TODO: only to debug
-     */
-    public void printSelected() {
-    	String selected = "{";
-    	for (T t : this.selected) {
-    		selected += t.toString() + " " + ((Result) t).getId();
-    	}
-    	System.out.println(selected + "}");
-    }
+   
 }
