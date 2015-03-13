@@ -25,7 +25,8 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
  * 
  */
 public final class MyUnfoldingMap extends PApplet {
-
+	
+	private static final double CONST = 0.00000000001;
     /**
      * default serial version uid
      */
@@ -194,7 +195,7 @@ public final class MyUnfoldingMap extends PApplet {
 	            m.setStrokeColor(color(241, 241, 241, 50));
 	            m.setStrokeWeight(1);
 	
-	            if (dataEntry != null && (dataEntry.getValue() >= EPSILON || dataEntry.getValue() <= -EPSILON)) {
+	            if (dataEntry != null && (dataEntry.getValue() >= CONST || dataEntry.getValue() <= -CONST)) {
 	                // Take value as brightness
 	            
 	            	// Double transparency = dataEntry.getValue();
@@ -248,6 +249,7 @@ public final class MyUnfoldingMap extends PApplet {
         	if (!e.getKey().equals("0")) {
 	            MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
 	            if (newEntry != null) {
+	            	System.out.println("first transfer  " + e.getValue().getValue());
 	                newEntry.setValue(e.getValue().getValue());
 	                newEntry.setRetweetsLand(e.getValue().getRetweetsLand());
 	                newEntry.setRetweetsLandFiltered(e.getValue()
@@ -257,6 +259,7 @@ public final class MyUnfoldingMap extends PApplet {
 	            }
 	            
 	            float currentValue = e.getValue().getValue().floatValue();
+	            System.out.println("second transfer  " + currentValue);
 	            if (currentValue > maxValue) {
 	                maxValue = currentValue;
 	                maxCountry = e.getValue().getCountryId3Chars();
