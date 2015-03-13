@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.help.HelpController">
+<!-- <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="85.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.help.HelpController">
    <children>
       <Text fx:id="about_version" layoutX="20.0" layoutY="25.0" strokeType="OUTSIDE" strokeWidth="0.0" text="version:" wrappingWidth="192.6708984375" />
       <Text fx:id="about_authors" layoutX="20.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="authors: " />
    </children>
-</AnchorPane>
+</AnchorPane>-->
+
+<VBox maxHeight="90.0" maxWidth="1.7976931348623157E308" minHeight="90.0" minWidth="350.0" prefHeight="90.0" prefWidth="350.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.help.HelpController">
+   <children>
+      <Label fx:id="about_version" maxWidth="1.7976931348623157E308" text="Label">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+      </Label>
+      <Label fx:id="about_authors" maxWidth="1.7976931348623157E308" text="Label">
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
+      </Label>
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

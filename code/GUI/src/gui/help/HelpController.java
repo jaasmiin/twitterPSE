@@ -12,13 +12,14 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Controls the help dialog
@@ -29,13 +30,11 @@ public class HelpController extends GUIElement implements Initializable {
     @FXML
     private MenuItem help_about;
     @FXML
-    private Text about_version;
+    private Label about_version;
     @FXML
-    private Text about_authors;
+    private Label about_authors;
     @FXML
     private Menu menu_help;
-    
-    private Stage dialogStage;
 
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
@@ -55,46 +54,29 @@ public class HelpController extends GUIElement implements Initializable {
     public void update(UpdateType type) {
 
     }
-
+    
     /**
      * shows the about dialog
      */
     private void showAboutDialog() {
-        FXMLLoader loader = new FXMLLoader(
-                HelpController.class.getResource("About.fxml"));
-
-        AnchorPane page;
-
-        try {
-
-            page = (AnchorPane) loader.load();
-            dialogStage = new Stage();
-
-            // give the controller in the newly created thread a reference to
-            // the current stage;
-            ((HelpController) loader.getController())
-                    .setCurrentStage(dialogStage);
-
-            dialogStage.setTitle("About");
-            dialogStage.initModality(Modality.WINDOW_MODAL);
-
-            Scene scene = new Scene(page);
-            dialogStage.setScene(scene);
-            dialogStage.show();
-        } catch (IOException e1) {
-
-            e1.printStackTrace();
-        }
-    }
-
-    /**
-     * Sets the current stage
-     * 
-     * @param stage
-     *            current stage
-     */
-    public void setCurrentStage(Stage stage) {
-        dialogStage = stage;
+    	Parent parent = null;
+		try {
+			parent = FXMLLoader.load(getClass().getResource("About.fxml"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (parent != null) {
+        Scene scene = new Scene(parent);
+        Stage stage = new Stage();
+        stage.setTitle("About");
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.setHeight(125);
+        stage.setWidth(425);
+        stage.show();
+		}
     }
 
     /**
