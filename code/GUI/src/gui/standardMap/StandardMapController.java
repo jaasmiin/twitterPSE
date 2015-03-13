@@ -1,6 +1,5 @@
 package gui.standardMap;
 
-import java.awt.GradientPaint;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ResourceBundle;
@@ -14,8 +13,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
@@ -60,18 +57,20 @@ public class StandardMapController extends OutputElement implements
     private Button b_StandMap_StopDateShow;
     @FXML
     private Rectangle recColor;
-    
+
     private LocalDate start = null;
     private LocalDate end = null;
     private StandardMapDialog dialog;
     private Thread t1 = null;
 
     private Color getColor(float p) {
-    	float red = ((Double) (p < 50 ? 255.0 : 256 - (p-50)*5.12)).floatValue();
-    	float green = ((Double) (p > 50 ? 255 : p*5.12)).floatValue();
-    	return new Color(Math.floor(red/255.0), Math.floor(green/255.0), 0, 0.5);
+        float red = ((Double) (p < 50 ? 255.0 : 256 - (p - 50) * 5.12))
+                .floatValue();
+        float green = ((Double) (p > 50 ? 255 : p * 5.12)).floatValue();
+        return new Color(Math.floor(red / 255.0), Math.floor(green / 255.0), 0,
+                0.5);
     }
-    
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         super.initialize(location, resources);
@@ -88,10 +87,12 @@ public class StandardMapController extends OutputElement implements
         b_StandMap_reset.setOnMouseClicked(new MyEventHandler());
         b_StandMap_StartDateShow.setOnMouseClicked(new MyEventHandler());
         b_StandMap_StopDateShow.setOnMouseClicked(new MyEventHandler());
-        
-        Stop[] stops = new Stop[]{new Stop(0, new Color(1,0,0,0.5)), new Stop(0.5, getColor(50)), 
-        		new Stop(1, new Color(1/255,1,0,0.5))};
-        LinearGradient lg = new LinearGradient(0,0,1,1,true, CycleMethod.NO_CYCLE, stops);
+
+        Stop[] stops = new Stop[] {new Stop(0, new Color(1, 0, 0, 0.5)),
+                new Stop(0.5, getColor(50)),
+                new Stop(1, new Color(1 / 255, 1, 0, 0.5)) };
+        LinearGradient lg = new LinearGradient(0, 0, 1, 1, true,
+                CycleMethod.NO_CYCLE, stops);
         recColor.setFill(lg);
     }
 

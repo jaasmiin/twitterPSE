@@ -68,8 +68,9 @@ public class GUIController extends Application implements Initializable {
     private Logger log;
     private Stage stage;
     private AtomicInteger upToDate = new AtomicInteger();
-    private final double epsilon = 0.00000000001; // Epsilon for floating-point
-                                                  // arithmetic
+    // private final double epsilon = 0.00000000001; // Epsilon for
+    // floating-point
+    // arithmetic
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -161,12 +162,14 @@ public class GUIController extends Application implements Initializable {
                 allSelectedCategories.add(id);
             }
             Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					lstInfo.getItems().removeAll(Labels.DATA_BY_ACCOUNT_LOADING);
-		            lstInfo.getItems().removeAll(Labels.DATA_BY_LOCATION_LOADING);
-				}
-			});
+                @Override
+                public void run() {
+                    lstInfo.getItems()
+                            .removeAll(Labels.DATA_BY_ACCOUNT_LOADING);
+                    lstInfo.getItems().removeAll(
+                            Labels.DATA_BY_LOCATION_LOADING);
+                }
+            });
             reloadDataPool.shutdownNow();
             db2.interruptGetAllDataQuery();
             db3.interruptGetSumOfDataQuery();
@@ -374,7 +377,7 @@ public class GUIController extends Application implements Initializable {
     private void reloadAccounts(boolean update) {
         String info = Labels.ACCOUNTS_LOADING;
         setInfo(info);
-    	db.interruptGetAccountsQuery();
+        db.interruptGetAccountsQuery();
         accounts.removeAll();
         List<Account> accountList = db
                 .getAccounts(accountSearchText == null ? "" : accountSearchText);
@@ -415,13 +418,13 @@ public class GUIController extends Application implements Initializable {
             listLoaderPool.execute(rnbReloadCategories);
             listLoaderPool.execute(rnbReloadLocation);
             listLoaderPool.execute(new Runnable() {
-				@Override
-				public void run() {
-					if (totalNumberOfRetweets == null) {
-			            totalNumberOfRetweets = getSumOfRetweetsPerLocation();
-			        }
-				}
-			});
+                @Override
+                public void run() {
+                    if (totalNumberOfRetweets == null) {
+                        totalNumberOfRetweets = getSumOfRetweetsPerLocation();
+                    }
+                }
+            });
         }
     }
 
@@ -968,9 +971,9 @@ public class GUIController extends Application implements Initializable {
      * 
      * given: a category, country, accounts combination, a period of time:
      * 
-     * x := number of retweets for that combination in that country in period
-     * y := overall number of retweets for that country in period
-     * z := overall number of retweets in all contries in that combination/period
+     * x := number of retweets for that combination in that country in period y
+     * := overall number of retweets for that country in period z := overall
+     * number of retweets in all contries in that combination/period
      * 
      * output = log_10(x^2 / (y * z))
      * 
@@ -991,10 +994,8 @@ public class GUIController extends Application implements Initializable {
      *         positive
      */
     public HashMap<String, MyDataEntry> getDisplayValuePerCountry(
-            HashMap<String, Integer> retweetsPerLocation,
-            LocalDate start,
-            LocalDate end
-    ) {
+            HashMap<String, Integer> retweetsPerLocation, LocalDate start,
+            LocalDate end) {
         if (allLocationsInDB == null) {
             allLocationsInDB = getLocations();
         }
@@ -1034,7 +1035,9 @@ public class GUIController extends Application implements Initializable {
             if (hashMapOverallNumber.get(key) == 0) {
                 relativeValue = 0;
             } else {
-                relativeValue = ((double)retweetsPerLocation.get(key) * (double)retweetsPerLocation.get(key)) / ((double)hashMapOverallNumber.get(key) * (double)overallCounter);
+                relativeValue = ((double) retweetsPerLocation.get(key) * (double) retweetsPerLocation
+                        .get(key))
+                        / ((double) hashMapOverallNumber.get(key) * (double) overallCounter);
             }
 
             if (relativeValue > 0) {
@@ -1042,20 +1045,16 @@ public class GUIController extends Application implements Initializable {
             }
 
             result.put(
-                key,
-                new MyDataEntry(
-                    relativeValue,
                     key,
-                    hashMapOverallNumber.get(key),
-                    retweetsPerLocation.get(key)
-                )
-            );
+                    new MyDataEntry(relativeValue, key, hashMapOverallNumber
+                            .get(key), retweetsPerLocation.get(key)));
         }
-        
+
         Iterator<Entry<String, MyDataEntry>> it = result.entrySet().iterator();
         while (it.hasNext()) {
             Entry<String, MyDataEntry> entry = it.next();
-            entry.getValue().setValue(Math.log10(entry.getValue().getValue() / minValue + 1));
+            entry.getValue().setValue(
+                    Math.log10(entry.getValue().getValue() / minValue + 1));
         }
 
         return result;
@@ -1075,12 +1074,13 @@ public class GUIController extends Application implements Initializable {
     private HashMap<String, Integer> getOverallNumberOfRetweetsForPeriod(
             LocalDate start, LocalDate end) {
         HashMap<String, Integer> result = new HashMap<String, Integer>();
-        while (totalNumberOfRetweets == null) { // wait if totalNumberOfRetweets is not loaded yet
-        	try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-				
-			}
+        while (totalNumberOfRetweets == null) { // wait if totalNumberOfRetweets
+                                                // is not loaded yet
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+
+            }
         }
         Set<Date> dateSet = totalNumberOfRetweets.keySet();
         if (dateSet == null) {

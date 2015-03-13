@@ -4,7 +4,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane fx:id="tabPane_Loc" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="416.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+<TabPane fx:id="tabPane_Loc" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="390.0" prefWidth="570.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
   <tabs>
     <Tab fx:id="tab_Loc_tab1" text="Account wählen">
       <content>
@@ -14,7 +14,7 @@
                   <Label fx:id="l_Loc_tab1_selectedAcc" layoutX="14.0" layoutY="23.0" text="Suche Account" />
                   <ListView fx:id="list_Loc_tab1" layoutX="300.0" layoutY="60.0" prefHeight="256.0" prefWidth="272.0" />
                   <Label fx:id="l_Loc_tab1_AccDB" layoutX="300.0" layoutY="23.0" text="Acounts in Datenbank" />
-                  <Button fx:id="b_Loc_tab1" layoutX="507.0" layoutY="316.0" mnemonicParsing="false" text="Weiter" />
+                  <Button fx:id="b_Loc_tab1" layoutX="507.0" layoutY="320.0" mnemonicParsing="false" prefHeight="31.0" text="Weiter" />
                </children></AnchorPane>
       </content>
     </Tab>

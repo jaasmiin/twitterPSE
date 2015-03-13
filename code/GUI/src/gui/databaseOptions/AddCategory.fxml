@@ -4,7 +4,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<TabPane fx:id="tabPane_Cat" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="495.0" prefWidth="677.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
+<TabPane fx:id="tabPane_Cat" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="660.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.databaseOptions.DatabaseOptController">
   <tabs>
     <Tab fx:id="tab_Cat_tab1" text="Account wählen">
       <content>
@@ -14,7 +14,7 @@
                   <Label fx:id="l_Cat_tab1_selectedAcc" layoutX="14.0" layoutY="23.0" text="Suche Account" />
                   <ListView fx:id="list_Cat_tab1" layoutX="300.0" layoutY="60.0" prefHeight="256.0" prefWidth="272.0" />
                   <Label fx:id="l_Cat_tab1_AccDB" layoutX="300.0" layoutY="23.0" text="Acounts in Datenbank" />
-                  <Button fx:id="b_Cat_tab1" layoutX="507.0" layoutY="316.0" mnemonicParsing="false" text="Weiter" />
+                  <Button fx:id="b_Cat_tab1" layoutX="507.0" layoutY="320.0" mnemonicParsing="false" prefHeight="31.0" text="Weiter" />
                </children></AnchorPane>
       </content>
     </Tab>
@@ -26,9 +26,9 @@
                   <ListView fx:id="list_Cat_tab2" layoutX="253.0" layoutY="138.0" prefHeight="275.0" prefWidth="187.0" />
                   <Label fx:id="l_Cat_tab2_selectedCat" layoutX="255.0" layoutY="98.0" text="Ausgewählte Kategorien:" />
                   <TreeView fx:id="trv_Cat_tab2" layoutX="464.0" layoutY="138.0" prefHeight="276.0" prefWidth="195.0" />
-                  <Button fx:id="b_Cat_tab2_zurueck" layoutX="464.0" layoutY="412.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="93.0" text="Zurück" />
-                  <Button fx:id="b_Cat_tab2_fertig" layoutX="571.0" layoutY="412.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="87.0" text="Hinzufügen" />
-                  <Button fx:id="b_Cat_tab2_entfernen" layoutX="253.0" layoutY="412.0" mnemonicParsing="false" text="Entfernen" />
+                  <Button fx:id="b_Cat_tab2_zurueck" layoutX="464.0" layoutY="418.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="93.0" text="Zurück" />
+                  <Button fx:id="b_Cat_tab2_fertig" layoutX="571.0" layoutY="418.0" mnemonicParsing="false" prefHeight="31.0" prefWidth="87.0" text="Hinzufügen" />
+                  <Button fx:id="b_Cat_tab2_entfernen" layoutX="253.0" layoutY="418.0" mnemonicParsing="false" text="Entfernen" />
                   <Label fx:id="l_Cat_tab2_oldCats" layoutX="31.0" layoutY="98.0" text="Alte Kategorien" />
                   <TreeView fx:id="trv_Cat_tab2_oldCats" layoutX="24.0" layoutY="139.0" prefHeight="273.0" prefWidth="200.0" />
                   <Label fx:id="l_Cat_tab2_selectedAccount" layoutX="255.0" layoutY="27.0" prefHeight="21.0" prefWidth="96.0" />

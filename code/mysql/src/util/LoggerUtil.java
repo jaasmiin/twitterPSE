@@ -2,6 +2,7 @@ package util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -35,17 +36,30 @@ public class LoggerUtil {
 
         // get logger instance
         Logger l = Logger.getLogger(filename);
-        // get/create logfile
-        new File(filename + ".log").createNewFile();
-        FileHandler fh = new FileHandler(filename + ".log", true);
-        SimpleFormatter formatter = new SimpleFormatter();
-        // set format of the logs
-        fh.setFormatter(formatter);
-        // set logfile
-        l.addHandler(fh);
-        // true: print output on console and into file
-        // false: only store output in logFile
-        l.setUseParentHandlers(false);
+
+        int success = 0;
+        do {
+            try {
+                String name = filename + (success == 0 ? "" : success);
+
+                // get/create logfile
+                new File(name + ".log").createNewFile();
+                FileHandler fh = new FileHandler(name + ".log", true);
+                SimpleFormatter formatter = new SimpleFormatter();
+                // set format of the logs
+                fh.setFormatter(formatter);
+                // set logfile
+                l.addHandler(fh);
+                // true: print output on console and into file
+                // false: only store output in logFile
+                l.setUseParentHandlers(false);
+
+                success = 0;
+            } catch (AccessDeniedException e) {
+                success++;
+            }
+
+        } while (success > 0 && success < 10);
 
         return l;
     }

@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import unfolding.MyDataEntry;
 import processing.core.PApplet;
@@ -25,8 +24,8 @@ import de.fhpotsdam.unfolding.utils.MapUtils;
  * 
  */
 public final class MyUnfoldingMap extends PApplet {
-	
-	private static final double CONST = 0.00000000001;
+
+    private static final double CONST = 0.00000000001;
     /**
      * default serial version uid
      */
@@ -41,7 +40,7 @@ public final class MyUnfoldingMap extends PApplet {
     private HashMap<String, MyDataEntry> dataEntriesMap;
     private List<Marker> countryMarker;
 
-    private AtomicInteger oldKey = new AtomicInteger();
+    //private AtomicInteger oldKey = new AtomicInteger();
     /**
      * List of countryIds which are colored in the map
      */
@@ -175,51 +174,57 @@ public final class MyUnfoldingMap extends PApplet {
     }
 
     private int getColor(float p) {
-    	float red = ((Double) (p < 50 ? 255.0 : 256 - (p-50)*5.12)).floatValue();
-    	float green = ((Double) (p > 50 ? 255 : p*5.12)).floatValue();
-    	return color(red, green, 0, 100);
+        float red = ((Double) (p < 50 ? 255.0 : 256 - (p - 50) * 5.12))
+                .floatValue();
+        float green = ((Double) (p > 50 ? 255 : p * 5.12)).floatValue();
+        return color(red, green, 0, 100);
     }
-    
+
     /**
      * Shades countrys dependent on their relative frequency of tweets
      */
     public void shadeCountries() {
-    	if (countryMarker != null) {
-	        for (Marker m : countryMarker) {
-	            String countryId = m.getId();
-	            String id = countryIdTrans.get(countryId);
-	
-	            MyDataEntry dataEntry = dataEntriesMap.get(id);
-	
-	            // Strokes
-	            m.setStrokeColor(color(241, 241, 241, 50));
-	            m.setStrokeWeight(1);
-	
-	            if (dataEntry != null && (dataEntry.getValue() >= CONST || dataEntry.getValue() <= -CONST)) {
-	                // Take value as brightness
-	            
-	            	// Double transparency = dataEntry.getValue();
-	               // float transpa = Float.parseFloat(transparency.toString());
-	            	float transpa = dataEntry.getValue().floatValue();
-	            	int t = getColor(map(transpa, 0, maxValue, 0, 100));
-	            	System.out.println(m.getId() + "   transpa " + transpa + "    transpa convertiert " + map(transpa, 0, maxValue, 0, 100));
-	            	System.out.println( );
-	                if (currentMap == map1) {
-	                    m.setColor(t);
-	                }
-	                if (currentMap == map2) {
-	                    m.setColor(t);
-	                }
-	
-	            } else {
-	                // value doesn't exist
-	                m.setColor(color(173, 173, 173, 50));
-	            }
-	
-	        }
-    	}
+        if (countryMarker != null) {
+            for (Marker m : countryMarker) {
+                String countryId = m.getId();
+                String id = countryIdTrans.get(countryId);
+
+                MyDataEntry dataEntry = dataEntriesMap.get(id);
+
+                // Strokes
+                m.setStrokeColor(color(241, 241, 241, 50));
+                m.setStrokeWeight(1);
+
+                if (dataEntry != null
+                        && (dataEntry.getValue() >= CONST || dataEntry
+                                .getValue() <= -CONST)) {
+                    // Take value as brightness
+
+                    // Double transparency = dataEntry.getValue();
+                    // float transpa =
+                    // Float.parseFloat(transparency.toString());
+                    float transpa = dataEntry.getValue().floatValue();
+                    int t = getColor(map(transpa, 0, maxValue, 0, 100));
+                    System.out.println(m.getId() + "   transpa " + transpa
+                            + "    transpa convertiert "
+                            + map(transpa, 0, maxValue, 0, 100));
+                    System.out.println();
+                    if (currentMap == map1) {
+                        m.setColor(t);
+                    }
+                    if (currentMap == map2) {
+                        m.setColor(t);
+                    }
+
+                } else {
+                    // value doesn't exist
+                    m.setColor(color(173, 173, 173, 50));
+                }
+
+            }
+        }
     }
-    
+
     /**
      * Updates new values to be visualized on the map.
      * 
@@ -246,28 +251,29 @@ public final class MyUnfoldingMap extends PApplet {
         }
         String maxCountry = "";
         for (Entry<String, MyDataEntry> e : changedEntries.entrySet()) {
-        	if (!e.getKey().equals("0")) {
-	            MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
-	            if (newEntry != null) {
-	            	System.out.println("first transfer  " + e.getValue().getValue());
-	                newEntry.setValue(e.getValue().getValue());
-	                newEntry.setRetweetsLand(e.getValue().getRetweetsLand());
-	                newEntry.setRetweetsLandFiltered(e.getValue()
-	                        .getRetweetsLandFiltered());
-	                dataEntriesMap.put(e.getKey(), newEntry);
-	                setValues.add(e.getKey());
-	            }
-	            
-	            float currentValue = e.getValue().getValue().floatValue();
-	            System.out.println("second transfer  " + currentValue);
-	            if (currentValue > maxValue) {
-	                maxValue = currentValue;
-	                maxCountry = e.getValue().getCountryId3Chars();
-	                System.out.println("maxValue: " + maxValue + " " + maxCountry);
-	            }
-        	}
+            if (!e.getKey().equals("0")) {
+                MyDataEntry newEntry = dataEntriesMap.get(e.getKey());
+                if (newEntry != null) {
+                    System.out.println("first transfer  "
+                            + e.getValue().getValue());
+                    newEntry.setValue(e.getValue().getValue());
+                    newEntry.setRetweetsLand(e.getValue().getRetweetsLand());
+                    newEntry.setRetweetsLandFiltered(e.getValue()
+                            .getRetweetsLandFiltered());
+                    dataEntriesMap.put(e.getKey(), newEntry);
+                    setValues.add(e.getKey());
+                }
+
+                float currentValue = e.getValue().getValue().floatValue();
+                System.out.println("second transfer  " + currentValue);
+                if (currentValue > maxValue) {
+                    maxValue = currentValue;
+                    maxCountry = e.getValue().getCountryId3Chars();
+                    System.out.println("maxValue: " + maxValue + " "
+                            + maxCountry);
+                }
+            }
         }
-        
 
         shadeCountries();
     }
@@ -319,13 +325,13 @@ public final class MyUnfoldingMap extends PApplet {
      * Resets all colored markers
      */
     private void resetMarkers() {
-    	if (countryMarker != null) {
-	        for (Marker m : countryMarker) {
-	            m.setColor(color(173, 173, 173, 50));
-	            m.setStrokeColor(color(241, 241, 241, 50));
-	            m.setStrokeWeight(1);
-	        }
-    	}
+        if (countryMarker != null) {
+            for (Marker m : countryMarker) {
+                m.setColor(color(173, 173, 173, 50));
+                m.setStrokeColor(color(241, 241, 241, 50));
+                m.setStrokeWeight(1);
+            }
+        }
     }
 
 }
