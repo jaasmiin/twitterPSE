@@ -13,7 +13,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -39,6 +41,12 @@ public class StandardMapController extends OutputElement implements
     private Text txt_StandMap_retweetsQuery;
     @FXML
     private Text txt_StandMap_retweetsTotal;
+    @FXML
+    private HBox hbSpace;
+    @FXML
+    private Label lblMin;
+    @FXML
+    private Label lblMax;
     @FXML
     private DatePicker date_SliderMap_startDate;
     @FXML
@@ -94,6 +102,10 @@ public class StandardMapController extends OutputElement implements
         LinearGradient lg = new LinearGradient(0, 0, 1, 1, true,
                 CycleMethod.NO_CYCLE, stops);
         recColor.setFill(lg);
+        recColor.widthProperty().bind(hbSpace.widthProperty());
+        recColor.heightProperty().bind(hbSpace.heightProperty());
+        lblMin.setText(Labels.DETAIL_INFORMATION_MIN_VALUE);
+        lblMax.setText(Labels.DETAIL_INFORMATION_MAX_VALUE);
     }
 
     /**

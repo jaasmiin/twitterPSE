@@ -103,6 +103,8 @@ public class Labels {
 	public static final String DATA_BY_ACCOUNT_LOADED = "Data grouped by account is loaded.";
 	public static final String DATA_BY_LOCATION_LOADING = "Data grouped by location is loading...";
 	public static final String DATA_BY_LOCATION_LOADED = "Data grouped by location is loaded.";
+	public static final String DETAIL_INFORMATION_MIN_VALUE = "min";
+	public static final String DETAIL_INFORMATION_MAX_VALUE = "max";
    
 	
 }

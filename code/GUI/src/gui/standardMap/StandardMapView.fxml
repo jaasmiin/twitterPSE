@@ -45,52 +45,71 @@
             <Font size="20.0" />
          </font>
       </Text>
-      <DatePicker fx:id="date_SliderMap_startDate" GridPane.columnIndex="1">
-         <GridPane.margin>
-            <Insets right="5.0" top="30.0" />
-         </GridPane.margin>
-      </DatePicker>
-      <DatePicker fx:id="date_SliderMap_endDate" maxWidth="1.7976931348623157E308" GridPane.columnIndex="2" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets right="5.0" />
-         </GridPane.margin>
-      </DatePicker>
-      <Button fx:id="b_StandMap_confirm" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM" />
-      <Button fx:id="b_StandMap_reset" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.valignment="BOTTOM">
-         <GridPane.margin>
-            <Insets left="10.0" />
-         </GridPane.margin>
-      </Button>
-      <Button fx:id="b_StandMap_StartDateShow" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets top="10.0" />
-         </GridPane.margin>
-      </Button>
-      <Button fx:id="b_StandMap_StopDateShow" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="4" GridPane.rowIndex="1">
-         <GridPane.margin>
-            <Insets left="10.0" top="10.0" />
-         </GridPane.margin>
-      </Button>
-      <Rectangle fx:id="recColor" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="28.0" stroke="BLACK" strokeType="INSIDE" width="500.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5">
+      <Rectangle fx:id="recColor" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="28.0" stroke="BLACK" strokeType="INSIDE" width="500.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.hgrow="ALWAYS" GridPane.rowIndex="6">
          <GridPane.margin>
             <Insets />
          </GridPane.margin></Rectangle>
+      <Label fx:id="lblMin" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+      <Label fx:id="lblMax" alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" textAlignment="JUSTIFY" GridPane.columnIndex="4" GridPane.rowIndex="7" />
+      <HBox fx:id="hbSpace" maxWidth="1.7976931348623157E308" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.rowIndex="5" />
+      <GridPane GridPane.columnIndex="1" GridPane.columnSpan="4">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <DatePicker fx:id="date_SliderMap_startDate" maxWidth="1.7976931348623157E308">
+               <GridPane.margin>
+                  <Insets right="5.0" top="30.0" />
+               </GridPane.margin>
+            </DatePicker>
+            <DatePicker fx:id="date_SliderMap_endDate" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </DatePicker>
+            <Button fx:id="b_StandMap_confirm" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="2" GridPane.valignment="BOTTOM" />
+            <Button fx:id="b_StandMap_reset" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.valignment="BOTTOM">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="b_StandMap_StartDateShow" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets top="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Button fx:id="b_StandMap_StopDateShow" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" minWidth="100.0" mnemonicParsing="false" text="Button" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="10.0" top="10.0" />
+               </GridPane.margin>
+            </Button>
+         </children>
+      </GridPane>
    </children>
    <columnConstraints>
       <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
       <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-      <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+      <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
       <ColumnConstraints hgrow="NEVER" />
       <ColumnConstraints hgrow="NEVER" maxWidth="-Infinity" minWidth="30.0" prefWidth="30.0" />
    </columnConstraints>
    <rowConstraints>
+      <RowConstraints minHeight="-Infinity" vgrow="NEVER" />
       <RowConstraints vgrow="NEVER" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
-      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" vgrow="SOMETIMES" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints vgrow="NEVER" />
-      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+      <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" percentHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints percentHeight="6.0" vgrow="NEVER" />
+      <RowConstraints percentHeight="6.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" percentHeight="6.0" prefHeight="30.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" percentHeight="6.0" prefHeight="30.0" vgrow="NEVER" />
+      <RowConstraints minHeight="10.0" percentHeight="6.0" prefHeight="30.0" vgrow="NEVER" />
    </rowConstraints>
 </GridPane>
 </content>

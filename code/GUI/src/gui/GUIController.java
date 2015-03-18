@@ -58,7 +58,12 @@ import util.LoggerUtil;
  */
 
 public class GUIController extends Application implements Initializable {
-
+	
+	private static final int WIDTH = 900;
+    private static final int HEIGHT = 600;
+    private static final int MIN_WIDTH = 860;
+    private static final int MIN_HEIGHT = 650;
+    
     private static GUIController instance = null;
 
     private Category categoryRoot;
@@ -68,9 +73,8 @@ public class GUIController extends Application implements Initializable {
     private Logger log;
     private Stage stage;
     private AtomicInteger upToDate = new AtomicInteger();
-    // private final double epsilon = 0.00000000001; // Epsilon for
-    // floating-point
-    // arithmetic
+
+
 
     @FXML
     private Pane paSelectionOfQuery;
@@ -309,13 +313,13 @@ public class GUIController extends Application implements Initializable {
             e.printStackTrace();
         }
         if (parent != null) {
-            Scene scene = new Scene(parent, 900, 600);
+            Scene scene = new Scene(parent, WIDTH, HEIGHT);
             scene.getStylesheets().add(
                     getClass().getResource("application.css").toExternalForm());
             stage = primaryStage;
             stage.setTitle(Labels.PSE_TWITTER);
-            stage.setMinHeight(500);
-            stage.setMinWidth(800);
+            stage.setMinHeight(MIN_HEIGHT);
+            stage.setMinWidth(MIN_WIDTH);
             stage.setScene(scene);
             stage.show();
             scene.getWindow().setOnCloseRequest(
