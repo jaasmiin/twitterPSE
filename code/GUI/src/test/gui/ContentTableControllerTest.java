@@ -32,7 +32,8 @@ public class ContentTableControllerTest {
     /**
      * Create GuiControllerMock and load ContentTableController
      */
-    @BeforeClass
+    @SuppressWarnings("unchecked")
+	@BeforeClass
     public static void setUpBeforeClass() {
     	guiController = new GuiControllerMock();
     	guiController.setDontLoadFromDB(true);

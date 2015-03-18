@@ -114,14 +114,17 @@ public class StandardMapController extends OutputElement implements
                 @Override
                 public void run() {
                     // update detailed information view
-                    MyDataEntry entry = superController
-                            .getMapDetailInformation();
-                    setVisible(true);
-                    txt_StandMap_country.setText(entry.getCountryName());
-                    txt_StandMap_retweetsQuery.setText(Integer.toString(entry
-                            .getRetweetsLandFiltered()));
-                    txt_StandMap_retweetsTotal.setText(Integer.toString(entry
-                            .getRetweetsLand()));
+                    MyDataEntry entry = superController.getMapDetailInformation();
+                    if (entry.getCountryName().isEmpty()) {
+                    	setVisible(false);
+                    } else {
+	                    setVisible(true);
+	                    txt_StandMap_country.setText(entry.getCountryName());
+	                    txt_StandMap_retweetsQuery.setText(Integer.toString(entry
+	                            .getRetweetsLandFiltered()));
+	                    txt_StandMap_retweetsTotal.setText(Integer.toString(entry
+	                            .getRetweetsLand()));
+                    }
                 }
             });
         } else {

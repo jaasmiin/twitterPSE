@@ -211,6 +211,7 @@ public class GUIController extends Application implements Initializable {
                                             c, l, a, true);
                                     if (current == upToDate.get()) {
                                         dataByLocationAndDate = temp;
+                                        setMapDetailInformation(new MyDataEntry());
                                         setInfo(Labels.DATA_BY_LOCATION_LOADED,
                                                 info);
                                         update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
@@ -227,6 +228,7 @@ public class GUIController extends Application implements Initializable {
                     setInfo(Labels.ERROR_NO_FILTER_SELECTED, 3000);
                     update(UpdateType.TWEET_BY_ACCOUNT);
                     update(UpdateType.TWEET_BY_LOCATION_BY_DATE);
+                    setMapDetailInformation(new MyDataEntry());
                 }
             }
         }
