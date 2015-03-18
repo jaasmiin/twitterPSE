@@ -386,6 +386,7 @@ public class SelectionHashList<T> {
                 e.setValue(t);
             } else {
                 insertIntoList(e);
+                e.setValue(t);
             }
         } else {
             insertNewElement(t);

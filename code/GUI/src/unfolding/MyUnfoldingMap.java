@@ -265,12 +265,12 @@ public final class MyUnfoldingMap extends PApplet {
                 }
 
                 float currentValue = e.getValue().getValue().floatValue();
-                System.out.println("second transfer  " + currentValue);
+               //  System.out.println("second transfer  " + currentValue);
                 if (currentValue > maxValue) {
                     maxValue = currentValue;
                     maxCountry = e.getValue().getCountryId3Chars();
-                    System.out.println("maxValue: " + maxValue + " "
-                            + maxCountry);
+                 //   System.out.println("maxValue: " + maxValue + " "
+                 //           + maxCountry);
                 }
             }
         }
